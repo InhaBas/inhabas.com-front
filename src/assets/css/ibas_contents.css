@@ -1,0 +1,717 @@
+/*================================== bank support 관련 css ==================================*/
+/*승인완료 상태 스타일*/
+.bank_pass {
+    color: #408558;
+    text-align: center;
+    font-weight: bold;
+    font-style: italic;
+}
+
+/*승인거절 상태 스타일*/
+.bank_nopass {
+    color: #cb444a;
+    text-align: center;
+    font-weight: bold;
+    font-style: italic;
+}
+
+/*승인대기 상태 스타일*/
+.bank_yet {
+    color: #6e757c;
+    text-align: center;
+    font-weight: bold;
+    font-style: italic;
+}
+
+/*지급완료 상태 스타일*/
+.bank_done {
+    color: #316cf4;
+    text-align: center;
+    font-weight: bold;
+    font-style: italic;
+}
+
+/*================================== bank 관련 css ==================================*/
+/*flex로 만들어 주기 위함임*/
+/*사용된 곳: 연도 선택하는 div쪽, */
+.bank-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/*표 안 input의 스타일을 설정해주기 위함*/
+/*사용된 곳: 테이블 안 input*/
+.bank-input-con {
+    border: none;
+    background-color: inherit;
+    width: 100px;
+    text-align: center;
+
+}
+
+/* input 활성화 되었을 때 스타일을 설정해주기 위함 */
+/*사용된 곳: bank_yejin.js에서 bank_update()에서 사용*/
+.bank-input-add {
+    border: 1px solid #e7e7ed;
+    background-color: white;
+    text-align: center;
+    width: 170px;
+    height: 25px;
+    border-radius: 4px;
+}
+
+.bank-input-add:focus {
+    outline: none;
+}
+
+/*쓰인 곳: 모달 시작 div, 모달 배경 부분임. */
+.bank-modal-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+
+}
+
+/*밑 마진을 0으로 해주기 위함*/
+/*사용된 곳: 연도 h태그 부분*/
+.bank-margin-bottom_0 {
+    margin-bottom: 0;
+}
+
+/*사용된 곳: 회계내역 추가 버튼*/
+.bank-btn-add-div {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 0;
+}
+
+/*영수증 이미지 정렬을 위함*/
+/*사용된 곳: 영수증 이미지 */
+.bank-image-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+/*총액 div 스타일을 위함*/
+/*사용된 곳: 총액 */
+.bank-total {
+    background-color: #4611a7;
+    color: white;
+    padding: 10px;
+    width: 180px;
+    border-radius: 30px;
+    text-align: center
+}
+
+/*================================== 메인화면 관련 css ==================================*/
+.ibas_logo {
+    margin-top: 170px;
+    width: 350px;
+    height: 350px;
+    -webkit-transition: 0.7s all;
+}
+
+.ibas_logo:hover {
+    transform: scale(1.1);
+    transition: 0.7s;
+}
+
+.ibas_background {
+    width: 100%;
+    height: 100%;
+}
+
+.height-100-vh {
+    height: 100vh;
+}
+
+.file-btn {
+    width: 100%;
+    display: block;
+    color: white !important;
+    background-color: #4015a0;
+    border-radius: 40px;
+    margin: 15px auto;
+    max-width: 500px;
+}
+
+.filebox input[type="file"] {
+    position: absolute;
+    width: 0;
+    height: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+}
+
+.filebox label {
+    display: inline-block;
+    padding: 10px 20px;
+    color: #999;
+    vertical-align: middle;
+    background-color: #fdfdfd;
+    cursor: pointer;
+    border: 1px solid #ebebeb;
+    border-radius: 5px;
+}
+
+/* named upload */
+.filebox .upload-name {
+    display: inline-block;
+    height: 35px;
+    font-size: 18px;
+    padding: 0 10px;
+    vertical-align: middle;
+    background-color: #f5f5f5;
+    border: 0px solid #ebebeb;
+    border-radius: 5px;
+
+}
+
+/*===============예진확인 필요한 것들===============*/
+/* 첨부파일 다운로드를 감싸는 박스 */
+.download-box {
+    border: 2px solid #ecebf5;
+    margin: 50px;
+    padding: 20px 30px 20px 30px;
+}
+
+.line2 { /* 한 줄 자르기 */
+    display: inline-block;
+    width: 400px;
+    height: 19px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/*=============== 동아리 소개에 사용된 css ===============*/
+* {
+    scroll-behavior: smooth;
+}
+
+/*///////////////////////////////////////////////////////////*/
+/*모달*/
+/*쓰인 곳: 모달 시작 div, 모달 배경 부분임. */
+.introduce-modal-bg {
+    position: fixed;;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    overflow: auto;;
+}
+
+/* 쓰인 곳: 모달 배경div 밑, (실질적 모달부분)*/
+.introduce-modal {
+    border-radius: 5px;
+    background-color: white;
+    width: 450px;
+    height: 270px;
+    opacity: 1;
+    display: block;
+    align-items: start;
+    justify-content: center;
+    /*display: none;*/
+
+}
+
+/* 쓰인 곳: 모달 날짜 내용 input 감싸는 div*/
+.introduce-li-flex {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+/* 쓰인 곳: 모달 날짜 input*/
+.introduce-border_none {
+    border: none;
+}
+
+/*=============== 마이인포에 사용된 css ===============*/
+.my_info_modal_content {
+    font-size: 13px;
+    font-style: italic;
+}
+
+/*여기서부터 회원관리 부분 체크박스부분 스타일임. */
+input[type="checkbox"]:checked + label:before {
+    border-color: #4611a7;
+    border-width: 2px;
+}
+
+input[type=checkbox] + label:before {
+    background-color: #ffffff;
+    border: 2px solid #b6b7b8;
+    border-radius: 0;
+    content: "";
+    display: inline-block;
+    height: 16px;
+    left: 1px;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    transition: all 0.1s linear 0s;
+    -moz-transition: all 0.1s linear 0s;
+    -webkit-transition: all 0.1s linear 0s;
+    -o-transition: all 0.1s linear 0s;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    width: 16px;
+}
+
+input[type=checkbox]:checked + label:after {
+    font-size: 10px;
+    left: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+}
+
+input[type=checkbox] + label:after {
+    color: #4611a7;
+    content: "\f00c";
+    font-family: FontAwesome;
+    font-size: 0px;
+    -webkit-font-smoothing: antialiased;
+    left: 6px;
+    position: absolute;
+    top: 7px;
+    transition: all linear 0.1s;
+    -moz-transition: all linear 0.1s;
+    -webkit-transition: all linear 0.1s;
+    -o-transition: all linear 0.1s;
+    width: 14px;
+    text-align: center;
+}
+
+/*여기서까지 회원관리 부분 체크박스부분 스타일임. */
+
+/*회원관리 select 부분 스타일 적용을 위함 */
+.my_info_mem_select {
+    display: inline-block;
+    width: 110px;
+}
+
+/*회원관리 적용 버튼 스타일 적용을 위함 */
+.my_info_mem_btn {
+    display: inline-block;
+    margin-left: 15px;
+
+}
+
+/* 내가쓴 게시글을 담는 패딩 */
+.myinfo-table-padding {
+    padding: 15px 20px 0px 20px;
+}
+
+/*=============== 회원관리에 사용된 css ===============*/
+/*완료 상태 스타일*/
+.staff-fin {
+    color: #408558;
+    text-align: center;
+    font-style: italic;
+}
+
+/*진행중 상태 스타일*/
+.staff-ing {
+    color: #cb444a;
+    text-align: center;
+    font-style: italic;
+}
+
+/*============================================================================*/
+
+
+/*여기서부터 회원관리 부분 체크박스부분 스타일임. */
+input[type="checkbox"]:checked + label:before {
+    border-color: #4611a7;
+    border-width: 2px;
+}
+
+input[type=checkbox] + label:before {
+    background-color: #ffffff;
+    border: 2px solid #b6b7b8;
+    border-radius: 0;
+    content: "";
+    display: inline-block;
+    height: 16px;
+    left: 1px;
+    line-height: 1;
+    position: absolute;
+    top: 50%;
+    transition: all 0.1s linear 0s;
+    -moz-transition: all 0.1s linear 0s;
+    -webkit-transition: all 0.1s linear 0s;
+    -o-transition: all 0.1s linear 0s;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    width: 16px;
+}
+
+input[type=checkbox]:checked + label:after {
+    font-size: 10px;
+    left: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+}
+
+input[type=checkbox] + label:after {
+    color: #4611a7;
+    content: "\f00c";
+    font-family: FontAwesome;
+    font-size: 0px;
+    -webkit-font-smoothing: antialiased;
+    left: 6px;
+    position: absolute;
+    top: 7px;
+    transition: all linear 0.1s;
+    -moz-transition: all linear 0.1s;
+    -webkit-transition: all linear 0.1s;
+    -o-transition: all linear 0.1s;
+    width: 14px;
+    text-align: center;
+}
+
+/*여기서까지 회원관리 부분 체크박스부분 스타일임. */
+
+/*회원관리 select 부분 스타일 적용을 위함 */
+.staff_mem_select {
+    display: inline-block;
+    width: 110px;
+}
+
+/*회원관리 적용 버튼 스타일 적용을 위함 */
+.staff_mem_btn {
+    display: inline-block;
+    margin-left: 15px;
+
+}
+
+/*회원관리 체크박스 가운데 정렬을 위함*/
+.staff_label_margin {
+    margin-top: 13px;
+}
+
+/*=============== lectureRoom에 사용된 css ===============*/
+/*수강생관리 상태(수강중)의 폰트 색과 두께 설정을 위함*/
+.lectRoom_state_ing_font {
+    color: #408558;
+    font-weight: bolder
+}
+
+/*수강생관리 상태(수강정지)의 폰트 색과 두께 설정을 위함*/
+.lectRoom_state_stop_font {
+    color: #cb444a;
+    font-weight: bolder;
+    font-style: italic;
+}
+
+/*수강생관리 상태(수강정지)의 폰트 색과 두께 설정을 위함*/
+.lectRoom_state_exit_font {
+    color: black;
+    font-weight: normal;
+    font-style: italic;
+    text-decoration:line-through;
+}
+
+/*출결 관리 주차에 대한 폰트 설정을 위함*/
+.lectRoom_week {
+    /*display: inline-block;*/
+    vertical-align: middle !important;
+    text-align: center;
+    border-right: 1px solid #dee2e6
+}
+
+.lectRoom_padding_6_0 {
+    padding: 6px 0;
+}
+
+.mt-7 {
+    margin-top: 7px;
+}
+
+
+/*테이블 헤드에 있는 필터 css 적용을 위한 것.*/
+.lectRoom_select .dropdown-toggle {
+    border: none !important;
+    background-color: #fff !important;
+    height: 40px;
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+}
+
+/*테이블 헤드에 있는 필터 css 적용을 위한 것.*/
+.lectRoom_select:focus .dropdown-togglefocus:focus {
+    border: none !important;
+    background-color: #fff !important;
+    height: 40px;
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+}
+
+/*테이블 헤드에 있는 필터 css 적용을 위한 것.*/
+.lectRoom_select::before .dropdown-toggle::before {
+    border: none !important;
+    background-color: #fff !important;
+    height: 40px;
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+}
+
+/*테이블 헤드에 있는 필터 css 적용을 위한 것.*/
+.lectRoom_select::after .dropdown-toggle::after {
+    border: none !important;
+    background-color: #fff !important;
+    height: 40px;
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+
+}
+
+/*테이블 헤드에 있는 필터 css 적용을 위한 것.*/
+.lectRoom_select:hover .dropdown-toggle:hover {
+    border: none !important;
+    background-color: #fff !important;
+    height: 40px;
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+}
+
+/*테이블 헤드에 있는 필터 css 적용을 위한 것.*/
+.lectRoom_select::selection .dropdown-toggle::selection {
+    border: none !important;
+    background-color: #fff !important;
+    height: 40px;
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* introduce.html bigdata 소개부분의 아이콘 위에 마우스 올리면 커서 모양 바뀌게 하기 위한 것*/
+.introduce-pointer {
+    cursor: pointer;
+}
+
+/* introduce.html bigdata 소개부분의 설명부분 가리기 위한 것*/
+.introduce-tab-hidden {
+    margin-top: 0 !important;
+    /*visibility: hidden;*/
+    display: none;
+    width: 1px;
+!important;
+    height: 1px;
+    opacity: 0;
+}
+
+/* introduce.html bigdata 소개부분의 설명부분 나타나게 하기 위한 것*/
+.introduce-tab-appear {
+    animation: fade-in 1s;
+    animation-fill-mode: forwards;
+    margin-top: 0 !important;
+    /*visibility: visible;*/
+    display: block;
+}
+
+/* introduce.html bigdata 소개부분의 설명부분 사라지게 하기 위한 것*/
+.introduce-tab-disappear {
+    animation: fade-out 0.3s;
+    animation-fill-mode: forwards;
+    margin-top: 0 !important;
+    /*width: 1px;*/
+    /*height: 1px;*/
+}
+
+/* introduce-tab-appear 부분 fade-in 설정*/
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* introduce-tab-disappear 부분 fade-out 설정*/
+@keyframes fade-out {
+    from {
+        opacity: 1;
+
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.introduce-hover {
+    background-color: rgba(0, 0, 0, 0.08) !important;
+    border-radius: 500px;
+}
+
+.introduce-hover:hover {
+    background-color: rgba(0, 0, 0, 0.25) !important;
+    border-radius: 500px;
+}
+
+.introduce-v4:hover {
+    font-size: 60pt !important;
+    color: white !important;
+}
+
+/* introduce section 설정*/
+.introduce {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    font-size: 30pt;
+}
+
+/* introduce scroll 안보이게 설정 */
+.introduce-scroll {
+    overflow: auto !important;
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+.introduce-scroll::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
+
+/* introduce 진로 직업 css*/
+.introduce-career {
+    font-size: 50pt;
+    line-height: 30px
+}
+
+/* introduce 연혁 그래프 css 시작*/
+.introduce-history {
+    max-width: 70%;
+    border-left: 4px solid #7133e2;
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+    background: none;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 50px auto;
+    letter-spacing: 0.5px;
+    position: relative;
+    line-height: 1.4em;
+    font-size: 1.03em;
+    padding: 50px;
+    list-style: none;
+    text-align: left;
+    font-weight: 100;
+
+}
+
+
+.introduce-history .introduce-event {
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.introduce-history .introduce-event:last-of-type {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border: none;
+}
+
+.introduce-history .introduce-event:before,
+.introduce-history .introduce-event:after {
+    position: absolute;
+    display: block;
+    top: 0;
+}
+
+.introduce-history .introduce-event:before {
+    left: -220px;
+    top: -10px;
+    color: rgba(255, 255, 255, 0.7);
+    content: attr(data-date);
+    text-align: right;
+    font-weight: 400;
+    font-size: 25px;
+    min-width: 120px;
+    font-family: 'Saira', sans-serif;
+}
+
+.introduce-history .introduce-event:after {
+    box-shadow: 0 0 0 4px #7133e2;
+    left: -57.85px;
+    background: #313534;
+    border-radius: 50%;
+    height: 11px;
+    width: 11px;
+    content: "";
+    top: 5px;
+}
+/* introduce 연혁 그래프 css 끝*/
+
+/* introduce 연혁 추가하기 css */
+.introduce-history-add {
+    font-size: 20px;
+    text-decoration: underline;
+    text-underline-position:under;
+}
+
+.history-change {
+    display: inline-block;
+    color: white;
+    border: white 1px solid;
+    height: 25px;
+}
+
+
+/* 명예의 전당 자기소개 박스 꼬리 하얗게 설정하기 위함*/
+.listing-nav li a.active, .center .testimonial-2.testimonial-bg .testimonial-text:after {
+    border-top-color: white;
+!important;
+}
+
+.honor-card {
+    height: 300px;
+    min-height: 250px;
+    background-color: white !important;
+    color: #3a3a3a !important;
+    /*overflow: auto;*/
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.honor-card::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
+
+.alt-tran{
+    transform: translate3d(0px, 52px, -9px) !important;
+}

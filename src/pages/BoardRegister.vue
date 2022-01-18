@@ -1,0 +1,123 @@
+<template>
+  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/posting_list.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/templete.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/ibas_contents.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/plugins.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/posting_detail.css">
+
+  <div class="page-wraper">
+    <div class="page-content bg-white">
+      <!----------============= 상단 제목 시작 ================----------->
+
+      <HeaderTitle></HeaderTitle>
+
+      <!--===============================================입력란=========================================================-->
+
+
+      <div class="content-block">
+        <div class="section-full content-inner bg-white">
+          <div class="container">
+
+            <!--=====================-->
+            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+              <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+                <path
+                    d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+              </symbol>
+            </svg>
+
+            <div class="alert alert-primary d-flex align-items-center" role="alert"
+                 style="background-color: white; border-color: #4015a0">
+              <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img"
+                   aria-label="Warning:" style="color: #4015a0">
+                <use xlink:href="#exclamation-triangle-fill"/>
+              </svg>
+              <div class="ml-3" style="font-size: small; font-weight: bold; color: #4015a0">
+                웹사이트 운영 정책을 위반하는 게시글은 예고 없이 삭제 될 수 있습니다.
+              </div>
+            </div>
+            <!--=====================-->
+            <div class="content-box editor">
+              <!--글쓰기-->
+              <div class="content-header">
+                <h3 class="title">
+                  게시글 작성&nbsp;&nbsp;&nbsp;&nbsp;
+                  <!--                     {% if logined_user.user_role.role_no <= 4 and board_type_no != 2 and board_type_no != 9 %}-->
+                  <div class="d-inline-block width-120">
+                    <select name="board_fixdate">
+                      <option value="0"> 상단 고정 여부</option>
+                      <option value="2weeks">2주 고정</option>
+                      <option value="permanent">영구 고정</option>
+                    </select>
+                  </div>
+                  <!--                    {% endif %}-->
+                </h3>
+              </div>
+
+              <div class="content-body">
+
+                <!--제목 입력란-->
+                <div class="form-group">
+                  <input type="text" name="board_title" placeholder="제목을 입력하세요." maxlength="100"
+                         style="font-size: 25px; height: 70px;" class="form-control" required="" id="id_board_title">
+                  <!--                    {% render_field board_form.board_title class="form-control" style="font-size: 25px; height: 70px;" %}-->
+                  <br/>
+
+                  <drag-n-drop></drag-n-drop>
+                  <!--이미지, 파일 업로드란-->
+                  <textarea class="w-full border mt-11" placeholder="내용을 입력하세요"></textarea>
+                </div>
+                <!-- 이미 존재하고 있던 이미지: 삭제 가능 (수정모드)-->
+                <!--                  {% if board_no is not None %}-->
+                <!--                  {% include "file_update_box.html" %}-->
+                <!--                  {% endif %}-->
+                <!--내용입력란-->
+                <!--                  <div class="form-group">-->
+
+                <!--                    {% render_field board_form.board_cont %}-->
+                <!--                  </div>-->
+
+
+                <!--test-->
+
+              </div>
+            </div>
+
+            <!--=====================-->
+            <!--등록하기 버튼, 누르면 게시글 상세보기로-->
+            <!--최초 글작성 시 나오는 버튼-->
+            <div style="display: grid; justify-items: center">
+              <input class="site-button btn-block button-md mt-10 bg: bg-bgColor" type="submit" style="width: 30%"
+                     value="등록하기"
+                     onclick="">
+            </div>
+            <div style="display: grid; justify-items: center">
+              <input class="site-button btn-block button-md mt-10 bg: bg-info" type="submit" style="width: 30%"
+                     value="수정하기"
+                     onclick="">
+            </div>
+
+            <!-- Pagination END -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</template>
+
+<script>
+import HeaderTitle from "../components/HeaderTitle";
+import DragNDrop from "@/components/DragNDrop";
+
+
+export default {
+  name: "BoardRegister.vue",
+  components: {HeaderTitle, DragNDrop}
+}
+</script>
+
+<style scoped>
+
+</style>

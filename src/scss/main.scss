@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "../assets/css/skin/skin-1";
+
+@import "../../node_modules/bootstrap/scss/bootstrap"; // 버전 5, 홈페이지에 현재 사용되는 건 버전 4인듯
+
+@import "../assets/css/style";
+
+@import "https://use.fontawesome.com/releases/v5.15.4/css/all.css";
+
+//@import "https://cdn.inhabas.com/css/posting_list.css";
+//
+//@import "https://cdn.inhabas.com/css/templete.min.css";
+//
+//@import "https://cdn.inhabas.com/css/ibas_contents.css";
+//
+//@import "https://cdn.inhabas.com/css/plugins.css";
+//@import "../assets/css/ibas_contents.css";

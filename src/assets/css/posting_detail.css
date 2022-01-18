@@ -1,0 +1,59 @@
+/* 동아리 활동게시판 상세의 이미지 사이즈  */
+.act-detail-img-size {
+    height: 190px;
+    width: 190px;
+}
+
+/* 첨부파일 다운로드를 감싸는 박스 */
+.download-box {
+    border: 2px solid #ecebf5;
+    margin: 50px;
+    padding: 20px 30px 20px 30px;
+}
+
+.line2 { /* 한 줄 자르기 */
+    display: inline-block;
+    width: 400px;
+    height: 19px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/*회원 제명 상세에서 제명 명단의 학과 학번 부분*/
+.staff-mem-major {
+    list-style: none;
+    margin-left: 22px;
+    font-size: 9pt;
+}
+
+/*회의 바로 가기 박스*/
+.lectRoom_meeting {
+    filter: grayscale(100);
+    width: 500px;
+}
+
+/*회의 바로 가기 박스*/
+.lectRoom_meeting:hover {
+    filter: grayscale(0);
+    /*border: 2px #4611a7 !important;*/
+    border-width: 2px !important;
+    border-color: #4611a7 !important;
+    transform: scale(1.01);
+}
+
+/*회의 바로 가기 박스 중 다른 앱 사용 부분의 사진*/
+.lectRoom_center {
+    display: flex;
+    justify-content: center;
+    align-items: center
+}
+
+/* 문자가 지정한 width를 넘어가면 저절로 줄 바꿈을 해줌. */
+.word-break-all {
+    word-break: break-all;
+}
+
+.post-context{
+    min-height: 150px;
+}

@@ -1,0 +1,72 @@
+/*================================== 카드형식 게시글 리스트 관련 css ==================================*/
+/* 모집중 */
+.recruiting {
+    border: solid 1px green;
+    border-radius: 5px;
+    padding: 2px;
+    color: green;
+}
+
+.recruiting-wait {
+    border: solid 1px grey;
+    border-radius: 5px;
+    padding: 2px;
+    color: grey;
+}
+
+.recruiting-ing {
+    border: solid 1px #17539a;
+    border-radius: 5px;
+    padding: 2px;
+    color: #17539a;
+}
+
+/* 모집 마감 */
+.recruiting-end {
+    border: solid 1px red;
+    border-radius: 5px;
+    padding: 2px;
+    color: red;
+}
+
+/* 간단소개란이 3줄을 넘어갈 경우, 텍스트 안보이게 처리 */
+.text-cut {
+    display: inline-block;
+    overflow: hidden;
+    line-height: 1.2;
+    height: 3.6em;
+}
+
+/* 썸네일 이미지 사이지 */
+.lect-thumbnail {
+    width: 100%;
+    height: 220px;
+}
+
+/* 상단 검색창 크기고정 */
+.lect-search-bar {
+    width: 500px;
+    display: flex;
+}
+
+
+/*================================== 앨범형식 게시글 리스트 관련 css ==================================*/
+
+/* 한 줄이 넘어가는 제목에 대해서는 ...으로 표시 */
+.line1 {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: white;
+}
+
+/* 탬플릿에 설정된 기본form 디자인은 제로로 만들어줌 */
+form {
+
+}
+
+.board-item:hover /* 게시글 위에 마우스 커서를 올리면 투명도를 조정하게 함 */
+{
+    opacity: 0.8;
+}

@@ -1,0 +1,575 @@
+/*네이버 로고를 위해, 구글에서 불러오는 폰트*/
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap");
+
+/*============== 회원가입, 로그인, 웰컴에 사용되는 로고 ==============*/
+.logo-container-flex{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/*============== 회원가입 부분에 사용된 css ==============*/
+
+/* .form-select를 만든 이유는 학년 선택 input과 학번 input을 나란히 하는데 용이하게 하기 위함임.
+사용된 곳 : 단답작성란에서 select 상위 div의 class부분 */
+.form-float_left {
+    float: left;
+    margin-right: 5px;
+    padding: 0%;
+}
+
+/*학년 클릭했을 때 출력되는 리스트 컨테이너 조정*/
+.bootstrap-select div.dropdown-menu {
+    padding: 0 0;
+    border-top: 1px #dbdbdb solid;
+    border-radius: 20px;
+    border-bottom: 1px #dbdbdb solid;
+}
+
+/*학년 클릭했을 때 상단의 여백 없애기*/
+.bootstrap-select.show.btn-group .dropdown-menu.inner {
+    padding: 0;
+}
+
+
+/* .form-select를 만든 이유는 학년 선택 input과 학번 input을 나란히 하는데 용이하게 하기 위함임.
+사용된 곳 : 단답작성란에서 학번input 상위 div의 class부분 */
+.form-float_right {
+    font-size: 15px;
+    float: right;
+}
+
+/* input 폼이 한줄에 두개 일 경우 컨테이너 학년, 학번에 적용됨,*/
+.form-container-flex {
+    display: flex;
+    column-gap: 10px;
+}
+
+
+.form-item-flex-std-grade {
+    width: 100px; /* 학년에 적용되는 width값 작은 네모의 폭을 유지하기 위해 값을 고정*/
+}
+
+.form-item-flex-std-no {
+    /* 오른쪽 끝까지 채워주기 위해 flex 옵션 사용 */
+    flex: 1;
+}
+
+.bootstrap-select .dropdown-toggle {
+    /* select 버튼 높이 조절.*/
+    height: 45px;
+    border-radius: 20px;
+}
+
+.form-item-flex-major-icon {
+    width: 50px; /* 아이콘에 적용되는 width값 작은 네모의 폭을 유지하기 위해 값을 고정*/
+    height: 50px; /* 아이콘에 적용되는 width값 작은 네모의 폭을 유지하기 위해 값을 고정*/
+    padding-left: 10px; /* 아이콘 위치를 왼쪽으로 이동*/
+    padding-top: 5px; /* 아이콘 위치를 아래쪽으로 이동*/
+}
+
+/* .form-textarea_size는 form-control과 다를게 별로 없음.
+만든 이유는 form-control때문에 수정되지 않는 부분이 있고, 그 부분을 수정하기 용이하게 하기 위함임.
+사용된 곳 : 서술형 질문에서 textarea class부분 */
+.form-textarea_size {
+    border-color: #e1e6eb;
+    box-shadow: none;
+    width: 100%;
+    height: 150px;
+    font-size: 15px;
+    resize: none;
+    line-height: 20px;
+    padding: 9px 12px;
+    border-radius: 3px;
+}
+
+/* .form-textarea_size에 해당하는 부분을 클릭했을 때 */
+.form-textarea_size:focus {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-color: #e1e1e1;
+    outline: 0;
+}
+
+/* .form-textarea_instead는 form-control과 다를게 별로 없음.
+만든 이유는 form-control때문에 수정되지 않는 부분이 있고, 그 부분을 수정하기 용이하게 하기 위함임.
+사용된 곳 : 입부신청에서 email 받아오는 부분, 전공 input부분, */
+.form-control_instead {
+    border: 1px solid #e1e6eb;
+    box-shadow: none;
+    width: 100%;
+    height: 45px;
+    font-size: 15px;
+    line-height: 20px;
+    padding: 10px 12px;
+    border-radius: 20px;
+}
+
+/* .form-control_instead에 해당하는 부분을 클릭했을 때 */
+.form-control_instead:focus {
+    border-color: #e1e1e1;
+    outline: 0;
+}
+
+.form-position-center {
+    justify-items: center;
+    align-items: center;
+}
+
+.dlab-login .login-form {
+    margin: 0;
+    padding: 0;
+}
+
+.login-form .form-control,
+.add-listing-form .form-control,
+.add-listing-form .dropdown-toggle.btn-default {
+    border-radius: 20px;
+}
+
+/* 수평선에 글자 있게 하는 태그. */
+.hr-sect {
+    display: flex;
+    flex-basis: 100%;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.35);
+    font-size: 12px;
+    margin: 8px 0px;
+}
+
+.hr-sect::before,
+.hr-sect::after {
+    content: "";
+    flex-grow: 1;
+    background: rgba(0, 0, 0, 0.35);
+    height: 1px;
+    font-size: 0px;
+    line-height: 0px;
+    margin: 0px 16px;
+}
+
+/*로고를 넣을 컨테이너*/
+.join-logo-container {
+    height: 150px;
+    display: flex;
+    margin-bottom: 30px;
+    padding: 0;
+}
+
+.search-btn:hover {
+    opacity: 0.5;
+}
+
+
+/*임시 로고 사이즈 및 색(추후 색 삭제 예정) */
+.join-logo-size {
+    width: 50px;
+    height: 100px;
+}
+
+/*다음버튼 컨테이너*/
+.container-btn {
+    display: flex;
+    margin-top: 30px;
+}
+
+/* 컨테이너를 flex로 변경*/
+.container-flex {
+    display: flex;
+    height: 100vh;
+    flex-wrap: nowrap;
+}
+
+.join-frame {
+    bottom: 20px;
+    position: relative;
+    width: 350px;
+}
+
+/* flex 컨테이너 아이템 */
+.item_flex_lgn {
+    /* 무슨일이 있더라도 width를 고정시키기 */
+    width: 500px;
+    max-width: 500px;
+    min-width: 350px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.item_flex_lgn::-webkit-scrollbar {
+    display: none;
+}
+
+/*스크롤 안보이게 하기 위에거도 필요*/
+
+/* 전체 레이아웃 중 배경에 적용하는 클래스 */
+.item_flex_bg {
+    flex: 1;
+}
+
+/* 전공 검색 팝업 */
+.major-search-popup {
+    position: absolute;
+    display: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 400px;
+    background-color: white;
+    z-index: 1000;
+}
+
+.listBox {
+    box-shadow: 4px 3px 19px -15px #808080 inset;
+    height: 200px;
+    overflow: auto;
+}
+
+.listBox::-webkit-scrollbar {
+    width: 15px;
+
+}
+
+.listBox::-webkit-scrollbar-thumb {
+    background-color: #5c5c5c;
+    border-radius: 15px;
+}
+
+.listBox::-webkit-scrollbar-track {
+    background-color: #dcdcdc;
+    border-radius: 15px;
+
+}
+
+/* 회원가입 폼 가운데로 오기 위해 */
+.form-center-container {
+    align-items: center;
+    justify-items: center;
+    left: -15px;
+}
+
+.form-center {
+    align-items: center;
+    justify-items: center;
+    left: -15px;
+}
+
+.btn-exit:hover {
+    opacity: 0.7;
+}
+
+/* 전공 중복찾기를 했을 때 팝업의 주변을 흐릿하게 만드는 역할을 하는 것*/
+.gray_shadow {
+    background-color: black;
+    width: 100%;
+    height: 100vh;
+    display: none;
+    position: absolute;
+    z-index: 500;
+    top: 0;
+    left: 0;
+    opacity: 0.5;
+}
+
+/* 비밀번호가 틀릴 경우 나오는 경고메시지 스타일 */
+.error-text{
+    position: relative;
+    bottom: 14px;
+    left: 5px;
+    display: none;
+    color: red;
+    font-size: 5pt;
+    margin-bottom: 0;
+}
+
+
+/* 쓰인 곳 : 회원가입 양식 왼쪽 흰색 부분 스크롤바 */
+.item_flex_join::-webkit-scrollbar {
+  display: none;
+} /*스크롤 안보이게 하기 위에거도 필요*/
+
+/* 쓰인 곳 : 오른쪽 작은 배경사진 */
+.item_flex_bg_small {
+  flex: 1;
+  /* width: 500px;
+  max-width: 500px;
+  min-width: 500px;
+  height: 100vh; */
+}
+
+/* 원래 템플릿에 이상한 공간 있었는데 그거 없애 주려구 이거 만듦.  */
+/* html에서는 쓰이지 않으나 적용되어 있음. 개발자도구봤을 때 보이는데, 디폴트로 적용되는 css부분인 듯.  */
+.dlab-login:before {
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+/* join-form2는 회원가입 양식 지켜주기 위해서 만들어 진 것임. flex로 바꿔주는게 주요 역할.  */
+/* 쓰인 곳: 회원가입양식 시작 div */
+.join-form2 {
+  z-index: 99;
+  padding: 0;
+  position: relative;
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/*입부 신청 버튼 위치 조절하는 역할. */
+.submit-btn-center{
+    display: flex;
+    justify-content: space-between;
+    /*align-items: center;*/
+}
+/* 아이템 크기를 조절하기 위함임.  */
+/* 약관부분의 div  */
+.item-flex_1 {
+  flex: 1;
+
+}
+
+/*============== 로그인 부분에 사용된 css ==============*/
+
+
+
+/*네이버 로고를 대체하여 사용할 폰트*/
+.naver-logo {
+    font-family: "Archivo Black", sans-serif;
+}
+
+/*하얀색 박스 내부에서 로고 및 로그인 버튼을 가운데 정렬하기 위함*/
+.login-form2 {
+    z-index: 99;
+    padding: 0 45px 0 45px;
+    position: relative;
+    max-width: 400px;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/*로그인 버튼쪽 구분선*/
+.hr-sect {
+    display: flex;
+    flex-basis: 100%;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.35);
+    font-size: 12px;
+    margin: 8px 0px;
+}
+
+.hr-sect::before,
+.hr-sect::after {
+    content: "";
+    flex-grow: 1;
+    background: rgba(0, 0, 0, 0.35);
+    height: 1px;
+    font-size: 0px;
+    line-height: 0px;
+    margin: 0px 16px;
+}
+
+/*로고를 넣을 컨테이너*/
+.login-logo-container {
+    height: 150px;
+    display: flex;
+    margin-bottom: 30px;
+}
+
+/*하단 카피라이트 글자 색상, 크기, 위치*/
+.copyright {
+    color: rgba(0, 0, 0, 0.35);
+    top: 120pt;
+    position: relative;
+    font-size: 9pt;
+    text-align: center;
+}
+
+/* 컨테이너를 flex로 변경*/
+.container-flex {
+    display: flex;
+    height: 100vh;
+    flex-wrap: nowrap;
+}
+
+/* flex 컨테이너 아이템 */
+
+.item_flex_bg {
+    flex: 1
+}
+
+.container-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+}
+
+/*============== 교수인지 학생인 지 선택하는 페이지에 사용되는 css ==============*/
+/*페이지 전체 보기(마진과 패딩 없이 꽉 차게)*/
+/* 사용된 곳 : 배경사이즈 바로 밑 div*/
+.choose-size {
+    margin-top: 0;
+    padding-bottom: 0;
+}
+
+/* 페이지의 내용을 담을 테이블 */
+/* 사용된 곳 : 로고 및 제목과 본문을 담는 div*/
+.choose-flex {
+    position: relative;
+    display: flex;
+    height: 100%;
+    width: 100%;
+    margin: 0 auto;
+    justify-content: center;
+    align-content: center;
+}
+
+
+/* 페이지 내용을 담는 셀 */
+/* 사용된 곳 : content담는 최상위 div*/
+.choose-content {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+/* 제일 큰 카드 커스텀 하기 위한 용도임. */
+/* 사용된 곳 : card 중 제일 상위 div */
+.choose-div {
+    background-color: white;
+    width: 700px;
+    height: 550px;
+    padding: 25px;
+    margin: 0 auto;
+    align-items: center;
+    justify-items: center;
+}
+
+/*choose-div width 안먹음에 대비함. 기존 템플릿이 가지고 있던 css 커스텀. */
+.dlab-login .content-info {
+    width: 700px;
+}
+
+/* 상위 카드를 grid로 만들어 주기 위함임.  */
+/* 사용된 곳 : 아이콘 div와 하위 카드 시작부분 사이*/
+/*.card-for-grid {*/
+/*    display: grid;*/
+/*    grid-template-columns: repeat(2,1fr);*/
+/*    row-gap: 30px;*/
+/*    column-gap: 20px;*/
+/*    margin-bottom: 50px;*/
+
+/*}*/
+
+/* 기존 템플릿이 가지고 있던 css 커스텀함. */
+/* 사용된 곳 : 하위 카드 2개 */
+.card-body {
+    text-align: center;
+     display: flex;
+    grid-template-columns: repeat(2,1fr);
+    row-gap: 30px;
+    column-gap: 30px;
+    flex-direction: column;
+    width: 428px;
+    height: 432px;
+    align-items: center;
+    justify-items: center;
+    padding: 0;
+    background-color: white;
+    border-radius: 3px;
+}
+
+/*card 부분 / 보라색 div 안에 있는 큰 card임. */
+.big-card{
+    width: 450px;
+    height: 452px;
+    padding: 10px;
+    background-color: #8487b4;
+    display: flex;
+    align-items: baseline;
+    opacity: 0.7;
+}
+
+/* 하위 카드 부분에 마우스 올렸을 때*/
+.big-card:hover{
+    opacity: 1.0;
+}
+/*회원 유형을 선택해주세요 부분의 조정 위함. */
+.type-title-text{
+    margin-bottom: 40px;
+    color: white;
+}
+/*기존에 있던 card css를 커스텀함. */
+.card {
+    justify-content: center;
+    align-content: center;
+    width: 428px;
+    height: 432px;
+
+}
+/*페이지 컨텐츠를 전체적으로 위로 올리기 위함. */
+.dlab-bnr-inr.dlab-bnr-inr-md .dlab-home {
+    height: 100vh;
+    padding-top: 55px;
+    padding-bottom: 120px;
+}
+
+
+
+/*============== 회원가입 완료 페이지에 사용되는 css ==============*/
+
+/*페이지 전체 보기(마진과 패딩 없이 꽉 차게)*/
+.page-size {
+    margin-top: 0;
+    padding-bottom: 0;
+}
+
+/* welcome 페이지의 내용을 담을 테이블 */
+.welcome-caption {
+    position: relative;
+    display: table;
+    height: 100%;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* welcome 페이지 내용을 담는 셀 */
+.caption-content {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+
+
+/*메인 홈페이지로 돌아가기 버튼 관련*/
+/*메인 페이지 돌아가기 투명 버튼*/
+.btn.btn-border-w {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    color: #fff;
+}
+/*버튼에 마우스 올릴 때 하얀색으로 채워지는 효과*/
+.btn.btn-border-w:hover,
+.btn.btn-border-w:focus {
+    background: #fff;
+    border-color: transparent;
+    color: #111;
+}
+/*버튼모양 둥글게*/
+.btn.btn-round {
+    border-radius: 2px;
+}
+
+/* 회원가입 약관 hover시 글자 없어지는 현상 해결 위한 효과*/
+.quest-text:hover {
+    color: #4611a7 !important;
+}

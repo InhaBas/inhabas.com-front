@@ -1,0 +1,48 @@
+/*================================== 이미 첨부된 파일 관련 css ==================================*/
+/* 이미 첨부되어 있는 img 태그, 사진이 아닐 경우 div에 적용되는 스타일*/
+
+/* 취소버튼 스타일*/
+.btn-cancel
+{
+
+    position: relative;
+    top: 22px;
+    left: 79px;
+    width: 20px;
+    height: 20px;
+    border-radius: 15px;
+    font-size: 10px;
+    line-height: 1.42;
+    padding: 2px 0;
+    text-align: center;
+    z-index: 3;
+    background: #ff2020;
+    color: #fff;
+}
+/* 이미 존재하는 파일 리스트를 담은 컨테이너 */
+.image-cont
+{
+    border: #b6b6b6 dashed 2px;
+    display: flex;
+    column-gap: 15px;
+    padding-bottom: 20px;
+    padding-left: 10px;
+    overflow: hidden;
+
+}
+
+.img-bd{
+    border-radius: 2px;
+    border: 2px solid #e2e2e2;
+}
+
+.file-icon-p{
+    padding-left: 28px;
+    padding-top: 24px;
+}
+
+.file-detail{
+    font-size: 12px;
+    color: #000
+}
+

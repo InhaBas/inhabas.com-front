@@ -1,0 +1,62 @@
+
+ol.comment-list li.comment .comment-body {
+    margin-left: 0;
+    border: 1px solid #e9e9e9;
+    margin-bottom: 30px;
+}
+
+ol.comment-list li.comment .reply a {
+    position: static;
+}
+
+.reply-btn-div {
+    margin-top: 15px;
+    font-weight: 400;
+    font-size: 14px;
+}
+
+/*댓글 관련 아웃라인 none*/
+* {
+    outline: none;
+}
+
+.comment-btn {
+    padding: 0;
+    color: #4611a7;
+    border-color: transparent;
+    background-color: white;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.comment-btn:hover {
+    color: #0e91e3;
+}
+
+.comment-profile-size {
+    width: 35px;
+    height: 35px;
+    border: 2px solid #606269;
+    border-radius: 17.5px;
+    margin-right: 10px;
+
+}
+
+input:disabled {
+    padding: 0px;
+    cursor: auto;
+    font-size: 14px;
+    width: 706px;
+    display: block;
+    color: #606269;
+    cursor: alias;
+    background-color: transparent;
+    border-width: 0px;
+}
+
+.reply-line {
+    height: 1px;
+    position: relative;
+    margin: 20px 0;
+}
+

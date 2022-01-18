@@ -1,0 +1,28 @@
+/*===============동아리 소개 네비게이션바에 쓰인 css===============*/
+/* 쓰인 곳: 동아리 소개 네비게이션 바에 적용되는 부분. */
+.introduce-nav-bar {
+    display: inline-block;
+    width: 160px;
+    text-align: center;
+    background-color: white;
+    border: #dedede solid thin;
+    position: fixed;
+    top: 100px;
+    left: 12px;
+}
+
+/* 쓰인 곳 : 네비게이션 바 a 태그 부분*/
+.introduce-nav-txt {
+    text-decoration: none;
+    color: black;
+    font-size: 15px;
+}
+
+/* 쓰인 곳: introduce.html에서 제일 밑 js 부분, */
+.introduce-change-nav {
+    font-size: 16px;
+    font-weight: bolder;
+    color: #091069;
+    transition: 0.2s;
+}
+

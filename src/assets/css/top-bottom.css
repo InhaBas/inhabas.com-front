@@ -1,0 +1,63 @@
+/*================================== bottom bar 관련 css ==================================*/
+.site-footer{
+    height: 200px;
+}
+
+/* content 담는 footer-top 부분의 grid를 위해 만들어짐. */
+.cont-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    min-width: 100%;
+    justify-items: center;
+}
+
+
+/* 사이즈와 위치 조절을 위해 만들어짐. */
+.ibas-footer-top {
+    height: 250px;
+    padding: 30px 0;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* 로고 위치 조정을 위해 만들어짐. */
+/* 쓰인 곳 : ibas , 인하대 로고부분. */
+.logo-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.center{
+    align-content: center;
+}
+/* contact us 테이블 조정을 위해 만들어짐. */
+.padding_0 {
+    padding: 0;
+}
+/* contact us 테이블 셀 조정을 위해 만들어짐. 아이콘 부분. */
+.td-size_small {
+    width: 15px;
+    height: 35px;
+    padding: 1px 0 0 0;
+}
+/* contact us 테이블 셀 조정을 위해 만들어짐. 텍스트 부분. */
+.td-size_big {
+    width: 250px;
+    height: 35px;
+    padding: 1px 0 0 10px;
+}
+/* copyright 부분의 flex를 위해 만들어짐. */
+.footer-bottom {
+    display: flex;
+    justify-content: center;
+    padding: 15px 0;
+    background-color: #070a11;
+}
+
+/* copyright 부분의 폰트사이즈를 위해 만들어짐. */
+.design-with {
+    margin: 0;
+    font-size: 12px;
+}
+
