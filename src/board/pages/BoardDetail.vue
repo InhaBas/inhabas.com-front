@@ -51,7 +51,7 @@
                     <!--공모전 주제-->
                     <div class="dlab-divider bg-gray-dark" style="margin-bottom: 15px"></div>
                     <h5 style="text-align: center">공모전 주제</h5>
-                    <div class="dlab-divider bg-gray-dark" style="margin-top: 0px"></div>
+                    <div class="dlab-divider bg-gray-dark" style="margin-top: 0"></div>
                     <p class="word-break-all font-weight-300"
                        style="text-align: center">빅데이터</p>
                     <div class="dlab-divider bg-gray-dark"></div>
@@ -185,7 +185,7 @@
 </template>
 
 <script>
-import HeaderTitle from "../components/HeaderTitle";
+import HeaderTitle from "../../common/TheHeaderTitle";
 
 export default {
   name: "Board_Detail",

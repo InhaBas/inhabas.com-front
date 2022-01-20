@@ -148,8 +148,8 @@
 </template>
 
 <script>
-import HeaderTitle from "../components/HeaderTitle";
-import DragNDrop from "@/components/DragNDrop";
+import HeaderTitle from "../../common/TheHeaderTitle";
+import DragNDrop from "@/common/TheDragNDrop";
 
 
 export default {

@@ -40,10 +40,10 @@
             <div class="content-box editor">
               <!--글쓰기-->
               <div class="content-header">
-                <h3 class="title">
-                  게시글 작성&nbsp;&nbsp;&nbsp;&nbsp;
+                <h3 class="title d-inline-block font-bold">
+                  게시글 작성&nbsp;&nbsp;&nbsp;&nbsp;</h3>
                   <!--                     {% if logined_user.user_role.role_no <= 4 and board_type_no != 2 and board_type_no != 9 %}-->
-                  <div class="d-inline-block width-120">
+                  <div class="d-inline-block width-120 ">
                     <select name="board_fixdate">
                       <option value="0"> 상단 고정 여부</option>
                       <option value="2weeks">2주 고정</option>
@@ -51,7 +51,7 @@
                     </select>
                   </div>
                   <!--                    {% endif %}-->
-                </h3>
+
               </div>
 
               <div class="content-body">
@@ -108,8 +108,8 @@
 </template>
 
 <script>
-import HeaderTitle from "../components/HeaderTitle";
-import DragNDrop from "@/components/DragNDrop";
+import HeaderTitle from "../../common/TheHeaderTitle";
+import DragNDrop from "@/common/TheDragNDrop";
 
 
 export default {

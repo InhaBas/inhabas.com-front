@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../pages/Home'
 import About from '../pages/About'
-import Board from '../pages/Board'
-import ContestBoard from '../pages/ContestBoard'
-import DragNDrop from "@/components/DragNDrop";
-import Board_Detail from "../pages/BoardDetail";
-import BoardRegister from "@/pages/BoardRegister";
-import ContestRegister from "@/pages/ContestRegister";
+import Board from '../board/pages/Board'
+import ContestBoard from '../board/pages/ContestBoard'
+import DragNDrop from "@/common/TheDragNDrop";
+import Board_Detail from "../board/pages/BoardDetail";
+import BoardRegister from "@/board/pages/BoardRegister";
+import ContestRegister from "@/board/pages/ContestRegister";
 
 
 

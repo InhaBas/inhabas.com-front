@@ -109,10 +109,10 @@
 </template>
 
 <script>
-import BoardSearch from "../components/board/BoardSearch"
-import BoardNavi from "../components/board/BoardNavi"
-import Paginations from "../components/Paginations";
-import HeaderTitle from "../components/HeaderTitle";
+import BoardSearch from "../components/BoardSearch"
+import BoardNavi from "../components/BoardNavi"
+import Paginations from "../../common/ThePaginations";
+import HeaderTitle from "../../common/TheHeaderTitle";
 
 export default {
   name: "ContestBoard.vue",
