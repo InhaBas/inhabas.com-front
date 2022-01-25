@@ -530,7 +530,6 @@ input[type=checkbox] + label:after {
     /*visibility: hidden;*/
     display: none;
     width: 1px;
-!important;
     height: 1px;
     opacity: 0;
 }
@@ -694,8 +693,7 @@ input[type=checkbox] + label:after {
 
 /* 명예의 전당 자기소개 박스 꼬리 하얗게 설정하기 위함*/
 .listing-nav li a.active, .center .testimonial-2.testimonial-bg .testimonial-text:after {
-    border-top-color: white;
-!important;
+    border-top-color: white !important;
 }
 
 .honor-card {

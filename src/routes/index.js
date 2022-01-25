@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import BoardRouter from './BoardRouter' // board와 관련된 router 불러옴
-import Home from '../pages/Home' // default
+import Main from '../layouts/Main' // default
 
 export default createRouter({
     history: createWebHistory(),
     routes: [
         {
             path: "/",
-            component: Home
+            component: Main
         },
 
 

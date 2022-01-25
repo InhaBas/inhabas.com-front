@@ -1,14 +1,41 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="kr">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="keywords" content=""/>
+      <meta name="author" content=""/>
+      <meta name="robots" content=""/>
+      <meta name="description" content="인하대학교 빅데이터 학회 IBAS 공식 홈페이지입니다."/>
+      <meta property="og:title" content="IBAS"/>
+      <meta property="og:description" content="인하대학교 빅데이터 학회 IBAS 공식 홈페이지입니다."/>
+      <meta property="og:image" content="{% static 'images/logo_puple.png' %}"/>
+      <meta name="format-detection" content="telephone=no">
+
+      <!-- FAVICONS ICON -->
+      <link rel="icon" href="https://cdn.inhabas.com/images/IBAS_favicon.png" type="image/x-icon"/>
+      <link rel="shortcut icon" type="image/x-icon" href="https://cdn.inhabas.com/images/IBAS_favicon.png"/>
+
+      <!-- PAGE TITLE HERE -->
+      <title>IBAS</title>
+
+      <!-- MOBILE SPECIFIC -->
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+      <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/posting_list.css">
+      <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/templete.min.css">
+      <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/ibas_contents.css">
+      <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/posting_detail.css">
+
   </head>
   <body>
-    <noscript>
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/skin/skin-1.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/plugins.css">
+
+
+  <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div id="app"></div>

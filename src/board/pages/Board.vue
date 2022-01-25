@@ -1,8 +1,5 @@
 <template>
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/posting_list.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/templete.min.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/ibas_contents.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/plugins.css">
+
   <div class="page-wraper">
     <!-- 상단 제목부분 -->
     <div class="page-content bg-white">
