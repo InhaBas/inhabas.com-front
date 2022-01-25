@@ -1,8 +1,4 @@
 <template>
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/posting_list.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/templete.min.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/ibas_contents.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/plugins.css">
   <div class="page-wraper">
     <!-- 상단 제목부분 -->
     <div class="page-content bg-white">
@@ -31,11 +27,11 @@
                       <!-- 게시글 대표 이미지 div -->
                       <div class="listing-media">
                         <!-- 이미지를 클릭하면, 해당 게시글로 이동함 -->
-                        <a href="{% url 'contest_detail' contest.contest_no %}">
+                        <router-link to="/contestBoard/detail">
 
                           <img :src= "contest.img"
                                alt="이미지를 표시할 수 없습니다." style=" height:242px;"/>
-                        </a>
+                        </router-link>
                       </div>
                       <!-- 공모전 내용 간단소개 div -->
                       <div class="listing-info" style="height: 110px">

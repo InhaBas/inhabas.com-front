@@ -1,10 +1,4 @@
 <template>
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/posting_list.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/templete.min.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/ibas_contents.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/plugins.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/posting_detail.css">
-
   <div class="page-wraper">
     <div class="page-content bg-white">
       <!----------============= 상단 제목 시작 ================----------->

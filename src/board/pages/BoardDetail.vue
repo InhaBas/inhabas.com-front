@@ -1,9 +1,4 @@
 <template>
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/posting_list.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/templete.min.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/ibas_contents.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/plugins.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.inhabas.com/css/posting_detail.css">
   <div class="page-wraper">
     <div class="page-content bg-white">
       <div class="page-content bg-white ">
@@ -34,36 +29,9 @@
                       게시글제목
                     </h2>
                   </div>
-                  <!-- 공모전 주체기관 및 공모전 기간을 담는 div -->
-                  <div class="dlab-post-meta m-b20">
-                    <ul class="d-flex align-items-center">
-                      <!-- 공모전 주체기관 -->
-                      <li class="post-author"><i class="ti ti-home"></i><a
-                          href="javascript:void(0);">인하대학교</a></li>
-                      <!-- 공모전 기간 -->
-                      <li class="post-comment"><i class="ti ti-calendar"></i> <a
-                          href="javascript:void(0);">2021-07-14 ~ 2021-08-17</a></li>
-                    </ul>
-                  </div>
+
                   <!--============================== 게시글 본문 시작 ==============================-->
                   <div class="post-context word-break-all dlab-post-text">
-
-                    <!--공모전 주제-->
-                    <div class="dlab-divider bg-gray-dark" style="margin-bottom: 15px"></div>
-                    <h5 style="text-align: center">공모전 주제</h5>
-                    <div class="dlab-divider bg-gray-dark" style="margin-top: 0"></div>
-                    <p class="word-break-all font-weight-300"
-                       style="text-align: center">빅데이터</p>
-                    <div class="dlab-divider bg-gray-dark"></div>
-
-                    <!-- 포스터 나오는 곳 img파일은 이곳에 나오도록 -->
-<!--                    {% for image in image_list %}-->
-                    <img class="img-cover" src="#" alt=""/>
-<!--                    {% endfor %}-->
-                    <!--공모전 상세내용 나오는 곳-->
-                    <p class="post-context font-weight-400"></p>
-                    상세내용
-                    <p class="font-weight-300"></p>
 
                     <!-- 본문 입력 내용 -->
                     <p class="font-weight-400">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
@@ -179,8 +147,6 @@
         </div>
       </div>
     </div>
-    <!-- 상단으로 올라가는 버튼 -->
-    <button class="scroltop fa fa-chevron-up"></button>
   </div>
 </template>
 

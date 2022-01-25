@@ -3,6 +3,7 @@ import BoardRegister from "@/board/pages/BoardRegister";
 import BoardDetail from "@/board/pages/BoardDetail";
 import ContestBoard from "@/board/pages/ContestBoard";
 import ContestRegister from "@/board/pages/ContestRegister";
+import ContestDetail from "@/board/pages/ContestDetail";
 
 const boardRouter =[
     {
@@ -29,6 +30,11 @@ const boardRouter =[
         path: "/contestBoard/register",
         component: ContestRegister
         // 공모전 게시판 등록
+    },
+    {
+        path: "/contestBoard/detail",
+        component: ContestDetail
+        // 공모전 게시판 detail
     },
 ]
 
