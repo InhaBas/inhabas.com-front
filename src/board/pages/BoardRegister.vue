@@ -87,7 +87,7 @@
             <!--등록하기 버튼, 누르면 게시글 상세보기로-->
             <!--최초 글작성 시 나오는 버튼-->
             <div style="display: grid; justify-items: center">
-              <input class="site-button btn-block button-md mt-10 bg: bg-bgColor" type="submit" style="width: 30%"
+              <input class="site-button btn-block button-md mt-10 hover:bg-bgColorHo bg-bgColor" type="submit" style="width: 30%"
                      value="등록하기"
                      onclick="">
             </div>

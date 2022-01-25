@@ -2,7 +2,7 @@
   <div class="listing-filter-sidebar">
     <h4 class="title">게시판</h4>
     <div class="widget_tag">
-      <ul class="m-b0">
+      <ul class="m-b0 pl-0">
 
         <li><a href="/board/5">전체 게시글</a>
           (21+)

@@ -1,14 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../pages/Home'
-import About from '../pages/About'
-import Board from '../board/pages/Board'
-import ContestBoard from '../board/pages/ContestBoard'
-import DragNDrop from "@/common/TheDragNDrop";
-import Board_Detail from "../board/pages/BoardDetail";
-import BoardRegister from "@/board/pages/BoardRegister";
-import ContestRegister from "@/board/pages/ContestRegister";
-
-
+import BoardRouter from './BoardRouter' // board와 관련된 router 불러옴
+import Home from '../pages/Home' // default
 
 export default createRouter({
     history: createWebHistory(),
@@ -17,35 +9,9 @@ export default createRouter({
             path: "/",
             component: Home
         },
-        {
-            path: "/about",
-            component: About
-        },
-        {
-            path: "/board",
-            component: Board
-        },
-        {
-            path: "/contestBoard",
-            component: ContestBoard
-        },
-        {
-            path: "/boardDetail",
-            component: Board_Detail
-        },
-        {
-            path: "/boardRegister",
-            component: BoardRegister
-        },
-        {
-            path: "/contestRegister",
-            component: ContestRegister
-        },
-        {
-            path: "/dragNDrop",
-            component: DragNDrop
-        },
 
-    ]
+
+        ...BoardRouter // board와 관련된 router 불러올 땐 앞에 ...을 붙여줍니다요
+    ],
 
 })

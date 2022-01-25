@@ -26,7 +26,7 @@
 
                   <!--================= 여기부터 게시글 반복시작 =================-->
                   <!-- 게시글 1 -->
-                  <div class="col-lg-6" v-for="contest in contests" :key="contest.name">
+                  <div class="col-lg-4" v-for="contest in contests" :key="contest.name">
                     <div class="listing-bx event-listing m-b10">
                       <!-- 게시글 대표 이미지 div -->
                       <div class="listing-media">
@@ -34,7 +34,7 @@
                         <a href="{% url 'contest_detail' contest.contest_no %}">
 
                           <img :src= "contest.img"
-                               alt="이미지를 표시할 수 없습니다." style="height:484px;"/>
+                               alt="이미지를 표시할 수 없습니다." style=" height:242px;"/>
                         </a>
                       </div>
                       <!-- 공모전 내용 간단소개 div -->
@@ -79,7 +79,7 @@
 
                   <!--================= 여기부터 게시글 반복 끝 =================-->
 
-                    <div colspan="4" style="text-align: center">게시글이 존재하지 않습니다.</div>
+                    <div style="text-align: center">게시글이 존재하지 않습니다.</div>
 
 
                 </div>
@@ -87,9 +87,9 @@
                 <div class="extra-cell text-right m-t20">
                   <!-- 게시글 등록 버튼 -->
                   <button type="submit" class="site-button radius-xl m-l10 bg-bgColor hover:bg-bgColor">
-                    <a href="/contestRegister" class="text-white text-decoration-none">
+                    <router-link to="/contestBoard/register" class="text-white text-decoration-none">
                       <i class="fa fa-plus m-r5"></i>게시글 등록
-                    </a>
+                    </router-link>
                   </button>
                 </div>
 

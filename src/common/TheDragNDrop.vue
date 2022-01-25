@@ -18,7 +18,7 @@
 <!--        <i class="fa fa-cloud-upload bg-gray-500"></i>-->
           <i class="fas fa-cloud-upload-alt fa-4x text-gray-300 flex align-items-center justify-content-center"></i>
         <div class="justify-content-center align-items-center flex align-items-center justify-content-center text-lg text-black">마우스로 파일을 끌어오세요.</div>
-        <button type="button" class="w-1/4 btn btn-default bg-bgColor text-white font-semibold" style="border-radius: 999px !important;">파일 첨부</button>
+        <button type="button" class="w-1/4 btn btn-default bg-bgColor hover:bg-bgColorHo text-white font-semibold" style="background-color: #4611a7; border-radius: 999px !important;">파일 첨부</button>
       </div>
     </div>
   </div>

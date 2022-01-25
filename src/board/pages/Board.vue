@@ -46,9 +46,9 @@
                     <!-- 게시글 제목 클릭 시 해당 게시글의 상세 페이지로 이동하며, 제목을 a태크 처리함 -->
                     <td>
 
-                      <a href="/boardDetail" class="text-decoration-none text-textColor">
+                      <router-link to="/board/detail" class="text-decoration-none text-textColor">
                         <b>권한에 따른 웹사이트 이용 범위</b>
-                      </a>
+                      </router-link>
 
                     </td>
                     <!-- 게시글 작성자 -->
@@ -65,7 +65,7 @@
                     <!-- 게시글 제목 클릭 시 해당 게시글의 상세 페이지로 이동하며, 제목을 a태크 처리함 -->
                     <td>
 
-                      <a href="/board/detail/195/" class="text-decoration-none text-textColor">IBAS 현직자 특강 줌 링크 공유합니다!</a>
+                      <a class="text-decoration-none text-textColor">IBAS 현직자 특강 줌 링크 공유합니다!</a>
 
                     </td>
                     <!-- 게시글 작성자 -->
@@ -83,10 +83,10 @@
                 <div class="extra-cell text-right m-t20">
                   <!-- 게시글 등록 버튼 -->
                   <!-- 관련자만 보이게 처리 -->
-                  <button type="submit" class="site-button radius-xl m-l10 bg-bgColor hover:bg-bgColor">
-                    <a href="/boardRegister" class="text-white text-decoration-none">
+                  <button type="submit" class="site-button radius-xl m-l10 bg-bgColor hover:bg-bgColorHo">
+                    <router-link to="/board/register" class="text-white text-decoration-none">
                       <i class="fa fa-plus m-r5"></i>게시글 등록
-                    </a>
+                    </router-link>
                   </button>
                 </div>
 
@@ -123,7 +123,6 @@ export default {
 }
 </script>
 
-<style scoped>
-/*@import '../assets/css/templete.min.css';*/
-/*@import '../assets/css/posting_list.css';*/
+<style>
+
 </style>
