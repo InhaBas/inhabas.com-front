@@ -57,10 +57,13 @@
                   <!--                    {% render_field board_form.board_title class="form-control" style="font-size: 25px; height: 70px;" %}-->
                   <br/>
 
+                  <!-- text editor -->
+                  <TheTextEditor></TheTextEditor>
+
                   <drag-n-drop></drag-n-drop>
-                  <!--이미지, 파일 업로드란-->
-                  <textarea class="w-full border mt-11" placeholder="내용을 입력하세요"></textarea>
+
                 </div>
+                <!--이미지, 파일 업로드란-->
                 <!-- 이미 존재하고 있던 이미지: 삭제 가능 (수정모드)-->
                 <!--                  {% if board_no is not None %}-->
                 <!--                  {% include "file_update_box.html" %}-->
@@ -104,11 +107,17 @@
 <script>
 import HeaderTitle from "../../common/TheHeaderTitle";
 import DragNDrop from "@/common/TheDragNDrop";
+import TheTextEditor from "@/common/TheTextEditor";
+
 
 
 export default {
   name: "BoardRegister.vue",
-  components: {HeaderTitle, DragNDrop}
+  components: {
+    TheTextEditor,
+    HeaderTitle,
+    DragNDrop,
+  }
 }
 </script>
 
