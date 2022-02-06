@@ -11,6 +11,9 @@ module.exports = {
         bgColor: '#4611a7',
         bgColorHo: '#7133e2'
       },
+      fontFamily: {
+        'nanumGothicBold':['NanumBarunGothicBold'],
+      }
 },
   },
   variants: {
