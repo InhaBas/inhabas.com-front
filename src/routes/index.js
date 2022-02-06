@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import BoardRouter from './BoardRouter' // board와 관련된 router 불러옴
 import Main from '../layouts/Main' // default
+import Login from '../member/pages/Login'
 
 export default createRouter({
     history: createWebHistory(),
@@ -9,7 +10,10 @@ export default createRouter({
             path: "/",
             component: Main
         },
-
+        {
+            path: "/login",
+            component: Login
+        },
 
         ...BoardRouter // board와 관련된 router 불러올 땐 앞에 ...을 붙여줍니다요
     ],
