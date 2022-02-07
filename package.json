@@ -37,6 +37,7 @@
     "element-plus": "^1.3.0-beta.5",
     "element-tiptap": "^1.27.1",
     "element-ui": "^2.15.6",
+    "particles.vue3": "^1.40.0",
     "postcss": "^7.0.39",
     "remixicon": "^2.5.0",
     "sass": "^1.45.1",
