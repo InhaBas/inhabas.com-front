@@ -15,13 +15,13 @@
           <div class="login-form2">
             <div class="justify-content-center login-logo-container">
               <img id="logo" onclick="location.href='/'" class="hover:opacity-70" style="width:150px"
-                   src="../../assets/images/member_logo.png">
+                   src="../../assets/images/member_logo.png" alt="">
             </div>
             <div>
               <div class="hr-sect">소셜 로그인</div>
               <div class="text-center m-b20">
                 <a
-                    class="site-button google-plus btn-block text-white"
+                    class="site-button google-plus btn-block text-white" @click="getData"
                 ><i class="fa fa-google m-r10"></i> 구글 로그인하기</a
                 >
                 <a
@@ -39,7 +39,7 @@
         <!--          &lt;!&ndash; 오른쪽 이미지를 넣을 장소 시작 &ndash;&gt;-->
         <div class="item_flex_bg">
           <img style="height: 100%;width: 100%"
-               src="../../assets/images/blue-purple-technology-circuit.jpg">
+               src="../../assets/images/blue-purple-technology-circuit.jpg" alt="">
         </div>
         <!-- 오른쪽 이미지 넣을 장소 끝 -->
       </div>
@@ -49,8 +49,24 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "Login.vue",
+  methods: {
+    getData() {
+      axios.get("https://dev.inhabas.com/api/login/oauth2/authorization/kakao")
+      .then(function (response) {
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+    }
+  }
+    // axios.get('/api/data') .then(res => { // 불러온 값을 Console에 뿌려줍니다. console.log(res.data) })
+  // }
+
 };
 </script>
 
