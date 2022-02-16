@@ -7,7 +7,27 @@ import ContestDetail from "@/board/pages/ContestDetail";
 
 const boardRouter =[
     {
-        path: "/board",
+        path: "/board/1",
+        component: Board,
+        // 게시판
+    },
+    {
+        path: "/board/2",
+        component: Board,
+        // 게시판
+    },
+    {
+        path: "/board/3",
+        component: Board,
+        // 게시판
+    },
+    {
+        path: "/board/contest",
+        component: Board,
+        // 게시판
+    },
+    {
+        path: "/activity",
         component: Board,
         // 게시판
     },
@@ -17,7 +37,7 @@ const boardRouter =[
         // 공모전 게시판
     },
     {
-        path: "/board/detail",
+        path: "/board/:id",
         component: BoardDetail
         // 게시판 / 공모전 게시판 detail
     },
