@@ -8,9 +8,9 @@ import Quest from "../member/pages/Quest";
 import TheRuleBook from "../member/components/TheRuleBook";
 import StdOrPro from "../member/pages/StdOrPro";
 
-
-export default createRouter({
+const router = createRouter({
     history: createWebHistory(),
+
     routes: [
         {
             path: "/",
@@ -42,4 +42,9 @@ export default createRouter({
         ...BoardRouter // board와 관련된 router 불러올 땐 앞에 ...을 붙여줍니다요
     ],
 
+    scrollBehavior() {
+        return { top:0 }
+    },
 })
+
+export default router;
