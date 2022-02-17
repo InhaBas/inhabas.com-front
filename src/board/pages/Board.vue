@@ -55,20 +55,20 @@
                   </tr>
 
 
-                  <tr>
+                  <tr v-for="(item,idx) in content" :key="`ct-content-${idx}`">
                     <!-- 게시글 번호 -->
-                    <th scope="row">1</th>
+                    <th scope="row">{{item.id}}</th>
                     <!-- 게시글 제목 -->
                     <!-- 게시글 제목 클릭 시 해당 게시글의 상세 페이지로 이동하며, 제목을 a태크 처리함 -->
                     <td>
 
-                      <a class="text-decoration-none text-textColor">IBAS 현직자 특강 줌 링크 공유합니다!</a>
+                      <router-link :to="`/board/${item.id}`" class="text-decoration-none text-textColor">{{item.title}}</router-link>
 
                     </td>
                     <!-- 게시글 작성자 -->
-                    <td>강지훈</td>
+                    <td>{{item.writerName}}</td>
                     <!-- 게시글 작성일자 -->
-                    <td class="dis-none-media">2021-11-02</td>
+                    <td class="dis-none-media">{{item.created}}</td>
                   </tr>
 
 
@@ -113,10 +113,31 @@ import BoardSearch from "../components/BoardSearch"
 import BoardNavi from "../components/BoardNavi"
 import Paginations from "../../common/ThePaginations";
 import HeaderTitle from "../../common/TheHeaderTitle";
+import axios from "axios";
 
 export default {
+  data(){
+    return{
+      id:'',
+      content:[]
+    };
+  },
+  // methods:{
+  //   fetchData(menuId)
+  //   {
+  //
+  //   }
+  // },
+  created(){
+    axios.get('https://dev.inhabas.com/api/board/all?menuId=6')
+        .then(response => {
+          this.content = response.data.content;
+          console.log(response)})
+        .catch(error => console.log(error));
+    // this.fetchData(this.menuId);
+  },
   name: "Board.vue",
-  components: {BoardNavi, BoardSearch, Paginations, HeaderTitle}
+  components: {BoardNavi, BoardSearch, Paginations, HeaderTitle},
 }
 </script>
 

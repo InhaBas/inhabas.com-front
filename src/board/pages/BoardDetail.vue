@@ -15,18 +15,18 @@
                     <ul class="d-flex align-items-center">
                       <!-- 게시글 작성자 -->
                       <li class="post-author"><i class="ti ti-user"></i>By <a
-                          href="javascript:void(0);">윤예진</a>
+                          href="javascript:void(0);">{{writerName}}</a>
                       </li>
                       <!-- 게시글 작성시간 -->
                       <li class="post-comment"><i class="ti ti-alarm-clock"></i> <a
-                          href="javascript:void(0);">2022-01-16 13:33</a>
+                          href="javascript:void(0);">{{created}}</a>
                       </li>
                     </ul>
                   </div>
                   <!-- 게시글 제목 -->
                   <div class="dlab-post-title ">
                     <h2 class="word-break-all post-title m-t0 font-bold">
-                      게시글제목
+                      {{title}}
                     </h2>
                   </div>
 
@@ -34,10 +34,7 @@
                   <div class="post-context word-break-all dlab-post-text">
 
                     <!-- 본문 입력 내용 -->
-                    <p class="font-weight-400">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                      do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo amet
-                      set for your cool happiness for lyour loyal city.</p>
+                    <p class="font-weight-400 txt_cont" v-html="contents"></p>
 
 <!--                    {{ board.board_cont|safe }}-->
 
@@ -152,11 +149,58 @@
 
 <script>
 import HeaderTitle from "../../common/TheHeaderTitle";
+import axios from "axios";
 
 export default {
-  name: "Board_Detail",
-  components: {HeaderTitle}
+  data(){
+    return{
+      id:'',
+      title:'',
+      contents:'',
+      writerName:'',
+      menuId:'',
+      created:'',
+    }
+  },
 
+  methods:{
+    fetchData(boardid)
+    {
+      axios.get('https://dev.inhabas.com/api/board?id='+boardid)
+          .then(response => {
+            this.id = response.data.id;
+            this.title=response.data.title;
+            this.contents = response.data.contents;
+            this.writerName = response.data.writerName;
+            this.menuId = response.data.menuId;
+            this.created = response.data.created;
+            this.updated = response.data.updated;
+            console.log(response)
+          })
+          .catch(error => console.log(error));
+    }
+  },
+
+  // setup()
+  // {
+  //   const deleteBoard = async () => {
+  //     try {
+  //       await axios.delete(this.id)
+  //       console.log("게시물 삭제를 성공하였습니다.");
+  //     }catch(e){
+  //       console.log("게시물 삭제를 실패하였습니다.");
+  //     }
+  //   };
+  // },
+
+
+  created(){
+    const boardid = this.$route.params.id;
+    this.fetchData(boardid);
+    console.log()
+  },
+  name: "Board_Detail",
+  components: {HeaderTitle},
 }
 </script>
 
