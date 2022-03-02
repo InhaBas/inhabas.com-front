@@ -61,7 +61,7 @@
 
 
 <!--                  <TheTextEditor></TheTextEditor>-->
-                  <textarea class="txt_cont border-1 border-gray-300 w-full h-52 mb-3 rounded-2 " v-html="contents"></textarea>
+                  <textarea class="txt_cont border-1 border-gray-300 w-full h-52 mb-3 rounded-2 " v-html="contents" v-model="contents"></textarea>
 
 
                   <drag-n-drop></drag-n-drop>
