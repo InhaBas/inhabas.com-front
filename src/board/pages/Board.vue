@@ -62,13 +62,13 @@
                     <!-- 게시글 제목 클릭 시 해당 게시글의 상세 페이지로 이동하며, 제목을 a태크 처리함 -->
                     <td>
 
-                      <router-link :to="`/board/${item.id}`" class="text-decoration-none text-textColor">{{item.title}}</router-link>
+                      <router-link :to="`/board/detail/${item.id}`" class="text-decoration-none text-textColor">{{item.title}}</router-link>
 
                     </td>
                     <!-- 게시글 작성자 -->
                     <td>{{item.writerName}}</td>
                     <!-- 게시글 작성일자 -->
-                    <td class="dis-none-media">{{item.created}}</td>
+                    <td class="dis-none-media">{{dateTime(item.created)}}</td>
                   </tr>
 
 
@@ -114,20 +114,19 @@ import BoardNavi from "../components/BoardNavi"
 import Paginations from "../../common/ThePaginations";
 import HeaderTitle from "../../common/TheHeaderTitle";
 import axios from "axios";
+import moment from 'moment';
 
 export default {
   data(){
     return{
-      id:'',
-      content:[]
+      content:[],
     };
   },
-  // methods:{
-  //   fetchData(menuId)
-  //   {
-  //
-  //   }
-  // },
+  methods:{
+    dateTime(value){
+      return moment(value).format('YYYY-MM-DD');
+    }
+  },
   created(){
     axios.get('https://dev.inhabas.com/api/board/all?menuId=6')
         .then(response => {

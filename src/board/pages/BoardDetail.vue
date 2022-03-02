@@ -19,7 +19,8 @@
                       </li>
                       <!-- 게시글 작성시간 -->
                       <li class="post-comment"><i class="ti ti-alarm-clock"></i> <a
-                          href="javascript:void(0);">{{created}}</a>
+                          href="javascript:void(0);">{{dateTime(created)}}</a>
+<!--                        {{moment().format('YYYY-MM-DD')}}-->
                       </li>
                     </ul>
                   </div>
@@ -120,13 +121,13 @@
                     <!-- 게시글 수정 버튼 -->
                     <!-- 관련자만 보이게 처리 -->
                     <button class="site-button radius-xl m-l10 bg: bg-bgColor"
-                            onclick="location.href='#'">
+                            @click="modify">
                       <i class="fa fa-pencil m-r5"></i>게시글 수정
                     </button>
                     <!-- 게시글 삭제 버튼 -->
                     <!-- 관련자만 보이게 처리 -->
 
-                    <button class="site-button red radius-xl m-l10">
+                    <button class="site-button red radius-xl m-l10" @click="delete_board">
 <!--                            onclick="goPage('{% url '#' board_no=board.board_no %}', true, '게시글은 삭제되면 복구가 불가능합니다.\n정말 삭제하시겠습니까?')">-->
                       <i class="fa fa-trash m-r5"></i>게시글 삭제
                     </button>
@@ -150,11 +151,12 @@
 <script>
 import HeaderTitle from "../../common/TheHeaderTitle";
 import axios from "axios";
+import moment from "moment";
 
 export default {
   data(){
     return{
-      id:'',
+      id:this.$route.params.id,
       title:'',
       contents:'',
       writerName:'',
@@ -164,39 +166,41 @@ export default {
   },
 
   methods:{
-    fetchData(boardid)
+    delete_board() {
+      if (confirm("게시글은 삭제되면 복구가 불가능합니다.\n정말 삭제하시겠습니까?")) {
+        axios.delete('https://dev.inhabas.com/api/board?id=' + this.id)
+            .then(() => {
+              alert("삭제되었습니다.");
+              this.$router.go(-1)
+            })
+            .catch((err) => {
+              alert("삭제를 실패하였습니다.")
+              console.log(err);
+            })
+      }
+    },
+    modify()
     {
-      axios.get('https://dev.inhabas.com/api/board?id='+boardid)
-          .then(response => {
-            this.id = response.data.id;
-            this.title=response.data.title;
-            this.contents = response.data.contents;
-            this.writerName = response.data.writerName;
-            this.menuId = response.data.menuId;
-            this.created = response.data.created;
-            this.updated = response.data.updated;
-            console.log(response)
-          })
-          .catch(error => console.log(error));
+      this.$router.push({path:"../register",query:{id:this.$route.params.id}});
+    },
+    dateTime(value){
+      return moment(value).format('YYYY-MM-DD hh:mm');
     }
   },
 
-  // setup()
-  // {
-  //   const deleteBoard = async () => {
-  //     try {
-  //       await axios.delete(this.id)
-  //       console.log("게시물 삭제를 성공하였습니다.");
-  //     }catch(e){
-  //       console.log("게시물 삭제를 실패하였습니다.");
-  //     }
-  //   };
-  // },
-
-
   created(){
-    const boardid = this.$route.params.id;
-    this.fetchData(boardid);
+    axios.get('https://dev.inhabas.com/api/board?id='+this.id)
+        .then(response => {
+          this.id = response.data.id;
+          this.title=response.data.title;
+          this.contents = response.data.contents;
+          this.writerName = response.data.writerName;
+          this.menuId = response.data.menuId;
+          this.created = response.data.created;
+          this.updated = response.data.updated;
+          console.log(response)
+        })
+        .catch(error => console.log(error));
     console.log()
   },
   name: "Board_Detail",
