@@ -3,7 +3,7 @@
     <h4 class="title">게시판</h4>
     <div class="widget_tag">
       <ul class="m-b0 pl-0">
-        <li><a href="/board/1" onclick="$emit('menu','6')">공지사항</a>
+        <li><a href="/board/1">공지사항</a>
           (19+)
         </li>
         <li><a href="/board/2">자유게시판</a>

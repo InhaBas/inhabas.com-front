@@ -37,7 +37,7 @@ const boardRouter =[
         // 공모전 게시판
     },
     {
-        path: "/board/:id",
+        path: "/board/detail/:id",
         component: BoardDetail
         // 게시판 / 공모전 게시판 detail
     },

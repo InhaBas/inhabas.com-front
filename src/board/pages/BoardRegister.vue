@@ -52,13 +52,17 @@
 
                 <!--제목 입력란-->
                 <div class="form-group">
-                  <input type="text" name="board_title" placeholder="제목을 입력하세요." maxlength="100"
+                  <input v-model="title" type="text" name="board_title" placeholder="제목을 입력하세요." maxlength="100"
                          style="font-size: 25px; height: 70px;" class="form-control" required="" id="id_board_title">
                   <!--                    {% render_field board_form.board_title class="form-control" style="font-size: 25px; height: 70px;" %}-->
                   <br/>
 
                   <!-- text editor -->
-                  <TheTextEditor></TheTextEditor>
+
+
+<!--                  <TheTextEditor></TheTextEditor>-->
+                  <textarea class="txt_cont border-1 border-gray-300 w-full h-52 mb-3 rounded-2 " v-html="contents" v-model="contents"></textarea>
+
 
                   <drag-n-drop></drag-n-drop>
 
@@ -84,14 +88,14 @@
             <!--등록하기 버튼, 누르면 게시글 상세보기로-->
             <!--최초 글작성 시 나오는 버튼-->
             <div style="display: grid; justify-items: center">
-              <input class="site-button btn-block button-md mt-10 hover:bg-bgColorHo bg-bgColor" type="submit" style="width: 30%"
+              <input v-if="!id" class="site-button btn-block button-md mt-10 hover:bg-bgColorHo bg-bgColor" type="submit" style="width: 30%"
                      value="등록하기"
-                     onclick="">
+                     @click="upload">
             </div>
             <div style="display: grid; justify-items: center">
-              <input class="site-button btn-block button-md mt-10 bg: bg-info" type="submit" style="width: 30%"
+              <input v-if="id" class="site-button btn-block button-md mt-10 bg: bg-info" type="submit" style="width: 30%"
                      value="수정하기"
-                     onclick="">
+                     @click="board_modify">
             </div>
 
             <!-- Pagination END -->
@@ -107,16 +111,99 @@
 <script>
 import HeaderTitle from "../../common/TheHeaderTitle";
 import DragNDrop from "@/common/TheDragNDrop";
-import TheTextEditor from "@/common/TheTextEditor";
-
+import axios from "axios";
+// import TheTextEditor from "@/common/TheTextEditor";
 
 
 export default {
   name: "BoardRegister.vue",
   components: {
-    TheTextEditor,
+    // TheTextEditor,
     HeaderTitle,
     DragNDrop,
+  },
+  data(){
+    return{
+      id:this.$route.query.id,
+      title:'',
+      contents:'',
+      menuId:'',
+      loginedUser:'',
+      form:'',
+    }
+  },
+  methods:{
+    upload()
+    {
+      if(!this.title){
+        alert("제목을 입력해주세요");
+        return;
+      }
+      if(!this.contents)
+      {
+        alert("내용을 입력해주세요");
+        return;
+      }
+      this.form ={
+        title:this.title,
+        contents:this.contents,
+        menuId:'6',
+        loginedUser:'1234',
+      }
+      axios.post('https://dev.inhabas.com/api/board',this.form)
+      .then(()=>{
+        alert('등록 되었습니다');
+        this.$router.go(-1)
+      })
+      .catch((err)=>{
+        alert('등록에 실패하였습니다')
+        console.log(err);
+      })
+    },
+    view_title_contents()
+    {
+      axios.get('https://dev.inhabas.com/api/board?id=' + this.id)
+      .then((response)=>{
+        this.title = response.data.title;
+        this.contents = response.data.contents;
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+    },
+    board_modify()
+    {
+      if(!this.title){
+        alert("제목을 입력해주세요");
+        return;
+      }
+      if(!this.contents)
+      {
+        alert("내용을 입력해주세요");
+        return;
+      }
+      this.form ={
+        title:this.title,
+        contents:this.contents,
+        id:this.id,
+      }
+      axios.put('https://dev.inhabas.com/api/board',this.form)
+          .then(()=>{
+            alert('수정 되었습니다');
+            this.$router.go(-1)
+          })
+          .catch((err)=>{
+            alert('수정에 실패하였습니다')
+            console.log(err);
+          })
+    }
+  },
+  mounted()
+  {
+    if(this.id)
+    {
+      this.view_title_contents()
+    }
   }
 }
 </script>
