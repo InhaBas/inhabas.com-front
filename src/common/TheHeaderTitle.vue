@@ -8,10 +8,10 @@
         <div class="dlab-bnr-inr-entry">
           <!--제목-->
           <!-- DB에서 제목 꺼내와야 함 공모전, 강의, 취미-->
-          <h1 class="text-white introduce-letter-spacing_5">공모전 게시판</h1>
+          <h1 class="text-white introduce-letter-spacing_5">{{ name }}</h1>
           <!--부제목-->
           <!-- DB에서 부제목 꺼내와야 함 공모전, 강의, 취미 -->
-          <p class="m-t20">공모전 정보를 알려주는 게시판</p>
+          <p class="m-t20">{{ description }}</p>
         </div>
       </div>
     </a>
@@ -19,8 +19,28 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  name: "HeaderTitle.vue"
+  props:["menuId"],
+  data()
+  {
+    return{
+      name:'',
+      description:'',
+      id:this.menuId,
+    }
+  },
+  name: "HeaderTitle.vue",
+  created()
+  {
+    axios.get('https://dev.inhabas.com/api/menu?menuId='+this.id)
+        .then(response => {
+          this.name=response.data.name;
+          this.description=response.data.description;
+          console.log(response);})
+        .catch(error => console.log(error));
+  }
 }
 </script>
 

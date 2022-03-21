@@ -1,9 +1,14 @@
 <template>
   <div class="page-wraper">
+
+    <!--====================메뉴바 시작====================-->
+    <TopBar></TopBar>
+    <!--====================메뉴바 끝====================-->
+
+
     <div class="page-content bg-white">
-      <div class="page-content bg-white ">
-        <!----------============= 상단 제목 시작 ================----------->
-        <HeaderTitle></HeaderTitle>
+      <!----------============= 상단 제목 시작 ================----------->
+      <HeaderTitle :menuId="menuId"></HeaderTitle>
         <!----------============= 본문 시작 ================----------->
         <div class="section-full content-inner">
           <div class="container">
@@ -145,22 +150,23 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
 import HeaderTitle from "../../common/TheHeaderTitle";
+import TopBar from "@/common/TopBar";
 import axios from "axios";
 import moment from "moment";
 
 export default {
+
   data(){
     return{
       id:this.$route.params.id,
       title:'',
       contents:'',
-      writerName:'',
       menuId:'',
+      writerName:'',
       created:'',
     }
   },
@@ -195,16 +201,15 @@ export default {
           this.title=response.data.title;
           this.contents = response.data.contents;
           this.writerName = response.data.writerName;
-          this.menuId = response.data.menuId;
+          this.menuId=response.data.menuId;
           this.created = response.data.created;
           this.updated = response.data.updated;
           console.log(response)
         })
         .catch(error => console.log(error));
-    console.log()
   },
   name: "Board_Detail",
-  components: {HeaderTitle},
+  components: {HeaderTitle,TopBar},
 }
 </script>
 
