@@ -1,14 +1,42 @@
 <template>
-  <ul>
-    <li class="font-bold"><RouterLink to="/" class="text-textColor">Home</RouterLink></li>
-    <li><router-link to="/board/1">Board</router-link></li>
-    <li><router-link to="/contestBoard">Contest Board</router-link></li>
-  </ul>
+<!--  <div id="loading-area"></div>-->
+  <div class="page-wraper">
+    <!--임시로 넣어둠, 상단바 이후에 블럭처리해서 바꿀예정-->
+    <!--====================메뉴바 시작====================-->
+    <TopBar></TopBar>
+    <!--====================메뉴바 끝====================-->
+  </div>
+
+  <div class="page-content bg-white " style="padding-bottom: 0px">
+    <div class="dlab-bnr-inr height-100-vh" :style="{'background-image':'url('+require('../assets/images/ibas-main-background.jpg')+')'}">
+      <div class="container">
+        <div class="flex flex-col items-center justify-center dlab-bnr-inr-entry align-m dlab-home">
+            <img class="ibas_logo media-logo " onclick="location.href = '/login/'" src="../assets/images/ibas_main_logo.png">
+            <div class="m-t50"><img src="../assets/images/main-text.png"></div>
+          <div onclick="location.href = '../../login'" class="category-bx" style="margin-top: 100px; margin-bottom: 100px">
+            <a href="#" class="category">
+              <p style=" font-weight: bolder; font-size: 20px; padding-top: 12px">입부신청</p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer 하단바 시작 -->
+  <FooterBar></FooterBar>
+  <!-- Footer END-->
+  <button class="scroltop fa fa-chevron-up"></button>
 
 </template>
 
-<script>export default {
-  components: {}
+<script>
+import TopBar from "@/common/TopBar";
+import FooterBar from "@/common/FooterBar";
+
+export default {
+  name: "Main.vue",
+  components:{TopBar,FooterBar},
 }
 </script>
 
