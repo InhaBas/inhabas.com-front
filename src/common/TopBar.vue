@@ -30,7 +30,7 @@
               <a href="#">{{Id.groupName}}<i class="fa fa-chevron-down"></i></a>
               <ul class="sub-menu">
                 <!-- 동아리 소개를 누를 경우 url로 넘어간다. -->
-                <li v-for="boardname in menu[index].menuList" :key="boardname"><a :href="`/${boardname.type}/${boardname.id}`">{{boardname.name}}</a></li>
+                <li v-for="boardname in menu[index].menuList" :key="boardname"><a :href="`/${boardname.type.toLowerCase()}/${boardname.id}`">{{boardname.name}}</a></li>
               </ul>
             </li>
 

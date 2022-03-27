@@ -7,52 +7,32 @@ import ContestDetail from "@/board/pages/ContestDetail";
 
 const boardRouter =[
     {
-        path: "/board/1",
+        path: "/list/:id",
         component: Board,
         // 게시판
     },
     {
-        path: "/board/2",
-        component: Board,
-        // 게시판
-    },
-    {
-        path: "/board/3",
-        component: Board,
-        // 게시판
-    },
-    {
-        path: "/board/contest",
-        component: Board,
-        // 게시판
-    },
-    {
-        path: "/activity",
-        component: Board,
-        // 게시판
-    },
-    {
-        path: "/contestBoard",
+        path: "/contest/:id",
         component: ContestBoard
         // 공모전 게시판
     },
     {
-        path: "/board/detail/:id",
+        path: "/list/detail/:id",
         component: BoardDetail
         // 게시판 / 공모전 게시판 detail
     },
     {
-        path: "/board/register",
+        path: "/list/register",
         component: BoardRegister
         // 게시판 등록
     },
     {
-        path: "/contestBoard/register",
+        path: "/contest/register",
         component: ContestRegister
         // 공모전 게시판 등록
     },
     {
-        path: "/contestBoard/detail",
+        path: "/contest/detail",
         component: ContestDetail
         // 공모전 게시판 detail
     },
