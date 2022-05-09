@@ -1,4 +1,3 @@
-import Board from "@/board/pages/Board";
 import BoardRegister from "@/board/pages/BoardRegister";
 import BoardDetail from "@/board/pages/BoardDetail";
 import ContestBoard from "@/board/pages/ContestBoard";
@@ -8,7 +7,12 @@ import ContestDetail from "@/board/pages/ContestDetail";
 const boardRouter =[
     {
         path: "/list/:id",
-        component: Board,
+        component: () => import('@/board/pages/Board'),
+        // 게시판
+    },
+    {
+        path: "/list/:id/:page",
+        component: () => import('@/board/pages/Board'),
         // 게시판
     },
     {

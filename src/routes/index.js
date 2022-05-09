@@ -1,8 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import BoardRouter from './BoardRouter' // board와 관련된 router 불러옴
-
-import Main from '../layouts/Main' // default
-import Login from '../member/pages/Login'
 import Join from "../member/pages/Join"
 import Quest from "../member/pages/Quest";
 import TheRuleBook from "../member/components/TheRuleBook";
@@ -14,12 +11,13 @@ const router = createRouter({
     routes: [
         {
             path: "/",
-            component: Main
+            component: () => import('../layouts/Main')
         },
         {
 
             path: "/login",
-            component: Login
+            Name: 'Login',
+            component: () => import("../member/pages/Login")
         },
         {
             path: "/join",

@@ -1,9 +1,12 @@
 <template>
   <div class="page-wraper">
+    <!--====================메뉴바 시작====================-->
+    <TopBar></TopBar>
+    <!--====================메뉴바 끝====================-->
     <!-- 상단 제목부분 -->
     <div class="page-content bg-white">
       <!----------============= 상단 제목 시작 ================----------->
-      <HeaderTitle></HeaderTitle>
+      <HeaderTitle :menuId="menuId"></HeaderTitle>
       <!----------============= 본문 시작 ================----------->
       <div class="content-block min-height-70vh">
         <div class="section-full content-inner bg-white">
@@ -97,11 +100,14 @@
             </div>
           </div>
         </div>
-        <!-- 상단으로 한번에 올라가는 버튼 -->
-        <button class="scroltop fa fa-chevron-up" style="display: none;"></button>
       </div>
     </div>
   </div>
+  <!-- Footer 하단바 시작 -->
+  <FooterBar></FooterBar>
+  <!-- Footer END-->
+  <!-- 상단으로 한번에 올라가는 버튼 -->
+  <button class="scroltop fa fa-chevron-up" style="display: none;"></button>
 </template>
 
 <script>
@@ -109,12 +115,15 @@ import BoardSearch from "../components/BoardSearch"
 import BoardNavi from "../components/BoardNavi"
 import Paginations from "../../common/ThePaginations";
 import HeaderTitle from "../../common/TheHeaderTitle";
+import TopBar from "@/common/TopBar";
+import FooterBar from "@/common/FooterBar";
 
 export default {
   name: "ContestBoard.vue",
-  components: {BoardNavi, BoardSearch, Paginations, HeaderTitle},
+  components: {BoardNavi, BoardSearch, Paginations, HeaderTitle,TopBar,FooterBar},
   data() {
     return {
+      menuId:this.$route.params.id,
       contests: [
         {
           name: "contest1",

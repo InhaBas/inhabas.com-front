@@ -195,7 +195,7 @@ export default {
   },
 
   created(){
-    axios.get('https://dev.inhabas.com/api/board?id='+this.id)
+    axios.get('https://dev.inhabas.com/api/board?id='+this.$route.params.id)
         .then(response => {
           this.id = response.data.id;
           this.title=response.data.title;
