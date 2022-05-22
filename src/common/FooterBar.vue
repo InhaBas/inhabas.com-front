@@ -2,14 +2,14 @@
   <footer class="footer-media">
     <!-- content 담는 부분이 footer-top -->
     <!-- footer-top에 대한 정의는 bottom_bar.css에 정의되어 있음. (height 관련) -->
-    <div class="flex ibas-footer-top media-footer-bg"
+    <div class="ibas-footer-top media-footer-bg"
          :style="{'background-image' : 'url('+require('/src/assets/images/botton_bar.jpg')+')','background-size': 'cover'}">
       <!-- content 시작 -->
       <!-- cont-grid에 대한 정의는 bottom_bar.css에 정의되어 있음. (grid 관련) -->
-      <div class="flex items-center flex-auto cont-grid media-ft-flex">
+      <div class="cont-grid media-ft-flex">
         <!-- 로고 div 시작 -->
         <!-- logo-center에 대한 정의는 bottom_bar.css에 정의되어 있음. (grid 관련) -->
-        <div class="flex logo-center media-tb-mg30 media-logo">
+        <div class="logo-center media-tb-mg30 media-logo">
           <!-- 여기 부분이 이미지임   -->
           <!-- width_300에 대한 정의는 bottom_bar.css에 정의되어 있음. (width 관련) -->
           <img src="../assets/images/logo_white.png" class="m-b15" alt="" style="width: 350px">
@@ -18,7 +18,7 @@
         <!-- 로고 div 끝 -->
         <!-- contact us div 시작 -->
         <!-- margin-left_70에 대한 정의는 bottom_bar.css에 정의되어 있음. (margin 관련) -->
-        <div class="flex flex-col m-t10 media-tb-mg30 media-r-mg0 cont-w">
+        <div class="m-t10 media-tb-mg30 media-r-mg0 cont-w">
           <h5 class="mb-2 text-white">Contact us</h5>
           <!-- contact us table 시작 -->
           <!-- padding_0에 대한 정의는 bottom_bar.css에 정의되어 있음. (padding 관련) -->
@@ -48,7 +48,7 @@
         <!-- contact us div 끝 -->
         <!-- 인하대 로고 div 시작 -->
         <!-- logo-center에 대한 정의는 bottom_bar.css에 정의되어 있음. (grid 관련) -->
-        <div class="flex logo-center media-tb-mg30 media-logo">
+        <div class="logo-center media-tb-mg30 media-logo">
           <!-- 여기 부분이 이미지임 -->
           <a href="https://www.inha.ac.kr">
             <!-- width_300에 대한 정의는 bottom_bar.css에 정의되어 있음. (width 관련) -->
@@ -60,7 +60,7 @@
 
       </div>
     </div>
-    <div class="flex items-center justify-center footer-bottom text-center mx-auto text-white dis-none-media" style="padding-bottom: 0px">
+    <div class="footer-bottom text-center mx-auto text-white dis-none-media" style="padding-bottom: 0px">
       <a class="font-12" href="#">제 3자 개인정보 이용·수집제공 약관</a>&nbsp;
       <a class="font-12 m-l5 m-r5">·</a>&nbsp;
       <a class="font-12" href="#">동아리 회칙</a>&nbsp;
@@ -69,7 +69,7 @@
     </div>
     <!-- copyright 부분 시작 -->
     <!-- footer-bottom, min-width_1400에 대한 정의는 bottom_bar.css에 정의되어 있음. (flex 관련)(min-with 관련) -->
-    <div class="flex items-center justify-center footer-bottom media-dvl-name" style="min-width: 100%">
+    <div class="footer-bottom media-dvl-name" style="min-width: 100%">
       <!-- design-with에 대한 정의는 bottom_bar.css에 정의되어 있음. (font, margin 관련) -->
       <p class="fbottom-like design-with">© 2021 Developed By
         <a class="like-btn" href="javascript:void(0)">
@@ -78,6 +78,7 @@
       </p>
     </div>
   </footer>
+  <button class="scroltop fa fa-chevron-up"></button>
 </template>
 
 <script>

@@ -30,7 +30,9 @@
               <a href="#">{{Id.groupName}}<i class="fa fa-chevron-down"></i></a>
               <ul class="sub-menu">
                 <!-- 동아리 소개를 누를 경우 url로 넘어간다. -->
-                <li v-for="boardname in menu[index].menuList" :key="boardname"><a :href="`/${boardname.type.toLowerCase()}/${boardname.id}`">{{boardname.name}}</a></li>
+                <li v-for="boardname in menu[index].menuList" :key="boardname">
+                  <router-link :page="page" :to="`/${boardname.type.toLowerCase()}/${boardname.id}`">{{boardname.name}}</router-link>
+                </li>
               </ul>
             </li>
 
@@ -100,8 +102,8 @@
             <!--                </li>-->
             <!--                &lt;!&ndash;====================로그인 하지 않았을 때====================&ndash;&gt;-->
             <li class="active" style="padding-top: 5px;">
-              <a href="Login" style="padding: 19px 0px 0px 15px">Log In</a>
-              <a href="Login" class="ti-import rotate90 dis-none-media" style="padding:11px 2px 14px 3px;"></a>
+              <router-link to="/login" style="padding: 19px 0px 0px 15px">Log In</router-link>
+              <router-link to="/login" class="ti-import rotate90 dis-none-media" style="padding:11px 2px 14px 3px;"></router-link>
             </li>
           </ul>
         </div>
@@ -119,6 +121,7 @@ export default {
   {
     return{
       menu:[],
+      page:0,
     }
   },
   created() {

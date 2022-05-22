@@ -66,7 +66,7 @@
                   <!-- 게시글 제목 클릭 시 해당 게시글의 상세 페이지로 이동하며, 제목을 a태크 처리함 -->
                   <td>
 
-                    <router-link :to="`/board/detail/${item.id}`" class="text-decoration-none text-textColor">{{item.title}}</router-link>
+                    <router-link :to="`/list/detail/${item.id}`" class="text-decoration-none text-textColor">{{item.title}}</router-link>
 
                   </td>
                   <!-- 게시글 작성자 -->
@@ -96,7 +96,7 @@
 
 
               <!--========== 페이지네이션 시작 ===========-->
-              <Paginations></Paginations>
+              <Paginations :totalPages="totalPages" :page="page"></Paginations>
               <!--========== 페이지네이션 끝 ===========-->
 
               <!--========== 페이지네이션 끝 ===========-->
@@ -126,10 +126,12 @@ import axios from "axios";
 import moment from 'moment';
 
 export default {
+  props:["page"],
   data(){
     return{
       menuId:this.$route.params.id,
       content:[],
+      totalPages:"",
     };
   },
   methods:{
@@ -138,9 +140,10 @@ export default {
     }
   },
   created(){
-    axios.get('https://dev.inhabas.com/api/board/all?menuId='+this.menuId)
+    axios.get('https://dev.inhabas.com/api/board/all?menuId='+this.menuId+"&page"+this.page)
       .then(response => {
         this.content = response.data.content;
+        this.totalPages = response.data.totalPages;
         console.log(response)})
       .catch(error => console.log(error));
   },
