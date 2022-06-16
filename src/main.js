@@ -46,6 +46,3 @@ app.use(VueAxios, axios)
 app.use(Particles)
 app.use(VueCookies)
 app.mount('#app')
-
-
-
