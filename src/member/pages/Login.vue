@@ -20,15 +20,19 @@
             <div>
               <div class="hr-sect">소셜 로그인</div>
               <div class="text-center m-b20">
+
+                <a class="login-btn btn-block text-white login-google-btn"
+                   href="https://dev.inhabas.com/api/login/oauth2/authorization/google?redirect_url=http://localhost:8080/api/login/oauth2/code/google"
+                ><img src="../assets/images/google_btn.png" class="login-icon" alt="현재 브라우저에서 지원하지 않는 형식입니다."> 구글 로그인</a>
+
+                <a class="login-btn btn-block text-white login-kakao-btn"
+                    href="https://dev.inhabas.com/api/login/oauth2/authorization/kakao?redirect_url=http://localhost:8080/api/login/oauth2/code/kakao"
+                ><img src="../assets/images/kakao_btn.png" class="login-icon" alt="현재 브라우저에서 지원하지 않는 형식입니다."> 카카오 로그인</a>
+
                 <a
-                    class="site-button google-plus btn-block text-white" @click="getData"
-                ><i class="fa fa-google m-r10"></i> 구글 로그인하기</a
-                >
-                <a
-                    class="site-button whatsapp btn-block text-white"
-                ><span class="naver-logo m-r10">N</span> 네이버
-                  로그인하기</a
-                >
+                    class="login-btn btn-block text-white login-naver-btn"
+                    href="https://dev.inhabas.com/api/login/oauth2/authorization/naver?redirect_url=http://localhost:8080/api/login/oauth2/code/naver"
+                ><span class="naver-logo m-r10">N</span> 네이버 로그인</a>
               </div>
             </div>
             <div class="copyright">
@@ -49,23 +53,9 @@
 </template>
 
 <script>
-import axios from 'axios';
 
 export default {
   name: "Login.vue",
-  methods: {
-    getData() {
-      axios.get("https://dev.inhabas.com/api/login/oauth2/authorization/kakao")
-      .then(function (response) {
-        console.log(response)
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-    }
-  }
-    // axios.get('/api/data') .then(res => { // 불러온 값을 Console에 뿌려줍니다. console.log(res.data) })
-  // }
 
 };
 </script>
