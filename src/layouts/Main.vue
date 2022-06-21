@@ -35,10 +35,32 @@
 <script>
 import TopBar from "@/common/TopBar";
 import FooterBar from "@/common/FooterBar";
-
+import axios from "axios";
+import { useCookies } from "vue3-cookies";
 export default {
   name: "Main.vue",
   components:{TopBar,FooterBar},
+
+  setup() {
+    const { cookies } = useCookies();
+    return { cookies };
+  },
+
+  created() {
+    let access = this.cookies.get('accessToken' )
+
+// Add a request interceptor
+    axios.interceptors.request.use(
+        function (config) {
+          config.headers.Authorization = access
+          return config;
+        }, function (error) {
+          // 요청에러 처리
+          return Promise.reject(error);
+        });
+  },
+
+
 }
 </script>
 

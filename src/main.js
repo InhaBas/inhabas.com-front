@@ -39,6 +39,7 @@ import "../src/assets/css/top-bottom.css"
 // custom js import
 import "../src/assets/js/login-join.js"
 
+
 const app = createApp(App);
 
 app.use(router)
@@ -46,3 +47,13 @@ app.use(VueAxios, axios)
 app.use(Particles)
 app.use(VueCookies)
 app.mount('#app')
+
+
+app.use(VueCookies, {
+    expireTimes: "30d",
+    path: "/",
+    domain: "",
+    secure: true,
+    sameSite: "None"
+});
+
