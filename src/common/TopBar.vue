@@ -63,7 +63,7 @@ export default {
     }
   },
   created() {
-    axios.get('https://dev.inhabas.com/api/menu/all')
+    axios.get('/api/menu/all')
         .then(response => {
           this.menu=response.data;
           console.log(response)})
