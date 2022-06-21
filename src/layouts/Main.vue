@@ -58,8 +58,9 @@ export default {
   // created() {
   //   let access = this.cookies.get('accessToken' )
 
-// Add a request interceptor
+    // 로그인 성공시
     if(access !== null) {
+      // request interceptors
       axios.interceptors.request.use(
           function (config) {
             config.headers.Authorization = access
@@ -68,6 +69,11 @@ export default {
             // 요청에러 처리
             return Promise.reject(error);
           });
+
+      // url 파라미터 삭제
+      history.replaceState({}, null, location.pathname)
+
+
     }
 
   },
