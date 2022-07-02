@@ -16,7 +16,7 @@
 .form-float_left {
     float: left;
     margin-right: 5px;
-    padding: 0%;
+    padding: 0;
 }
 
 /*학년 클릭했을 때 출력되는 리스트 컨테이너 조정*/
@@ -135,7 +135,7 @@
     align-items: center;
     color: rgba(0, 0, 0, 0.35);
     font-size: 12px;
-    margin: 8px 0px;
+    margin: 8px 0;
 }
 
 .hr-sect::before,
@@ -144,9 +144,9 @@
     flex-grow: 1;
     background: rgba(0, 0, 0, 0.35);
     height: 1px;
-    font-size: 0px;
-    line-height: 0px;
-    margin: 0px 16px;
+    font-size: 0;
+    line-height: 0;
+    margin: 0 16px;
 }
 
 /*로고를 넣을 컨테이너*/
@@ -336,7 +336,39 @@
 }
 
 /*============== 로그인 부분에 사용된 css ==============*/
+.login-btn {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 310px;
+    height: 46px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+}
+.login-icon {
+    height: 23px;
+    margin-right: 10px;
+}
 
+.login-google-btn {
+    border: #ebebeb solid;
+    height: 46px;
+    color: #666666 !important;
+
+}
+
+.login-kakao-btn {
+    background-color: #FEE500;
+    height: 46px;
+    color: #262626 !important;
+
+}
+
+.login-naver-btn {
+    background-color: #03c75a;
+}
 
 
 /*네이버 로고를 대체하여 사용할 폰트*/
@@ -364,7 +396,7 @@
     align-items: center;
     color: rgba(0, 0, 0, 0.35);
     font-size: 12px;
-    margin: 8px 0px;
+    margin: 30px 0;
 }
 
 .hr-sect::before,
@@ -373,9 +405,9 @@
     flex-grow: 1;
     background: rgba(0, 0, 0, 0.35);
     height: 1px;
-    font-size: 0px;
-    line-height: 0px;
-    margin: 0px 16px;
+    font-size: 0;
+    line-height: 0;
+    margin: 0 16px;
 }
 
 /*로고를 넣을 컨테이너*/

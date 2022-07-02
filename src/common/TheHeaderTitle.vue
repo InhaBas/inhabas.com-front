@@ -34,7 +34,7 @@ export default {
   name: "HeaderTitle.vue",
   created()
   {
-    axios.get('https://dev.inhabas.com/api/menu?menuId='+this.id)
+    axios.get('/api/menu?menuId='+this.id)
         .then(response => {
           this.name=response.data.name;
           this.description=response.data.description;

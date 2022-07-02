@@ -4,7 +4,6 @@ import Join from "../member/pages/Join"
 import Quest from "../member/pages/Quest";
 import TheRuleBook from "../member/components/TheRuleBook";
 import StdOrPro from "../member/pages/StdOrPro";
-
 const router = createRouter({
     history: createWebHistory(),
 
