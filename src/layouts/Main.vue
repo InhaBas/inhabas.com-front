@@ -41,8 +41,6 @@ export default {
   name: "Main.vue",
   components:{TopBar,FooterBar},
 
-
-
   setup() {
     const { cookies } = useCookies();
     return { cookies };
@@ -50,20 +48,21 @@ export default {
 
   created() {
     const urlParams = new URL(location.href).searchParams;
-    const accessToken = urlParams.get('access_token');
-    this.cookies.set("accessToken", accessToken);
 
-    var access = this.cookies.get("accessToken")
+    if (urlParams.has('access_token')) {
+      const accessToken = urlParams.get('access_token');
 
-  // created() {
-  //   let access = this.cookies.get('accessToken' )
+      this.cookies.set("accessToken", accessToken);
 
-    // 로그인 성공시
-    if(access !== null) {
+      const access = this.cookies.get("accessToken")
+
+
+
       // request interceptors
       axios.interceptors.request.use(
           function (config) {
-            config.headers.Authorization = access
+            // config.headers.Authorization = access
+            config.headers.Authorization = access ? `Bearer ${access}` : "";
             return config;
           }, function (error) {
             // 요청에러 처리
@@ -74,8 +73,10 @@ export default {
       history.replaceState({}, null, location.pathname)
 
 
-    }
 
+
+
+    }
   },
 
 
