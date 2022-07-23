@@ -31,8 +31,8 @@
                 <a href="#">{{Id.group_name}}<i class="fa fa-chevron-down"></i></a>
                 <ul class="sub-menu">
                   <!-- 동아리 소개를 누를 경우 url로 넘어간다. -->
-                  <li v-for="boardname in menu[index].menu_list" :key="boardname">
-                    <router-link :page="page" :to="`/${boardname.type.toLowerCase()}/${boardname.id}`">{{boardname.name}}</router-link>
+                  <li v-for="menuName in menu[index].menu_list" :key="menuName">
+                    <router-link :to="`/${menuName.type.toLowerCase()}/${menuName.menu_id}`">{{menuName.name}}</router-link>
                   </li>
                 </ul>
               </li>
@@ -63,7 +63,7 @@ export default {
     }
   },
   created() {
-    axios.get('/api/menu/all')
+    axios.get('/api/menus')
         .then(response => {
           this.menu=response.data;
           console.log(response)})
