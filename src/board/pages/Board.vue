@@ -8,7 +8,7 @@
   <!-- 상단 제목부분 -->
   <div class="page-content bg-white">
     <!----------============= 상단 제목 시작 ================----------->
-    <HeaderTitle :menuId="menuId"></HeaderTitle>
+    <HeaderTitle :menuId="menuId" v-if="menuId"></HeaderTitle>
     <!----------============= 본문 시작 ================----------->
     <div class="content-block min-height-70vh">
       <div class="section-full content-inner bg-white">
@@ -63,8 +63,8 @@
               <div class="extra-cell text-right m-t20">
                 <!-- 게시글 등록 버튼 -->
                 <!-- 관련자만 보이게 처리 -->
-                <button type="submit" class="site-button radius-xl m-l10 bg-bgColor hover:bg-bgColorHo">
-                  <router-link to="/list/register" class="text-white text-decoration-none">
+                <button type="submit" class="site-button radius-xl m-l10 bg-bgColor hover:bg-bgColorHo focus:bg-bgColor">
+                  <router-link :to="`/list/${this.menuId}/register/`" class="text-white text-decoration-none">
                     <i class="fa fa-plus m-r5"></i>게시글 등록
                   </router-link>
                 </button>

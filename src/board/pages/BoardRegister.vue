@@ -1,9 +1,13 @@
 <template>
   <div class="page-wraper">
+    <!--====================메뉴바 시작====================-->
+    <TopBar></TopBar>
+    <!--====================메뉴바 끝====================-->
+  </div>
     <div class="page-content bg-white">
       <!----------============= 상단 제목 시작 ================----------->
 
-      <HeaderTitle></HeaderTitle>
+      <HeaderTitle :menuId="menuId" v-if="menuId"></HeaderTitle>
 
       <!--===============================================입력란=========================================================-->
 
@@ -88,7 +92,7 @@
             <!--등록하기 버튼, 누르면 게시글 상세보기로-->
             <!--최초 글작성 시 나오는 버튼-->
             <div style="display: grid; justify-items: center">
-              <input v-if="!id" class="site-button btn-block button-md mt-10 hover:bg-bgColorHo bg-bgColor" type="submit" style="width: 30%"
+              <input v-if="!id" class="site-button btn-block button-md mt-10 hover:bg-bgColorHo bg-bgColor focus:bg-bgColor" type="submit" style="width: 30%"
                      value="등록하기"
                      @click="upload">
             </div>
@@ -97,21 +101,24 @@
                      value="수정하기"
                      @click="board_modify">
             </div>
-
-            <!-- Pagination END -->
           </div>
         </div>
       </div>
-
     </div>
-  </div>
+
+  <!-- Footer 하단바 시작 -->
+  <FooterBar></FooterBar>
+  <!-- Footer END-->
 
 </template>
 
 <script>
 import HeaderTitle from "../../common/TheHeaderTitle";
 import DragNDrop from "@/common/TheDragNDrop";
+import TopBar from "@/common/TopBar";
+import FooterBar from "@/common/FooterBar";
 import axios from "axios";
+import {useCookies} from "vue3-cookies";
 // import TheTextEditor from "@/common/TheTextEditor";
 
 
@@ -121,36 +128,41 @@ export default {
     // TheTextEditor,
     HeaderTitle,
     DragNDrop,
+    TopBar,
+    FooterBar
   },
+  setup(){
+    const { cookies } = useCookies();
+    return { cookies };
+  },
+
   data(){
     return{
       id:this.$route.query.id,
       title:'',
       contents:'',
-      menuId:'',
+      menuId:this.$route.params.id,
       loginedUser:'',
-      form:'',
+      form:{},
     }
   },
   methods:{
-    upload()
-    {
+    upload() {
       if(!this.title){
         alert("제목을 입력해주세요");
         return;
       }
-      if(!this.contents)
-      {
+      if(!this.contents) {
         alert("내용을 입력해주세요");
         return;
       }
-      this.form ={
+      this.form = {
         title:this.title,
         contents:this.contents,
-        menuId:'6',
-        loginedUser:'1234',
+        menu_id:this.menuId
       }
-      axios.post('https://dev.inhabas.com/api/board',this.form)
+      console.log(this.form)
+      axios.post('/api/board', this.form)
       .then(()=>{
         alert('등록 되었습니다');
         this.$router.go(-1)
@@ -160,9 +172,10 @@ export default {
         console.log(err);
       })
     },
+
     view_title_contents()
     {
-      axios.get('https://dev.inhabas.com/api/board?id=' + this.id)
+      axios.get('/api/board/' + this.id)
       .then((response)=>{
         this.title = response.data.title;
         this.contents = response.data.contents;
@@ -187,7 +200,7 @@ export default {
         contents:this.contents,
         id:this.id,
       }
-      axios.put('https://dev.inhabas.com/api/board',this.form)
+      axios.put('/api/board',this.form)
           .then(()=>{
             alert('수정 되었습니다');
             this.$router.go(-1)

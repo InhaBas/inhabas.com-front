@@ -69,19 +69,19 @@ export default {
           console.log(response)})
         .catch(error => console.log(error));
 
-    window.addEventListener('scroll', this.isFixed);
+    // window.addEventListener('scroll', this.isFixed);
   },
 
   methods: {
-    isFixed() {
-      var setIsFixed = document.getElementById("setIsFixed")
-      if (window.scrollY > 0) {
-        setIsFixed.classList.add('is-fixed')
-      } else {
-        setIsFixed.classList.remove('is-fixed')
-        // console.log(setIsFixed.classList)
-      }
-    }
+    // isFixed() {
+    //   var setIsFixed = document.getElementById("setIsFixed")
+    //   if (window.scrollY > 0) {
+    //     setIsFixed.classList.add('is-fixed')
+    //   } else {
+    //     setIsFixed.classList.remove('is-fixed')
+    //     // console.log(setIsFixed.classList)
+    //   }
+    // }
   },
 
   name: "TopBar.vue"
