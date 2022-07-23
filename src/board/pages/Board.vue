@@ -166,7 +166,7 @@ export default {
   created(){
     console.log(this.menuId)
     let pageParam = new URL(location.href).searchParams.get('page')
-    axios.get('/api/boards?menuId='+this.menuId,{
+    axios.get('/api/boards?menu_id='+this.menuId,{
     // axios.get('/api/budget/history/search', {
       params: {
         page: pageParam
