@@ -200,7 +200,7 @@ export default {
 
 
   created(){
-    axios.get('/api/board?id='+ this.$route.params.id )
+    axios.get('/api/board/'+ this.$route.params.id )
         .then(response => {
           this.id = response.data.id;
           this.title=response.data.title;
