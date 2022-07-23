@@ -32,7 +32,7 @@ const boardRouter =[
         // 게시판 / 공모전 게시판 detail
     },
     {
-        path: "/list/register",
+        path: "/list/:id/register",
         component: BoardRegister
         // 게시판 등록
     },

@@ -23,24 +23,23 @@ import axios from "axios";
 
 export default {
   props:["menuId"],
-  data()
-  {
+  data() {
     return{
       name:'',
       description:'',
       id:this.menuId,
     }
   },
-  name: "HeaderTitle.vue",
-  created()
-  {
-    axios.get('/api/menu/'+this.id)
+
+  created() {
+    axios.get('/api/menu/'+this.menuId)
         .then(response => {
           this.name=response.data.name;
           this.description=response.data.description;
           console.log(response);})
         .catch(error => console.log(error));
-  }
+  },
+  name: "HeaderTitle.vue",
 }
 </script>
 

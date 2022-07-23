@@ -8,7 +8,7 @@
 
     <div class="page-content bg-white">
       <!----------============= 상단 제목 시작 ================----------->
-      <HeaderTitle :menuId="menuId"></HeaderTitle>
+      <HeaderTitle :menuId="menuId" v-if="menuId"></HeaderTitle>
         <!----------============= 본문 시작 ================----------->
         <div class="section-full content-inner">
           <div class="container">
@@ -126,7 +126,7 @@
 
                     <!-- 게시글 수정 버튼 -->
                     <!-- 관련자만 보이게 처리 -->
-                    <button class="site-button radius-xl m-l10 bg-bgColor hover:bg-bgColorHo"
+                    <button class="site-button radius-xl m-l10 bg-bgColor hover:bg-bgColorHo focus:bg-bgColor"
                             @click="modify">
                       <i class="fa fa-pencil m-r5"></i>게시글 수정
                     </button>
@@ -177,7 +177,7 @@ export default {
   methods:{
     delete_board() {
       if (confirm("게시글은 삭제되면 복구가 불가능합니다.\n정말 삭제하시겠습니까?")) {
-        axios.delete('/api/board?id=' + this.id)
+        axios.delete('/api/board/' + this.id)
             .then(() => {
               alert("삭제되었습니다.");
               this.$router.go(-1)
@@ -190,7 +190,7 @@ export default {
     },
     modify()
     {
-      this.$router.push({path:"../register",query:{id:this.$route.params.id}});
+      this.$router.push({path:"../"+this.menuId+"/register",query:{id:this.$route.params.id}});
     },
     dateTime(value){
       return moment(value).format('YYYY-MM-DD hh:mm');
@@ -200,19 +200,20 @@ export default {
 
 
   created(){
-    axios.get('/api/board/'+ this.$route.params.id )
+    axios.get('/api/board/'+ this.id )
         .then(response => {
           this.id = response.data.id;
           this.title=response.data.title;
           this.contents = response.data.contents;
           this.writerName = response.data.writer_name;
-          this.menuId=response.data.menu_id.id;
+          this.menuId=response.data.menu_id;
           this.created = response.data.created;
           this.updated = response.data.updated;
           console.log(response)
         })
         .catch(error => console.log(error));
   },
+
   name: "Board_Detail",
   components: {HeaderTitle,TopBar},
 }
