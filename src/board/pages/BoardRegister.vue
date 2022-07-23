@@ -97,7 +97,7 @@
                      @click="upload">
             </div>
             <div style="display: grid; justify-items: center">
-              <input v-if="id" class="site-button btn-block button-md mt-10 bg: bg-info" type="submit" style="width: 30%"
+              <input v-if="id" class="site-button btn-block button-md mt-10 hover:bg-bgColorHo bg-bgColor focus:bg-bgColor" type="submit" style="width: 30%"
                      value="수정하기"
                      @click="board_modify">
             </div>
