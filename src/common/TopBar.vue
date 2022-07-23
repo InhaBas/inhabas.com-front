@@ -28,10 +28,10 @@
             <ul class="nav navbar-nav">
               <!--====================IBAS 상위메뉴로 가지고 있는 메뉴====================-->
               <li v-for="(Id,index) in menu" :key="Id" class="down active" style="margin-top: 6px">
-                <a href="#">{{Id.groupName}}<i class="fa fa-chevron-down"></i></a>
+                <a href="#">{{Id.group_name}}<i class="fa fa-chevron-down"></i></a>
                 <ul class="sub-menu">
                   <!-- 동아리 소개를 누를 경우 url로 넘어간다. -->
-                  <li v-for="boardname in menu[index].menuList" :key="boardname">
+                  <li v-for="boardname in menu[index].menu_list" :key="boardname">
                     <router-link :page="page" :to="`/${boardname.type.toLowerCase()}/${boardname.id}`">{{boardname.name}}</router-link>
                   </li>
                 </ul>

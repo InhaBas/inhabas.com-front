@@ -19,7 +19,8 @@
                   <div class="dlab-post-meta m-b20">
                     <ul class="d-flex align-items-center">
                       <!-- 게시글 작성자 -->
-                      <li class="post-author"><i class="ti ti-user"></i>By <a
+
+                      <li class="post-author"><i class="bi bi-person"></i>By <a
                           href="javascript:void(0);">{{writerName}}</a>
                       </li>
                       <!-- 게시글 작성시간 -->
@@ -48,17 +49,17 @@
                     <!-- download 쪽에 파일 경로 설정 -->
                     <!-- 파일 리스트 길이가 0이 아닐 경우에만 파일 리스트를 출력하게 함. -->
 <!--                    {% if file_list %}-->
-                    <div class="download-box">
-<!--                      {% for board_file in file_list %}-->
-                      <!-- 첨부파일 1 -->
-                      <i class="fa fa-download m-r15 "></i><a class="line2 text-textColor font-medium" download
-                                                               href="#">파일이름</a>
-                      <!-- 파일 간 구분선 마지막 파일은 구분선을 출력하지 않도록 설정.-->
-<!--                      {% if forloop.revcounter0 != 0 %}-->
-                      <div class="dlab-divider tb10 bg-gray-dark"></div>
-<!--                      {% endif %}-->
-<!--                      {% endfor %}-->
-                    </div>
+<!--                    <div class="download-box">-->
+<!--&lt;!&ndash;                      {% for board_file in file_list %}&ndash;&gt;-->
+<!--                      &lt;!&ndash; 첨부파일 1 &ndash;&gt;-->
+<!--                      <i class="fa fa-download m-r15 "></i><a class="line2 text-textColor font-medium" download-->
+<!--                                                               href="#">파일이름</a>-->
+<!--                      &lt;!&ndash; 파일 간 구분선 마지막 파일은 구분선을 출력하지 않도록 설정.&ndash;&gt;-->
+<!--&lt;!&ndash;                      {% if forloop.revcounter0 != 0 %}&ndash;&gt;-->
+<!--                      <div class="dlab-divider tb10 bg-gray-dark"></div>-->
+<!--&lt;!&ndash;                      {% endif %}&ndash;&gt;-->
+<!--&lt;!&ndash;                      {% endfor %}&ndash;&gt;-->
+<!--                    </div>-->
 <!--                    {% endif %}-->
                     <!-- 게시글 속 사진 모음 -->
                     <div class="widget widget_gallery gallery-grid-4 lightgallery">
@@ -125,7 +126,7 @@
 
                     <!-- 게시글 수정 버튼 -->
                     <!-- 관련자만 보이게 처리 -->
-                    <button class="site-button radius-xl m-l10 bg: bg-bgColor"
+                    <button class="site-button radius-xl m-l10 bg-bgColor hover:bg-bgColorHo"
                             @click="modify">
                       <i class="fa fa-pencil m-r5"></i>게시글 수정
                     </button>
@@ -141,7 +142,7 @@
                   </div>
                 </div>
                 <!--==================== 댓글부분 시작 ====================-->
-                <div id="CommentList"></div>
+<!--                <comment-list></comment-list>-->
                 <!--==================== 댓글부분 끝 ====================-->
               </div>
             </div>
@@ -157,6 +158,8 @@ import HeaderTitle from "../../common/TheHeaderTitle";
 import TopBar from "@/common/TopBar";
 import axios from "axios";
 import moment from "moment";
+// import CommentList from "@/board/pages/CommentList";
+
 
 export default {
 
@@ -174,7 +177,7 @@ export default {
   methods:{
     delete_board() {
       if (confirm("게시글은 삭제되면 복구가 불가능합니다.\n정말 삭제하시겠습니까?")) {
-        axios.delete('https://dev.inhabas.com/api/board?id=' + this.id)
+        axios.delete('/api/board?id=' + this.id)
             .then(() => {
               alert("삭제되었습니다.");
               this.$router.go(-1)
@@ -194,14 +197,16 @@ export default {
     }
   },
 
+
+
   created(){
-    axios.get('https://dev.inhabas.com/api/board?id='+this.$route.params.id)
+    axios.get('/api/board?id='+ this.$route.params.id )
         .then(response => {
           this.id = response.data.id;
           this.title=response.data.title;
           this.contents = response.data.contents;
-          this.writerName = response.data.writerName;
-          this.menuId=response.data.menuId;
+          this.writerName = response.data.writer_name;
+          this.menuId=response.data.menu_id.id;
           this.created = response.data.created;
           this.updated = response.data.updated;
           console.log(response)
@@ -214,5 +219,7 @@ export default {
 </script>
 
 <style scoped>
-
+h2{
+  font-size: 30px;
+}
 </style>

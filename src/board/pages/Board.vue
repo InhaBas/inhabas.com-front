@@ -39,27 +39,9 @@
                 <tbody>
                 <!-- 게시글 출력부 -->
 
-
-                <tr style="background-color: #fff7e4">
-                  <!-- 게시글 번호 -->
-                  <th scope="row"><i class="fa fa-thumb-tack" style="opacity:1; color: rgb(95 81 7);"></i></th>
-                  <!-- 게시글 제목 -->
-                  <!-- 게시글 제목 클릭 시 해당 게시글의 상세 페이지로 이동하며, 제목을 a태크 처리함 -->
-                  <td>
-
-                    <router-link to="/board/detail" class="text-decoration-none text-textColor">
-                      <b>권한에 따른 웹사이트 이용 범위</b>
-                    </router-link>
-
-                  </td>
-                  <!-- 게시글 작성자 -->
-                  <td>양태영</td>
-                  <!-- 게시글 작성일자 -->
-                  <td class="dis-none-media">2021-08-16</td>
-                </tr>
-
-
-                <tr v-for="(item,idx) in content" :key="`ct-content-${idx}`">
+                <tr
+                    v-for="(item,idx) in listData"
+                    :key="`ct-content-${idx}`">
                   <!-- 게시글 번호 -->
                   <th scope="row">{{item.id}}</th>
                   <!-- 게시글 제목 -->
@@ -67,17 +49,14 @@
                   <td>
 
                     <router-link :to="`/list/detail/${item.id}`" class="text-decoration-none text-textColor">{{item.title}}</router-link>
+<!--                    <router-link :to="{ name: 'BoardDetail', params: { boardId : item.id }}" class="text-decoration-none text-textColor">{{item.title}}</router-link>-->
 
                   </td>
                   <!-- 게시글 작성자 -->
-                  <td>{{item.writerName}}</td>
+                  <td>{{item.writer_name}}</td>
                   <!-- 게시글 작성일자 -->
                   <td class="dis-none-media">{{dateTime(item.created)}}</td>
                 </tr>
-
-
-
-
                 </tbody>
               </table>
 
@@ -91,12 +70,20 @@
                 </button>
               </div>
 
-              <!--========== 페이지네이션 시작 ===========-->
-              <!-- 1페이지에 15개 게시글 끌고오고, 게시글이 그보다 적으면, 페이지네이션 안보이게 처리 -->
 
 
               <!--========== 페이지네이션 시작 ===========-->
-              <Paginations :totalPages="totalPages" :page="page"></Paginations>
+              <Pagination
+                  v-if="totalPages > 0"
+                  :pageSetting="pageDataSetting(block, this.pageNumber)"
+                  @paging="pagingMethod"
+                  @change-page="changePage"
+                  ></Pagination>
+
+<!--              <Pagination-->
+<!--                :pageSetting="this.content.length"-->
+<!--              @paging="pagingMethod"-->
+<!--                ></Pagination>-->
               <!--========== 페이지네이션 끝 ===========-->
 
               <!--========== 페이지네이션 끝 ===========-->
@@ -118,7 +105,7 @@
 <script>
 import BoardSearch from "../components/BoardSearch"
 import BoardNavi from "../components/BoardNavi"
-import Paginations from "../../common/ThePaginations";
+import Pagination from "../../common/ThePagination";
 import HeaderTitle from "../../common/TheHeaderTitle";
 import TopBar from "@/common/TopBar";
 import FooterBar from "@/common/FooterBar";
@@ -126,29 +113,93 @@ import axios from "axios";
 import moment from 'moment';
 
 export default {
-  props:["page"],
   data(){
     return{
       menuId:this.$route.params.id,
+      pageNumber: 0,
+      listData:[],
       content:[],
-      totalPages:"",
+      totalPages: 0,
+      block: 5,
+      first: false,
+      last: false,
+      // page: 0
     };
   },
   methods:{
+    changePage: function (page){
+      this.$router.push({name: 'Board', query: {page: page}})
+    },
+
     dateTime(value){
       return moment(value).format('YYYY-MM-DD');
+    },
+    pagingMethod(pageNumber) {
+      this.pageNumber = pageNumber
+      this.pageDataSetting(this.pageCount, this.pageNumber)
+
+
+    },
+
+    pageDataSetting(block, page) {
+      let currentPage = page
+
+      const first =
+          this.first === false ? parseInt(currentPage, 10) - parseInt(1, 10) : null
+      const end =
+          this.last === false
+              ? parseInt(currentPage, 10) + parseInt(1, 10)
+              : null
+
+      let startIndex = (Math.ceil(currentPage / block) - 1) * block + 1
+      let endIndex =
+          startIndex + block > this.totalPages ? this.totalPages : startIndex + block - 1
+      let list = []
+
+      // console.log(currentPage)
+      for (let index = startIndex; index <= endIndex; index++) {
+        list.push(index)
+      }
+      return { first, end, list, currentPage }
+
     }
   },
+
   created(){
-    axios.get('https://dev.inhabas.com/api/board/all?menuId='+this.menuId+"&page"+this.page)
+
+    let pageParam = new URL(location.href).searchParams.get('page')
+    axios.get('/api/board/all?menuId='+this.menuId,{
+    // axios.get('/api/budget/history/search', {
+      params: {
+        page: pageParam
+      },
+
+    })
       .then(response => {
+        // this.content = response.data.page.content;
+        // this.listData = response.data.page.content;
+        // this.totalPages = response.data.page.total_pages;
+        // this.first = response.data.page.first;
+        // this.last = response.data.page.last;
+        // this.pageNumber = response.data.page.pageable.page_number + 1;
         this.content = response.data.content;
-        this.totalPages = response.data.totalPages;
-        console.log(response)})
+        this.listData = response.data.content;
+        this.totalPages = response.data.total_pages;
+        this.first = response.data.first;
+        this.last = response.data.last;
+        this.pageNumber = response.data.pageable.page_number + 1;
+        console.log(response.data)
+        })
       .catch(error => console.log(error));
   },
+  mounted() {
+    this.pagingMethod(this.pageNumber)
+
+
+
+  },
   name: "Board.vue",
-  components: {BoardNavi, BoardSearch, Paginations, HeaderTitle,TopBar,FooterBar},
+  components: {BoardNavi, BoardSearch, Pagination, HeaderTitle,TopBar,FooterBar},
 }
 </script>
 
