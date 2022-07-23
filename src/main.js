@@ -5,8 +5,11 @@ import './index.css' // tailwind.css
 // import Vuex from "vuex"
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import Particles from "particles.vue3"; // std_or_pro 뒷 배경 애니메이션
+// import Particles from "particles.vue3"; // std_or_pro 뒷 배경 애니메이션
 import VueCookies from 'vue3-cookies'
+
+import { BootstrapIconsPlugin } from 'bootstrap-icons-vue';
+
 
 import "../src/assets/css/templete.min.css"
 import "../src/assets/css/ibas_contents.css"
@@ -24,10 +27,12 @@ const app = createApp(App);
 
 app.use(router)
 app.use(VueAxios, axios)
-app.use(Particles)
+// app.use(Particles)
 app.use(VueCookies)
-app.mount('#app')
 
+app.use(BootstrapIconsPlugin);
+
+app.mount('#app')
 
 app.use(VueCookies, {
     expireTimes: "30d",

@@ -94,7 +94,7 @@
 
                 <!--========== 페이지네이션 시작 ===========-->
                 <!-- 1페이지에 6~8개 게시글 끌고오고, 게시글이 그보다 적으면, 페이지네이션 안보이게 처리 -->
-                <Paginations></Paginations>
+                <Pagination></Pagination>
                 <!--========== 페이지네이션 끝 ===========-->
               </div>
             </div>
@@ -113,14 +113,14 @@
 <script>
 import BoardSearch from "../components/BoardSearch"
 import BoardNavi from "../components/BoardNavi"
-import Paginations from "../../common/ThePaginations";
+import Pagination from "../../common/ThePagination";
 import HeaderTitle from "../../common/TheHeaderTitle";
 import TopBar from "@/common/TopBar";
 import FooterBar from "@/common/FooterBar";
 
 export default {
   name: "ContestBoard.vue",
-  components: {BoardNavi, BoardSearch, Paginations, HeaderTitle,TopBar,FooterBar},
+  components: {BoardNavi, BoardSearch, Pagination, HeaderTitle,TopBar,FooterBar},
   data() {
     return {
       menuId:this.$route.params.id,

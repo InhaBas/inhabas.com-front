@@ -175,7 +175,7 @@
     padding: 0 10px;
     vertical-align: middle;
     background-color: #f5f5f5;
-    border: 0px solid #ebebeb;
+    border: 0 solid #ebebeb;
     border-radius: 5px;
 
 }
@@ -227,7 +227,7 @@
     height: 270px;
     opacity: 1;
     display: block;
-    align-items: start;
+    align-items: flex-start;
     justify-content: center;
     /*display: none;*/
 
@@ -236,7 +236,7 @@
 /* 쓰인 곳: 모달 날짜 내용 input 감싸는 div*/
 .introduce-li-flex {
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
 }
 
