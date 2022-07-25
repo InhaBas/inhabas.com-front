@@ -6,7 +6,7 @@
         <HeaderTitle></HeaderTitle>
         <!----------============= 본문 시작 ================----------->
         <div class="section-full content-inner">
-          <div class="container">
+          <div class="container-layout">
             <div class="row" style="justify-content: center">
               <div class="col-lg-8 col-xl-8 p-b30">
                 <div class="blog-post blog-single">

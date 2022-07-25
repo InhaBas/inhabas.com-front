@@ -1,20 +1,9 @@
 <template>
-  <div class="page-wraper">
-    <!--====================메뉴바 시작====================-->
-    <TopBar></TopBar>
-    <!--====================메뉴바 끝====================-->
-  </div>
-    <div class="page-content bg-white">
-      <!----------============= 상단 제목 시작 ================----------->
 
-      <HeaderTitle :menuId="menuId" v-if="menuId"></HeaderTitle>
-
-      <!--===============================================입력란=========================================================-->
-
-
-      <div class="content-block">
-        <div class="section-full content-inner bg-white">
-          <div class="container">
+  <div class="page-content bg-white">
+    <div class="content-block min-height-70vh">
+      <div class="section-full content-inner bg-white" style="padding-top: 50px">
+        <div class="container-layout">
 
             <!--=====================-->
             <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -106,17 +95,10 @@
       </div>
     </div>
 
-  <!-- Footer 하단바 시작 -->
-  <FooterBar></FooterBar>
-  <!-- Footer END-->
-
 </template>
 
 <script>
-import HeaderTitle from "../../common/TheHeaderTitle";
 import DragNDrop from "@/common/TheDragNDrop";
-import TopBar from "@/common/TopBar";
-import FooterBar from "@/common/FooterBar";
 import axios from "axios";
 import {useCookies} from "vue3-cookies";
 // import TheTextEditor from "@/common/TheTextEditor";
@@ -126,10 +108,7 @@ export default {
   name: "BoardRegister.vue",
   components: {
     // TheTextEditor,
-    HeaderTitle,
     DragNDrop,
-    TopBar,
-    FooterBar
   },
   setup(){
     const { cookies } = useCookies();
@@ -141,7 +120,7 @@ export default {
       id:this.$route.query.id,
       title:'',
       contents:'',
-      menuId:this.$route.params.id,
+      menuId:this.$route.params.menuId,
       loginedUser:'',
       form:{},
     }

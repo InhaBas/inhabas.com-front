@@ -7,7 +7,7 @@ import Board from "@/board/pages/Board";
 
 const boardRouter =[
     {
-        path: "/list/:id",
+        path: "/list/:menuId",
         // path: "/list",
         name: 'Board',
         component: Board,
@@ -20,19 +20,19 @@ const boardRouter =[
     //     // 게시판
     // },
     {
-        path: "/contest/:id",
+        path: "/contest/:menuId",
         component: ContestBoard
         // 공모전 게시판
     },
     {
-        path: "/list/detail/:id",
+        path: "/list/:menuId/detail/:id",
         name:"BoardDetail",
         component: BoardDetail,
         props: true
         // 게시판 / 공모전 게시판 detail
     },
     {
-        path: "/list/:id/register",
+        path: "/list/:menuId/register",
         component: BoardRegister
         // 게시판 등록
     },

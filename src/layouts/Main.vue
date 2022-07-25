@@ -2,9 +2,6 @@
 <!--  <div id="loading-area"></div>-->
   <div class="page-wraper">
     <!--임시로 넣어둠, 상단바 이후에 블럭처리해서 바꿀예정-->
-    <!--====================메뉴바 시작====================-->
-    <TopBar></TopBar>
-    <!--====================메뉴바 끝====================-->
 
 
     <div class="page-content bg-white " style="padding-bottom: 0">
@@ -23,23 +20,16 @@
       </div>
     </div>
 
-  <!-- Footer 하단바 시작 -->
-    <FooterBar></FooterBar>
-  <!-- Footer END-->
-    <button class="scroltop fa fa-chevron-up"></button>
 
   </div>
 
 </template>
 
 <script>
-import TopBar from "@/common/TopBar";
-import FooterBar from "@/common/FooterBar";
 import axios from "axios";
 import { useCookies } from "vue3-cookies";
 export default {
   name: "Main.vue",
-  components:{TopBar,FooterBar},
 
   setup() {
     const { cookies } = useCookies();

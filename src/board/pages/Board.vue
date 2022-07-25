@@ -1,18 +1,9 @@
 <template>
 
-  <div class="page-wraper">
-    <!--====================메뉴바 시작====================-->
-    <TopBar></TopBar>
-    <!--====================메뉴바 끝====================-->
-  </div>
-  <!-- 상단 제목부분 -->
   <div class="page-content bg-white">
-    <!----------============= 상단 제목 시작 ================----------->
-    <HeaderTitle :menuId="menuId" v-if="menuId"></HeaderTitle>
-    <!----------============= 본문 시작 ================----------->
     <div class="content-block min-height-70vh">
-      <div class="section-full content-inner bg-white">
-        <div class="container">
+      <div class="section-full content-inner bg-white" style="padding-top: 50px">
+        <div class="container-layout">
           <div class="row">
             <!--========== 왼쪽 검색창 및 네비게이션 시작 ==========-->
             <div class="col-lg-3 col-xl-3">
@@ -48,7 +39,7 @@
                   <!-- 게시글 제목 클릭 시 해당 게시글의 상세 페이지로 이동하며, 제목을 a태크 처리함 -->
                   <td>
 
-                    <router-link :to="`/list/detail/${item.id}`" class="text-decoration-none text-textColor">{{item.title}}</router-link>
+                    <router-link :to="`/list/${this.menuId}/detail/${item.id}`" class="text-decoration-none text-textColor">{{item.title}}</router-link>
 <!--                    <router-link :to="{ name: 'BoardDetail', params: { boardId : item.id }}" class="text-decoration-none text-textColor">{{item.title}}</router-link>-->
 
                   </td>
@@ -79,14 +70,7 @@
                   @paging="pagingMethod"
                   @change-page="changePage"
                   ></Pagination>
-
-<!--              <Pagination-->
-<!--                :pageSetting="this.content.length"-->
-<!--              @paging="pagingMethod"-->
-<!--                ></Pagination>-->
-              <!--========== 페이지네이션 끝 ===========-->
-
-              <!--========== 페이지네이션 끝 ===========-->
+              <!--========== 페이지네이션 시작 ===========-->
             </div>
           </div>
         </div>
@@ -94,7 +78,6 @@
     </div>
   </div>
   <!-- Footer 하단바 시작 -->
-  <FooterBar></FooterBar>
   <!-- Footer END-->
 
 
@@ -104,16 +87,13 @@
 import BoardSearch from "../components/BoardSearch"
 import BoardNavi from "../components/BoardNavi"
 import Pagination from "../../common/ThePagination";
-import HeaderTitle from "../../common/TheHeaderTitle";
-import TopBar from "@/common/TopBar";
-import FooterBar from "@/common/FooterBar";
 import axios from "axios";
 import moment from 'moment';
 
 export default {
   data(){
     return{
-      menuId:this.$route.params.id,
+      menuId:this.$route.params.menuId,
       pageNumber: 0,
       listData:[],
       content:[],
@@ -174,12 +154,6 @@ export default {
 
     })
       .then(response => {
-        // this.content = response.data.page.content;
-        // this.listData = response.data.page.content;
-        // this.totalPages = response.data.page.total_pages;
-        // this.first = response.data.page.first;
-        // this.last = response.data.page.last;
-        // this.pageNumber = response.data.page.pageable.page_number + 1;
         this.content = response.data.content;
         this.listData = response.data.content;
         this.totalPages = response.data.total_pages;
@@ -197,7 +171,7 @@ export default {
 
   },
   name: "Board.vue",
-  components: {BoardNavi, BoardSearch, Pagination, HeaderTitle,TopBar,FooterBar},
+  components: {BoardNavi, BoardSearch, Pagination},
 }
 </script>
 

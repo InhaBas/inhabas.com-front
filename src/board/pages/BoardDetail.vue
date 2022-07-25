@@ -1,17 +1,9 @@
 <template>
-  <div class="page-wraper">
 
-    <!--====================메뉴바 시작====================-->
-    <TopBar></TopBar>
-    <!--====================메뉴바 끝====================-->
-
-
-    <div class="page-content bg-white">
-      <!----------============= 상단 제목 시작 ================----------->
-      <HeaderTitle :menuId="menuId" v-if="menuId"></HeaderTitle>
-        <!----------============= 본문 시작 ================----------->
-        <div class="section-full content-inner">
-          <div class="container">
+  <div class="page-content bg-white">
+    <div class="content-block min-height-70vh">
+      <div class="section-full content-inner bg-white" style="padding-top: 50px">
+        <div class="container-layout">
             <div class="row" style="justify-content: center">
               <div class="col-lg-8 col-xl-8 p-b30">
                 <div class="blog-post blog-single">
@@ -154,8 +146,6 @@
 </template>
 
 <script>
-import HeaderTitle from "../../common/TheHeaderTitle";
-import TopBar from "@/common/TopBar";
 import axios from "axios";
 import moment from "moment";
 // import CommentList from "@/board/pages/CommentList";
@@ -190,7 +180,7 @@ export default {
     },
     modify()
     {
-      this.$router.push({path:"../"+this.menuId+"/register",query:{id:this.$route.params.id}});
+      this.$router.push({path:"../register",query:{id:this.$route.params.id}});
     },
     dateTime(value){
       return moment(value).format('YYYY-MM-DD hh:mm');
@@ -215,7 +205,6 @@ export default {
   },
 
   name: "Board_Detail",
-  components: {HeaderTitle,TopBar},
 }
 </script>
 
