@@ -83,7 +83,7 @@
 
 <script>
 export default {
-  name: "FooterBar.vue"
+  name: "Footer.vue"
 }
 </script>
 

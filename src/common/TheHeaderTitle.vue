@@ -27,12 +27,12 @@ export default {
     return{
       name:'',
       description:'',
-      id:this.menuId,
+      id:this.$route.params.menuId,
     }
   },
 
   created() {
-    axios.get('/api/menu/'+this.menuId)
+    axios.get('/api/menu/'+this.id)
         .then(response => {
           this.name=response.data.name;
           this.description=response.data.description;

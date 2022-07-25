@@ -9,7 +9,7 @@
       <!--===============================================입력란=========================================================-->
       <div class="content-block">
         <div class="section-full content-inner bg-white">
-          <div class="container">
+          <div class="container-layout">
             <div class="content-box">
 
               <div class="content-header">

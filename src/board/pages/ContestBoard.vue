@@ -10,7 +10,7 @@
       <!----------============= 본문 시작 ================----------->
       <div class="content-block min-height-70vh">
         <div class="section-full content-inner bg-white">
-          <div class="container">
+          <div class="container-layout">
             <div class="row">
               <!--========== 왼쪽 검색창 및 네비게이션 시작 ==========-->
               <div class="col-lg-3 col-xl-3">
@@ -115,8 +115,8 @@ import BoardSearch from "../components/BoardSearch"
 import BoardNavi from "../components/BoardNavi"
 import Pagination from "../../common/ThePagination";
 import HeaderTitle from "../../common/TheHeaderTitle";
-import TopBar from "@/common/TopBar";
-import FooterBar from "@/common/FooterBar";
+import TopBar from "@/common/Header";
+import FooterBar from "@/common/Footer";
 
 export default {
   name: "ContestBoard.vue",

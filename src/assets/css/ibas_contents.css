@@ -713,3 +713,26 @@ input[type=checkbox] + label:after {
 .alt-tran{
     transform: translate3d(0px, 52px, -9px) !important;
 }
+
+.container-layout{
+    width:100%;
+    padding-right:15px;
+    padding-left:15px;
+    margin-right:auto;
+    margin-left:auto}
+
+@media(min-width:576px){
+    .container-layout{max-width:540px}
+}
+
+@media(min-width:768px){
+    .container-layout{max-width:720px}
+}
+
+@media(min-width:992px){
+    .container-layout{max-width:960px}
+}
+
+@media(min-width:1200px){
+    .container-layout{max-width:1170px}
+}
