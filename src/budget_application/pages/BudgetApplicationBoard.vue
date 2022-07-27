@@ -64,7 +64,7 @@
           </div>
           <!--신청하기 버튼, 누르면 작성페이지로 이동-->
           <div class="extra-cell text-right" style="margin: 20px 20px 0px 0px">
-            <router-link :to="/buget/" class="site-button radius-xl m-l10 bg-bgColor hover:bg-bgColorHo focus:bg-bgColor">
+            <router-link :to="`/budget_support/${this.menuId}/register/`" class="site-button radius-xl m-l10 bg-bgColor hover:bg-bgColorHo focus:bg-bgColor">
               <i class="fa fa-plus m-r5"></i>
               신청하기
             </router-link>
