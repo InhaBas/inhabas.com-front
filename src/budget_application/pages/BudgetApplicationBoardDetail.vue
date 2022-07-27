@@ -6,15 +6,16 @@
         <div class="container-layout">
           <!--=====================-->
           <!--승인을 대기 중일 때 뜨는 알람-->
-          <div class="alert alert-secondary" role="alert" style="text-align: center">
+          <div v-if="this.status === 'WAITING'" class="alert alert-secondary" role="alert" style="text-align: center">
             <i>승인대기중</i>
           </div>
           <!--승인 완료 시 뜨는 알람-->
-          <div class="alert alert-success" role="alert" style="text-align: center">
+          <div v-else-if="this.status === 'APPROVED'" class="alert alert-success" role="alert"
+               style="text-align: center">
             <i>승인완료</i>
           </div>
           <!--승인 거절 시 뜨는 알람, 거절 사유 입력하면 같이 뜨게 만들기-->
-          <div class="alert alert-danger" role="alert" style="text-align: center">
+          <div v-else-if="this.status === 'DENIED'" class="alert alert-danger" role="alert" style="text-align: center">
             <i>승인거절 ( 거절사유 : {{ rejectReason }} )</i>
           </div>
           <!--지급완료 시 뜨는 알람-->
@@ -33,51 +34,48 @@
                   </li>
                   <!-- 게시글 작성시간 -->
                   <li class="post-comment"><i
-                      class="ti ti-alarm-clock"></i> {{ dateCreated }}
+                      class="ti ti-alarm-clock">{{dateTime(dateCreated)}}</i>
                   </li>
                 </ul>
               </div>
             </div>
             <!--여기까지-->
             <div class="content-body">
-              <div class="form-group">
-                <h4 class="post-title "
-                    style="margin-top: 10px; margin-bottom: 8px">{{ title }}</h4>
-              </div>
+                <h3 class="font-24 font-bold">{{ title }}</h3>
             </div>
           </div>
           <!--====================================제목끝=============================================-->
           <!--====================================지출 날짜 시작==============================================-->
           <div class="content-box">
             <div class="content-header">
-              <h3 class="title">지출날짜</h3>
+              <h3 class="title font-bold">지출날짜</h3>
             </div>
             <div class="content-body">
-              <div class="form-group">
-                <a>{{ dateUsed }}</a>
+              <div class="form-group font-medium">
+                <h4>{{ dateTime(dateUsed) }}</h4>
               </div>
             </div>
           </div>
           <!--====================================지출 날짜 끝=============================================-->
-          <!--====================================지출 내용 시작==============================================-->
+          <!--====================================지출 내역 시작==============================================-->
           <div class="content-box">
             <div class="content-header">
-              <h3 class="title">지출내용</h3>
+              <h3 class="title font-bold">지출내역</h3>
             </div>
             <div class="content-body">
-              <div class="form-group">
+              <div class="form-group font-medium">
                 <a>{{ details }}</a>
               </div>
             </div>
           </div>
-          <!--====================================지출내용 끝=============================================-->
+          <!--====================================지출내역 끝=============================================-->
           <!--====================================지출금액 시작==============================================-->
           <div class="content-box">
             <div class="content-header">
-              <h3 class="title">지출금액</h3>
+              <h3 class="title font-bold">지출금액</h3>
             </div>
             <div class="content-body">
-              <div class="form-group">
+              <div class="form-group font-medium">
                 <a>{{ outcome }}</a>
               </div>
             </div>
@@ -86,10 +84,10 @@
           <!--====================================사용인 시작==============================================-->
           <div class="content-box">
             <div class="content-header">
-              <h3 class="title">사용인</h3>
+              <h3 class="title font-bold">사용인</h3>
             </div>
             <div class="content-body">
-              <div class="form-group">
+              <div class="form-group font-medium">
                 <a>{{ applicationWriterName }}</a>
               </div>
             </div>
@@ -98,10 +96,10 @@
           <!--====================================입금계좌 시작==============================================-->
           <div class="content-box">
             <div class="content-header">
-              <h3 class="title">입금받을 계좌</h3>
+              <h3 class="title font-bold">입금받을 계좌</h3>
             </div>
             <div class="content-body">
-              <div class="form-group">
+              <div class="form-group font-medium">
                 <a>{{ accounts }}</a>
               </div>
             </div>
@@ -111,56 +109,43 @@
 
           <!--====================================영수증 끝=============================================-->
           <!-- 게시글 삭제 및 수정 div -->
+          <!-- 게시글 삭제 및 수정 div -->
           <div class="extra-cell text-right">
+
             <!-- 게시글 수정 버튼 -->
-            <a
-                class="site-button radius-xl m-l10 bg-bgColor hover:bg-bgColorHo focus:bg-bgColor"><i
-                class="fa fa-pencil m-r5"></i>
-              지원신청 수정</a>
+            <!-- 관련자만 보이게 처리 -->
+            <button class="site-button radius-xl m-l10 bg-bgColor hover:bg-bgColorHo focus:bg-bgColor"
+                    @click="modify">
+              <i class="fa fa-pencil m-r5"></i>지원서 수정
+            </button>
             <!-- 게시글 삭제 버튼 -->
-            <form id="form-bank-support-update" action="{% url 'bank_support_update' bank.bank_no %}"
-                  method="get"
-                  style="display: none">
-            </form>
-            <a href="#" onclick="goDelete()"
-               class="site-button red radius-xl m-l10"><i
-                class="fa fa-trash m-r5"></i>
-              지원신청 철회</a>
+            <!-- 관련자만 보이게 처리 -->
+
+            <button class="site-button red radius-xl m-l10" @click="delete_board">
+              <!--                            onclick="goPage('{% url '#' board_no=board.board_no %}', true, '게시글은 삭제되면 복구가 불가능합니다.\n정말 삭제하시겠습니까?')">-->
+              <i class="fa fa-trash m-r5"></i>지원서 삭제
+            </button>
           </div>
-          <form id="form-bank-support-delete" action="{% url 'bank_support_delete' bank.bank_no %}"
-                method="post"
-                style="display: none">
-          </form>
           <!--=======승인/거절 버튼======-->
           <div class="d-flex justify-content-center m-t50">
-            <!--승인-->
-            <button type="button" class="btn btn-outline-success btn-lg"
-                    style="width: 200px; font-weight: bold"
-                    onclick="goApply()">
-              승인
-            </button>
-            <form id="form-bank-support-apply"
-                  action="#"
-                  method="post" style="display: none">
-              <input type="hidden" name="bank_apply_no" value="2"/>
-            </form>
-            <!--거절-->
-            <button type="button" class="btn btn-outline-danger btn-lg "
-                    style="width: 200px; margin-left: 10px; font-weight: bold"
-                    onclick="return confirm('승인을 거절하시겠습니까?')"
-                    href="javascript:void(0);" data-toggle="modal" data-target="#favorite">
-              거절
-            </button>
+            <div v-if="this.status === 'WAITING'">
+              <!--승인-->
+              <button type="button" class="btn btn-outline-success btn-lg width-200 font-bold">
+                승인
+              </button>
+
+              <!--거절-->
+              <button type="button" class="btn btn-outline-danger btn-lg width-200 m-l10 font-bold "
+                      onclick="return confirm('승인을 거절하시겠습니까?')"
+                      href="javascript:void(0);" data-toggle="modal" data-target="#favorite">
+                거절
+              </button>
+            </div>
             <!--지급완료, 승인버튼 누르기 전에는 안나오고, 승인버튼 누르면 승인,거절 버튼은 없어지고 이 버튼만 보이게 함-->
-            <button type="button" class="btn btn-outline-primary btn-lg"
-                    style="width: 200px; font-weight: bold"
-                    onclick="goDeposit()">지급완료
+            <button v-else-if="this.status === 'APPROVED'" type="button" class="btn btn-outline-primary btn-lg width-200 font-bold">
+              지급완료
             </button>
-            <form id="form-bank-support-deposit"
-                  action=""
-                  method="post">
-              <input type="hidden" name="bank_apply_no" value="4"/>
-            </form>
+
           </div>
           <!---->
           <!-- 거절 버튼 누르면 나오는 창 -->
@@ -221,23 +206,23 @@ export default {
   data() {
     return {
       id: this.$route.params.application_id,
+      menuId: this.$route.params.menuId,
       title: '',
       details: '',
-      menuId: '',
       applicationWriterName: '',
       dateUsed: '',
       dateCreated: '',
       outcome: '',
       accounts: '',
       status: '',
-      rejectReason: ''
+      rejectReason: '',
     }
   },
 
   methods: {
     delete_board() {
-      if (confirm("게시글은 삭제되면 복구가 불가능합니다.\n정말 삭제하시겠습니까?")) {
-        axios.delete('/api/board/' + this.id)
+      if (confirm("지원서는 삭제되면 복구가 불가능합니다.\n정말 삭제하시겠습니까?")) {
+        axios.delete('/api/budget/application/' + this.id)
             .then(() => {
               alert("삭제되었습니다.");
               this.$router.go(-1)
@@ -249,18 +234,16 @@ export default {
       }
     },
     modify() {
-      this.$router.push({path: "../" + this.menuId + "/register", query: {id: this.$route.params.id}});
+      this.$router.push({path: "../register", query: {application_id: this.$route.params.application_id}});
     },
     dateTime(value) {
       return moment(value).format('YYYY-MM-DD hh:mm');
     }
   },
 
-
   created() {
     axios.get('/api/budget/application/' + this.id)
         .then(response => {
-          this.menuId = response.data.menu_id;
           this.title = response.data.title;
           this.details = response.data.details;
           this.applicationWriterName = response.data.application_writer_name;
