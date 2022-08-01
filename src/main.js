@@ -10,7 +10,6 @@ import VueCookies from 'vue3-cookies'
 
 import { BootstrapIconsPlugin } from 'bootstrap-icons-vue';
 
-
 import "../src/assets/css/templete.min.css"
 import "../src/assets/css/ibas_contents.css"
 import "../src/assets/css/posting_detail.css"
@@ -31,6 +30,7 @@ app.use(VueAxios, axios)
 app.use(VueCookies)
 
 app.use(BootstrapIconsPlugin);
+
 
 app.mount('#app')
 

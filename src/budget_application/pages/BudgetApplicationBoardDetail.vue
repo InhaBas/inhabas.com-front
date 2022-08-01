@@ -1,8 +1,8 @@
 <template>
-
-  <div class="page-content bg-white">
+  <div :class="{'modal-bg': this.showModal}"> </div>
+  <div class="page-content">
     <div class="content-block min-height-70vh">
-      <div class="section-full content-inner bg-white" style="padding-top: 50px">
+      <div class="section-full content-inner" style="padding-top: 50px">
         <div class="container-layout">
           <!--=====================-->
           <!--승인을 대기 중일 때 뜨는 알람-->
@@ -26,7 +26,7 @@
           <div class="content-box">
             <!--게시글 작성자, 작성시간 나옴-->
             <div class="content-header">
-              <div class="dlab-post-meta" style="margin: 0px">
+              <div class="dlab-post-meta" style="margin: 0">
                 <ul class="d-flex align-items-center">
                   <!-- 게시글 작성자 -->
                   <li class="post-author"><i
@@ -130,65 +130,25 @@
           <div class="d-flex justify-content-center m-t50">
             <div v-if="this.status === 'WAITING'">
               <!--승인-->
-              <button type="button" class="btn btn-outline-success btn-lg width-200 font-bold">
+              <button type="button" @click="status_approved()"
+                      class="btn btn-outline-success btn-lg width-200 font-bold">
                 승인
               </button>
 
               <!--거절-->
               <button type="button" class="btn btn-outline-danger btn-lg width-200 m-l10 font-bold "
-                      onclick="return confirm('승인을 거절하시겠습니까?')"
-                      href="javascript:void(0);" data-toggle="modal" data-target="#favorite">
+                      @click="denied_reason()">
                 거절
               </button>
             </div>
             <!--지급완료, 승인버튼 누르기 전에는 안나오고, 승인버튼 누르면 승인,거절 버튼은 없어지고 이 버튼만 보이게 함-->
-            <button v-else-if="this.status === 'APPROVED'" type="button" class="btn btn-outline-primary btn-lg width-200 font-bold">
+            <button v-else-if="this.status === 'APPROVED'" @click="status_processed()" type="button" class="btn btn-outline-primary btn-lg width-200 font-bold">
               지급완료
             </button>
 
           </div>
           <!---->
-          <!-- 거절 버튼 누르면 나오는 창 -->
-          <div class="modal fade modal-bx-info" id="favorite" tabindex="-1" role="dialog"
-               aria-labelledby="FavoriteModalLongTitle" aria-hidden="true">
-            <div class="modal-dialog " role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="FavoriteModalLongTitle">승인거절 사유</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"><i class="la la-close"></i></span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <div class="tab-content nav">
-                    <div id="login" class="tab-pane active"
-                         style="margin-bottom: -25px; margin-top: 10px">
-                      <form id="form-bank-support-reject"
-                            action="#"
-                            class="dlab-form"
-                            method="post">
-                        <!--승인 거절 사유 입력창-->
-                        <input type="hidden" name="bank_apply_no" value="3">
-                        <div class="form-group">
-                          <input class="form-control"
-                                 name="bank_reject_reason"
-                                 placeholder="승인거절 사유를 입력해주세요"
-                                 type="text" maxlength="50"/>
-                        </div>
-                        <!--거절버튼-->
-                        <div class="form-group">
-                          <button type="submit" class="site-button btn-block button-md"
-                                  onclick="alert('승인이 거절되었습니다')">입력
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- 거절 버튼 누르면 나오는 창 끝 -->
+          <TheModal :id="this.id" v-show="showModal" @close-modal="showModal = false"></TheModal>
 
         </div>
       </div>
@@ -199,10 +159,11 @@
 <script>
 import axios from "axios";
 import moment from "moment";
+import TheModal from "@/common/TheModal"
 
 export default {
   name: "BudgetApplicationBoardDetail.vue",
-
+  components: {TheModal},
   data() {
     return {
       id: this.$route.params.application_id,
@@ -216,6 +177,8 @@ export default {
       accounts: '',
       status: '',
       rejectReason: '',
+      change_form: {},
+      showModal: false,
     }
   },
 
@@ -236,6 +199,46 @@ export default {
     modify() {
       this.$router.push({path: "../register", query: {application_id: this.$route.params.application_id}});
     },
+    status_approved() {
+      this.change_form =  {
+        status: 'APPROVED',
+        reject_reason: this.rejectReason
+      }
+      axios.put('/api/budget/application/'+ this.id + '/status', this.change_form)
+          .then(()=>{
+            alert('승인완료 되었습니다');
+            this.$router.go(-1)
+          })
+          .catch((err)=>{
+            alert('승인완료에 실패하였습니다')
+            console.log(err);
+          })
+    },
+
+    denied_reason() {
+      if(confirm("승인을 거절 하시겠습니까?") === true) {
+        this.showModal = true
+      }
+
+    },
+
+    status_processed(){
+      this.change_form =  {
+        status: 'PROCESSED',
+        reject_reason: this.rejectReason
+      }
+      axios.put('/api/budget/application/'+ this.id + '/status', this.change_form)
+          .then(()=>{
+            alert('지급완료 되었습니다');
+            this.$router.go(-1)
+          })
+          .catch((err)=>{
+            alert('지급완료에 실패하였습니다')
+            console.log(err);
+          })
+    },
+
+
     dateTime(value) {
       return moment(value).format('YYYY-MM-DD hh:mm');
     }
@@ -262,5 +265,12 @@ export default {
 </script>
 
 <style scoped>
-
+/*.modal-bg {*/
+/*  width: 100%;*/
+/*  height: 100%;*/
+/*  background-color: #000000 !important;*/
+/*  opacity: 0.5;*/
+/*  position: fixed;*/
+/*  z-index: 999;*/
+/*}*/
 </style>
