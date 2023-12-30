@@ -3,16 +3,9 @@ import { useNavigate } from "react-router-dom";
 
 import { theme } from "../../../styles/theme";
 
-import { styled } from "styled-components";
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
 import P from "../../../styles/assets/P";
-
-const BoardTableHover = styled(FlexDiv)`
-    &:hover {
-        background-color: ${theme.color.tableHo};
-    }
-`;
 
 const LectureCard = () => {
     const navigate = useNavigate();
