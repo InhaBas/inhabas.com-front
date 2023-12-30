@@ -1,19 +1,28 @@
-import { DefaultTheme } from "styled-components"
+import { DefaultTheme } from "styled-components";
 
 const color = {
-    orange: "#FF5C00", // 주 색상
-    orange1: "#FE7E48",
-    orange2: "rgba(255, 92, 0, 0.1)",
     bk: "#242230",
     wh: "#FFFFFF",
-    grey: "#EFEFEF",
+    red: "#f56642",
+    blue: "#007bff",
+    grey: "#4b4d56",
     grey1: "#DBDBDB",
     grey2: "#A5A4A8",
     grey3: "#7F8193",
-    grey4: "#585469",
-    grey6: "#363342",
+    grey4: "#7886a0",
+    green: "#d4edda",
+    TextGreen: "#155724",
+    tableHo: "#ededed",
     transparent: "transparent",
-}
+    bklayer: "rgba(0, 0, 0, 0.4)",
+    whlayer: "rgba(255, 255, 255, 0.1)",
+    border: "#ecebf5",
+    tableBorder: "#dee2e6",
+    textColor: "#4611a7",
+    bgColor: "#4611a7",
+    bgColorHo: "#7133e2",
+    none: "rgba(0, 0, 0, 0.1)",
+};
 
 const fontSize = {
     xs: "12px",
@@ -21,17 +30,19 @@ const fontSize = {
     md: "16px",
     lg: "18px",
     xl: "20px",
-    xxl: "22px",
-    xxxl: "28px",
-}
+    xxl: "28px",
+    xxxl: "50px",
+    extraBig: "80pt",
+    extraBig1: "60pt",
+};
 
-export type ColorTypes = typeof color
-export type FontSizeTypes = typeof fontSize
+export type ColorTypes = typeof color;
+export type FontSizeTypes = typeof fontSize;
 
 export const theme: DefaultTheme = {
     color,
     fontSize,
-}
+};
 
 // const theme: DefaultTheme = {}
 

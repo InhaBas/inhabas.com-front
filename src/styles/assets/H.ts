@@ -1,10 +1,12 @@
-import { styled, DefaultTheme } from "styled-components"
+import { DefaultTheme, styled } from "styled-components"
 
 interface Hstyle {
     theme: DefaultTheme
     color?: keyof DefaultTheme["color"]
     fontSize?: keyof DefaultTheme["fontSize"]
     fontWeight?: number
+    $lineHeight?: number
+    $letterSpacing?: string
 }
 
 const H1 = styled.h1<Hstyle>`
@@ -12,9 +14,11 @@ const H1 = styled.h1<Hstyle>`
     height: fit-content;
     margin: 0;
     padding: 0;
-    font-size: ${(props) => props.theme.fontSize || props.theme.fontSize};
+    font-size: ${(props) => props.theme.fontSize[props.fontSize || "md"]};
     font-weight: ${(props) => props.fontWeight || "700"};
-    color: ${(props) => props.theme.color || props.theme.color};
+    color: ${(props) => props.theme.color[props.color || "bk"]};
+    line-height: ${(props) => props.$lineHeight || "normal"};
+    letter-spacing: ${(props) => props.$letterSpacing || "normal"};
 `
 
 const H2 = styled.h2<Hstyle>`
@@ -22,9 +26,11 @@ const H2 = styled.h2<Hstyle>`
     height: fit-content;
     margin: 0;
     padding: 0;
-    font-size: ${(props) => props.theme.fontSize || props.theme.fontSize};
+    font-size: ${(props) => props.theme.fontSize[props.fontSize || "md"]};
     font-weight: ${(props) => props.fontWeight || "500"};
-    color: ${(props) => props.theme.color || props.theme.color};
+    color: ${(props) => props.theme.color[props.color || "bk"]};
+    line-height: ${(props) => props.$lineHeight || "normal"};
+    letter-spacing: ${(props) => props.$letterSpacing || "normal"};
 `
 
 export { H1, H2 }
