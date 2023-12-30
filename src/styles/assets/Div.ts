@@ -23,7 +23,7 @@ interface DivStyle {
     direction?: string;
     wrap?: string;
     $pointer?: boolean;
-    minHeight?: string;
+    $minHeight?: string;
     $maxHeight?: string;
     $minWidth?: string;
     $maxWidth?: string;
@@ -55,7 +55,7 @@ const Div = styled.div<DivStyle>`
     border-collapse: collapse;
     display: ${(props) => props.display || "block"};
     ${(props) => props.$pointer && "cursor:pointer;"};
-    min-height: ${(props) => props.minHeight || ""};
+    min-height: ${(props) => props.$minHeight || ""};
     max-height: ${(props) => props.$maxHeight || ""};
     min-width: ${(props) => props.$minWidth || ""};
     max-width: ${(props) => props.$maxWidth || ""};
@@ -76,7 +76,7 @@ const Div = styled.div<DivStyle>`
         display: none; /* Chrome, Safari, Opera*/
     }
 
-    transition: background-color 0.3s;
+    transition: background-color 0.2s;
 
     &:hover {
         filter: ${(props) => props.$HFilter || "transparent"};
@@ -125,7 +125,7 @@ const InputLabel = styled.label<DivStyle>`
     border-collapse: collapse;
     display: ${(props) => props.display || "block"};
     ${(props) => props.$pointer && "cursor:pointer;"};
-    min-height: ${(props) => props.minHeight || ""};
+    min-height: ${(props) => props.$minHeight || ""};
     min-width: ${(props) => props.$minWidth || ""};
     overflow: ${(props) => props.overflow || "visible"};
 `;
