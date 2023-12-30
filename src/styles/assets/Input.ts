@@ -37,7 +37,7 @@ const Input = styled.input<InputStyle>`
 
 const TextInput = styled(Input).attrs({ type: "text" })<InputStyle>`
     border: 1px solid ${(props) => props.theme.color.grey1};
-    border-radius: 2px;
+    border-radius: ${(props) => `${props.$borderRadius}px` || "2px"};
     ::-webkit-input-placeholder {
         color: ${(props) => props.theme.color.textColor};
         font-size: 10px;
@@ -92,20 +92,20 @@ const Label = styled.label<InputStyle>`
 
 const Radio = styled.input.attrs({ type: "radio" })<InputStyle>`
     appearance: none;
-    margin: 0 8px 0 0;
-    width: ${(props) => props.width || "18px"};
-    height: ${(props) => props.height || "18px"};
-    border: 1.5px solid ${(props) => props.theme.color.grey3};
+    margin: 0;
+    width: 20px;
+    height: 20px;
+    border: 1px solid ${(props) => props.theme.color.grey3};
     border-radius: 50%;
 
-    :hover {
+    &:hover {
         cursor: pointer;
+        border: 2px solid ${(props) => props.theme.color.bgColor};
     }
 
-    :checked {
-        background: center url("/images/radio_img.svg") no-repeat;
+    &:checked {
+        background: center url("/images/radio_purple.svg") no-repeat;
         border: none;
-        background-size: cover;
     }
 `;
 
