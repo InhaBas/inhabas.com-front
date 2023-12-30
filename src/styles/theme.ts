@@ -1,4 +1,4 @@
-import { DefaultTheme } from "styled-components"
+import { DefaultTheme } from "styled-components";
 
 const color = {
     bk: "#242230",
@@ -12,7 +12,7 @@ const color = {
     grey4: "#7886a0",
     green: "#d4edda",
     TextGreen: "#155724",
-    tabelHo: "#ededed",
+    tableHo: "#ededed",
     transparent: "transparent",
     bklayer: "rgba(0, 0, 0, 0.4)",
     whlayer: "rgba(255, 255, 255, 0.1)",
@@ -22,7 +22,7 @@ const color = {
     bgColor: "#4611a7",
     bgColorHo: "#7133e2",
     none: "rgba(0, 0, 0, 0.1)",
-}
+};
 
 const fontSize = {
     xs: "12px",
@@ -34,15 +34,15 @@ const fontSize = {
     xxxl: "50px",
     extraBig: "80pt",
     extraBig1: "60pt",
-}
+};
 
-export type ColorTypes = typeof color
-export type FontSizeTypes = typeof fontSize
+export type ColorTypes = typeof color;
+export type FontSizeTypes = typeof fontSize;
 
 export const theme: DefaultTheme = {
     color,
     fontSize,
-}
+};
 
 // const theme: DefaultTheme = {}
 
