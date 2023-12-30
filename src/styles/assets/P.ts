@@ -1,15 +1,15 @@
-import { DefaultTheme, styled } from "styled-components"
+import { DefaultTheme, styled } from "styled-components";
 
 interface Ptyle {
-    theme: DefaultTheme
-    color?: keyof DefaultTheme["color"]
-    fontSize?: keyof DefaultTheme["fontSize"]
-    fontWeight?: number
-    $whiteSpace?: string
-    $center?: boolean
-    $underline?: boolean
-    $lineHeight?: number
-    $letterSpacing?: string
+    theme: DefaultTheme;
+    color?: keyof DefaultTheme["color"];
+    fontSize?: keyof DefaultTheme["fontSize"];
+    fontWeight?: number;
+    $whiteSpace?: string;
+    $center?: boolean;
+    $underline?: boolean;
+    $lineHeight?: number;
+    $letterSpacing?: string;
     // [key: string]: any
 }
 
@@ -29,6 +29,6 @@ const P = styled.p<Ptyle>`
     ${(props) => props.$underline && "text-decoration-line: underline"};
     line-height: ${(props) => props.$lineHeight || "normal"};
     letter-spacing: ${(props) => props.$letterSpacing || "normal"};
-`
+`;
 
-export default P
+export default P;
