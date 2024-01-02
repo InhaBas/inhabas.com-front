@@ -56,6 +56,7 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
     };
 
     const fetchData = async (url: string, method: string, token?: string, sendData?: any) => {
+        console.log(1);
         try {
             let res;
             let result;
@@ -64,6 +65,7 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
                 Authorization: `Bearer ${access}`,
                 "Content-Type": "application/json",
             };
+            console.log(2);
 
             if (method.toUpperCase() === "GET" && token == undefined) {
                 // Do something for GET without token
@@ -72,18 +74,23 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
                     headers: { "Content-Type": "application/json" },
                 });
 
+                console.log(3);
+
                 if (res.ok) {
                     result = await res.json();
                     console.log({ ...result });
 
                     setData({ ...result });
+                    console.log(4);
                 } else {
                     try {
                         // 에러 응답에서 오류 메시지 추출
                         const errorResponse = await res.json();
                         console.error("Network response was not ok. Error:", errorResponse.message);
+                        console.log(5);
                     } catch (error) {
                         console.error("Failed to parse error response:", error);
+                        console.log(6);
                     }
                 }
                 setData({ ...result });
