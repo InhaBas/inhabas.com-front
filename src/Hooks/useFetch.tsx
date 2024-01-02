@@ -62,7 +62,6 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
 
             let headers = {
                 Authorization: `Bearer ${access}`,
-                Accept: "application / json",
                 "Content-Type": "application/json",
             };
 
@@ -70,7 +69,7 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
                 // Do something for GET without token
                 res = await fetch(`${process.env.REACT_APP_API_URL}${url}`, {
                     method: method,
-                    headers: { "Content-Type": "application/json", Accept: "application / json" },
+                    headers: { "Content-Type": "application/json" },
                 });
 
                 if (res.ok) {
