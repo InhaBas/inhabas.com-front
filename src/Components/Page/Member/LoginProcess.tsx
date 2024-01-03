@@ -54,7 +54,7 @@ const LoginProcess = () => {
     }, [accessToken]);
 
     useEffect(() => {
-        if (accessToken !== "default") {
+        if (accessToken) {
             setAccess(accessToken);
         }
     }, [accessToken]);
@@ -76,33 +76,33 @@ const LoginProcess = () => {
     const [getData, getFetchData] = useFetch();
     const [check, setCheck] = useRecoilState(signupCheck);
     useEffect(() => {
-        getFetchData("/signUp/check", "GET");
+        getFetchData("/signUp/check", "GET", "token");
         return () => {
             setCheck(false);
         };
-    }, []);
+    }, [access]);
 
     useEffect(() => {
         if (getData) {
-            setCheck(getData);
+            setCheck(getData.check);
         }
-    }, []);
+    }, [getData]);
 
     useEffect(() => {
         console.log(check);
         if (check) {
             navigate("/");
         }
-    }, []);
+    }, [check]);
 
     useEffect(() => {
-        if (access !== "default" && email !== "") {
+        if (check && access !== "default" && email !== "") {
             navigate("/signUp");
         }
     }, [email]);
 
     useEffect(() => {
-        if (access === "default") {
+        if (check && access === "default") {
             navigate("/login");
         }
     }, [email]);
