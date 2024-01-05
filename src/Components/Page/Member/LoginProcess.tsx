@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import useFetch from "../../../Hooks/useFetch";
 import { signupCheck } from "../../../Recoil/backState";
-import { tokenAccess, userEmail } from "../../../Recoil/frontState";
+import { tokenAccess, userEmail, userImage } from "../../../Recoil/frontState";
 import { FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
 
@@ -12,8 +12,10 @@ const LoginProcess = () => {
 
     const [searchParams, setSearchParams] = useSearchParams();
     const [access, setAccess] = useRecoilState(tokenAccess);
+    const [profile, setProfile] = useRecoilState(userImage);
     const accessToken = String(searchParams.get("accessToken"));
     const refreshToken = searchParams.get("refreshToken");
+    const image = searchParams.get("imageUrl");
     const error = searchParams.get("error");
     const [email, setEmail] = useRecoilState(userEmail);
 
@@ -65,6 +67,14 @@ const LoginProcess = () => {
     }, [refreshToken]);
 
     useEffect(() => {
+        if (image) {
+            setProfile(image);
+        }
+    }, [image]);
+
+    // http://localhost:3000/login/process?accessToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTgwODg4MDc1ODQxMTcwNDE0MjUiLCJtZW1iZXJJZCI6MjEsInByb3ZpZGVyIjoiR09PR0xFIiwiZW1haWwiOiJ5eWoxMWtyQGdtYWlsLmNvbSIsImF1dGhvcml0aWVzIjpbIlJPTEVfTk9UX0FQUFJPVkVEIl0sImlhdCI6MTcwNDI0NjQ1OSwiZXhwIjoxNzA0MjQ4MjU5fQ.sTcoHPkUxcICqDnPHx_0x3oSEO5vE4MXjq3MDrfjuNudS4FVJJ0KGivVpuTrlyM6axh7lGb8MEe2FfWGOd3pQQ
+
+    useEffect(() => {
         if (accessToken) {
             const tokenData = parseJwt(access);
             if (tokenData && tokenData.email) {
@@ -75,10 +85,14 @@ const LoginProcess = () => {
 
     const [getData, getFetchData] = useFetch();
     const [check, setCheck] = useRecoilState(signupCheck);
+
     useEffect(() => {
-        getFetchData("/signUp/check", "GET", "token");
+        console.log(access);
+        if (access !== "default") {
+            getFetchData("/signUp/check", "GET", "token");
+        }
         return () => {
-            setCheck(false);
+            setCheck(null);
         };
     }, [access]);
 
@@ -86,26 +100,16 @@ const LoginProcess = () => {
         if (getData) {
             setCheck(getData.check);
         }
-    }, [getData]);
+    }, [getData, setCheck]);
 
     useEffect(() => {
         console.log(check);
         if (check) {
             navigate("/");
-        }
-    }, [check]);
-
-    useEffect(() => {
-        if (check && access !== "default" && email !== "") {
+        } else if (check === false) {
             navigate("/signUp");
         }
-    }, [email]);
-
-    useEffect(() => {
-        if (check && access === "default") {
-            navigate("/login");
-        }
-    }, [email]);
+    }, [check]);
 
     return (
         <FlexDiv width="100%" height="100vh">
