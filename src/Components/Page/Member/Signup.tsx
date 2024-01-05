@@ -6,7 +6,7 @@ import styled from "styled-components";
 
 import useFetch from "../../../Hooks/useFetch";
 import { signupInfo } from "../../../Recoil/backState";
-import { majorSelected, modalInfo, modalOpen, tokenAccess, userEmail } from "../../../Recoil/frontState";
+import { majorSelected, modalInfo, modalOpen, relogin, tokenAccess, userEmail } from "../../../Recoil/frontState";
 
 import A from "../../../styles/assets/A";
 import Button from "../../../styles/assets/Button";
@@ -98,9 +98,11 @@ const Signup = () => {
 
     const [status, setStatus] = useState("student");
     const [postData, postFetchData] = useFetch();
+    const [proPostData, proPostFetchData] = useFetch();
     const [getData, getFetchData] = useFetch();
     const [email, setEmail] = useRecoilState(userEmail);
     const [info, setInfo] = useRecoilState(signupInfo);
+    const [reload, setReload] = useRecoilState(relogin);
     const access = useRecoilValue(tokenAccess);
 
     const sendInput = () => {
@@ -113,6 +115,13 @@ const Signup = () => {
 
         if (check && ref.current[3].value === "") {
             alert("핸드폰번호를 입력해주세요");
+            check = false;
+        }
+
+        console.log((check && ref.current[3].value.length < 13) || ref.current[3].value.slice(0, 3) !== "010");
+
+        if ((check && ref.current[3].value.length < 13) || ref.current[3].value.slice(0, 3) !== "010") {
+            alert("핸드폰번호를 정확하게 입력해주세요");
             check = false;
         }
         if (check) {
@@ -141,8 +150,14 @@ const Signup = () => {
                 grade: status === "student" ? parseInt(ref.current[5].value[0]) : null,
             };
 
-            postFetchData("/signUp", "POST", undefined, inputData);
-            console.log(postData);
+            if (status === "student") {
+                postFetchData("/signUp", "POST", "token", inputData);
+            }
+
+            if (status === "professor") {
+                proPostFetchData("/signUp", "POST", "token", inputData);
+            }
+            console.log(proPostData);
         }
     };
 
@@ -172,18 +187,17 @@ const Signup = () => {
         }
     }, [info]);
 
-    // useEffect(() => {
-    //     if (email === "") {
-    //         alert("회원가입을 다시 시도해주세요");
-    //         navigate("/login");
-    //     }
-    // }, [email]);
-
     useEffect(() => {
         if (postData === "noContents") {
             navigate("/signup/question");
         }
     }, [postData]);
+    useEffect(() => {
+        if (proPostData === "noContents") {
+            setReload(true);
+            navigate("/");
+        }
+    }, [proPostData]);
 
     return (
         <>

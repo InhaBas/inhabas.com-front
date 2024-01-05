@@ -33,9 +33,9 @@ export const signupAnswer = atom<answersInterface[] | null>({
     default: null,
 });
 
-export const signupCheck = atom({
+export const signupCheck = atom<boolean | null>({
     key: "signupCheck",
-    default: false,
+    default: null,
 });
 
 //board
