@@ -16,6 +16,11 @@ export const userEmail = atom({
     default: "",
 });
 
+export const userImage = atom({
+    key: "userImage",
+    default: "",
+});
+
 export const majorSelected = atom({
     key: "majorSelected",
     default: { college: "", major: "" },
