@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
@@ -8,6 +8,9 @@ import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
 
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import useFetch from "../../../../Hooks/useFetch";
+import { profileInfo } from "../../../../Recoil/backState";
 import HeaderNav from "../../../Common/HeaderNav";
 import MyBankSupportContainer from "../../../Container/MyInfo/MyBankSupportContainer";
 import MyBoardContainer from "../../../Container/MyInfo/MyBoardContainer";
@@ -43,7 +46,19 @@ const MyInfo = () => {
         { idx: 4, url: "/images/user_white.svg", clickedUrl: "/images/user_purple.svg", info: "내정보" },
     ];
 
+    const [infoData, fetchInfoData] = useFetch();
     const [clicked, setclicked] = useState(4);
+    const [info, setInfo] = useRecoilState(profileInfo);
+
+    useEffect(() => {
+        fetchInfoData("/myInfo", "GET", "token");
+    }, []);
+
+    useEffect(() => {
+        if (infoData) {
+            setInfo(infoData);
+        }
+    }, [infoData]);
 
     return (
         <>
@@ -75,16 +90,18 @@ const MyInfo = () => {
                             radius={100}
                             overflow="hidden"
                         >
-                            <Img src="/images/profile-default.png" $objectFit="cover" />
+                            <Img src={info?.picture} $objectFit="cover" />
                         </FlexDiv>
                         <Div $margin="0 0 0 10em ">
                             <Div>
                                 <P fontSize="xl" fontWeight={600}>
-                                    윤예진
+                                    {info?.name}
                                 </P>
                             </Div>
                             <Div $margin="5px 0">
-                                <P>글로벌금융학과 • 12192355</P>
+                                <P>
+                                    {info?.major} • {info?.studentId}
+                                </P>
                             </Div>
                         </Div>
                     </Div>
@@ -128,8 +145,9 @@ const MyInfo = () => {
                     </FlexDiv>
                 </FlexDiv>
                 <FlexDiv $backgroundColor="bgColor" height="50px" width="100%" $justifycontent="start" $padding="0 8%">
-                    {myInfoTabInfo.map((item) => (
+                    {myInfoTabInfo.map((item, idx) => (
                         <FlexDiv
+                            key={`nav${idx}`}
                             $padding="0 15px"
                             $pointer
                             $backgroundColor={item.idx === clicked ? "wh" : "bgColor"}
