@@ -1,6 +1,12 @@
 import { atom } from "recoil";
 
-//login
+// common
+export const refetch = atom({
+    key: "refetch",
+    default: false,
+});
+
+// login
 export const relogin = atom({
     key: "relogin",
     default: false,
@@ -25,7 +31,8 @@ export const majorSelected = atom({
     key: "majorSelected",
     default: { college: "", major: "" },
 });
-//board
+
+// board
 export const modalInfo = atom({
     key: "modalInfoState",
     // type: 어떤 모달을 렌더링 할것인지 명시
@@ -33,7 +40,7 @@ export const modalInfo = atom({
     default: {
         type: "",
         content: "",
-        modalFunc: "",
+        modalFunc: {},
     },
 });
 

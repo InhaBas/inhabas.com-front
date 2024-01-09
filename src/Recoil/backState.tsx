@@ -1,19 +1,26 @@
 import { atom } from "recoil";
-import { answersInterface, questionnariesInterface, signUpInterface } from "../Types/IBAS/TypeMember";
+import {
+    answersInterface,
+    majorInterface,
+    profileInterface,
+    questionnariesInterface,
+    signUpInterface,
+} from "../Types/IBAS/TypeMember";
+
 //headerNav
 export const headerNavInfo = atom({
     key: "headerNavInfo",
     default: {},
 });
 
-// IBAS
-interface MajorItem {
-    id?: number;
-    college: string;
-    major: string;
-}
+// myInfo
+export const profileInfo = atom<profileInterface | null>({
+    key: "profileInfo",
+    default: null,
+});
 
-export const majorInfo = atom<MajorItem[]>({
+// IBAS
+export const majorInfo = atom<majorInterface[]>({
     key: "majorInfo",
     default: [],
 });
