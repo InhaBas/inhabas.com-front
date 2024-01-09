@@ -2,9 +2,12 @@ import { MouseEvent, useRef } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 
-import { modalInfo, modalOpen } from "../../Recoil/frontState";
-import { FlexDiv } from "../../styles/assets/Div";
-import ModalMajor from "../Component/IBAS/Member/ModalMajor";
+import { modalInfo, modalOpen } from "../../../Recoil/frontState";
+import { FlexDiv } from "../../../styles/assets/Div";
+import ModalChangeIntro from "./ModalChangeIntro";
+import ModalChangeName from "./ModalChangeName";
+import ModalChangeNumber from "./ModalChangeNumber";
+import ModalMajor from "./ModalMajor";
 
 type CustomMouseEvent = MouseEvent<HTMLElement>;
 
@@ -20,7 +23,7 @@ const ModalBackground = styled(FlexDiv)`
 export const Modal = () => {
     const [open, setOpen] = useRecoilState(modalOpen);
 
-    const backgroundRef = useRef();
+    const backgroundRef = useRef<HTMLDivElement>(null);
 
     const info = useRecoilValue(modalInfo);
 
@@ -39,8 +42,12 @@ export const Modal = () => {
     return (
         <>
             {open && (
-                <ModalBackground onClick={clickBackground}>
-                    {(modalType === "major" && <ModalMajor />) || (modalType === "bank" && <ModalMajor />)}
+                <ModalBackground ref={backgroundRef} onClick={clickBackground}>
+                    {(modalType === "major" && <ModalMajor />) ||
+                        (modalType === "changeName" && <ModalChangeName />) ||
+                        (modalType === "changeNumber" && <ModalChangeNumber />) ||
+                        (modalType === "changeMajor" && <ModalMajor />) ||
+                        (modalType === "changeIntro" && <ModalChangeIntro />)}
                 </ModalBackground>
             )}
         </>
