@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { styled } from "styled-components";
 
 import { theme } from "../../styles/theme";
 
 import useFetch from "../../Hooks/useFetch";
-import { headerNavInfo } from "../../Recoil/backState";
+import { headerNavInfo, profileInfo } from "../../Recoil/backState";
 
-import MenuItem from "../../Types/TypeCommon";
+import { menuItem } from "../../Types/TypeCommon";
 
+import { tokenAccess } from "../../Recoil/frontState";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
@@ -17,12 +18,13 @@ import P from "../../styles/assets/P";
 const StickyDiv = styled(FlexDiv)`
     position: sticky;
     top: 0;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 `;
 
 interface Group {
     groupName: string;
     id: number;
-    menuList: MenuItem[];
+    menuList: menuItem[];
 }
 
 const HeaderNav = () => {
@@ -44,10 +46,17 @@ const HeaderNav = () => {
         window.location.href = `${process.env.REACT_APP_BASE_URL}/${url}`;
     };
 
+    const moveInfo = () => {
+        navigate("/myInfo");
+    };
+
     const [data, fetchData] = useFetch();
+    const [infoData, fetchInfoData] = useFetch();
     const [activeGroup, setActiveGroup] = useState(null);
     const [activeMenu, setActiveMenu] = useState(null);
     const [nav, setNav] = useRecoilState(headerNavInfo);
+    const [info, setInfo] = useRecoilState(profileInfo);
+    const access = useRecoilValue(tokenAccess);
     const [scrollPosition, setScrollPosition] = useState(0);
 
     // Scroll 위치를 감지
@@ -63,14 +72,18 @@ const HeaderNav = () => {
     }, []);
 
     useEffect(() => {
+        fetchInfoData("/myInfo", "GET", "token");
+    }, [access]);
+
+    useEffect(() => {
         const handleData = () => {
-            if (data) {
-                const newData = { ...data };
+            if (data && typeof data === "object") {
+                const newData = JSON.parse(JSON.stringify(data));
                 delete newData.change;
 
                 (Object.values(newData) as Group[]).forEach((group: Group, groupIdx: number) => {
                     if (group.menuList) {
-                        group.menuList = group.menuList.map((menu: MenuItem, idx: number) => ({
+                        group.menuList = group.menuList.map((menu: menuItem, idx: number) => ({
                             ...menu,
                             url: (menuUrl[groupIdx] && menuUrl[groupIdx][idx]) || "defaultUrl",
                         }));
@@ -83,6 +96,12 @@ const HeaderNav = () => {
 
         handleData();
     }, [data]);
+
+    useEffect(() => {
+        if (infoData) {
+            setInfo(infoData);
+        }
+    }, [infoData]);
 
     useEffect(() => {
         window.addEventListener("scroll", updateScroll);
@@ -206,16 +225,20 @@ const HeaderNav = () => {
                                 radius={100}
                                 overflow="hidden"
                             >
-                                <Img src="/images/profile-default.png" $objectFit="cover"></Img>
+                                <Img
+                                    src={info?.picture}
+                                    $objectFit="cover"
+                                    alt="현재 브라우저에서 지원하지 않는 형태 입니다. "
+                                ></Img>
                             </FlexDiv>
-                            <Div $margin="0 10px">
+                            <Div $margin="0 10px" $pointer onClick={moveInfo}>
                                 <P
                                     fontSize="sm"
                                     fontWeight={600}
                                     $letterSpacing="1.5px"
                                     color={scrollPosition < 100 ? "wh" : "textColor"}
                                 >
-                                    윤예진님
+                                    {info?.name}
                                 </P>
                             </Div>
                             <FlexDiv $pointer width="15px">
