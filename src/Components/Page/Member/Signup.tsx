@@ -42,12 +42,8 @@ const Signup = () => {
 
     const searchMajor = () => {
         setOpen(true);
-        const modalInfo = {
-            type: "major",
-            modalFunc: "",
-            content: "",
-        };
-        setModalInfo({ ...modalInfo });
+
+        setModalInfo("major");
     };
 
     const movePage = () => {

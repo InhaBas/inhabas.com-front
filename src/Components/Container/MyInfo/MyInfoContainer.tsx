@@ -19,12 +19,7 @@ const MyInfoContainer = () => {
 
     const changeInfo = (info: string) => {
         setOpen(true);
-        const modalInfo = {
-            type: `change${info}`,
-            modalFunc: "",
-            content: "",
-        };
-        setMoalInfo({ ...modalInfo });
+        setMoalInfo(`change${info}`);
     };
 
     useEffect(() => {

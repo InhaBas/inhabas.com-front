@@ -35,13 +35,7 @@ export const majorSelected = atom({
 // board
 export const modalInfo = atom({
     key: "modalInfoState",
-    // type: 어떤 모달을 렌더링 할것인지 명시
-    // content: 모달의 내용
-    default: {
-        type: "",
-        content: "",
-        modalFunc: {},
-    },
+    default: "",
 });
 
 export const modalOpen = atom({
