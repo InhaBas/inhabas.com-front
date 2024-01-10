@@ -4,7 +4,7 @@ import { useRecoilState } from "recoil";
 import { tokenAccess } from "../Recoil/frontState";
 
 const useFetch = (): [any, (url: string, method: string, token?: string, sendData?: any) => Promise<void>] => {
-    const navigator = useNavigate();
+    const navigate = useNavigate();
     const [data, setData] = useState<any>(null);
     const [access, setAccess] = useRecoilState(tokenAccess);
 
@@ -19,16 +19,6 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
         try {
             const refreshToken = getCookie("ibas_refresh");
 
-            // const res = await fetch(`${process.env.REACT_APP_API_URL}/token/refresh`, {
-            //     method: "POST",
-            //     headers: {
-            //         "Content-Type": "application/json",
-            //     },
-            //     body: JSON.stringify({
-            //         refreshToken: refreshToken,
-            //     }),
-            // });
-
             let res = await fetch(`${process.env.REACT_APP_API_URL}/token/refresh`, {
                 method: "POST",
                 body: JSON.stringify({
@@ -41,11 +31,13 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
                 const result = await res.json();
                 const newAccessToken = result.accessToken;
                 setAccess(newAccessToken);
+                console.log(access);
             } else {
                 try {
                     // 에러 응답에서 오류 메시지 추출
                     const errorResponse = await res.json();
                     console.error("Network response was not ok. Error:", errorResponse.message, errorResponse.code);
+                    setAccess("default");
                 } catch (error) {
                     console.error("Failed to parse error response:", error);
                 }
@@ -62,6 +54,7 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
 
             let headers = {
                 Authorization: `Bearer ${access}`,
+                // Authorization: 'Bearer ',
                 "Content-Type": "application/json",
             };
 
@@ -108,6 +101,10 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
                         if (errorResponse.code === "A005" || "A006" || "A007") {
                             refreshAccessToken();
                         }
+                        if (errorResponse.status === 403) {
+                            navigate(-1);
+                            alert("권한이 없습니다");
+                        }
                     } catch (error) {
                         console.error("Failed to parse error response:", error);
                     }
@@ -124,7 +121,6 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
                 if (res.ok) {
                     // Check if response has content
                     if (res.status === 204 || res.headers.get("content-length") === "0" || res.body === null) {
-                        console.log("Empty response body");
                         setData("noContents");
                         // Handle the case where the response body is empty
                         // You can set a default value, show a message, etc.
