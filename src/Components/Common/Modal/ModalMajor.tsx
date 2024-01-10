@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 
 import { theme } from "../../../styles/theme";
@@ -39,7 +39,7 @@ const ModalMajor = () => {
     const headerInfo = ["학교명", "단과대학", "학과명"];
     const widthList = [150, 160, 270];
 
-    const modalType = useRecoilState(modalInfo);
+    const modalType = useRecoilValue(modalInfo);
     const [data, fetchData] = useFetch();
     const [major, setMajor] = useRecoilState<MajorItem[]>(majorInfo);
     const [selectedTable, setSelectedTable] = useRecoilState(majorSelected);
@@ -171,7 +171,7 @@ const ModalMajor = () => {
                     </>
                 )}
 
-                {modalType[0]?.type === "major" ? (
+                {modalType === "major" ? (
                     <FlexDiv width="100%">
                         <Button
                             $backgroundColor="bgColor"

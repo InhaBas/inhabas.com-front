@@ -25,9 +25,7 @@ export const Modal = () => {
 
     const backgroundRef = useRef<HTMLDivElement>(null);
 
-    const info = useRecoilValue(modalInfo);
-
-    const modalType = info.type;
+    const modalType = useRecoilValue(modalInfo);
 
     const closeModal = () => {
         setOpen(false);
