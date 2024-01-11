@@ -22,4 +22,10 @@ IBAS에 소속된 회원이라면 누구든지 이 프로젝트에 기여할 수
 
 아래 기여 가이드라인을 확인하고 기여해주세요.
 
-[CONTRIBUTING.md](CONTRIBUTING.md)
+1. PR올리는 경우
+
+    [CONTRIBUTING.md](CONTRIBUTING.md)
+
+2. PR Merge 하는 경우
+
+    [COMMITER-INSTRUCTION.md](COMMITER-INSTRUCTION.md)
