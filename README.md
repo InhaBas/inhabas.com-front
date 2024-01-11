@@ -1,46 +1,31 @@
-# Getting Started with Create React App
+# IBAS (Inha Bigdata Analysis Society)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![main logo of IBAS](docs/images/logo_purple.png)
 
-## Available Scripts
+IBAS는 인하대학교의 빅데이터 학술동아리 입니다. 주로 데이터 분석 및 머신러닝 같은 데이터 관련 분야를 탐구하며, 웹 개발과 데이터 엔지니어링에 중점을 둔 IBAS 개발팀이 있어, 다양한 IT 분야에서의 활동을 지향하고 있습니다.
 
-In the project directory, you can run:
+## IBAS Project
 
-### `npm start`
+IBAS 개발팀은 동아리의 활동과 비전을 온라인에 효과적으로 전달하기 위해 웹 페이지를 운영하고 있습니다. IBAS 웹페이지는 회원들과의 소통을 강화하고 외부에 동아리의 활동을 알리는 플랫폼으로 활용되고 있습니다.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+[IBAS 웹페이지 바로가기](https://www.inhabas.com/)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Style Convention
 
-### `npm test`
+IBAS Project는 코드 품질과 가독성을 유지하기 위해 일관된 스타일 규약을 따르고 있습니다. 기여하기 전 아래 문서를 참고해주세요.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+[STYLE-CONVENTION.md](STYLE-CONVENTION.md)
 
-### `npm run build`
+### IBAS에 기여하기
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+IBAS에 소속된 회원이라면 누구든지 이 프로젝트에 기여할 수 있습니다.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+아래 기여 가이드라인을 확인하고 기여해주세요.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. PR올리는 경우
 
-### `npm run eject`
+    [CONTRIBUTING.md](CONTRIBUTING.md)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+2. PR Merge 하는 경우
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+    [COMMITER-INSTRUCTION.md](COMMITER-INSTRUCTION.md)
