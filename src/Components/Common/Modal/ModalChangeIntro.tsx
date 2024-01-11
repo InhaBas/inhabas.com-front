@@ -1,10 +1,11 @@
 import { useRef } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import useFetch from "../../../Hooks/useFetch";
 
 import { modalOpen, refetch } from "../../../Recoil/frontState";
 
+import { profileInfo } from "../../../Recoil/backState";
 import Button from "../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import { H2 } from "../../../styles/assets/H";
@@ -23,13 +24,19 @@ const ModalChangeIntro = () => {
     const setReload = useSetRecoilState(refetch);
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const checkRef = useRef<HTMLInputElement>(null);
+    const info = useRecoilValue(profileInfo);
+
+    /* 자기소개 수정 fetch */
     const changeIntro = () => {
         const inputData = {
             introduce: inputRef.current?.value,
             isHOF: checkRef.current?.checked,
         };
-        fetchData("/myInfo/intro", "PUT", "token", inputData);
-        setReload(true);
+        if (inputData.introduce !== "") {
+            fetchData("/myInfo/intro", "PUT", "token", inputData);
+            setReload(true);
+        }
+
         setOpen(false);
     };
 
@@ -58,7 +65,7 @@ const ModalChangeIntro = () => {
                 </FlexDiv>
                 <FlexDiv width="100%" $justifycontent="start">
                     <FlexDiv $margin="0 5px 0 0">
-                        <Checkbox ref={checkRef} />
+                        <Checkbox ref={checkRef} defaultChecked={(info && info?.isHOF) || false} />
                     </FlexDiv>
                     <Div>
                         <P fontSize="xs" color="grey4" fontWeight={700}>
@@ -67,7 +74,13 @@ const ModalChangeIntro = () => {
                     </Div>
                 </FlexDiv>
                 <Div width="100%">
-                    <TextArea ref={inputRef} placeholder="간단한 본인 소개를 적어주세요" width="100%" height="100px" />
+                    <TextArea
+                        ref={inputRef}
+                        placeholder="간단한 본인 소개를 적어주세요"
+                        width="100%"
+                        height="100px"
+                        defaultValue={(info && info?.introduce) || ""}
+                    />
                 </Div>
                 <FlexDiv width="100%">
                     <Button
