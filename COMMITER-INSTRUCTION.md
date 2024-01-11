@@ -2,6 +2,15 @@
 
 ## Merge 하는 방법
 
+IBAS Project는 현재 모든 PR에 대해서 Merge Commit을 적용하기로 결정했습니다.
+
+현재 IBAS는 초기 프로젝트이기 때문에 PR의 규모가 커지면서 개별 커밋에 대한 상세한 히스토리를 유지하기 위해 Merge Commit을 적용하기로 결정했습니다.
+
+추후 프로젝트 규모 및 PR의 규모 변동에 따라 Merge 방식이 다시 논의될 수 있습니다. 아래 논의를 참고해주세요.
+
+- [PR Merge 방식에 대한 논의](https://github.com/InhaBas/Inhabas.com-api/issues/188)
+
+
 ```jsx
 [feature/#67] 대댓글 UI 추가                   // header : [branch name] + title 
 

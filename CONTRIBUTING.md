@@ -4,39 +4,56 @@
 
 ### 1. 새로운 브렌치 만들기
 
-IBAS Project를 로컬 환경에 설치하면 기본적으로 ‘master’이라는 브렌치에서 시작합니다. 이 곳, master 브렌치에서 직접 개발하는 것이 아니라 새로운 브렌치를 만들어서 작업합니다.
+IBAS Project를 로컬 환경에 설치하면 기본적으로 master / main 이라는 브렌치에서 시작합니다. 이 곳, master / main 브렌치에서 직접 개발하는 것이 아니라 새로운 브렌치를 만들어서 작업합니다.
 
-터미널에서 새로운 브렌치를 만듭니다.
+- 터미널에서 새로운 브렌치를 만듭니다.
 
-```jsx
-git checkout -b branchName
-```
+    ```jsx
+    git checkout -b branchName
+    ```
 
 ### 2. 새로운 브렌치에서 파일 수정하기
 
 이제 새로운 브렌치에서 프로젝트를 수정합니다.
 
-수정이 끝나면
+수정이 끝나면 다음의 과정을 수행하세요:
 
-```jsx
-git add .
-```
+- git add .
 
-(수정사항들 git에 추가)
+    ```jsx
+    git add .
+    ```
 
-```jsx
-git commit -m"커밋메세지"
-```
+  (수정사항들 git에 추가하는 명령어)
 
-(git에 추가된 수정사항들을 묶어서 “커밋메세지”라는 이름으로 저장)
+- git commit -m"커밋메세지"
 
-```jsx
-git push origin branchName
-```
+    ```jsx
+    git commit -m"커밋메세지"
+    ```
 
- (“커밋메세지”라는 이름으로 저장된 수정사항들을 원격 저장소에 보내기)
+   (git에 추가된 수정사항들을 묶어서 “커밋메세지”라는 이름으로 저장)
 
-이렇게 입력해줍니다.
+   >현재 IBAS Project의 Commit convention은 다음과 같습니다.
+    >
+    >```jsx
+    >[feature/#67] 대댓글 UI 추가                   // >header : [branch name] + title 
+    >
+    >- 대댓글 컴포넌트 생성                                     // body
+    >- 댓글 컴포넌트에 대댓글 컴포넌트 달 수 있게 변경
+    >
+    >resolves: #67               // footer
+    >see also: #56, #49 
+    >```
+    >
+
+- git push
+
+    ```jsx
+    git push origin branchName
+    ```
+
+    (“커밋메세지”라는 이름으로 저장된 수정사항들을 원격 저장소에 보내기)
 
 ### 3.PR올리기
 
