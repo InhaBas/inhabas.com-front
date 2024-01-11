@@ -50,6 +50,11 @@ const Signup = () => {
         navigate("/");
     };
 
+    /*
+    phone 입력 처리. 
+    11자만 입력 가능하게 처리함. 
+    000-0000-0000 형식. 
+    */
     const autoHyphen = (target: HTMLInputElement) => {
         let value = target.value.replace(/[^0-9]/g, "");
 
@@ -60,13 +65,17 @@ const Signup = () => {
         target.value = value.replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/, "$1-$2-$3").replace(/(\-{1,2})$/, "");
     };
 
+    /*
+    JWT 분석 함수. 
+    토큰을 통해 로그인 한 이메일 가져오기 위해 만듦
+    */
     const parseJwt = (token: string | undefined) => {
+        // 여기서 token이 undefined가 아닌지 확인
         if (!token) {
             return null;
         }
 
         try {
-            // 여기서 token이 undefined가 아닌지 확인
             var base64Url = token.split(".")[1];
             if (!base64Url) {
                 return null;
@@ -98,9 +107,15 @@ const Signup = () => {
     const [getData, getFetchData] = useFetch();
     const [email, setEmail] = useRecoilState(userEmail);
     const [info, setInfo] = useRecoilState(signupInfo);
-    const [reload, setReload] = useRecoilState(relogin);
+    const setReload = useSetRecoilState(relogin);
     const access = useRecoilValue(tokenAccess);
 
+    /*
+    보낼 데이터 유효성 검사
+    check가 true일 때만 fetch 한다
+    학생일 경우, 교수일 경우 다른 fetch hook를 사용하니 유의할 것
+
+    */
     const sendInput = () => {
         let check = true;
 
@@ -157,6 +172,10 @@ const Signup = () => {
         }
     };
 
+    /*
+        회원가입 한 이력이 있어 저장된 개인 정보를 호출하는 api
+        새로고침 시 access 토큰이 재발급되므로, 토큰이 변화할 때마다 불러와야 함
+    */
     useEffect(() => {
         getFetchData("/signUp", "GET", "token");
         return () => {
@@ -164,6 +183,10 @@ const Signup = () => {
         };
     }, [access]);
 
+    /*
+        토큰에 있는 정보 중 email을 recoil에 저장
+        새로고침 시 access 토큰이 재발급되므로, 토큰이 변화할 때마다 불러와야 함
+    */
     useEffect(() => {
         const tokenData = parseJwt(access);
         if (tokenData && tokenData.email) {
@@ -171,23 +194,36 @@ const Signup = () => {
         }
     }, [access]);
 
+    /*
+        회원가입 한 이력이 있는 경우 api 호출에 대한 response data 저장
+        정보를 input value에 저장시켜둠
+    */
     useEffect(() => {
         if (getData) {
             setInfo(getData);
         }
     }, [getData]);
 
+    /*
+        회원가입 한 이력이 있는 경우 중 major도 저장되었을 때 
+        major를 selectedMajor에 저장시킴
+        이 때 college와 major 형태를 유지시킬 것
+        signUp api를 보낼 때 major의 값만 보내면 되므로, colleage의 값은 신경쓰지 않아도 됨
+    */
     useEffect(() => {
         if (info?.major) {
             setSelecteMajor({ college: "default", major: info.major });
         }
     }, [info]);
 
+    /* 학생용 signUp api 가 잘 POST 된 경우 */
     useEffect(() => {
         if (postData === "noContents") {
             navigate("/signup/question");
         }
     }, [postData]);
+
+    /* 교수용 signUp api 가 잘 POST 된 경우 */
     useEffect(() => {
         if (proPostData === "noContents") {
             setReload(true);

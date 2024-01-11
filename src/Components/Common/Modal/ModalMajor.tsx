@@ -45,19 +45,29 @@ const ModalMajor = () => {
     const [selectedTable, setSelectedTable] = useRecoilState(majorSelected);
     const setReload = useSetRecoilState(refetch);
 
+    /* 
+    selectedTable을 이용해서 사용자가 선택한 전공을 모달 밖에서도 볼 수 있게 만듦 
+    selectedTable을 body에 담아 POST api 보냄
+    */
     const chooseMajor = (item: { college: string; major: string }) => {
         setSelectedTable((prev) => ({ ...prev, ...item }));
     };
 
+    // [myInfo] 학과 변경 fetch
     const changeMajor = () => {
         const inputData = {
             major: selectedTable.major,
         };
-        fetchData("/myInfo/detail", "PUT", "token", inputData);
-        setReload(true);
+        if (inputData.major !== "") {
+            fetchData("/myInfo/detail", "PUT", "token", inputData);
+            setReload(true);
+        }
         setOpen(false);
     };
 
+    /*
+        전공 정보 받기 위한 api
+    */
     useEffect(() => {
         fetchData("/signUp/majorInfo", "GET");
         return () => {
@@ -65,6 +75,7 @@ const ModalMajor = () => {
         };
     }, []);
 
+    // 전공 정보 fetch data handling
     useEffect(() => {
         const handleData = () => {
             if (data) {
