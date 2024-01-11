@@ -12,7 +12,7 @@
 
 ### Eclipse 전용 IBAS  JAVA 코드 스타일 포멧
 
-- xml: [`eclipse_formatting.xml`](
+- xml: [`ibas_eclipse_formatting.xml`](
   /docs/back-end/ibas_eclipse_formatting.xml).
 
 ### IntelliJ에서 사용하기
