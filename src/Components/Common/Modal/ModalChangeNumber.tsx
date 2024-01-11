@@ -13,6 +13,7 @@ import { TextInput } from "../../../styles/assets/Input";
 import P from "../../../styles/assets/P";
 
 const ModalChangeNumber = () => {
+    /* 전화번호 출력 형식 설정 */
     const autoHyphen = (target: HTMLInputElement | null) => {
         if (!target) {
             return;
@@ -36,22 +37,25 @@ const ModalChangeNumber = () => {
     const [data, fetchData] = useFetch();
     const setReload = useSetRecoilState(refetch);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    /* 번호 수정 fetch */
     const changeNumber = () => {
         const inputData = {
             phoneNumber: inputRef.current?.value,
         };
 
         if (!inputRef.current) {
-            // inputRef가 null이면 처리할 로직 작성
+            setReload(false);
+            setOpen(false);
             return;
         }
 
+        /* 전화번호 유효성 검사 */
         if (inputRef.current?.value.length < 13 || inputRef.current?.value.slice(0, 3) !== "010") {
             alert("핸드폰번호를 정확하게 입력해주세요");
         } else if (inputRef.current?.value.length >= 13 || inputRef.current?.value.slice(0, 3) === "010") {
             fetchData("/myInfo/detail", "PUT", "token", inputData);
             setReload(true);
-            setOpen(false);
         }
     };
 

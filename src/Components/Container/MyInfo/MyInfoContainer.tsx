@@ -16,12 +16,20 @@ const MyInfoContainer = () => {
     const [auth, setAuth] = useState("");
     const setOpen = useSetRecoilState(modalOpen);
     const setMoalInfo = useSetRecoilState(modalInfo);
+    const [reload, setReload] = useRecoilState(refetch);
+    const [infoData, fetchInfoData] = useFetch();
 
+    /*
+    선택한 영역의 수정 모달을 열기 위함. 
+    이 때 info 에 해당하는 매개변수의 첫번째 글자는 대문자여야 함
+    Name, Number, Major, Intro 
+    */
     const changeInfo = (info: string) => {
         setOpen(true);
         setMoalInfo(`change${info}`);
     };
 
+    /* 권한 출력 위한 auth 지정  */
     useEffect(() => {
         if (info?.type === "PROFESSOR") {
             setAuth("교수");
@@ -44,14 +52,20 @@ const MyInfoContainer = () => {
         }
     }, [info]);
 
-    const [reload, setReload] = useRecoilState(refetch);
-
-    const [infoData, fetchInfoData] = useFetch();
-
+    /* 
+    myInfo GET api
+    사용자가 모달을 통해 정보를 수정할 때마다 fetch를 다시 해주어야 하므로 
+    조건은 reload === true 임 
+    setReload(true)는 각 모달에서 이루어짐
+    */
     useEffect(() => {
         fetchInfoData("/myInfo", "GET", "token");
     }, [reload === true]);
 
+    /* 
+    myInfo GET fetch를 성공했다면 info에 저장
+    이 때 reload는 다시 false로 만들어 주어야 함
+    */
     useEffect(() => {
         if (infoData) {
             setInfo(infoData);

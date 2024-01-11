@@ -21,9 +21,13 @@ const ModalChangeName = () => {
 
     const [data, fetchData] = useFetch();
     const inputRef = useRef<HTMLInputElement>(null);
+
+    // 이름 수정 fetch
     const changeName = () => {
         const inputData = inputRef.current?.value;
-        fetchData("/myInfo/name", "PUT", "token", inputData);
+        if (inputData !== "") {
+            fetchData("/myInfo/name", "PUT", "token", inputData);
+        }
         setOpen(false);
     };
 
