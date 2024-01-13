@@ -6,7 +6,6 @@ import { relogin } from "../../../Recoil/frontState";
 
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
-import HeaderNav from "../../Common/HeaderNav";
 
 const MainDiv = styled(Div)`
     top: 0;
@@ -38,7 +37,6 @@ const Main = () => {
     return (
         <>
             <MainDiv width="100%" height="100vh" direction="column">
-                <HeaderNav />
                 <FlexDiv direction="column" width="100%" height="90%">
                     <Div width="350px" height="350px">
                         <LogoImg src="/images/ibas-main-logo_white.png" />

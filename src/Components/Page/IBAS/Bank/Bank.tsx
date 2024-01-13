@@ -2,14 +2,12 @@ import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import { H2 } from "../../../../styles/assets/H";
 import { Select } from "../../../../styles/assets/Input";
 
-import HeaderTitle from "../../../Common/HeaderTitle";
 import Pagination from "../../../Common/Pagination";
 import BankTable from "../../../Component/IBAS/Bank/BankTable";
 
 const Bank = () => {
     return (
         <FlexDiv width="100%">
-            <HeaderTitle />
             <FlexDiv width="80%">
                 <FlexDiv
                     $border="3px solid"

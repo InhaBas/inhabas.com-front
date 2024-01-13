@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import useFetch from "../../../Hooks/useFetch";
 import { signupAnswer, signupQuestion } from "../../../Recoil/backState";
 import { relogin, tokenAccess } from "../../../Recoil/frontState";
@@ -22,8 +22,11 @@ const SignupQuestion = () => {
     const [question, setQuestion] = useRecoilState(signupQuestion);
     const [answer, setAnswer] = useRecoilState(signupAnswer);
     const access = useRecoilValue(tokenAccess);
-    const [reload, setReload] = useRecoilState(relogin);
+    const setReload = useSetRecoilState(relogin);
 
+    /*
+        회원가입 질문 리스트 호출
+    */
     useEffect(() => {
         fetchData("/signUp/questionnaires", "GET");
         return () => {
@@ -31,12 +34,18 @@ const SignupQuestion = () => {
         };
     }, []);
 
+    /*
+        회원가입 질문을 recoil에 저장
+    */
     useEffect(() => {
         if (data) {
             setQuestion(data);
         }
     }, [data]);
 
+    /*
+        회원가입 답변 저장을 한 이력이 있는 경우 api 호출에 대한 response data 저장
+    */
     useEffect(() => {
         getFetchData("/signUp/answers", "GET", "token");
         return () => {
@@ -44,12 +53,18 @@ const SignupQuestion = () => {
         };
     }, [access]);
 
+    /*
+        저장된 회원가입 답변 내용 호출
+    */
     useEffect(() => {
         if (getData) {
             setAnswer(getData);
         }
     }, [getData]);
 
+    /*
+        회원가입 답변 유효성 검사 후 PUT fetch
+    */
     const sendInput = () => {
         let check = true;
         if (question !== null) {
@@ -66,12 +81,14 @@ const SignupQuestion = () => {
                     content: ref.current[idx]?.value,
                 }));
 
-                console.log(inputData);
-
                 putFetchData("/signUp", "PUT", undefined, inputData);
             }
         }
     };
+
+    /*
+        회원가입 답변 POST fetch
+    */
     const saveInput = () => {
         let check = true;
         if (question !== null) {
@@ -81,19 +98,26 @@ const SignupQuestion = () => {
                     content: ref.current[idx]?.value,
                 }));
 
-                console.log(inputData);
-
                 postFetchData("/signUp/answers", "POST", undefined, inputData);
             }
         }
     };
+
+    /* 
+    회원가입 완료가 된 경우
+    토큰에 저장되어 있는 정보가 달라지므로, 회원 가입 후에는 항상 reload 해주어야 함
+     */
     useEffect(() => {
         if (putData === "noContents") {
+            alert("회원가입을 축하합니다!");
             setReload(true);
             navigate("/");
         }
     }, [putData]);
 
+    /*
+    답변 저장에 성공한 경우
+    */
     useEffect(() => {
         if (postData === "noContents") {
             alert("답변이 저장되었습니다.");

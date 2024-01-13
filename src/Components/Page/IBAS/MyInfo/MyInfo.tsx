@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
-import styled from "styled-components";
-
-import { Div, FlexDiv } from "../../../../styles/assets/Div";
-
-import Button from "../../../../styles/assets/Button";
-import Img from "../../../../styles/assets/Img";
-import P from "../../../../styles/assets/P";
-
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import styled from "styled-components";
+
 import useFetch from "../../../../Hooks/useFetch";
 import { profileInfo } from "../../../../Recoil/backState";
+
 import HeaderNav from "../../../Common/HeaderNav";
 import MyBankSupportContainer from "../../../Container/MyInfo/MyBankSupportContainer";
 import MyBoardContainer from "../../../Container/MyInfo/MyBoardContainer";
 import MyInfoContainer from "../../../Container/MyInfo/MyInfoContainer";
 import MyLectureContainer from "../../../Container/MyInfo/MyLectureContainer";
 import MyManageLectureContainer from "../../../Container/MyInfo/MyManageLectureContainer";
+
+import Button from "../../../../styles/assets/Button";
+import { Div, FlexDiv } from "../../../../styles/assets/Div";
+import Img from "../../../../styles/assets/Img";
+import P from "../../../../styles/assets/P";
 
 const MyInfoImgDiv = styled(Div)`
     background-image: url("/images/myinfo-background.jpg");
@@ -38,6 +38,7 @@ const MyInfo = () => {
         navigate(`/${url}`);
     };
 
+    // 탭 정보 설정
     const myInfoTabInfo = [
         { idx: 0, url: "/images/home_white.svg", clickedUrl: "/images/home_purple.svg", info: "강의실" },
         { idx: 1, url: "/images/book_white.svg", clickedUrl: "/images/book_purple.svg", info: "개설 강의 관리" },
@@ -50,10 +51,12 @@ const MyInfo = () => {
     const [clicked, setclicked] = useState(4);
     const [info, setInfo] = useRecoilState(profileInfo);
 
+    // myInfo 정보 GET fetch
     useEffect(() => {
         fetchInfoData("/myInfo", "GET", "token");
     }, []);
 
+    // myInfo recoil 저장
     useEffect(() => {
         if (infoData) {
             setInfo(infoData);

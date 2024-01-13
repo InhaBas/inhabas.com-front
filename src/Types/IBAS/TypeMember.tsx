@@ -25,7 +25,6 @@ export interface majorInterface {
 }
 
 // myInfo
-
 export interface profileInterface {
     name: string;
     studentId: string;
@@ -37,4 +36,5 @@ export interface profileInterface {
     type: string;
     picture: string;
     introduce: string | null; // nullable
+    isHOF: boolean;
 }

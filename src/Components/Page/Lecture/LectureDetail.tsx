@@ -1,14 +1,13 @@
-import { theme } from "../../../styles/theme"
+import { theme } from "../../../styles/theme";
 
-import Button from "../../../styles/assets/Button"
-import { Container, Div, FlexDiv } from "../../../styles/assets/Div"
-import { H2 } from "../../../styles/assets/H"
-import Img from "../../../styles/assets/Img"
-import P from "../../../styles/assets/P"
+import Button from "../../../styles/assets/Button";
+import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
+import { H2 } from "../../../styles/assets/H";
+import Img from "../../../styles/assets/Img";
+import P from "../../../styles/assets/P";
 
-import { useNavigate } from "react-router-dom"
-import { styled } from "styled-components"
-import HeaderTitle from "../../Common/HeaderTitle"
+import { useNavigate } from "react-router-dom";
+import { styled } from "styled-components";
 
 const MoveBtn = styled(Button)`
     color: ${theme.color.blue};
@@ -19,18 +18,17 @@ const MoveBtn = styled(Button)`
         background-color: ${theme.color.blue};
         color: ${theme.color.wh};
     }
-`
+`;
 
 const LectureDetail = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const movePage = () => {
-        navigate("/lecture/room")
-    }
+        navigate("/lecture/room");
+    };
 
     return (
         <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
-            <HeaderTitle />
             <Container>
                 <Div width="100%" $margin="0 0 30px 0">
                     <FlexDiv
@@ -299,7 +297,7 @@ const LectureDetail = () => {
                 </FlexDiv>
             </Container>
         </FlexDiv>
-    )
-}
+    );
+};
 
-export default LectureDetail
+export default LectureDetail;

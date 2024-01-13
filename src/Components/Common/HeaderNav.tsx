@@ -15,8 +15,8 @@ import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
 
-const StickyDiv = styled(FlexDiv)`
-    position: sticky;
+const FixedDiv = styled(FlexDiv)`
+    position: fixed;
     top: 0;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 `;
@@ -66,9 +66,6 @@ const HeaderNav = () => {
 
     useEffect(() => {
         fetchData("/menus", "GET");
-        return () => {
-            setNav({});
-        };
     }, []);
 
     useEffect(() => {
@@ -76,25 +73,20 @@ const HeaderNav = () => {
     }, [access]);
 
     useEffect(() => {
-        const handleData = () => {
-            if (data && typeof data === "object") {
-                const newData = JSON.parse(JSON.stringify(data));
-                delete newData.change;
+        if (data && Object.keys(data).length !== 0) {
+            const newData = JSON.parse(JSON.stringify(data));
+            delete newData.change;
 
-                (Object.values(newData) as Group[]).forEach((group: Group, groupIdx: number) => {
-                    if (group.menuList) {
-                        group.menuList = group.menuList.map((menu: menuItem, idx: number) => ({
-                            ...menu,
-                            url: (menuUrl[groupIdx] && menuUrl[groupIdx][idx]) || "defaultUrl",
-                        }));
-                    }
-                });
-
-                setNav(newData);
-            }
-        };
-
-        handleData();
+            (Object.values(newData) as Group[]).forEach((group: Group, groupIdx: number) => {
+                if (group.menuList) {
+                    group.menuList = group.menuList.map((menu: menuItem, idx: number) => ({
+                        ...menu,
+                        url: (menuUrl[groupIdx] && menuUrl[groupIdx][idx]) || "defaultUrl",
+                    }));
+                }
+            });
+            setNav(newData);
+        }
     }, [data]);
 
     useEffect(() => {
@@ -112,14 +104,14 @@ const HeaderNav = () => {
 
     return (
         <>
-            <StickyDiv
+            <FixedDiv
                 $zIndex={3}
                 width="100%"
                 height="73px"
                 $backgroundColor={scrollPosition < 100 ? "none" : "wh"}
                 $borderB={`0.1px solid ${theme.color.whlayer}`}
             >
-                <FlexDiv width="1170px" $maxWidth="1170px" $justifycontent="space-between">
+                <FlexDiv width="1170px" $maxWidth="1170px" $justifycontent="space-around">
                     <Div width="200px" height="75px" $pointer onClick={moveMain}>
                         {scrollPosition < 100 ? (
                             <Img src="/images/logo_white.png" />
@@ -127,93 +119,103 @@ const HeaderNav = () => {
                             <Img src="/images/logo_purple.png" />
                         )}
                     </Div>
-
                     <FlexDiv>
-                        {nav &&
-                            Object.values(nav).map((item: any, idx: number) => {
-                                return (
-                                    <Div $position="relative" key={idx}>
-                                        <FlexDiv
-                                            $pointer
-                                            $margin="15px"
-                                            onMouseEnter={() => setActiveGroup(item.groupName)}
-                                        >
-                                            <Div $margin="0 5px" $top="22px">
-                                                <P
-                                                    fontSize="sm"
-                                                    fontWeight={800}
-                                                    $letterSpacing="2px"
-                                                    color={scrollPosition < 100 ? "wh" : "textColor"}
+                        <FlexDiv>
+                            <FlexDiv>
+                                {nav &&
+                                    Object.values(nav).map((item: any, idx: number) => {
+                                        return (
+                                            <Div $position="relative" key={idx}>
+                                                <FlexDiv
+                                                    $pointer
+                                                    $margin="15px"
+                                                    onMouseEnter={() => setActiveGroup(item.groupName)}
                                                 >
-                                                    {item.groupName}
-                                                </P>
-                                            </Div>
-                                            <FlexDiv width="10px">
-                                                {scrollPosition < 100 ? (
-                                                    <Img src="/images/chevron-down_white.svg" />
-                                                ) : (
-                                                    <Img src="/images/chevron-down_purple.svg" />
-                                                )}
-                                            </FlexDiv>
-                                        </FlexDiv>
-                                        {activeGroup === item.groupName && (
-                                            <Div
-                                                $position="absolute"
-                                                $margin="0 5px"
-                                                $backgroundColor="wh"
-                                                radius={3}
-                                                width="220px"
-                                                $padding="10px 0"
-                                                onMouseLeave={() => setActiveGroup(null)}
-                                                onClick={() => setActiveGroup(null)}
-                                            >
-                                                {item.menuList &&
-                                                    Object.values(item.menuList).map((element: any, idx: number) => {
-                                                        return (
-                                                            <Div
-                                                                $padding="8px 20px"
-                                                                width="100%"
-                                                                $pointer
-                                                                key={idx}
-                                                                onMouseEnter={() => setActiveMenu(element.name)}
-                                                                $backgroundColor={
-                                                                    activeMenu === element.name ? "bgColor" : "wh"
+                                                    <Div $margin="0 5px" $top="22px">
+                                                        <P
+                                                            fontSize="sm"
+                                                            fontWeight={800}
+                                                            $letterSpacing="2px"
+                                                            color={scrollPosition < 100 ? "wh" : "textColor"}
+                                                        >
+                                                            {item.groupName}
+                                                        </P>
+                                                    </Div>
+                                                    <FlexDiv width="10px">
+                                                        {scrollPosition < 100 ? (
+                                                            <Img src="/images/chevron-down_white.svg" />
+                                                        ) : (
+                                                            <Img src="/images/chevron-down_purple.svg" />
+                                                        )}
+                                                    </FlexDiv>
+                                                </FlexDiv>
+                                                {activeGroup === item.groupName && (
+                                                    <Div
+                                                        $position="absolute"
+                                                        $margin="0 5px"
+                                                        $backgroundColor="wh"
+                                                        radius={3}
+                                                        width="220px"
+                                                        $padding="10px 0"
+                                                        onMouseLeave={() => setActiveGroup(null)}
+                                                        onClick={() => setActiveGroup(null)}
+                                                    >
+                                                        {item.menuList &&
+                                                            Object.values(item.menuList).map(
+                                                                (element: any, idx: number) => {
+                                                                    return (
+                                                                        <Div
+                                                                            $padding="8px 20px"
+                                                                            width="100%"
+                                                                            $pointer
+                                                                            key={idx}
+                                                                            onMouseEnter={() =>
+                                                                                setActiveMenu(element.name)
+                                                                            }
+                                                                            $backgroundColor={
+                                                                                activeMenu === element.name
+                                                                                    ? "bgColor"
+                                                                                    : "wh"
+                                                                            }
+                                                                            onClick={() => movePage(element.url)}
+                                                                        >
+                                                                            <Div>
+                                                                                <P
+                                                                                    fontSize="sm"
+                                                                                    $letterSpacing="2px"
+                                                                                    color={
+                                                                                        activeMenu === element.name
+                                                                                            ? "wh"
+                                                                                            : "bk"
+                                                                                    }
+                                                                                >
+                                                                                    {element.name}
+                                                                                </P>
+                                                                            </Div>
+                                                                        </Div>
+                                                                    );
                                                                 }
-                                                                onClick={() => movePage(element.url)}
-                                                            >
-                                                                <Div>
-                                                                    <P
-                                                                        fontSize="sm"
-                                                                        $letterSpacing="2px"
-                                                                        color={
-                                                                            activeMenu === element.name ? "wh" : "bk"
-                                                                        }
-                                                                    >
-                                                                        {element.name}
-                                                                    </P>
-                                                                </Div>
-                                                            </Div>
-                                                        );
-                                                    })}
+                                                            )}
+                                                    </Div>
+                                                )}
                                             </Div>
-                                        )}
-                                    </Div>
-                                );
-                            })}
-
-                        <FlexDiv $pointer $margin="15px">
-                            <Div $margin="0 5px">
-                                <P
-                                    fontSize="sm"
-                                    fontWeight={800}
-                                    $letterSpacing="1px"
-                                    color={scrollPosition < 100 ? "wh" : "textColor"}
-                                >
-                                    LOG OUT
-                                </P>
-                            </Div>
-                            <FlexDiv width="15px">
-                                <Img src="/images/logout_white.svg" />
+                                        );
+                                    })}
+                            </FlexDiv>
+                            <FlexDiv $pointer $margin="15px">
+                                <Div $margin="0 5px">
+                                    <P
+                                        fontSize="sm"
+                                        fontWeight={800}
+                                        $letterSpacing="1px"
+                                        color={scrollPosition < 100 ? "wh" : "textColor"}
+                                    >
+                                        LOG OUT
+                                    </P>
+                                </Div>
+                                <FlexDiv width="15px">
+                                    <Img src="/images/logout_white.svg" />
+                                </FlexDiv>
                             </FlexDiv>
                         </FlexDiv>
                         <FlexDiv $margin="15px 9px">
@@ -251,7 +253,7 @@ const HeaderNav = () => {
                         </FlexDiv>
                     </FlexDiv>
                 </FlexDiv>
-            </StickyDiv>
+            </FixedDiv>
         </>
     );
 };

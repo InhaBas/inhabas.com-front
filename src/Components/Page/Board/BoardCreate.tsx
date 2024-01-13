@@ -1,15 +1,14 @@
-import "@toast-ui/editor/dist/theme/toastui-editor-dark.css"
-import "@toast-ui/editor/dist/toastui-editor.css"
-import { styled } from "styled-components"
-import Button from "../../../styles/assets/Button"
-import { Container, Div, FlexDiv } from "../../../styles/assets/Div"
-import Img from "../../../styles/assets/Img"
-import { TextInput } from "../../../styles/assets/Input"
-import P from "../../../styles/assets/P"
-import { theme } from "../../../styles/theme"
-import DragNDrop from "../../Common/DragNDrop"
-import HeaderTitle from "../../Common/HeaderTitle"
-import TextEditor from "../../Common/TextEditor"
+import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
+import "@toast-ui/editor/dist/toastui-editor.css";
+import { styled } from "styled-components";
+import Button from "../../../styles/assets/Button";
+import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
+import Img from "../../../styles/assets/Img";
+import { TextInput } from "../../../styles/assets/Input";
+import P from "../../../styles/assets/P";
+import { theme } from "../../../styles/theme";
+import DragNDrop from "../../Common/DragNDrop";
+import TextEditor from "../../Common/TextEditor";
 
 const TitleTextInput = styled(TextInput)`
     border-radius: 5px;
@@ -18,12 +17,11 @@ const TitleTextInput = styled(TextInput)`
     &::placeholder {
         color: ${(props) => props.theme.color.grey1};
     }
-`
+`;
 
 const BoardCreate = () => {
     return (
         <FlexDiv width="100%">
-            <HeaderTitle />
             <Container $alignitems="start">
                 <Div width="100%" $margin="0 0 30px 0">
                     <FlexDiv
@@ -85,7 +83,7 @@ const BoardCreate = () => {
                 </Div>
             </Container>
         </FlexDiv>
-    )
-}
+    );
+};
 
-export default BoardCreate
+export default BoardCreate;
