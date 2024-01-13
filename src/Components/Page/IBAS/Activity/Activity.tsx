@@ -5,7 +5,6 @@ import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
 
 import { useNavigate } from "react-router-dom";
-import HeaderTitle from "../../../Common/HeaderTitle";
 import Pagination from "../../../Common/Pagination";
 
 const Article = styled.article`
@@ -30,7 +29,6 @@ const Activity = () => {
 
     return (
         <>
-            <HeaderTitle />
             <Div width="100%" $padding="0 10%">
                 <FlexDiv width="100%" $justifycontent="start" $alignitems="start">
                     <Article onClick={() => moveDetail()}>

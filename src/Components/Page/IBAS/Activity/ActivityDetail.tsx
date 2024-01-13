@@ -7,7 +7,6 @@ import P from "../../../../styles/assets/P";
 
 import Comment from "../../../Common/Comment";
 import CommentInput from "../../../Common/CommentInput";
-import HeaderTitle from "../../../Common/HeaderTitle";
 
 const ActivityDetail = () => {
     const navigate = useNavigate();
@@ -15,7 +14,6 @@ const ActivityDetail = () => {
 
     return (
         <FlexDiv width="100%">
-            <HeaderTitle />
             <DetailContainer $alignitems="start">
                 <Div width="100%" $margin="0 0 30px 0">
                     <FlexDiv $margin="50px 0 30px 0">

@@ -1,17 +1,15 @@
-import A from "../../../styles/assets/A"
-import Button from "../../../styles/assets/Button"
-import { DetailContainer, Div, FlexDiv } from "../../../styles/assets/Div"
-import { H2 } from "../../../styles/assets/H"
-import Img from "../../../styles/assets/Img"
-import P from "../../../styles/assets/P"
-import Comment from "../../Common/Comment"
-import CommentInput from "../../Common/CommentInput"
-import HeaderTitle from "../../Common/HeaderTitle"
+import A from "../../../styles/assets/A";
+import Button from "../../../styles/assets/Button";
+import { DetailContainer, Div, FlexDiv } from "../../../styles/assets/Div";
+import { H2 } from "../../../styles/assets/H";
+import Img from "../../../styles/assets/Img";
+import P from "../../../styles/assets/P";
+import Comment from "../../Common/Comment";
+import CommentInput from "../../Common/CommentInput";
 
 const BoardDetail = () => {
     return (
         <FlexDiv width="100%">
-            <HeaderTitle />
             <DetailContainer $alignitems="start">
                 <Div width="100%" $margin="0 0 30px 0">
                     <FlexDiv $margin="50px 0 30px 0">
@@ -98,7 +96,7 @@ const BoardDetail = () => {
                 <CommentInput></CommentInput>
             </DetailContainer>
         </FlexDiv>
-    )
-}
+    );
+};
 
-export default BoardDetail
+export default BoardDetail;

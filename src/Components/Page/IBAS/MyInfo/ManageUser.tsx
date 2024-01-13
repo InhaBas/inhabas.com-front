@@ -4,14 +4,12 @@ import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
 
-import HeaderTitle from "../../../Common/HeaderTitle";
 import MyNewUserTable from "../../../Component/IBAS/MyInfo/MyNewUserTable";
 import MyUserTable from "../../../Component/IBAS/MyInfo/MyUserTable";
 
 const ManageUser = () => {
     return (
         <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
-            <HeaderTitle />
             <Container>
                 <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
                     <FlexDiv

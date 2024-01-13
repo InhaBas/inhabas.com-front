@@ -1,5 +1,3 @@
-import HeaderTitle from "../../Common/HeaderTitle";
-
 import A from "../../../styles/assets/A";
 import Button from "../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
@@ -12,7 +10,6 @@ import LectureCard from "../../Component/Lecture/LectureCard";
 const LectureList = () => {
     return (
         <FlexDiv width="100%">
-            <HeaderTitle />
             <Container>
                 <FlexDiv width="100%" $justifycontent="end">
                     <Div>

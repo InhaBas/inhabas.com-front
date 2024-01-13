@@ -8,7 +8,6 @@ import P from "../../../../styles/assets/P";
 
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
-import HeaderTitle from "../../../Common/HeaderTitle";
 
 const MoveBtn = styled(Button)`
     color: ${theme.color.blue};
@@ -30,7 +29,6 @@ const BankSupportDetail = () => {
 
     return (
         <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
-            <HeaderTitle />
             <Container>
                 <Div width="100%" $margin="0 0 30px 0">
                     <FlexDiv

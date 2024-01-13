@@ -10,8 +10,6 @@ import P from "../../../../styles/assets/P";
 import DragNDrop from "../../../Common/DragNDrop";
 import TextEditor from "../../../Common/TextEditor";
 
-import HeaderTitle from "../../../Common/HeaderTitle";
-
 const TitleTextInput = styled(TextInput)`
     border-radius: 5px;
     font-size: 25px;
@@ -27,7 +25,6 @@ const ActivityCreate = () => {
 
     return (
         <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
-            <HeaderTitle />
             <Container>
                 <Div width="100%">
                     <Div $border="1px solid" $borderColor="border" radius={5} width="100%">

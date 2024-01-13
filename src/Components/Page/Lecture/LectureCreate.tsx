@@ -1,19 +1,17 @@
-import { theme } from "../../../styles/theme"
+import { theme } from "../../../styles/theme";
 
-import { Container, Div, FlexDiv } from "../../../styles/assets/Div"
-import Img from "../../../styles/assets/Img"
-import P from "../../../styles/assets/P"
+import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
+import Img from "../../../styles/assets/Img";
+import P from "../../../styles/assets/P";
 
-import Button from "../../../styles/assets/Button"
-import { Checkbox, Date, Label, NumberInput, Select, TextArea, TextInput } from "../../../styles/assets/Input"
-import DragNDrop from "../../Common/DragNDrop"
-import HeaderTitle from "../../Common/HeaderTitle"
-import TextEditor from "../../Common/TextEditor"
+import Button from "../../../styles/assets/Button";
+import { Checkbox, Date, Label, NumberInput, Select, TextArea, TextInput } from "../../../styles/assets/Input";
+import DragNDrop from "../../Common/DragNDrop";
+import TextEditor from "../../Common/TextEditor";
 
 const LectureCreate = () => {
     return (
         <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
-            <HeaderTitle />
             <Container>
                 <Div width="100%" $margin="0 0 30px 0">
                     <FlexDiv
@@ -272,7 +270,7 @@ const LectureCreate = () => {
                 </Div>
             </Container>
         </FlexDiv>
-    )
-}
+    );
+};
 
-export default LectureCreate
+export default LectureCreate;
