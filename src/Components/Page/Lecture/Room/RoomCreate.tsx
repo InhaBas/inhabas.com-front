@@ -8,7 +8,6 @@ import { TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
 
 import DragNDrop from "../../../Common/DragNDrop";
-import HeaderTitle from "../../../Common/HeaderTitle";
 import TextEditor from "../../../Common/TextEditor";
 import RoomNavigate from "../../../Component/Lecture/Room/RoomNavigate";
 import RoomSearch from "../../../Component/Lecture/Room/RoomSearch";
@@ -34,8 +33,6 @@ const RoomCreate = () => {
 
         // </FlexDiv>
         <>
-            <HeaderTitle />
-
             <FlexDiv $justifycontent="start" $alignitems="start" $margin="0 5%">
                 <StickyDiv>
                     <Div $margin="0 0 30px 0">

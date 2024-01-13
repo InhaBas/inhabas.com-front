@@ -5,7 +5,6 @@ import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
 
-import HeaderTitle from "../../../Common/HeaderTitle";
 import Pagination from "../../../Common/Pagination";
 import BankSupportTable from "../../../Component/IBAS/BankSupport/BankSupportTable";
 
@@ -18,7 +17,6 @@ const BankSupport = () => {
 
     return (
         <FlexDiv width="100%">
-            <HeaderTitle />
             <Div width="80%">
                 <BankSupportTable />
                 <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">

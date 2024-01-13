@@ -1,8 +1,6 @@
 import styled from "styled-components";
 import { theme } from "../../../../styles/theme";
 
-import HeaderTitle from "../../../Common/HeaderTitle";
-
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import P from "../../../../styles/assets/P";
 
@@ -21,7 +19,6 @@ const StickyDiv = styled(Div)`
 const RoomAnnounce = () => {
     return (
         <>
-            <HeaderTitle />
             <FlexDiv $justifycontent="start" $alignitems="start" $margin="0 5%">
                 <StickyDiv $margin="0 50px 0 0">
                     <Div $margin="0 0 30px 0">

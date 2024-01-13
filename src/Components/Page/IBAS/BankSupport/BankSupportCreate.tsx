@@ -8,8 +8,6 @@ import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import { Date, TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
 
-import HeaderTitle from "../../../Common/HeaderTitle";
-
 const TitleTextInput = styled(TextInput)`
     border-radius: 5px;
     font-size: 25px;
@@ -22,7 +20,6 @@ const TitleTextInput = styled(TextInput)`
 const BankSupportCreate = () => {
     return (
         <FlexDiv width="100%">
-            <HeaderTitle />
             <Container $alignitems="start">
                 <Div width="100%" $margin="0 0 30px 0">
                     <Div $border="1px solid" $borderColor="border" radius={5} width="100%" $margin="30px 0 0 0">

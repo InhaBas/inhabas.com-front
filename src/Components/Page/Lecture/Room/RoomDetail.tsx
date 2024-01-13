@@ -1,31 +1,26 @@
-import styled from "styled-components"
+import styled from "styled-components";
 
-import A from "../../../../styles/assets/A"
-import Button from "../../../../styles/assets/Button"
-import { DetailContainer, Div, FlexDiv } from "../../../../styles/assets/Div"
-import { H2 } from "../../../../styles/assets/H"
-import Img from "../../../../styles/assets/Img"
-import P from "../../../../styles/assets/P"
+import A from "../../../../styles/assets/A";
+import Button from "../../../../styles/assets/Button";
+import { DetailContainer, Div, FlexDiv } from "../../../../styles/assets/Div";
+import { H2 } from "../../../../styles/assets/H";
+import Img from "../../../../styles/assets/Img";
+import P from "../../../../styles/assets/P";
 
-import Comment from "../../../Common/Comment"
-import CommentInput from "../../../Common/CommentInput"
+import Comment from "../../../Common/Comment";
+import CommentInput from "../../../Common/CommentInput";
 
-import RoomNavigate from "../../../Component/Lecture/Room/RoomNavigate"
-import RoomSearch from "../../../Component/Lecture/Room/RoomSearch"
+import RoomNavigate from "../../../Component/Lecture/Room/RoomNavigate";
+import RoomSearch from "../../../Component/Lecture/Room/RoomSearch";
 
 const StickyDiv = styled(Div)`
     position: sticky;
     top: 50px;
     margin: 0 50px 0 0;
-`
+`;
 
 const RoomDetail = () => {
     return (
-        // <FlexDiv width="100%">
-        //     <HeaderTitle />
-
-        // </FlexDiv>
-
         <FlexDiv $justifycontent="start" $alignitems="start" $margin="0 5%">
             <StickyDiv>
                 <Div $margin="0 0 30px 0">
@@ -124,7 +119,7 @@ const RoomDetail = () => {
                 </DetailContainer>
             </Div>
         </FlexDiv>
-    )
-}
+    );
+};
 
-export default RoomDetail
+export default RoomDetail;

@@ -1,26 +1,23 @@
-import styled from "styled-components"
-import { theme } from "../../../../styles/theme"
+import styled from "styled-components";
+import { theme } from "../../../../styles/theme";
 
-import HeaderTitle from "../../../Common/HeaderTitle"
+import { Div, FlexDiv } from "../../../../styles/assets/Div";
+import P from "../../../../styles/assets/P";
 
-import { Div, FlexDiv } from "../../../../styles/assets/Div"
-import P from "../../../../styles/assets/P"
-
-import Img from "../../../../styles/assets/Img"
-import RoomNavigate from "../../../Component/Lecture/Room/RoomNavigate"
-import RoomSearch from "../../../Component/Lecture/Room/RoomSearch"
-import RoomTable from "../../../Component/Lecture/Room/RoomTable"
+import Img from "../../../../styles/assets/Img";
+import RoomNavigate from "../../../Component/Lecture/Room/RoomNavigate";
+import RoomSearch from "../../../Component/Lecture/Room/RoomSearch";
+import RoomTable from "../../../Component/Lecture/Room/RoomTable";
 
 const StickyDiv = styled(Div)`
     position: sticky;
     top: 50px;
     margin: 0 50px 0 0;
-`
+`;
 
 const RoomList = () => {
     return (
         <>
-            <HeaderTitle />
             <FlexDiv $justifycontent="start" $alignitems="start" $margin="0 5%">
                 <StickyDiv>
                     <Div $margin="0 0 30px 0">
@@ -115,7 +112,7 @@ const RoomList = () => {
                 </Div>
             </FlexDiv>
         </>
-    )
-}
+    );
+};
 
-export default RoomList
+export default RoomList;
