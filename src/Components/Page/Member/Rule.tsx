@@ -1,6 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
+import useFetch from "../../../Hooks/useFetch";
+import { policyInfo } from "../../../Recoil/backState";
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import { H2 } from "../../../styles/assets/H";
 import Img from "../../../styles/assets/Img";
@@ -15,10 +19,25 @@ const Hr = styled.hr`
 
 const Rule = () => {
     const navigate = useNavigate();
+    const { id } = useParams();
 
     const movePage = () => {
         navigate("/");
     };
+
+    const [policyData, policyFetchData] = useFetch();
+    const [policy, setPolicy] = useRecoilState(policyInfo);
+
+    // 정책 api 불러오기
+    useEffect(() => {
+        policyFetchData(`/policy/${id}`, "GET");
+
+        setPolicy(null);
+    }, []);
+
+    useEffect(() => {
+        setPolicy(policyData);
+    }, [policyData]);
 
     return (
         <>
@@ -37,58 +56,21 @@ const Rule = () => {
                         </FlexDiv>
                         <FlexDiv>
                             <H2 fontSize="xxl" fontWeight={700}>
-                                IBAS 제3자 개인정보 이용 및 수집 동의 약관
+                                {policy?.title}
                             </H2>
                         </FlexDiv>
                     </FlexDiv>
                     <Hr />
-                    <Div width="100%" height="80%" overflow="auto">
-                        <P $whiteSpace="normal" $lineHeight={2.8}>
-                            IBAS 홈페이지(www.inhabas.com)를 운영하는 인하대학교 빅데이터 탐구 동아리 IBAS는(이하
-                            ‘IBAS’)는 다음과 같은 원칙에 의하여 회원이 개인정보를 수집, 이용 및 관리하고 있고, 이와
-                            관련하여 정보통신서비스 제공자가 준수하여야 하는 대한민국 관계법령 및 개인정보보호규정,
-                            가이드라인을 준수하고 있습니다. [제 1조. 개인정보 수집 항목 및 수집 방법] 회원가입 시점에
-                            IBAS가 수집하는 개인정보는 아래와 같습니다. - 학생 유형으로 회원가입 시 ‘이름, 이메일,
-                            휴대전화 번호, 학년, 학번, 전공’을 필수항목으로 수집합니다. 만약 이용자가 인하대학교 학생이
-                            아니거나 잘못된 내용을 기재할 경우 회원가입이 제한됩니다. - 교수님 유형으로 회원가입 시
-                            ‘이름, 이메일, 핸드폰번호, 교수번호, 전공’을 필수항목으로 수집합니다. 만약 이용자가
-                            인하대학교 교수가 아니거나 잘못된 내용을 기재할 경우 회원가입이 제한됩니다. IBAS 홈페이지
-                            이용 과정에서 IP 주소, 쿠키, 서비스 이용 기록, 접속 로그 등이 자동으로 생성되어 수집될 수
-                            있습니다. 마이페이지에서 입력된 정보를 바탕으로 개인정보가 수집될 수 있습니다. IBAS
-                            홈페이지(www.inhabas.com)를 운영하는 인하대학교 빅데이터 탐구 동아리 IBAS는(이하 ‘IBAS’)는
-                            다음과 같은 원칙에 의하여 회원이 개인정보를 수집, 이용 및 관리하고 있고, 이와 관련하여
-                            정보통신서비스 제공자가 준수하여야 하는 대한민국 관계법령 및 개인정보보호규정, 가이드라인을
-                            준수하고 있습니다. [제 1조. 개인정보 수집 항목 및 수집 방법] 회원가입 시점에 IBAS가 수집하는
-                            개인정보는 아래와 같습니다. - 학생 유형으로 회원가입 시 ‘이름, 이메일, 휴대전화 번호, 학년,
-                            학번, 전공’을 필수항목으로 수집합니다. 만약 이용자가 인하대학교 학생이 아니거나 잘못된
-                            내용을 기재할 경우 회원가입이 제한됩니다. - 교수님 유형으로 회원가입 시 ‘이름, 이메일,
-                            핸드폰번호, 교수번호, 전공’을 필수항목으로 수집합니다. 만약 이용자가 인하대학교 교수가
-                            아니거나 잘못된 내용을 기재할 경우 회원가입이 제한됩니다. IBAS 홈페이지 이용 과정에서 IP
-                            주소, 쿠키, 서비스 이용 기록, 접속 로그 등이 자동으로 생성되어 수집될 수 있습니다.
-                            마이페이지에서 입력된 정보를 바탕으로 개인정보가 수집될 수 있습니다. IBAS
-                            홈페이지(www.inhabas.com)를 운영하는 인하대학교 빅데이터 탐구 동아리 IBAS는(이하 ‘IBAS’)는
-                            다음과 같은 원칙에 의하여 회원이 개인정보를 수집, 이용 및 관리하고 있고, 이와 관련하여
-                            정보통신서비스 제공자가 준수하여야 하는 대한민국 관계법령 및 개인정보보호규정, 가이드라인을
-                            준수하고 있습니다. [제 1조. 개인정보 수집 항목 및 수집 방법] 회원가입 시점에 IBAS가 수집하는
-                            개인정보는 아래와 같습니다. - 학생 유형으로 회원가입 시 ‘이름, 이메일, 휴대전화 번호, 학년,
-                            학번, 전공’을 필수항목으로 수집합니다. 만약 이용자가 인하대학교 학생이 아니거나 잘못된
-                            내용을 기재할 경우 회원가입이 제한됩니다. - 교수님 유형으로 회원가입 시 ‘이름, 이메일,
-                            핸드폰번호, 교수번호, 전공’을 필수항목으로 수집합니다. 만약 이용자가 인하대학교 교수가
-                            아니거나 잘못된 내용을 기재할 경우 회원가입이 제한됩니다. IBAS 홈페이지 이용 과정에서 IP
-                            주소, 쿠키, 서비스 이용 기록, 접속 로그 등이 자동으로 생성되어 수집될 수 있습니다.
-                            마이페이지에서 입력된 정보를 바탕으로 개인정보가 수집될 수 있습니다. IBAS
-                            홈페이지(www.inhabas.com)를 운영하는 인하대학교 빅데이터 탐구 동아리 IBAS는(이하 ‘IBAS’)는
-                            다음과 같은 원칙에 의하여 회원이 개인정보를 수집, 이용 및 관리하고 있고, 이와 관련하여
-                            정보통신서비스 제공자가 준수하여야 하는 대한민국 관계법령 및 개인정보보호규정, 가이드라인을
-                            준수하고 있습니다. [제 1조. 개인정보 수집 항목 및 수집 방법] 회원가입 시점에 IBAS가 수집하는
-                            개인정보는 아래와 같습니다. - 학생 유형으로 회원가입 시 ‘이름, 이메일, 휴대전화 번호, 학년,
-                            학번, 전공’을 필수항목으로 수집합니다. 만약 이용자가 인하대학교 학생이 아니거나 잘못된
-                            내용을 기재할 경우 회원가입이 제한됩니다. - 교수님 유형으로 회원가입 시 ‘이름, 이메일,
-                            핸드폰번호, 교수번호, 전공’을 필수항목으로 수집합니다. 만약 이용자가 인하대학교 교수가
-                            아니거나 잘못된 내용을 기재할 경우 회원가입이 제한됩니다. IBAS 홈페이지 이용 과정에서 IP
-                            주소, 쿠키, 서비스 이용 기록, 접속 로그 등이 자동으로 생성되어 수집될 수 있습니다.
-                            마이페이지에서 입력된 정보를 바탕으로 개인정보가 수집될 수 있습니다.
-                        </P>
+                    <Div width="100%" height="80%" overflow="scroll">
+                        {policy && (
+                            <div>
+                                <P
+                                    $whiteSpace="pre-wrap"
+                                    $lineHeight={2.8}
+                                    dangerouslySetInnerHTML={{ __html: policy?.content }}
+                                />
+                            </div>
+                        )}
                     </Div>
                 </FlexDiv>
                 <Div width="44%" height="100vh" overflow="hidden">
