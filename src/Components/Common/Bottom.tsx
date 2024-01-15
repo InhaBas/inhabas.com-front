@@ -20,6 +20,7 @@ const BottomDiv = styled(FlexDiv)`
 
 const Bottom = () => {
     const navigate = useNavigate();
+    // 정책 페이지로 이동하는 함수. 매개변수는 숫자여야 함
     const moveRule = (id: number) => {
         navigate(`/rule/${id}`);
     };
@@ -27,6 +28,7 @@ const Bottom = () => {
     const [chiefData, chiefFetchData] = useFetch();
     const [chief, setChief] = useRecoilState(chiefInfo);
 
+    // 회장 정보 불러오는 api
     useEffect(() => {
         chiefFetchData("/member/chief", "GET");
     }, []);

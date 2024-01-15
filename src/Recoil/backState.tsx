@@ -8,13 +8,13 @@ import {
 } from "../Types/IBAS/TypeMember";
 import { chiefInterface, policyInterface } from "../Types/TypeCommon";
 
-// headerNav
+//headerNav
 export const headerNavInfo = atom({
     key: "headerNavInfo",
     default: {},
 });
 
-// bottom
+//bottom
 export const chiefInfo = atom<chiefInterface | null>({
     key: "chiefInfo",
     default: null,
