@@ -6,11 +6,18 @@ import {
     questionnariesInterface,
     signUpInterface,
 } from "../Types/IBAS/TypeMember";
+import { chiefInterface } from "../Types/TypeCommon";
 
 //headerNav
 export const headerNavInfo = atom({
     key: "headerNavInfo",
     default: {},
+});
+
+//bottom
+export const chiefInfo = atom<chiefInterface | null>({
+    key: "chiefInfo",
+    default: null,
 });
 
 // myInfo

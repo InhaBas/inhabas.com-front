@@ -12,6 +12,7 @@ import Rule from "./Components/Page/Member/Rule";
 import Signup from "./Components/Page/Member/Signup";
 import SignupQuestion from "./Components/Page/Member/SignupQuestion";
 import HeaderNavLayout from "./Layout/HeaderNavLayout";
+import Bottom from "./Components/Common/Bottom";
 
 import { Div } from "./styles/assets/Div";
 
@@ -32,7 +33,7 @@ function App() {
 
                     <Route path="/*" element={<HeaderNavLayout />} />
                 </Routes>
-                {/* <Bottom /> */}
+                <Bottom />
             </Div>
         </ThemeProvider>
     );
