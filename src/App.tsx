@@ -29,7 +29,7 @@ function App() {
                     <Route path="login/process" element={<LoginProcess />} />
                     <Route path="signup" element={<Signup />} />
                     <Route path="signup/question" element={<SignupQuestion />} />
-                    <Route path="rule" element={<Rule />} />
+                    <Route path="rule/:id" element={<Rule />} />
 
                     <Route path="/*" element={<HeaderNavLayout />} />
                 </Routes>

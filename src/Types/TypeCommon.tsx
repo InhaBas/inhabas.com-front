@@ -15,3 +15,9 @@ export interface chiefInterface {
     email: string;
     phoneNumber: string;
 }
+
+// policy
+export interface policyInterface {
+    title: string;
+    content: string;
+}
