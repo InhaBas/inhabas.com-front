@@ -33,7 +33,7 @@ const Rule = () => {
         policyFetchData(`/policy/${id}`, "GET");
 
         setPolicy(null);
-    }, []);
+    }, [id]);
 
     useEffect(() => {
         setPolicy(policyData);
