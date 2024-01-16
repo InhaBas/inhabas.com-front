@@ -8,14 +8,14 @@ export interface menuItem {
     description: string;
     url?: string;
 }
-    
+
 // bottom
 export interface chiefInterface {
     name: string;
     email: string;
     phoneNumber: string;
 }
-  
+
 // policy
 export interface policyInterface {
     title: string;
