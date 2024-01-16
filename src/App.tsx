@@ -4,6 +4,7 @@ import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./styles/Globalstyles";
 import { theme } from "./styles/theme";
 
+import Bottom from "./Components/Common/Bottom";
 import Carousel from "./Components/Common/Carousel";
 import { Modal } from "./Components/Common/Modal/Modal";
 import Login from "./Components/Page/Member/Login";
@@ -12,7 +13,6 @@ import Rule from "./Components/Page/Member/Rule";
 import Signup from "./Components/Page/Member/Signup";
 import SignupQuestion from "./Components/Page/Member/SignupQuestion";
 import HeaderNavLayout from "./Layout/HeaderNavLayout";
-import Bottom from "./Components/Common/Bottom";
 
 import { Div } from "./styles/assets/Div";
 
