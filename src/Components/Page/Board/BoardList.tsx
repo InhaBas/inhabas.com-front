@@ -1,12 +1,14 @@
 import styled from "styled-components";
+
 import A from "../../../styles/assets/A";
 import Button from "../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
+
+import NavigateTable from "../../Common/NavigateTable";
 import Pagination from "../../Common/Pagination";
 import BoardNavigate from "../../Component/Board/BoardNavigate";
 import BoardSearch from "../../Component/Board/BoardSearch";
-import BoardTable from "../../Component/Board/BoardTable";
 
 const StickyDiv = styled(Div)`
     position: sticky;
@@ -14,8 +16,38 @@ const StickyDiv = styled(Div)`
 `;
 
 const BoardList = () => {
+    const headerInfo = ["no.", "제목", "작성자", "작성일"];
+    const widthList = [45, 450, 120, 120];
+
+    const contents = [
+        {
+            id: 0,
+            title: "string",
+            writer_name: "string",
+            created: "2023-07-19",
+        },
+        {
+            id: 1,
+            title: "string",
+            writer_name: "string",
+            created: "2023-07-20",
+        },
+        {
+            id: 2,
+            title: "string",
+            writer_name: "string",
+            created: "2023-07-21",
+        },
+        {
+            id: 3,
+            title: "string",
+            writer_name: "string",
+            created: "2023-07-22",
+        },
+    ];
+
     return (
-        <Container $alignitems="start">
+        <Container $alignitems="start" $justifycontent="space-evenly">
             <StickyDiv>
                 <Div $margin="0 0 30px 0">
                     <BoardSearch />
@@ -26,7 +58,7 @@ const BoardList = () => {
                 </Div>
             </StickyDiv>
             <Div>
-                <BoardTable />
+                <NavigateTable header={headerInfo} width={widthList} contents={contents} url="/board/detail" />
                 <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">
                     <Button
                         display="flex"
