@@ -92,8 +92,8 @@ const FlexDiv = styled(Div)<DivStyle>`
 `;
 
 const Container = styled(FlexDiv)`
-    width: 1170px;
-    max-width: 1170px;
+    width: 80%;
+    max-width: 80%;
     padding: 5% 0;
 `;
 
