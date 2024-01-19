@@ -5,6 +5,7 @@ import {
     profileInterface,
     questionnariesInterface,
     signUpInterface,
+    uewUserInterface,
 } from "../Types/IBAS/TypeMember";
 import { chiefInterface, policyInterface } from "../Types/TypeCommon";
 
@@ -29,6 +30,11 @@ export const policyInfo = atom<policyInterface | null>({
 // myInfo
 export const profileInfo = atom<profileInterface | null>({
     key: "profileInfo",
+    default: null,
+});
+
+export const newUserInfo = atom<uewUserInterface | null>({
+    key: "newUserInfo",
     default: null,
 });
 

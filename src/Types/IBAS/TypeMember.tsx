@@ -38,3 +38,34 @@ export interface profileInterface {
     introduce: string | null; // nullable
     isHOF: boolean;
 }
+
+export interface uewUserInterface {
+    pageInfo: {
+        pageNumber: number;
+        pageSize: number;
+        totalPages: number;
+        totalElements: number;
+    };
+    data: [
+        {
+            name: string;
+            memberId: number;
+            studentId: number;
+            phoneNumber: string;
+            email: string;
+            grade: number;
+            major: string;
+        }
+    ];
+}
+
+export interface uewUserTableInterface {
+    name: string;
+    memberId: number;
+    studentId: number;
+    phoneNumber: string;
+    email: string;
+    grade: number;
+    major: string;
+    application: string;
+}
