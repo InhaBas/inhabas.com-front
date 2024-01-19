@@ -94,7 +94,7 @@ const MyNewUserTable = () => {
                     ))}
                 </FlexDiv>
                 {newUser &&
-                    Object.values(newUser).map((element: object, idx: number) => (
+                    Object.values(newUser).map((element: uewUserTableInterface, idx: number) => (
                         <FlexDiv
                             key={`contentItem${idx}`}
                             width="100%"
@@ -115,7 +115,12 @@ const MyNewUserTable = () => {
                             ))}
 
                             <FlexDiv $padding="10px" $minWidth="160px" $pointer>
-                                <A $center color="bgColor" $hoverColor="textColor" onClick={() => moveApplication(1)}>
+                                <A
+                                    $center
+                                    color="bgColor"
+                                    $hoverColor="textColor"
+                                    onClick={() => moveApplication(element.studentId)}
+                                >
                                     지원서보기
                                 </A>
                             </FlexDiv>

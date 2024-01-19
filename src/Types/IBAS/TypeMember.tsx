@@ -67,5 +67,4 @@ export interface uewUserTableInterface {
     email: string;
     grade: number;
     major: string;
-    application: string;
 }
