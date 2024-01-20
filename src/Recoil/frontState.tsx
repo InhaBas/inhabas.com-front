@@ -6,6 +6,11 @@ export const refetch = atom({
     default: false,
 });
 
+export const checkedList = atom({
+    key: "checkedList",
+    default: [] as Number[],
+});
+
 // login
 export const relogin = atom({
     key: "relogin",

@@ -7,6 +7,7 @@ import useFetch from "../../../../Hooks/useFetch";
 import { newUserInfo } from "../../../../Recoil/backState";
 import { theme } from "../../../../styles/theme";
 
+import { checkedList } from "../../../../Recoil/frontState";
 import { uewUserTableInterface } from "../../../../Types/IBAS/TypeMember";
 import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
@@ -20,14 +21,41 @@ const MyNewUserTable = () => {
     const widthList = [50, 100, 70, 150, 170, 310, 160];
     const headerInfo = ["", "이름", "학년", "학번", "전화번호", "학과", "지원서보기"];
 
+    const [check, setCheck] = useRecoilState(checkedList);
+    const [newUserData, fetchNewUserData] = useFetch();
+    const [newUser, setNewUser] = useRecoilState(newUserInfo);
+
     const navigate = useNavigate();
 
     const moveApplication = (application: number) => {
         navigate(`/staff/member/application/${application}`);
     };
 
-    const [newUserData, fetchNewUserData] = useFetch();
-    const [newUser, setNewUser] = useRecoilState(newUserInfo);
+    const checkClickEvent = (e: React.ChangeEvent<HTMLInputElement>, memberId: number) => {
+        const targetCheck = e.target.checked;
+        if (targetCheck === true) {
+            setCheck((prev) => [...prev, memberId]);
+        } else {
+            setCheck((prev) => prev.filter((item) => item !== memberId));
+        }
+    };
+
+    const checkAllClickEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const tmpList = [] as Number[];
+        if (e.target.checked == true) {
+            newUser &&
+                Object.values(newUser).forEach((item) => {
+                    tmpList.push(item.memberId);
+                });
+        }
+
+        setCheck(tmpList);
+    };
+
+    useEffect(() => {
+        console.log(check);
+    }, [check]);
+
     useEffect(() => {
         fetchNewUserData("/members/unapproved?page=0&size=10", "GET", "token");
     }, []);
@@ -41,6 +69,7 @@ const MyNewUserTable = () => {
                 studentId: item.studentId,
                 phoneNumber: item.phoneNumber,
                 major: item.major,
+                memberId: item.memberId,
                 // application: `/application/${item.studentId}`,
             }));
 
@@ -83,7 +112,10 @@ const MyNewUserTable = () => {
             <Div width="100%" $borderB={`1px solid ${theme.color.grey1}`}>
                 <FlexDiv width="100%" height="45px" $justifycontent="space-between" $backgroundColor="wh">
                     <FlexDiv $padding="10px">
-                        <Checkbox />
+                        <Checkbox
+                            checked={!!newUser && check.length === Object.values(newUser).length}
+                            onChange={checkAllClickEvent}
+                        />
                     </FlexDiv>
                     {headerInfo.map((item: string, idx: number) => (
                         <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
@@ -104,22 +136,38 @@ const MyNewUserTable = () => {
                             $backgroundColor="wh"
                         >
                             <FlexDiv $padding="10px">
-                                <Checkbox />
+                                <Checkbox
+                                    checked={check.includes(element.memberId) ? true : false}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                        checkClickEvent(e, element.memberId)
+                                    }
+                                />
                             </FlexDiv>
-                            {Object.values(element).map((item: any, idx: number) => (
-                                <FlexDiv key={`itemValue${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
-                                    <A $center fontWeight={idx === 0 ? 800 : 500}>
-                                        {item}
-                                    </A>
-                                </FlexDiv>
-                            ))}
+
+                            {Object.entries(element).map(([key, value], idx: number) => {
+                                // memberId가 아닌 경우에만 FlexDiv를 렌더링합니다.
+                                if (key !== "memberId") {
+                                    return (
+                                        <FlexDiv
+                                            key={`itemValue${idx}`}
+                                            $minWidth={`${widthList[idx]}px`}
+                                            $padding="10px"
+                                        >
+                                            <A $center fontWeight={idx === 0 ? 800 : 500}>
+                                                {value}
+                                            </A>
+                                        </FlexDiv>
+                                    );
+                                }
+                                return null;
+                            })}
 
                             <FlexDiv $padding="10px" $minWidth="160px" $pointer>
                                 <A
                                     $center
                                     color="bgColor"
                                     $hoverColor="textColor"
-                                    onClick={() => moveApplication(element.studentId)}
+                                    onClick={() => moveApplication(element.memberId)}
                                 >
                                     지원서보기
                                 </A>
