@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 
@@ -24,6 +24,9 @@ const MyNewUserTable = () => {
     const [check, setCheck] = useRecoilState(checkedList);
     const [newUserData, fetchNewUserData] = useFetch();
     const [newUser, setNewUser] = useRecoilState(newUserInfo);
+    const [passFailValue, setPassFailValue] = useState("");
+
+    const [passFailData, fetchPassFailData] = useFetch();
 
     const navigate = useNavigate();
 
@@ -52,13 +55,24 @@ const MyNewUserTable = () => {
         setCheck(tmpList);
     };
 
-    useEffect(() => {
-        console.log(check);
-    }, [check]);
+    const handlePassFailChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        // 선택된 값을 업데이트
+        setPassFailValue(e.target.value);
+    };
+
+    const passFail = () => {
+        if (passFailValue !== "") {
+            let passFailSend = {
+                memberIdList: check,
+                state: passFailValue,
+            };
+            fetchPassFailData("/members/unapproved", "PUT", "token", passFailSend);
+        }
+    };
 
     useEffect(() => {
         fetchNewUserData("/members/unapproved?page=0&size=10", "GET", "token");
-    }, []);
+    }, [passFailData]);
 
     useEffect(() => {
         if (newUserData) {
@@ -70,10 +84,8 @@ const MyNewUserTable = () => {
                 phoneNumber: item.phoneNumber,
                 major: item.major,
                 memberId: item.memberId,
-                // application: `/application/${item.studentId}`,
             }));
 
-            console.log(typeof processedData);
             setNewUser(processedData);
         }
     }, [newUserData]);
@@ -82,12 +94,18 @@ const MyNewUserTable = () => {
         <Div width="100%">
             <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
                 <Div width="100px" $margin="0 10px 0 0 ">
-                    <Select name="subject" $borderRadius={3} required>
-                        <option value="" disabled selected hidden>
+                    <Select
+                        name="approved"
+                        $borderRadius={3}
+                        required
+                        defaultValue="nothing"
+                        onChange={handlePassFailChange}
+                    >
+                        <option value="nothing" disabled hidden>
                             승인여부
                         </option>
-                        <option>합격</option>
-                        <option>불합격</option>
+                        <option value="pass">합격</option>
+                        <option value="fail">불합격</option>
                     </Select>
                 </Div>
                 <Button
@@ -97,7 +115,7 @@ const MyNewUserTable = () => {
                     $padding="6px 12px"
                     height="40px"
                 >
-                    <FlexDiv $margin="0 5px 0 0">
+                    <FlexDiv $margin="0 5px 0 0" onClick={() => passFail()}>
                         <FlexDiv width="15px" $margin="0 10px 0 0">
                             <Img src="/images/check_white.svg" />
                         </FlexDiv>
