@@ -8,7 +8,7 @@ import { newUserInfo } from "../../../../Recoil/backState";
 import { theme } from "../../../../styles/theme";
 
 import { checkedList } from "../../../../Recoil/frontState";
-import { uewUserTableInterface } from "../../../../Types/IBAS/TypeMember";
+import { newUserInterface } from "../../../../Types/IBAS/TypeMember";
 import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
@@ -44,14 +44,10 @@ const MyNewUserTable = () => {
     };
 
     const checkAllClickEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const tmpList = [] as Number[];
-        if (e.target.checked == true) {
-            newUser &&
-                Object.values(newUser).forEach((item) => {
-                    tmpList.push(item.memberId);
-                });
+        const tmpList: number[] = [];
+        if (e.target.checked) {
+            newUser && tmpList.push(...Object.values(newUser).map((item: newUserInterface) => item.memberId));
         }
-
         setCheck(tmpList);
     };
 
@@ -76,7 +72,7 @@ const MyNewUserTable = () => {
 
     useEffect(() => {
         if (newUserData) {
-            const processedData = newUserData.data.map((item: uewUserTableInterface, idx: number) => ({
+            const processedData = newUserData.data.map((item: newUserInterface, idx: number) => ({
                 id: idx + 1,
                 name: item.name,
                 grade: item.grade,
@@ -127,13 +123,21 @@ const MyNewUserTable = () => {
                     </FlexDiv>
                 </Button>
             </FlexDiv>
-            <Div width="100%" $borderB={`1px solid ${theme.color.grey1}`}>
-                <FlexDiv width="100%" height="45px" $justifycontent="space-between" $backgroundColor="wh">
+            <Div width="100%">
+                <FlexDiv
+                    width="100%"
+                    height="45px"
+                    $justifycontent="space-between"
+                    $backgroundColor="wh"
+                    $borderB={`2px solid ${theme.color.grey1}`}
+                >
                     <FlexDiv $padding="10px">
-                        <Checkbox
-                            checked={!!newUser && check.length === Object.values(newUser).length}
-                            onChange={checkAllClickEvent}
-                        />
+                        {newUser.length !== 0 && (
+                            <Checkbox
+                                checked={!!newUser && check.length === Object.values(newUser).length}
+                                onChange={checkAllClickEvent}
+                            />
+                        )}
                     </FlexDiv>
                     {headerInfo.map((item: string, idx: number) => (
                         <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
@@ -144,7 +148,7 @@ const MyNewUserTable = () => {
                     ))}
                 </FlexDiv>
                 {newUser &&
-                    Object.values(newUser).map((element: uewUserTableInterface, idx: number) => (
+                    Object.values(newUser).map((element: newUserInterface, idx: number) => (
                         <FlexDiv
                             key={`contentItem${idx}`}
                             width="100%"
@@ -192,8 +196,13 @@ const MyNewUserTable = () => {
                             </FlexDiv>
                         </FlexDiv>
                     ))}
+                <FlexDiv width="100%" $padding="10px">
+                    <Div>
+                        <P>입부 신청 대기중인 회원이 없습니다.</P>
+                    </Div>
+                </FlexDiv>
             </Div>
-            <Pagination />
+            {newUser.length !== 0 && <Pagination />}
         </Div>
     );
 };

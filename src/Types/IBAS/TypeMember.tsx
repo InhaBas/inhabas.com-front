@@ -39,27 +39,7 @@ export interface profileInterface {
     isHOF: boolean;
 }
 
-export interface uewUserInterface {
-    pageInfo: {
-        pageNumber: number;
-        pageSize: number;
-        totalPages: number;
-        totalElements: number;
-    };
-    data: [
-        {
-            name: string;
-            memberId: number;
-            studentId: number;
-            phoneNumber: string;
-            email: string;
-            grade: number;
-            major: string;
-        }
-    ];
-}
-
-export interface uewUserTableInterface {
+export interface newUserInterface {
     name: string;
     memberId: number;
     studentId: number;

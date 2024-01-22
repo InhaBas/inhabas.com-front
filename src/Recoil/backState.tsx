@@ -2,10 +2,10 @@ import { atom } from "recoil";
 import {
     answersInterface,
     majorInterface,
+    newUserInterface,
     profileInterface,
     questionnariesInterface,
     signUpInterface,
-    uewUserInterface,
 } from "../Types/IBAS/TypeMember";
 import { chiefInterface, policyInterface } from "../Types/TypeCommon";
 
@@ -33,9 +33,14 @@ export const profileInfo = atom<profileInterface | null>({
     default: null,
 });
 
-export const newUserInfo = atom<uewUserInterface | null>({
+export const newUserInfo = atom<newUserInterface[]>({
     key: "newUserInfo",
-    default: null,
+    default: [],
+});
+
+export const totalNewUserInfo = atom({
+    key: "totalNewUserInfo",
+    default: 0,
 });
 
 // IBAS
