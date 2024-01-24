@@ -1,83 +1,152 @@
-import { theme } from "../../styles/theme";
-
-import { FlexDiv } from "../../styles/assets/Div";
+import { useEffect, useState } from "react";
+import useFetch from "../../Hooks/useFetch";
+import { paginationPropsInterface } from "../../Types/TypeCommon";
+import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
+import { theme } from "../../styles/theme";
 
-const Pagination = () => {
+const Pagination = (props: paginationPropsInterface) => {
+    const { totalPage, fetchUrl, search, size, token, paginationFetch } = props;
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageChange, setPageChange] = useState(false);
+    const [leftHovered, setLeftHovered] = useState(false);
+    const [rightHovered, setRightHovered] = useState(false);
+    const [data, fetchData] = useFetch();
+
+    const makePageNum = () => {
+        const startPage = Math.max(1, currentPage - 2); // 현재 페이지를 중앙에 위치시키기 위한 조정
+
+        let pageNumList = [];
+        for (let i = startPage; i < startPage + 5 && i <= totalPage; i++) {
+            pageNumList.push(
+                <FlexDiv
+                    onClick={() => {
+                        setCurrentPage(i);
+                        setPageChange(true);
+                    }}
+                    key={`page${i}`}
+                    display="flex"
+                    width="45px"
+                    height="45px"
+                    $padding="5px"
+                    $margin="5px"
+                    $pointer
+                    $backgroundColor={i !== currentPage ? "wh" : "bgColor"}
+                    $border={`2px solid ${theme.color.bk}`}
+                    radius={50}
+                >
+                    <Div>
+                        <P color={i !== currentPage ? "textColor" : "wh"} fontWeight={700}>
+                            {i}
+                        </P>
+                    </Div>
+                </FlexDiv>
+            );
+        }
+
+        return pageNumList;
+    };
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [totalPage]);
+    useEffect(() => {
+        let paginationFetchUrl = fetchUrl;
+        paginationFetchUrl += `?page=${currentPage - 1}`;
+        if (size !== undefined) {
+            paginationFetchUrl += `&size=${size}`;
+        } else {
+            paginationFetchUrl += "&size=10";
+        }
+        if (search !== undefined) {
+            paginationFetchUrl += search;
+        }
+
+        if (pageChange === true) {
+            if (token) {
+                paginationFetch(paginationFetchUrl, "GET", "token");
+            } else {
+                paginationFetch(paginationFetchUrl, "GET");
+            }
+
+            setPageChange(false);
+        }
+    }, [pageChange]);
+
+    useEffect(() => {
+        console.log(data);
+    }, [data]);
     return (
         <FlexDiv width="100%" $padding="20px 0">
-            <FlexDiv
-                width="45px"
-                height="45px"
-                $padding="5px"
-                $margin="5px"
-                radius={50}
-                $backgroundColor="bgColor"
-                $pointer
-            >
-                <FlexDiv width="10px">
-                    <Img src="/images/arrow-left_white.svg" />
-                </FlexDiv>
-            </FlexDiv>
-            <FlexDiv
-                width="45px"
-                height="45px"
-                $padding="5px"
-                $margin="5px"
-                radius={50}
-                $backgroundColor="bgColor"
-                $pointer
-            >
-                <FlexDiv width="10px">
-                    <P color="wh" $center fontWeight={700}>
-                        1
-                    </P>
-                </FlexDiv>
-            </FlexDiv>
-            <FlexDiv
-                width="45px"
-                height="45px"
-                $padding="5px"
-                $margin="5px"
-                $border={`2px solid ${theme.color.bk}`}
-                radius={50}
-                $pointer
-            >
-                <FlexDiv width="10px">
-                    <P $center fontWeight={700}>
-                        2
-                    </P>
-                </FlexDiv>
-            </FlexDiv>
-            <FlexDiv
-                width="45px"
-                height="45px"
-                $padding="5px"
-                $margin="5px"
-                $border={`2px solid ${theme.color.bk}`}
-                radius={50}
-                $pointer
-            >
-                <FlexDiv width="10px">
-                    <P $center fontWeight={700}>
-                        3
-                    </P>
-                </FlexDiv>
-            </FlexDiv>
-            <FlexDiv
-                width="45px"
-                height="45px"
-                $padding="5px"
-                $margin="5px"
-                radius={50}
-                $backgroundColor="bgColor"
-                $pointer
-            >
-                <FlexDiv width="10px">
-                    <Img src="/images/arrow-right_white.svg" />
-                </FlexDiv>
-            </FlexDiv>
+            {totalPage !== 1 && (
+                <Div
+                    onMouseEnter={() => setLeftHovered(true)}
+                    onMouseLeave={() => setLeftHovered(false)}
+                    onClick={() => {
+                        if (currentPage !== 1) {
+                            setCurrentPage(currentPage - 1);
+                            setPageChange(true);
+                        }
+                    }}
+                    $pointer
+                    $margin="0 8px"
+                >
+                    <FlexDiv
+                        width="45px"
+                        height="45px"
+                        $padding="5px"
+                        $margin="5px"
+                        radius={50}
+                        $backgroundColor={leftHovered ? "bgColor" : "wh"}
+                        $pointer
+                    >
+                        <FlexDiv width="10px">
+                            {leftHovered ? (
+                                <Img src="/images/arrow-left_white.svg" />
+                            ) : (
+                                <Img src="/images/arrow-left_purple.svg" />
+                            )}
+                        </FlexDiv>
+                    </FlexDiv>
+                </Div>
+            )}
+
+            {makePageNum()}
+
+            {totalPage !== 1 && (
+                <Div
+                    onMouseEnter={() => setRightHovered(true)}
+                    onMouseLeave={() => setRightHovered(false)}
+                    onClick={() => {
+                        if (currentPage !== totalPage) {
+                            setCurrentPage(currentPage + 1);
+                            setPageChange(true);
+                        }
+                    }}
+                    $pointer
+                    $margin="0 8px"
+                >
+                    <FlexDiv
+                        width="45px"
+                        height="45px"
+                        $padding="5px"
+                        $margin="5px"
+                        radius={50}
+                        $backgroundColor={rightHovered ? "bgColor" : "wh"}
+                        $pointer
+                    >
+                        <FlexDiv width="10px">
+                            {rightHovered ? (
+                                <Img src="/images/arrow-right_white.svg" />
+                            ) : (
+                                <Img src="/images/arrow-right_purple.svg" />
+                            )}
+                        </FlexDiv>
+                    </FlexDiv>
+                </Div>
+            )}
         </FlexDiv>
     );
 };

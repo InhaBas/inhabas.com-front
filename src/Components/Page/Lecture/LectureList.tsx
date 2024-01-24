@@ -4,7 +4,6 @@ import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
 import { SearchInput } from "../../../styles/assets/Input";
 
-import Pagination from "../../Common/Pagination";
 import LectureCard from "../../Component/Lecture/LectureCard";
 
 const LectureList = () => {
@@ -42,7 +41,7 @@ const LectureList = () => {
                         </Div>
                     </Button>
                 </FlexDiv>
-                <Pagination />
+                {/* <Pagination /> */}
             </Container>
         </FlexDiv>
     );

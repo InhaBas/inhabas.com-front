@@ -5,7 +5,6 @@ import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
 
 import { useNavigate } from "react-router-dom";
-import Pagination from "../../../Common/Pagination";
 
 const Article = styled.article`
     position: relative;
@@ -82,7 +81,7 @@ const Activity = () => {
                         </Div>
                     </Button>
                 </FlexDiv>
-                <Pagination />
+                {/* <Pagination /> */}
             </Div>
         </>
     );
