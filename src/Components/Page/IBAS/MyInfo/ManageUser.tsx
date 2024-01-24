@@ -1,4 +1,8 @@
+import { useRecoilValue } from "recoil";
+
 import { theme } from "../../../../styles/theme";
+
+import { totalNewUserInfo } from "../../../../Recoil/backState";
 
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
@@ -8,6 +12,7 @@ import MyNewUserTable from "../../../Component/IBAS/MyInfo/MyNewUserTable";
 import MyUserTable from "../../../Component/IBAS/MyInfo/MyUserTable";
 
 const ManageUser = () => {
+    const totalNewUser = useRecoilValue(totalNewUserInfo);
     return (
         <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
             <Container>
@@ -27,7 +32,7 @@ const ManageUser = () => {
                             </Div>
                             <Div>
                                 <P color="red" fontSize="xs" fontWeight={800}>
-                                    (12)
+                                    ({totalNewUser})
                                 </P>
                             </Div>
                         </FlexDiv>

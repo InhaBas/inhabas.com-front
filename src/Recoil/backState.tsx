@@ -2,6 +2,7 @@ import { atom } from "recoil";
 import {
     answersInterface,
     majorInterface,
+    newUserInterface,
     profileInterface,
     questionnariesInterface,
     signUpInterface,
@@ -20,6 +21,12 @@ export const chiefInfo = atom<chiefInterface | null>({
     default: null,
 });
 
+// common
+export const totalPageInfo = atom({
+    key: "totalPageInfo",
+    default: 0,
+});
+
 // policy
 export const policyInfo = atom<policyInterface | null>({
     key: "policyInterface",
@@ -30,6 +37,16 @@ export const policyInfo = atom<policyInterface | null>({
 export const profileInfo = atom<profileInterface | null>({
     key: "profileInfo",
     default: null,
+});
+
+export const newUserInfo = atom<newUserInterface[]>({
+    key: "newUserInfo",
+    default: [],
+});
+
+export const totalNewUserInfo = atom({
+    key: "totalNewUserInfo",
+    default: 0,
 });
 
 // IBAS

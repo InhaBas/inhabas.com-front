@@ -38,3 +38,13 @@ export interface profileInterface {
     introduce: string | null; // nullable
     isHOF: boolean;
 }
+
+export interface newUserInterface {
+    name: string;
+    memberId: number;
+    studentId: number;
+    phoneNumber: string;
+    email: string;
+    grade: number;
+    major: string;
+}
