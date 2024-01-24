@@ -2,7 +2,6 @@ import { theme } from "../../../styles/theme";
 
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import P from "../../../styles/assets/P";
-import Pagination from "../../Common/Pagination";
 import LectureCard from "../../Component/Lecture/LectureCard";
 
 const MyLectureContainer = () => {
@@ -24,7 +23,7 @@ const MyLectureContainer = () => {
                     <LectureCard />
                     <LectureCard />
 
-                    <Pagination />
+                    {/* <Pagination /> */}
                 </FlexDiv>
             </Div>
         </>

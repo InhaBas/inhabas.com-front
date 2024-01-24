@@ -3,7 +3,6 @@ import { theme } from "../../../../styles/theme";
 import A from "../../../../styles/assets/A";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import P from "../../../../styles/assets/P";
-import Pagination from "../../../Common/Pagination";
 
 const MyBoardTable = () => {
     const widthList = [300, 600, 0, 200];
@@ -91,7 +90,7 @@ const MyBoardTable = () => {
                     </FlexDiv>
                 ))}
             </Div>
-            <Pagination />
+            {/* <Pagination /> */}
         </>
     );
 };

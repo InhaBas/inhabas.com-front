@@ -4,8 +4,6 @@ import A from "../../../../styles/assets/A";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import P from "../../../../styles/assets/P";
 
-import Pagination from "../../../Common/Pagination";
-
 const MyCommentTable = () => {
     const widthList = [300, 500, 0, 200];
 
@@ -92,7 +90,7 @@ const MyCommentTable = () => {
                     </FlexDiv>
                 ))}
 
-                <Pagination />
+                {/* <Pagination /> */}
             </Div>
         </>
     );

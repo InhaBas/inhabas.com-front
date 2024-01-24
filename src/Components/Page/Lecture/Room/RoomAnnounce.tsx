@@ -5,7 +5,6 @@ import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import P from "../../../../styles/assets/P";
 
 import Img from "../../../../styles/assets/Img";
-import Pagination from "../../../Common/Pagination";
 import RoomNavigate from "../../../Component/Lecture/Room/RoomNavigate";
 import RoomSearch from "../../../Component/Lecture/Room/RoomSearch";
 import RoomTable from "../../../Component/Lecture/Room/RoomTable";
@@ -54,7 +53,7 @@ const RoomAnnounce = () => {
                         </FlexDiv>
                         <Div width="100%">
                             <RoomTable />
-                            <Pagination />
+                            {/* <Pagination /> */}
                         </Div>
                     </FlexDiv>
                 </Div>

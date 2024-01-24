@@ -4,8 +4,6 @@ import A from "../../../../styles/assets/A";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import P from "../../../../styles/assets/P";
 
-import Pagination from "../../../Common/Pagination";
-
 const MyUserTable = () => {
     const widthList = [50, 100, 150, 400, 200];
 
@@ -86,7 +84,7 @@ const MyUserTable = () => {
                     </FlexDiv>
                 ))}
             </Div>
-            <Pagination />
+            {/* <Pagination /> */}
         </>
     );
 };

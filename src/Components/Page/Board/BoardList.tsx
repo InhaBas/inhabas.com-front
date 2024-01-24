@@ -6,7 +6,6 @@ import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
 
 import NavigateTable from "../../Common/NavigateTable";
-import Pagination from "../../Common/Pagination";
 import BoardNavigate from "../../Component/Board/BoardNavigate";
 import BoardSearch from "../../Component/Board/BoardSearch";
 
@@ -77,7 +76,7 @@ const BoardList = () => {
                         </Div>
                     </Button>
                 </FlexDiv>
-                <Pagination />
+                {/* <Pagination /> */}
             </Div>
         </Container>
     );

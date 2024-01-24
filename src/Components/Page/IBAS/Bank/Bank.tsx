@@ -2,7 +2,6 @@ import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import { H2 } from "../../../../styles/assets/H";
 import { Select } from "../../../../styles/assets/Input";
 
-import Pagination from "../../../Common/Pagination";
 import BankTable from "../../../Component/IBAS/Bank/BankTable";
 
 const Bank = () => {
@@ -40,7 +39,7 @@ const Bank = () => {
                 </FlexDiv>
                 <BankTable />
 
-                <Pagination />
+                {/* <Pagination /> */}
             </FlexDiv>
         </FlexDiv>
     );

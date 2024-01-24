@@ -21,3 +21,13 @@ export interface policyInterface {
     title: string;
     content: string;
 }
+
+// pagination
+export interface paginationPropsInterface {
+    totalPage: number;
+    fetchUrl: string;
+    search?: string;
+    size?: number;
+    token?: boolean;
+    paginationFetch: any;
+}

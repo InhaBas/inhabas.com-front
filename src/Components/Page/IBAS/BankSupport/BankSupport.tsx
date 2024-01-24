@@ -5,7 +5,6 @@ import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
 
-import Pagination from "../../../Common/Pagination";
 import BankSupportTable from "../../../Component/IBAS/BankSupport/BankSupportTable";
 
 const BankSupport = () => {
@@ -39,7 +38,7 @@ const BankSupport = () => {
                         </Div>
                     </Button>
                 </FlexDiv>
-                <Pagination />
+                {/* <Pagination /> */}
             </Div>
         </FlexDiv>
     );

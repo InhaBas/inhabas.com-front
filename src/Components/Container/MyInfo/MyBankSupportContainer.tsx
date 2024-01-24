@@ -4,7 +4,6 @@ import A from "../../../styles/assets/A";
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
 import P from "../../../styles/assets/P";
-import Pagination from "../../Common/Pagination";
 
 const MyBankSupportContainer = () => {
     const widthList = [100, 400, 100, 150, 150, 150];
@@ -123,7 +122,7 @@ const MyBankSupportContainer = () => {
                             </FlexDiv>
                         ))}
 
-                        <Pagination />
+                        {/* <Pagination /> */}
                     </Div>
                 </Div>
             </Div>
