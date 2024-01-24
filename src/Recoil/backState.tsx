@@ -21,6 +21,12 @@ export const chiefInfo = atom<chiefInterface | null>({
     default: null,
 });
 
+// common
+export const totalPageInfo = atom({
+    key: "totalPageInfo",
+    default: 0,
+});
+
 // policy
 export const policyInfo = atom<policyInterface | null>({
     key: "policyInterface",

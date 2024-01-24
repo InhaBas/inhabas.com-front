@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 import useFetch from "../../../../Hooks/useFetch";
 
-import { newUserInfo } from "../../../../Recoil/backState";
+import { newUserInfo, totalNewUserInfo, totalPageInfo } from "../../../../Recoil/backState";
 import { theme } from "../../../../styles/theme";
 
 import { checkedList } from "../../../../Recoil/frontState";
@@ -24,8 +24,9 @@ const MyNewUserTable = () => {
     const [check, setCheck] = useRecoilState(checkedList);
     const [newUserData, fetchNewUserData] = useFetch();
     const [newUser, setNewUser] = useRecoilState(newUserInfo);
+    const setTotalNewUser = useSetRecoilState(totalNewUserInfo);
+    const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
     const [passFailValue, setPassFailValue] = useState("");
-
     const [passFailData, fetchPassFailData] = useFetch();
 
     const navigate = useNavigate();
@@ -82,10 +83,15 @@ const MyNewUserTable = () => {
                 memberId: item.memberId,
             }));
 
+            setTotalNewUser(newUserData.pageInfo.totalElements);
+            setTotalPage(newUserData.pageInfo.totalPages);
             setNewUser(processedData);
         }
     }, [newUserData]);
 
+    // 페이지네이션에서 data get 하면 table에서 다시 데이터 필터링 해주어야 함.
+
+    useEffect(() => console.log(newUser.length), [newUser]);
     return (
         <Div width="100%">
             <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
@@ -132,7 +138,7 @@ const MyNewUserTable = () => {
                     $borderB={`2px solid ${theme.color.grey1}`}
                 >
                     <FlexDiv $padding="10px">
-                        {newUser.length !== 0 && (
+                        {newUser && newUser.length !== 0 && (
                             <Checkbox
                                 checked={!!newUser && check.length === Object.values(newUser).length}
                                 onChange={checkAllClickEvent}
@@ -147,7 +153,7 @@ const MyNewUserTable = () => {
                         </FlexDiv>
                     ))}
                 </FlexDiv>
-                {newUser &&
+                {newUser && newUser.length !== 0 ? (
                     Object.values(newUser).map((element: newUserInterface, idx: number) => (
                         <FlexDiv
                             key={`contentItem${idx}`}
@@ -195,14 +201,23 @@ const MyNewUserTable = () => {
                                 </A>
                             </FlexDiv>
                         </FlexDiv>
-                    ))}
-                <FlexDiv width="100%" $padding="10px">
-                    <Div>
-                        <P>입부 신청 대기중인 회원이 없습니다.</P>
-                    </Div>
-                </FlexDiv>
+                    ))
+                ) : (
+                    <FlexDiv width="100%" $padding="10px">
+                        <Div>
+                            <P>입부 신청 대기중인 회원이 없습니다.</P>
+                        </Div>
+                    </FlexDiv>
+                )}
             </Div>
-            {newUser.length !== 0 && <Pagination />}
+            {newUser && newUser.length !== 0 && (
+                <Pagination
+                    totalPage={totalPage}
+                    fetchUrl="/members/unapproved"
+                    token
+                    paginationFetch={fetchNewUserData}
+                />
+            )}
         </Div>
     );
 };
