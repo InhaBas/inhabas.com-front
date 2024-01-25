@@ -3,13 +3,14 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { theme } from "../../../../styles/theme";
 
 import useFetch from "../../../../Hooks/useFetch";
-import { totalUserInfo, userInfo } from "../../../../Recoil/backState";
+import { _totalPageInfo, totalUserInfo, userInfo } from "../../../../Recoil/backState";
 
 import { useEffect } from "react";
 import { userInterface } from "../../../../Types/IBAS/TypeMember";
 import A from "../../../../styles/assets/A";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import P from "../../../../styles/assets/P";
+import Pagination from "../../../Common/Pagination";
 
 const MyUserTable = () => {
     const widthList = [50, 100, 150, 200, 200, 130, 130, 50];
@@ -17,6 +18,8 @@ const MyUserTable = () => {
 
     const [user, fetchUser] = useFetch();
     const [userList, setUserList] = useRecoilState(userInfo);
+    // totalPageInfo를 같은 페이지 내에서 MyNewUserTable 이라는 컴포넌트가 쓰고 있기 때문에, _totalPageInfo을 사용함
+    const [totalPage, setTotalPage] = useRecoilState(_totalPageInfo);
     const setTotalUser = useSetRecoilState(totalUserInfo);
 
     // 역할에 대한 레이블 변환
@@ -95,6 +98,7 @@ const MyUserTable = () => {
 
             setUserList(contents);
             setTotalUser(user.pageInfo.totalElements);
+            setTotalPage(user.pageInfo.totalPages);
         }
     }, [user]);
 
@@ -130,7 +134,7 @@ const MyUserTable = () => {
                         </FlexDiv>
                     ))}
             </Div>
-            {/* <Pagination /> */}
+            <Pagination totalPage={totalPage} fetchUrl="/members" token paginationFetch={fetchUser} />
         </>
     );
 };

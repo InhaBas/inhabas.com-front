@@ -27,6 +27,11 @@ export const totalPageInfo = atom({
     default: 0,
 });
 
+export const _totalPageInfo = atom({
+    key: "_totalPageInfo",
+    default: 0,
+});
+
 // policy
 export const policyInfo = atom<policyInterface | null>({
     key: "policyInterface",
