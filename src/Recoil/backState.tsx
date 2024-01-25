@@ -49,6 +49,16 @@ export const totalNewUserInfo = atom({
     default: 0,
 });
 
+export const userInfo = atom<newUserInterface[]>({
+    key: "userInfo",
+    default: [],
+});
+
+export const totalUserInfo = atom({
+    key: "totalUserInfo",
+    default: 0,
+});
+
 // IBAS
 export const majorInfo = atom<majorInterface[]>({
     key: "majorInfo",

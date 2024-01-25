@@ -48,3 +48,14 @@ export interface newUserInterface {
     grade: number;
     major: string;
 }
+
+export interface userInterface {
+    name: string;
+    memberId: number;
+    studentId: number;
+    phoneNumber: string;
+    role: string;
+    generation: number;
+    major: string;
+    type: string;
+}
