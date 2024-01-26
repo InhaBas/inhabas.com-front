@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
+
 import useFetch from "../../../Hooks/useFetch";
-import { signupCheck } from "../../../Recoil/backState";
-import { tokenAccess, userEmail, userImage } from "../../../Recoil/frontState";
+import { signupCheck, tokenAccess, userEmail, userImage } from "../../../Recoil/backState";
+
 import { FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
 
@@ -12,12 +13,12 @@ const LoginProcess = () => {
 
     const [searchParams, setSearchParams] = useSearchParams();
     const [access, setAccess] = useRecoilState(tokenAccess);
-    const [profile, setProfile] = useRecoilState(userImage);
+    const setProfile = useSetRecoilState(userImage);
     const accessToken = String(searchParams.get("accessToken"));
     const refreshToken = searchParams.get("refreshToken");
     const image = searchParams.get("imageUrl");
     const error = searchParams.get("error");
-    const [email, setEmail] = useRecoilState(userEmail);
+    const setEmail = useSetRecoilState(userEmail);
 
     const parseJwt = (token: string | undefined) => {
         if (!token) {
@@ -71,8 +72,6 @@ const LoginProcess = () => {
             setProfile(image);
         }
     }, [image]);
-
-    // http://localhost:3000/login/process?accessToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTgwODg4MDc1ODQxMTcwNDE0MjUiLCJtZW1iZXJJZCI6MjEsInByb3ZpZGVyIjoiR09PR0xFIiwiZW1haWwiOiJ5eWoxMWtyQGdtYWlsLmNvbSIsImF1dGhvcml0aWVzIjpbIlJPTEVfTk9UX0FQUFJPVkVEIl0sImlhdCI6MTcwNDI0NjQ1OSwiZXhwIjoxNzA0MjQ4MjU5fQ.sTcoHPkUxcICqDnPHx_0x3oSEO5vE4MXjq3MDrfjuNudS4FVJJ0KGivVpuTrlyM6axh7lGb8MEe2FfWGOd3pQQ
 
     useEffect(() => {
         if (accessToken) {

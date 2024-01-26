@@ -32,6 +32,22 @@ export const _totalPageInfo = atom({
     default: 0,
 });
 
+// login
+export const tokenAccess = atom({
+    key: "tokenAccess",
+    default: "default",
+});
+
+export const userEmail = atom({
+    key: "userEmail",
+    default: "",
+});
+
+export const userImage = atom({
+    key: "userImage",
+    default: "",
+});
+
 // policy
 export const policyInfo = atom<policyInterface | null>({
     key: "policyInterface",

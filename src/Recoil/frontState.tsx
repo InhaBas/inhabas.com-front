@@ -17,21 +17,6 @@ export const relogin = atom({
     default: false,
 });
 
-export const tokenAccess = atom({
-    key: "tokenAccess",
-    default: "default",
-});
-
-export const userEmail = atom({
-    key: "userEmail",
-    default: "",
-});
-
-export const userImage = atom({
-    key: "userImage",
-    default: "",
-});
-
 export const majorSelected = atom({
     key: "majorSelected",
     default: { college: "", major: "" },
@@ -46,10 +31,4 @@ export const modalInfo = atom({
 export const modalOpen = atom({
     key: "modalOpenState",
     default: false,
-});
-
-// InputFetch
-export const inputPageFetch = atom({
-    key: "inputPageFetch",
-    default: "",
 });

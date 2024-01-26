@@ -6,11 +6,10 @@ import { styled } from "styled-components";
 import { theme } from "../../styles/theme";
 
 import useFetch from "../../Hooks/useFetch";
-import { headerNavInfo, profileInfo } from "../../Recoil/backState";
+import { headerNavInfo, profileInfo, tokenAccess } from "../../Recoil/backState";
 
 import { menuItem } from "../../Types/TypeCommon";
 
-import { tokenAccess } from "../../Recoil/frontState";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";

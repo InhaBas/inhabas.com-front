@@ -5,8 +5,8 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 
 import useFetch from "../../../Hooks/useFetch";
-import { signupInfo } from "../../../Recoil/backState";
-import { majorSelected, modalInfo, modalOpen, relogin, tokenAccess, userEmail } from "../../../Recoil/frontState";
+import { signupInfo, tokenAccess, userEmail } from "../../../Recoil/backState";
+import { majorSelected, modalInfo, modalOpen, relogin } from "../../../Recoil/frontState";
 
 import A from "../../../styles/assets/A";
 import Button from "../../../styles/assets/Button";
