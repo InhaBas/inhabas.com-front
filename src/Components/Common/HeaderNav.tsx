@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { styled } from "styled-components";
 
 import { theme } from "../../styles/theme";
 
 import useFetch from "../../Hooks/useFetch";
-import { headerNavInfo, profileInfo, tokenAccess } from "../../Recoil/backState";
+import { headerNavInfo, profileInfo, tokenAccess, userRole } from "../../Recoil/backState";
 
 import { menuItem } from "../../Types/TypeCommon";
 
@@ -55,6 +55,7 @@ const HeaderNav = () => {
     const [activeMenu, setActiveMenu] = useState(null);
     const [nav, setNav] = useRecoilState(headerNavInfo);
     const [info, setInfo] = useRecoilState(profileInfo);
+    const setRole = useSetRecoilState(userRole);
     const access = useRecoilValue(tokenAccess);
     const [scrollPosition, setScrollPosition] = useState(0);
 
@@ -91,6 +92,8 @@ const HeaderNav = () => {
     useEffect(() => {
         if (infoData) {
             setInfo(infoData);
+            // 로그인 한 사람의 role을 저장시켜주기 위함
+            setRole(infoData.role);
         }
     }, [infoData]);
 

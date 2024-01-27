@@ -11,6 +11,11 @@ export const checkedList = atom({
     default: [] as Number[],
 });
 
+export const _checkedList = atom({
+    key: "_checkedList",
+    default: [] as Number[],
+});
+
 // login
 export const relogin = atom({
     key: "relogin",
