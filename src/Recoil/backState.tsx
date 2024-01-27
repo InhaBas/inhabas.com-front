@@ -6,6 +6,7 @@ import {
     profileInterface,
     questionnariesInterface,
     signUpInterface,
+    userInterface,
 } from "../Types/IBAS/TypeMember";
 import { chiefInterface, policyInterface } from "../Types/TypeCommon";
 
@@ -27,6 +28,31 @@ export const totalPageInfo = atom({
     default: 0,
 });
 
+export const _totalPageInfo = atom({
+    key: "_totalPageInfo",
+    default: 0,
+});
+
+export const tokenAccess = atom({
+    key: "tokenAccess",
+    default: "default",
+});
+
+export const userEmail = atom({
+    key: "userEmail",
+    default: "",
+});
+
+export const userImage = atom({
+    key: "userImage",
+    default: "",
+});
+
+export const userRole = atom({
+    key: "userRole",
+    default: "",
+});
+
 // policy
 export const policyInfo = atom<policyInterface | null>({
     key: "policyInterface",
@@ -46,6 +72,16 @@ export const newUserInfo = atom<newUserInterface[]>({
 
 export const totalNewUserInfo = atom({
     key: "totalNewUserInfo",
+    default: 0,
+});
+
+export const userInfo = atom<userInterface[]>({
+    key: "userInfo",
+    default: [],
+});
+
+export const totalUserInfo = atom({
+    key: "totalUserInfo",
     default: 0,
 });
 

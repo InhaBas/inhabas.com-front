@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
+import { theme } from "../../../../styles/theme";
+
 import useFetch from "../../../../Hooks/useFetch";
 
 import { newUserInfo, totalNewUserInfo, totalPageInfo } from "../../../../Recoil/backState";
-import { theme } from "../../../../styles/theme";
-
 import { checkedList } from "../../../../Recoil/frontState";
+
 import { newUserInterface } from "../../../../Types/IBAS/TypeMember";
+
 import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
@@ -91,7 +93,7 @@ const MyNewUserTable = () => {
 
     // 페이지네이션에서 data get 하면 table에서 다시 데이터 필터링 해주어야 함.
 
-    useEffect(() => console.log(newUser.length), [newUser]);
+    // useEffect(() => console.log(newUser.length), [newUser]);
     return (
         <Div width="100%">
             <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
@@ -135,7 +137,7 @@ const MyNewUserTable = () => {
                     height="45px"
                     $justifycontent="space-between"
                     $backgroundColor="wh"
-                    $borderB={`2px solid ${theme.color.grey1}`}
+                    $borderB={`1.5px solid ${theme.color.grey1}`}
                 >
                     <FlexDiv $padding="10px">
                         {newUser && newUser.length !== 0 && (

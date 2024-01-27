@@ -11,25 +11,15 @@ export const checkedList = atom({
     default: [] as Number[],
 });
 
+export const _checkedList = atom({
+    key: "_checkedList",
+    default: [] as Number[],
+});
+
 // login
 export const relogin = atom({
     key: "relogin",
     default: false,
-});
-
-export const tokenAccess = atom({
-    key: "tokenAccess",
-    default: "default",
-});
-
-export const userEmail = atom({
-    key: "userEmail",
-    default: "",
-});
-
-export const userImage = atom({
-    key: "userImage",
-    default: "",
 });
 
 export const majorSelected = atom({
@@ -46,10 +36,4 @@ export const modalInfo = atom({
 export const modalOpen = atom({
     key: "modalOpenState",
     default: false,
-});
-
-// InputFetch
-export const inputPageFetch = atom({
-    key: "inputPageFetch",
-    default: "",
 });

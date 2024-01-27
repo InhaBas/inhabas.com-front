@@ -75,9 +75,6 @@ const Pagination = (props: paginationPropsInterface) => {
         }
     }, [pageChange]);
 
-    useEffect(() => {
-        console.log(data);
-    }, [data]);
     return (
         <FlexDiv width="100%" $padding="20px 0">
             {totalPage !== 1 && (
