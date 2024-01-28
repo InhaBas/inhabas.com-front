@@ -17,6 +17,7 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
     };
 
     const refreshAccessToken = async () => {
+        console.log("call refreshAccessToken");
         try {
             const refreshToken = getCookie("ibas_refresh");
 
