@@ -1,8 +1,9 @@
+import { useEffect } from "react";
 import { useRecoilValue } from "recoil";
 
 import { theme } from "../../../../styles/theme";
 
-import { totalNewUserInfo, totalUserInfo } from "../../../../Recoil/backState";
+import { tokenAccess, totalNewUserInfo, totalUserInfo } from "../../../../Recoil/backState";
 
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
@@ -14,6 +15,9 @@ import MyUserTable from "../../../Component/IBAS/MyInfo/MyUserTable";
 const ManageUser = () => {
     const totalNewUser = useRecoilValue(totalNewUserInfo);
     const totalUser = useRecoilValue(totalUserInfo);
+
+    const access = useRecoilValue(tokenAccess);
+    useEffect(() => console.log(access));
 
     return (
         <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
