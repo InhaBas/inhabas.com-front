@@ -3,7 +3,6 @@ import HeaderNav from "../Components/Common/HeaderNav";
 import Honor from "../Components/Page/IBAS/Honor";
 import Introduce from "../Components/Page/IBAS/Introduce";
 import Main from "../Components/Page/IBAS/Main";
-import ManageUser from "../Components/Page/IBAS/MyInfo/ManageUser";
 import MyInfo from "../Components/Page/IBAS/MyInfo/MyInfo";
 import { Div } from "../styles/assets/Div";
 import HeaderTitleLayout from "./HeaderTitleLayout";
@@ -19,7 +18,6 @@ const HeaderNavPage = () => {
                 <Route path="honor" element={<Honor />} />
 
                 <Route path="myInfo" element={<MyInfo />} />
-                <Route path="staff/member" element={<ManageUser />} />
 
                 <Route path="/*" element={<HeaderTitleLayout />} />
             </Routes>
