@@ -19,6 +19,7 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
     const refreshAccessToken = async () => {
         console.log("call refreshAccessToken");
         try {
+            console.log("try refresh");
             const refreshToken = getCookie("ibas_refresh");
 
             let res = await fetch(`${process.env.REACT_APP_API_URL}/token/refresh`, {
@@ -30,10 +31,14 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
             });
 
             if (res.ok) {
+                console.log("success refresh");
+
                 const result = await res.json();
                 const newAccessToken = result.accessToken;
                 setAccess(newAccessToken);
             } else {
+                console.log("fail refresh");
+
                 try {
                     // 에러 응답에서 오류 메시지 추출
                     const errorResponse = await res.json();
