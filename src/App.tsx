@@ -16,7 +16,11 @@ import HeaderNavLayout from "./Layout/HeaderNavLayout";
 
 import { Div } from "./styles/assets/Div";
 
+import { useEffect } from "react";
+import { tokenAccess } from "./Recoil/backState";
+
 function App() {
+    useEffect(() => console.log(tokenAccess), [tokenAccess]);
     return (
         <ThemeProvider theme={theme}>
             <GlobalStyle />

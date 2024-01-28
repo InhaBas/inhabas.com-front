@@ -33,7 +33,6 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
                 const result = await res.json();
                 const newAccessToken = result.accessToken;
                 setAccess(newAccessToken);
-                console.log(access);
             } else {
                 try {
                     // 에러 응답에서 오류 메시지 추출
