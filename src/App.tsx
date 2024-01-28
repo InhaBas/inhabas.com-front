@@ -17,10 +17,12 @@ import HeaderNavLayout from "./Layout/HeaderNavLayout";
 import { Div } from "./styles/assets/Div";
 
 import { useEffect } from "react";
+import { useRecoilValue } from "recoil";
 import { tokenAccess } from "./Recoil/backState";
 
 function App() {
-    useEffect(() => console.log(tokenAccess), [tokenAccess]);
+    const access = useRecoilValue(tokenAccess);
+    useEffect(() => console.log(access), [access]);
     return (
         <ThemeProvider theme={theme}>
             <GlobalStyle />
