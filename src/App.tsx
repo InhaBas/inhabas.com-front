@@ -20,7 +20,7 @@ import { useEffect } from "react";
 import { useRecoilValue } from "recoil";
 import { tokenAccess } from "./Recoil/backState";
 
-function App() {
+const App = () => {
     const access = useRecoilValue(tokenAccess);
     useEffect(() => console.log(access), [access]);
     return (
@@ -42,6 +42,6 @@ function App() {
             </Div>
         </ThemeProvider>
     );
-}
+};
 
 export default App;

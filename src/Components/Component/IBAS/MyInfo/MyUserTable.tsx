@@ -5,7 +5,7 @@ import { theme } from "../../../../styles/theme";
 
 import useFetch from "../../../../Hooks/useFetch";
 
-import { _totalPageInfo, totalUserInfo, userInfo, userRole } from "../../../../Recoil/backState";
+import { _totalPageInfo, tokenAccess, totalUserInfo, userInfo, userRole } from "../../../../Recoil/backState";
 import { _checkedList, refetch } from "../../../../Recoil/frontState";
 
 import { userInterface } from "../../../../Types/IBAS/TypeMember";
@@ -33,6 +33,7 @@ const MyUserTable = () => {
     const [roleValue, setRoleValue] = useState("");
     const [roleChangeData, fetchRoleChangeData] = useFetch();
     const [reload, setReload] = useRecoilState(refetch);
+    const access = useRecoilValue(tokenAccess);
 
     // 역할에 대한 레이블 변환
     // 예: 비활동회원, 활동회원, ...
@@ -129,7 +130,7 @@ const MyUserTable = () => {
     useEffect(() => {
         fetchUser("/members?page=0&size=10", "GET", "token");
         setReload(false);
-    }, [reload]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함
+    }, [reload, access]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함
 
     // fetch된 data로 동아리원 List 만들 data 가공
     useEffect(() => {

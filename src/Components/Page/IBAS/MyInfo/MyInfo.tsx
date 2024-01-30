@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 
 import useFetch from "../../../../Hooks/useFetch";
-import { profileInfo } from "../../../../Recoil/backState";
+import { profileInfo, tokenAccess } from "../../../../Recoil/backState";
 
 import HeaderNav from "../../../Common/HeaderNav";
 import MyBankSupportContainer from "../../../Container/MyInfo/MyBankSupportContainer";
@@ -38,6 +38,8 @@ const MyInfo = () => {
         navigate(`/${url}`);
     };
 
+    const access = useRecoilValue(tokenAccess);
+
     // 탭 정보 설정
     const myInfoTabInfo = [
         { idx: 0, url: "/images/home_white.svg", clickedUrl: "/images/home_purple.svg", info: "강의실" },
@@ -54,7 +56,7 @@ const MyInfo = () => {
     // myInfo 정보 GET fetch
     useEffect(() => {
         fetchInfoData("/myInfo", "GET", "token");
-    }, []);
+    }, [access]);
 
     // myInfo recoil 저장
     useEffect(() => {
