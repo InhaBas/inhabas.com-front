@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import { theme } from "../../../../styles/theme";
 
 import useFetch from "../../../../Hooks/useFetch";
 
-import { newUserInfo, totalNewUserInfo, totalPageInfo } from "../../../../Recoil/backState";
+import { newUserInfo, tokenAccess, totalNewUserInfo, totalPageInfo } from "../../../../Recoil/backState";
 import { checkedList } from "../../../../Recoil/frontState";
 
 import { newUserInterface } from "../../../../Types/IBAS/TypeMember";
@@ -30,6 +30,7 @@ const MyNewUserTable = () => {
     const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
     const [passFailValue, setPassFailValue] = useState("");
     const [passFailData, fetchPassFailData] = useFetch();
+    const access = useRecoilValue(tokenAccess);
 
     const navigate = useNavigate();
 
@@ -71,7 +72,7 @@ const MyNewUserTable = () => {
 
     useEffect(() => {
         fetchNewUserData("/members/unapproved?page=0&size=10", "GET", "token");
-    }, [passFailData]);
+    }, [passFailData, access]);
 
     useEffect(() => {
         if (newUserData) {
