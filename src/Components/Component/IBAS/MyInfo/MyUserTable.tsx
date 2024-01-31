@@ -151,7 +151,7 @@ const MyUserTable = () => {
             setTotalUser(user.pageInfo.totalElements);
             setTotalPage(user.pageInfo.totalPages);
         }
-    }, [user]);
+    }, [user, access]);
 
     return (
         <Div width="100%">
