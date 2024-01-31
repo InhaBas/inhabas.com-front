@@ -90,7 +90,7 @@ const MyNewUserTable = () => {
             setTotalPage(newUserData.pageInfo.totalPages);
             setNewUser(processedData);
         }
-    }, [newUserData]);
+    }, [newUserData, access]);
 
     // 페이지네이션에서 data get 하면 table에서 다시 데이터 필터링 해주어야 함.
 
