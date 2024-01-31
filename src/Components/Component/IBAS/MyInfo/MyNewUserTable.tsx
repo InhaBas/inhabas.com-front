@@ -74,6 +74,8 @@ const MyNewUserTable = () => {
         fetchNewUserData("/members/unapproved?page=0&size=10", "GET", "token");
     }, [passFailData, access]);
 
+    useEffect(() => console.log(access), [access]);
+
     useEffect(() => {
         if (newUserData) {
             const processedData = newUserData.data.map((item: newUserInterface, idx: number) => ({
