@@ -56,7 +56,7 @@ const MyInfo = () => {
     // myInfo 정보 GET fetch
     useEffect(() => {
         fetchInfoData("/myInfo", "GET", "token");
-    }, [access]);
+    }, []);
 
     // myInfo recoil 저장
     useEffect(() => {

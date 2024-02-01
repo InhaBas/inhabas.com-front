@@ -52,7 +52,7 @@ const SignupQuestion = () => {
         return () => {
             setAnswer(null);
         };
-    }, [access]);
+    }, []);
 
     /*
         저장된 회원가입 답변 내용 호출
