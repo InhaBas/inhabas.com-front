@@ -267,11 +267,11 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
             };
 
             const fetchWithToken = async () => {
-                if (token === "token" && access === "default") {
-                    await refreshAccessToken();
-                    await fetchWithToken(); // Retry fetching data after refreshing token
-                    return;
-                }
+                // if (token === "token" && access === "default") {
+                //     await refreshAccessToken();
+                //     await fetchWithToken(); // Retry fetching data after refreshing token
+                //     return;
+                // }
 
                 if (method.toUpperCase() === "GET") {
                     res = await fetch(`${process.env.REACT_APP_API_URL}${url}`, {
