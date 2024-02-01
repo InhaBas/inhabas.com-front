@@ -262,17 +262,10 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
                             console.error("Failed to parse error response:", error);
                         }
                     }
-                    // setData({ ...result });
                 }
             };
 
             const fetchWithToken = async () => {
-                // if (token === "token" && access === "default") {
-                //     await refreshAccessToken();
-                //     await fetchWithToken(); // Retry fetching data after refreshing token
-                //     return;
-                // }
-
                 if (method.toUpperCase() === "GET") {
                     res = await fetch(`${process.env.REACT_APP_API_URL}${url}`, {
                         method: method,
@@ -300,9 +293,12 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
                     // Handle error response
                     const errorResponse = await res.json();
                     console.error("Network response was not ok. Error:", errorResponse.message, errorResponse.code);
-                    if (errorResponse.code === "A005" || "A006" || "A007") {
+                    if (
+                        errorResponse.code === "A005" ||
+                        errorResponse.code === "A006" ||
+                        errorResponse.code === "A007"
+                    ) {
                         await refreshAccessToken();
-                        return fetchData(url, method, token, sendData);
                     }
                     if (errorResponse.status === 403) {
                         navigate(-1);
