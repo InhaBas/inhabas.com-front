@@ -181,7 +181,7 @@ const Signup = () => {
         return () => {
             setInfo(null);
         };
-    }, []);
+    }, [access]);
 
     /*
         토큰에 있는 정보 중 email을 recoil에 저장

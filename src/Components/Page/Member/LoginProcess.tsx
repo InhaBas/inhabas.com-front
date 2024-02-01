@@ -93,7 +93,7 @@ const LoginProcess = () => {
         return () => {
             setCheck(null);
         };
-    }, []);
+    }, [access]);
 
     useEffect(() => {
         if (getData) {

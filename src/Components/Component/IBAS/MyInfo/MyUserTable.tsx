@@ -130,7 +130,7 @@ const MyUserTable = () => {
     useEffect(() => {
         fetchUser("/members?page=0&size=10", "GET", "token");
         setReload(false);
-    }, [reload]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함
+    }, [reload, access]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함
 
     // fetch된 data로 동아리원 List 만들 data 가공
     useEffect(() => {

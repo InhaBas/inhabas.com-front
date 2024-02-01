@@ -70,7 +70,7 @@ const HeaderNav = () => {
 
     useEffect(() => {
         fetchInfoData("/myInfo", "GET", "token");
-    }, []);
+    }, [access]);
 
     useEffect(() => {
         if (data && Object.keys(data).length !== 0) {
