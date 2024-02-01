@@ -61,7 +61,7 @@ const MyInfoContainer = () => {
     */
     useEffect(() => {
         fetchInfoData("/myInfo", "GET", "token");
-    }, [reload === true]);
+    }, [reload === true, access]);
 
     /* 
     myInfo GET fetch를 성공했다면 info에 저장

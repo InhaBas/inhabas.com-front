@@ -72,7 +72,7 @@ const MyNewUserTable = () => {
 
     useEffect(() => {
         fetchNewUserData("/members/unapproved?page=0&size=10", "GET", "token");
-    }, [passFailData]);
+    }, [passFailData, access]);
 
     useEffect(() => {
         if (newUserData) {
