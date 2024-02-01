@@ -118,11 +118,11 @@ const MyInfo = () => {
                             $borderRadius={5}
                             $HBackgroundColor="grey2"
                         >
-                            <FlexDiv width="100%">
+                            <FlexDiv width="100%" onClick={() => movePageEvent("staff/member")}>
                                 <FlexDiv width="15px" height="15px" $margin="0 5px 0 0 ">
                                     <Img src="/images/users_white.svg" />
                                 </FlexDiv>
-                                <Div onClick={() => movePageEvent("staff/member")}>
+                                <Div>
                                     <P color="wh" fontSize="sm" fontWeight={300}>
                                         회원 관리
                                     </P>
