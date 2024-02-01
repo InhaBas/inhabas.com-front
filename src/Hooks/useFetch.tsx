@@ -302,8 +302,7 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
                     console.error("Network response was not ok. Error:", errorResponse.message, errorResponse.code);
                     if (errorResponse.code === "A005" || "A006" || "A007") {
                         await refreshAccessToken();
-                        await fetchWithToken();
-                        return;
+                        return fetchData(url, method, token, sendData);
                     }
                     if (errorResponse.status === 403) {
                         navigate(-1);
