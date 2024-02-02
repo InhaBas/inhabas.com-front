@@ -9,7 +9,7 @@ interface InputStyle {
     $backgroundColor?: keyof DefaultTheme["color"];
     $border?: string | keyof DefaultTheme["color"];
     $borderColor?: string | keyof DefaultTheme["color"];
-    $borderRadius?: number;
+    $borderRadius?: number | string;
     textIndent?: string;
     display?: string;
     color?: keyof DefaultTheme["color"];

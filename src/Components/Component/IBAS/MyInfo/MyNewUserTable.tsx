@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import { theme } from "../../../../styles/theme";
@@ -15,7 +15,7 @@ import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
-import { Checkbox, Select } from "../../../../styles/assets/Input";
+import { Checkbox, Select, TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
 import Pagination from "../../../Common/Pagination";
 
@@ -31,13 +31,17 @@ const MyNewUserTable = () => {
     const [passFailValue, setPassFailValue] = useState("");
     const [passFailData, fetchPassFailData] = useFetch();
     const access = useRecoilValue(tokenAccess);
+    const [searchValue, setSearchValue] = useState(""); // 검색어
 
     const navigate = useNavigate();
+    const path = useLocation().pathname;
 
+    // 지원서 이동 함수
     const moveApplication = (application: number) => {
         navigate(`/staff/member/application/${application}`);
     };
 
+    // 단일 체크박스 클릭시 checkedList update
     const checkClickEvent = (e: React.ChangeEvent<HTMLInputElement>, memberId: number) => {
         const targetCheck = e.target.checked;
         if (targetCheck === true) {
@@ -47,6 +51,7 @@ const MyNewUserTable = () => {
         }
     };
 
+    // 전체 체크박스 클릭시 checkedList update
     const checkAllClickEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
         const tmpList: number[] = [];
         if (e.target.checked) {
@@ -55,11 +60,13 @@ const MyNewUserTable = () => {
         setCheck(tmpList);
     };
 
+    // select 값 선택에 따른 state 변경 이벤트
     const handlePassFailChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         // 선택된 값을 업데이트
         setPassFailValue(e.target.value);
     };
 
+    // pass/fail Fetch
     const passFail = () => {
         if (passFailValue !== "") {
             let passFailSend = {
@@ -70,8 +77,35 @@ const MyNewUserTable = () => {
         }
     };
 
+    // 검색어 변경 핸들러
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchValue(e.target.value);
+    };
+
+    // 검색 버튼 클릭 핸들러
+    const searchStudent = () => {
+        // 검색어를 이용하여 API 호출
+        if (searchValue.trim() !== "") {
+            fetchNewUserData(`/members/unapproved?search=${searchValue}`, "GET", "token");
+        }
+    };
+
+    // 엔터키 press 핸들러
+    const enterKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            searchStudent();
+        }
+    };
+
     useEffect(() => {
-        fetchNewUserData("/members/unapproved?page=0&size=10", "GET", "token");
+        let fetchUrl = "/members/unapproved?page=0";
+        if (path === "/staff/member/newStudents") {
+            fetchUrl += "&size=15";
+        } else if (path === "/staff/member") {
+            fetchUrl += "&size=10";
+        }
+
+        fetchNewUserData(fetchUrl, "GET", "token");
     }, [passFailData, access]);
 
     useEffect(() => {
@@ -94,7 +128,6 @@ const MyNewUserTable = () => {
 
     // 페이지네이션에서 data get 하면 table에서 다시 데이터 필터링 해주어야 함.
 
-    // useEffect(() => console.log(newUser.length), [newUser]);
     return (
         <Div width="100%">
             <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
@@ -213,12 +246,37 @@ const MyNewUserTable = () => {
                     </FlexDiv>
                 )}
             </Div>
+            {path === "/staff/member/newStudents" && (
+                <FlexDiv width="100%" $justifycontent="end" $margin="30px 0">
+                    <FlexDiv>
+                        <TextInput
+                            width="300px"
+                            placeholder="이름이나 학번을 입력하세요"
+                            $borderRadius="3px 0 0px 3"
+                            onKeyDown={enterKeyDown}
+                            onChange={handleSearchChange}
+                        />
+                        <Button
+                            $backgroundColor="bgColor"
+                            $HBackgroundColor="bgColorHo"
+                            $padding="13px 20px"
+                            $borderRadius="0 3px 3px 0"
+                            onClick={searchStudent}
+                        >
+                            <FlexDiv width="14px">
+                                <Img src="/images/search_white.svg" />
+                            </FlexDiv>
+                        </Button>
+                    </FlexDiv>
+                </FlexDiv>
+            )}
             {newUser && newUser.length !== 0 && (
                 <Pagination
                     totalPage={totalPage}
                     fetchUrl="/members/unapproved"
                     token
                     paginationFetch={fetchNewUserData}
+                    size={path === "/staff/member/newStudents" ? 15 : 10}
                 />
             )}
         </Div>

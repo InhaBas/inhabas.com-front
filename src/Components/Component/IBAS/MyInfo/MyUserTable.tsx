@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import { theme } from "../../../../styles/theme";
@@ -14,7 +15,7 @@ import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
-import { Checkbox, Select } from "../../../../styles/assets/Input";
+import { Checkbox, Select, TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
 import Pagination from "../../../Common/Pagination";
 
@@ -34,6 +35,9 @@ const MyUserTable = () => {
     const [roleChangeData, fetchRoleChangeData] = useFetch();
     const [reload, setReload] = useRecoilState(refetch);
     const access = useRecoilValue(tokenAccess);
+    const [searchValue, setSearchValue] = useState(""); // 검색어
+
+    const path = useLocation().pathname;
 
     // 역할에 대한 레이블 변환
     // 예: 비활동회원, 활동회원, ...
@@ -90,7 +94,7 @@ const MyUserTable = () => {
         return typeLabel;
     };
 
-    // 체크 박스 선택
+    // 단일 체크박스 클릭시 checkedList update
     const checkClickEvent = (e: React.ChangeEvent<HTMLInputElement>, memberId: number) => {
         const targetCheck = e.target.checked;
         if (targetCheck === true) {
@@ -100,7 +104,7 @@ const MyUserTable = () => {
         }
     };
 
-    // 체크 박스 전체 선택
+    // 전체 체크박스 클릭시 checkedList update
     const checkAllClickEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
         const tmpList: number[] = [];
         if (e.target.checked) {
@@ -109,12 +113,13 @@ const MyUserTable = () => {
         setCheck(tmpList);
     };
 
-    // select 변경 시 state set
+    // select 값 선택에 따른 state 변경 이벤트
     const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         // 선택된 값을 업데이트
         setRoleValue(e.target.value);
     };
 
+    // role Fetch
     const changeRole = () => {
         if (roleValue !== "") {
             const typeSend = {
@@ -123,6 +128,26 @@ const MyUserTable = () => {
             };
             fetchRoleChangeData("/members/approved", "PUT", "token", typeSend);
             setReload(true);
+        }
+    };
+
+    // 검색어 변경 핸들러
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchValue(e.target.value);
+    };
+
+    // 검색 버튼 클릭 핸들러
+    const searchStudent = () => {
+        // 검색어를 이용하여 API 호출
+        if (searchValue.trim() !== "") {
+            fetchUser(`/members/unapproved?search=${searchValue}`, "GET", "token");
+        }
+    };
+
+    // 엔터키 press 핸들러
+    const enterKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            searchStudent();
         }
     };
 
@@ -204,7 +229,7 @@ const MyUserTable = () => {
                 >
                     {role === "SECRETARY" && (
                         <FlexDiv $padding="10px">
-                            {user && (
+                            {userList && userList.length !== 0 && (
                                 <Checkbox
                                     checked={!!user && check.length === userList.length}
                                     onChange={checkAllClickEvent}
@@ -220,7 +245,7 @@ const MyUserTable = () => {
                         </FlexDiv>
                     ))}
                 </FlexDiv>
-                {userList &&
+                {userList && userList.length !== 0 ? (
                     userList.map((element: userInterface, idx: number) => (
                         <FlexDiv
                             key={`contentItem${idx}`}
@@ -256,9 +281,48 @@ const MyUserTable = () => {
                                 }
                             })}
                         </FlexDiv>
-                    ))}
+                    ))
+                ) : (
+                    <FlexDiv width="100%" $padding="10px">
+                        <Div>
+                            <P>회원이 존재하지 않습니다.</P>
+                        </Div>
+                    </FlexDiv>
+                )}
             </Div>
-            <Pagination totalPage={totalPage} fetchUrl="/members" token paginationFetch={fetchUser} />
+            {path === "/staff/member/students" && (
+                <FlexDiv width="100%" $justifycontent="end" $margin="30px 0">
+                    <FlexDiv>
+                        <TextInput
+                            width="300px"
+                            placeholder="이름이나 학번을 입력하세요"
+                            $borderRadius="3px 0 0px 3"
+                            onKeyDown={enterKeyDown}
+                            onChange={handleSearchChange}
+                        />
+                        <Button
+                            $backgroundColor="bgColor"
+                            $HBackgroundColor="bgColorHo"
+                            $padding="13px 20px"
+                            $borderRadius="0 3px 3px 0"
+                            onClick={searchStudent}
+                        >
+                            <FlexDiv width="14px">
+                                <Img src="/images/search_white.svg" />
+                            </FlexDiv>
+                        </Button>
+                    </FlexDiv>
+                </FlexDiv>
+            )}
+            {userList && userList.length !== 0 && (
+                <Pagination
+                    totalPage={totalPage}
+                    fetchUrl="/members"
+                    token
+                    paginationFetch={fetchUser}
+                    size={path === "/staff/member/students" ? 15 : 10}
+                />
+            )}
         </Div>
     );
 };
