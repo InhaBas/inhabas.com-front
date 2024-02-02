@@ -9,7 +9,7 @@ interface ButtonStyle {
     $backgroundColor?: keyof DefaultTheme["color"];
     $HBackgroundColor?: keyof DefaultTheme["color"];
     border?: string;
-    $borderRadius?: number;
+    $borderRadius?: number | string;
     display?: string;
 }
 
