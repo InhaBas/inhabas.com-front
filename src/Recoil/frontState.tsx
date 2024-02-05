@@ -16,6 +16,12 @@ export const _checkedList = atom({
     default: [] as Number[],
 });
 
+// headerTitle
+export const menuInfo = atom({
+    key: "menuInfo",
+    default: 0,
+});
+
 // login
 export const relogin = atom({
     key: "relogin",
