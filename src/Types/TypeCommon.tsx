@@ -1,10 +1,9 @@
-// headerNav
-
-export interface menuItem {
-    menuId: number;
-    priority: number;
+// headerNav & headerTitle
+export interface menuInterface {
+    menuId?: number;
+    priority?: number;
     name: string;
-    type: string;
+    type?: string;
     description: string;
     url?: string;
 }

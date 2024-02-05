@@ -8,12 +8,21 @@ import {
     signUpInterface,
     userInterface,
 } from "../Types/IBAS/TypeMember";
-import { chiefInterface, policyInterface } from "../Types/TypeCommon";
+import { chiefInterface, menuInterface, policyInterface } from "../Types/TypeCommon";
 
 //headerNav
 export const headerNavInfo = atom({
     key: "headerNavInfo",
     default: {},
+});
+
+//headerTitle
+export const headerTitleInfo = atom<menuInterface>({
+    key: "headerTitleInfo",
+    default: {
+        name: "",
+        description: "",
+    },
 });
 
 //bottom

@@ -6,9 +6,9 @@ import { styled } from "styled-components";
 import { theme } from "../../styles/theme";
 
 import useFetch from "../../Hooks/useFetch";
-import { headerNavInfo, profileInfo, tokenAccess, userRole } from "../../Recoil/backState";
+import { headerNavInfo, headerTitleInfo, profileInfo, tokenAccess, userRole } from "../../Recoil/backState";
 
-import { menuItem } from "../../Types/TypeCommon";
+import { menuInterface } from "../../Types/TypeCommon";
 
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
@@ -23,41 +23,44 @@ const FixedDiv = styled(FlexDiv)`
 interface Group {
     groupName: string;
     id: number;
-    menuList: menuItem[];
+    menuList: menuInterface[];
 }
 
 const HeaderNav = () => {
     const navigate = useNavigate();
-
-    const menuUrl = [
-        ["introduce", "activity", "honor"],
-        ["board", "board", "board", "board", "board", "board"],
-        ["lecture", "lecture", "lecture", "lecture"],
-        ["bank/support", "bank"],
-        ["board", "board"],
-        ["lecture"],
-    ];
-    const moveMain = () => {
-        navigate("/");
-    };
-
-    const movePage = (url: string) => {
-        window.location.href = `${process.env.REACT_APP_BASE_URL}/${url}`;
-    };
-
-    const moveInfo = () => {
-        navigate("/myInfo");
-    };
 
     const [data, fetchData] = useFetch();
     const [infoData, fetchInfoData] = useFetch();
     const [activeGroup, setActiveGroup] = useState(null);
     const [activeMenu, setActiveMenu] = useState(null);
     const [nav, setNav] = useRecoilState(headerNavInfo);
+    const [title, setTitle] = useRecoilState(headerTitleInfo);
     const [info, setInfo] = useRecoilState(profileInfo);
     const setRole = useSetRecoilState(userRole);
     const access = useRecoilValue(tokenAccess);
     const [scrollPosition, setScrollPosition] = useState(0);
+
+    const menuUrl = [
+        ["introduce", "activity", "honor"],
+        ["board/notice", "board/free", "board/question", "board/suggest", "board/opensource", "board/executives"],
+        ["lecture", "lecture", "lecture", "lecture"],
+        ["bank/support", "bank"],
+        ["board/alpha", "board/beta"],
+        ["contest"],
+    ];
+    const moveMain = () => {
+        navigate("/");
+    };
+
+    const menuClickEvent = (url: string, givenName: string, givenDescription: string) => {
+        setTitle({ ...title, name: givenName, description: givenDescription });
+
+        navigate(`/${url}`);
+    };
+
+    const moveInfo = () => {
+        navigate("/myInfo");
+    };
 
     // Scroll 위치를 감지
     const updateScroll = () => {
@@ -79,7 +82,7 @@ const HeaderNav = () => {
 
             (Object.values(newData) as Group[]).forEach((group: Group, groupIdx: number) => {
                 if (group.menuList) {
-                    group.menuList = group.menuList.map((menu: menuItem, idx: number) => ({
+                    group.menuList = group.menuList.map((menu: menuInterface, idx: number) => ({
                         ...menu,
                         url: (menuUrl[groupIdx] && menuUrl[groupIdx][idx]) || "defaultUrl",
                     }));
@@ -179,7 +182,13 @@ const HeaderNav = () => {
                                                                                     ? "bgColor"
                                                                                     : "wh"
                                                                             }
-                                                                            onClick={() => movePage(element.url)}
+                                                                            onClick={() =>
+                                                                                menuClickEvent(
+                                                                                    element.url,
+                                                                                    element.name,
+                                                                                    element.description
+                                                                                )
+                                                                            }
                                                                         >
                                                                             <Div>
                                                                                 <P
