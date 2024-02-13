@@ -32,7 +32,9 @@ const MyUserTable = () => {
     // checkedList를 같은 페이지 내에서 MyNewUserTable 이라는 컴포넌트가 쓰고 있기 때문에, _checkedList를 사용함
     const [check, setCheck] = useRecoilState(_checkedList);
     const [roleValue, setRoleValue] = useState("");
+    const [typeValue, setTypeValue] = useState("");
     const [roleChangeData, fetchRoleChangeData] = useFetch();
+    const [typeChangeData, fetchTypeChangeData] = useFetch();
     const [reload, setReload] = useRecoilState(refetch);
     const access = useRecoilValue(tokenAccess);
     const [searchValue, setSearchValue] = useState(""); // 검색어
@@ -76,10 +78,10 @@ const MyUserTable = () => {
             case "UNDERGRADUATE":
                 typeLabel = "학부생";
                 break;
-            case "BACHELOR":
-                typeLabel = "학사";
-                break;
             case "GRADUATED":
+                typeLabel = "졸업생";
+                break;
+            case "BACHELOR":
                 typeLabel = "대학원생";
                 break;
             case "PROFESSOR":
@@ -114,9 +116,16 @@ const MyUserTable = () => {
     };
 
     // select 값 선택에 따른 state 변경 이벤트
-    const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         // 선택된 값을 업데이트
         setRoleValue(e.target.value);
+    };
+
+    // select 값 선택에 따른 state 변경 이벤트
+    const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        // 선택된 값을 업데이트
+        setTypeValue(e.target.value);
+        console.log(e.target.value);
     };
 
     // role Fetch
@@ -126,7 +135,19 @@ const MyUserTable = () => {
                 memberIdList: check,
                 role: roleValue,
             };
-            fetchRoleChangeData("/members/approved", "PUT", "token", typeSend);
+            fetchRoleChangeData("/members/approved/role", "PUT", "token", typeSend);
+            setReload(true);
+        }
+    };
+
+    // type Fetch
+    const changeType = () => {
+        if (typeValue !== "") {
+            const typeSend = {
+                memberIdList: check,
+                type: typeValue,
+            };
+            fetchTypeChangeData("/members/approved/type", "PUT", "token", typeSend);
             setReload(true);
         }
     };
@@ -139,8 +160,9 @@ const MyUserTable = () => {
     // 검색 버튼 클릭 핸들러
     const searchStudent = () => {
         // 검색어를 이용하여 API 호출
+
         if (searchValue.trim() !== "") {
-            fetchUser(`/members/unapproved?search=${searchValue}`, "GET", "token");
+            fetchUser(`/members/notGraduated?search=${searchValue}`, "GET", "token");
         }
     };
 
@@ -153,7 +175,12 @@ const MyUserTable = () => {
 
     // 동아리원 현황 조회 fetch
     useEffect(() => {
-        fetchUser("/members?page=0&size=10", "GET", "token");
+        {
+            path === "/staff/member/students"
+                ? fetchUser("/members/notGraduated?page=0&size=15", "GET", "token")
+                : fetchUser("/members/notGraduated?page=0&size=10", "GET", "token");
+        }
+
         setReload(false);
     }, [reload, access]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함
 
@@ -167,7 +194,7 @@ const MyUserTable = () => {
                 major: item.major,
                 phoneNumber: item.phoneNumber,
                 role: convertRoleLabel(item.role),
-                type: convertTypeLabel(item.type),
+                type: convertTypeLabel(item.memberType),
                 generation: item.generation,
                 memberId: item.memberId,
             }));
@@ -188,7 +215,7 @@ const MyUserTable = () => {
                             $borderRadius={3}
                             required
                             defaultValue="nothing"
-                            onChange={handleTypeChange}
+                            onChange={handleRoleChange}
                         >
                             <option value="nothing" disabled hidden>
                                 관리
@@ -219,6 +246,46 @@ const MyUserTable = () => {
                 </FlexDiv>
             )}
 
+            {(role === "CHIEF" || role === "VICE_CHIEF") && (
+                <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
+                    <Div $minWidth="100px" $margin="0 10px 0 0 ">
+                        <Select
+                            name="approved"
+                            $borderRadius={3}
+                            required
+                            defaultValue="nothing"
+                            onChange={handleTypeChange}
+                        >
+                            <option value="nothing" disabled hidden>
+                                관리
+                            </option>
+                            <option value="GRADUATED">졸업생</option>
+                            <option value="BACHELOR">대학원생</option>
+                            <option value="PROFESSOR">교수</option>
+                        </Select>
+                    </Div>
+                    <Button
+                        $backgroundColor="bgColor"
+                        $HBackgroundColor="bgColorHo"
+                        $borderRadius={3}
+                        $padding="6px 12px"
+                        height="40px"
+                        onClick={() => changeType()}
+                    >
+                        <FlexDiv $margin="0 5px 0 0">
+                            <FlexDiv width="15px" $margin="0 10px 0 0">
+                                <Img src="/images/check_white.svg" />
+                            </FlexDiv>
+                            <FlexDiv>
+                                <P color="wh" fontSize="sm">
+                                    적용
+                                </P>
+                            </FlexDiv>
+                        </FlexDiv>
+                    </Button>
+                </FlexDiv>
+            )}
+
             <Div width="100%">
                 <FlexDiv
                     width="100%"
@@ -227,7 +294,7 @@ const MyUserTable = () => {
                     $backgroundColor="wh"
                     $borderB={`1.5px solid ${theme.color.grey1}`}
                 >
-                    {role === "SECRETARY" && (
+                    {(role === "SECRETARY" || role === "CHIEF" || role === "VICE_CHIEF") && (
                         <FlexDiv $padding="10px">
                             {userList && userList.length !== 0 && (
                                 <Checkbox
@@ -255,16 +322,23 @@ const MyUserTable = () => {
                             $justifycontent="space-between"
                             $backgroundColor="wh"
                         >
-                            {role === "SECRETARY" && (
+                            {(role === "SECRETARY" || role === "CHIEF" || role === "VICE_CHIEF") && (
                                 <FlexDiv $padding="10px">
-                                    <Checkbox
-                                        checked={check.includes(element.memberId) ? true : false}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                            checkClickEvent(e, element.memberId)
-                                        }
-                                    />
+                                    {element.role === "활동회원" ||
+                                    element.role === "비활동회원" ||
+                                    role === "VICE_CHIEF" ? (
+                                        <Checkbox
+                                            checked={check.includes(element.memberId) ? true : false}
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                                checkClickEvent(e, element.memberId)
+                                            }
+                                        />
+                                    ) : (
+                                        <Div width="20px" height="20px"></Div>
+                                    )}
                                 </FlexDiv>
                             )}
+
                             {Object.entries(element).map(([key, value], idx: number) => {
                                 if (key !== "memberId") {
                                     return (
@@ -317,7 +391,7 @@ const MyUserTable = () => {
             {userList && userList.length !== 0 && (
                 <Pagination
                     totalPage={totalPage}
-                    fetchUrl="/members"
+                    fetchUrl="/members/notGraduated"
                     token
                     paginationFetch={fetchUser}
                     size={path === "/staff/member/students" ? 15 : 10}
