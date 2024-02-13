@@ -34,6 +34,8 @@ const MyInfoContainer = () => {
     useEffect(() => {
         if (info?.type === "PROFESSOR") {
             setAuth("교수");
+        } else if (info?.type === "GRADUATED") {
+            setAuth("졸업생");
         } else if (info?.type === "BACHELOR") {
             setAuth("졸업생");
         } else if (info?.role === "CHIEF") {

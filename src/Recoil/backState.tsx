@@ -42,6 +42,11 @@ export const _totalPageInfo = atom({
     default: 0,
 });
 
+export const __totalPageInfo = atom({
+    key: "__totalPageInfo",
+    default: 0,
+});
+
 export const tokenAccess = atom({
     key: "tokenAccess",
     default: "default",
@@ -91,6 +96,16 @@ export const userInfo = atom<userInterface[]>({
 
 export const totalUserInfo = atom({
     key: "totalUserInfo",
+    default: 0,
+});
+
+export const graduateUserInfo = atom<userInterface[]>({
+    key: "graduateUserInfo",
+    default: [],
+});
+
+export const totalGraduateUserInfo = atom({
+    key: "totalGraduateUserInfo",
     default: 0,
 });
 

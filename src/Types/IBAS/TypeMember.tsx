@@ -57,5 +57,5 @@ export interface userInterface {
     role: string;
     generation: number;
     major: string;
-    type: string;
+    memberType: string;
 }
