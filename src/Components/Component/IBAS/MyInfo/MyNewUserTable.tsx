@@ -6,7 +6,7 @@ import { theme } from "../../../../styles/theme";
 
 import useFetch from "../../../../Hooks/useFetch";
 
-import { newUserInfo, tokenAccess, totalNewUserInfo, totalPageInfo } from "../../../../Recoil/backState";
+import { newUserInfo, tokenAccess, totalNewUserInfo, totalPageInfo, userRole } from "../../../../Recoil/backState";
 import { checkedList } from "../../../../Recoil/frontState";
 
 import { newUserInterface } from "../../../../Types/IBAS/TypeMember";
@@ -26,6 +26,7 @@ const MyNewUserTable = () => {
     const [check, setCheck] = useRecoilState(checkedList);
     const [newUserData, fetchNewUserData] = useFetch();
     const [newUser, setNewUser] = useRecoilState(newUserInfo);
+    const role = useRecoilValue(userRole);
     const setTotalNewUser = useSetRecoilState(totalNewUserInfo);
     const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
     const [passFailValue, setPassFailValue] = useState("");
@@ -97,6 +98,7 @@ const MyNewUserTable = () => {
         }
     };
 
+    // 회원관리 / 신입생 자세히 보기 페이지 별로 다른 fetch 처리
     useEffect(() => {
         let fetchUrl = "/members/unapproved?page=0";
         if (path === "/staff/member/newStudents") {
@@ -108,6 +110,7 @@ const MyNewUserTable = () => {
         fetchNewUserData(fetchUrl, "GET", "token");
     }, [passFailData, access]);
 
+    // 받아온 데이터 가공
     useEffect(() => {
         if (newUserData) {
             const processedData = newUserData.data.map((item: newUserInterface, idx: number) => ({
@@ -120,8 +123,11 @@ const MyNewUserTable = () => {
                 memberId: item.memberId,
             }));
 
+            // totalUser, totalPage set
             setTotalNewUser(newUserData.pageInfo.totalElements);
             setTotalPage(newUserData.pageInfo.totalPages);
+
+            // 신입생 정보 set
             setNewUser(processedData);
         }
     }, [newUserData, access]);
@@ -130,41 +136,43 @@ const MyNewUserTable = () => {
 
     return (
         <Div width="100%">
-            <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
-                <Div width="100px" $margin="0 10px 0 0 ">
-                    <Select
-                        name="approved"
+            {(role === "EXECUTIVES" || role === "CHIEF" || role === "VICE_CHIEF") && (
+                <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
+                    <Div width="100px" $margin="0 10px 0 0 ">
+                        <Select
+                            name="approved"
+                            $borderRadius={3}
+                            required
+                            defaultValue="nothing"
+                            onChange={handlePassFailChange}
+                        >
+                            <option value="nothing" disabled hidden>
+                                승인여부
+                            </option>
+                            <option value="pass">합격</option>
+                            <option value="fail">불합격</option>
+                        </Select>
+                    </Div>
+                    <Button
+                        $backgroundColor="bgColor"
+                        $HBackgroundColor="bgColorHo"
                         $borderRadius={3}
-                        required
-                        defaultValue="nothing"
-                        onChange={handlePassFailChange}
+                        $padding="6px 12px"
+                        height="40px"
                     >
-                        <option value="nothing" disabled hidden>
-                            승인여부
-                        </option>
-                        <option value="pass">합격</option>
-                        <option value="fail">불합격</option>
-                    </Select>
-                </Div>
-                <Button
-                    $backgroundColor="bgColor"
-                    $HBackgroundColor="bgColorHo"
-                    $borderRadius={3}
-                    $padding="6px 12px"
-                    height="40px"
-                >
-                    <FlexDiv $margin="0 5px 0 0" onClick={() => passFail()}>
-                        <FlexDiv width="15px" $margin="0 10px 0 0">
-                            <Img src="/images/check_white.svg" />
+                        <FlexDiv $margin="0 5px 0 0" onClick={() => passFail()}>
+                            <FlexDiv width="15px" $margin="0 10px 0 0">
+                                <Img src="/images/check_white.svg" />
+                            </FlexDiv>
+                            <FlexDiv>
+                                <P color="wh" fontSize="sm">
+                                    적용
+                                </P>
+                            </FlexDiv>
                         </FlexDiv>
-                        <FlexDiv>
-                            <P color="wh" fontSize="sm">
-                                적용
-                            </P>
-                        </FlexDiv>
-                    </FlexDiv>
-                </Button>
-            </FlexDiv>
+                    </Button>
+                </FlexDiv>
+            )}
             <Div width="100%">
                 <FlexDiv
                     width="100%"
@@ -173,14 +181,16 @@ const MyNewUserTable = () => {
                     $backgroundColor="wh"
                     $borderB={`1.5px solid ${theme.color.grey1}`}
                 >
-                    <FlexDiv $padding="10px">
-                        {newUser && newUser.length !== 0 && (
-                            <Checkbox
-                                checked={!!newUser && check.length === Object.values(newUser).length}
-                                onChange={checkAllClickEvent}
-                            />
-                        )}
-                    </FlexDiv>
+                    {(role === "EXECUTIVES" || role === "CHIEF" || role === "VICE_CHIEF") && (
+                        <FlexDiv $padding="10px">
+                            {newUser && newUser.length !== 0 && (
+                                <Checkbox
+                                    checked={!!newUser && check.length === Object.values(newUser).length}
+                                    onChange={checkAllClickEvent}
+                                />
+                            )}
+                        </FlexDiv>
+                    )}
                     {headerInfo.map((item: string, idx: number) => (
                         <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
                             <P $center fontWeight={700}>
@@ -199,14 +209,16 @@ const MyNewUserTable = () => {
                             $justifycontent="space-between"
                             $backgroundColor="wh"
                         >
-                            <FlexDiv $padding="10px">
-                                <Checkbox
-                                    checked={check.includes(element.memberId) ? true : false}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                        checkClickEvent(e, element.memberId)
-                                    }
-                                />
-                            </FlexDiv>
+                            {(role === "EXECUTIVES" || role === "CHIEF" || role === "VICE_CHIEF") && (
+                                <FlexDiv $padding="10px">
+                                    <Checkbox
+                                        checked={check.includes(element.memberId) ? true : false}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                            checkClickEvent(e, element.memberId)
+                                        }
+                                    />
+                                </FlexDiv>
+                            )}
 
                             {Object.entries(element).map(([key, value], idx: number) => {
                                 // memberId가 아닌 경우에만 FlexDiv를 렌더링합니다.

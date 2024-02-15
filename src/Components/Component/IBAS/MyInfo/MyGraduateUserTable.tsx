@@ -6,8 +6,14 @@ import { theme } from "../../../../styles/theme";
 
 import useFetch from "../../../../Hooks/useFetch";
 
-import { _totalPageInfo, tokenAccess, totalUserInfo, userInfo, userRole } from "../../../../Recoil/backState";
-import { _checkedList, refetch } from "../../../../Recoil/frontState";
+import {
+    __totalPageInfo,
+    graduateUserInfo,
+    tokenAccess,
+    totalGraduateUserInfo,
+    userRole,
+} from "../../../../Recoil/backState";
+import { __checkedList, refetch } from "../../../../Recoil/frontState";
 
 import { userInterface } from "../../../../Types/IBAS/TypeMember";
 
@@ -19,18 +25,18 @@ import { Checkbox, Select, TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
 import Pagination from "../../../Common/Pagination";
 
-const MyUserTable = () => {
+const MyGraduateUserTable = () => {
     const widthList = [50, 100, 150, 200, 200, 130, 130, 50];
     const headerInfo = ["", "이름", "학번", "학과", "전화번호", "역할", "소속", "기수"];
 
     const [user, fetchUser] = useFetch();
-    const [userList, setUserList] = useRecoilState(userInfo);
+    const [userList, setUserList] = useRecoilState(graduateUserInfo);
     // totalPageInfo를 같은 페이지 내에서 MyNewUserTable 이라는 컴포넌트가 쓰고 있기 때문에, _totalPageInfo을 사용함
-    const [totalPage, setTotalPage] = useRecoilState(_totalPageInfo);
-    const setTotalUser = useSetRecoilState(totalUserInfo);
+    const [totalPage, setTotalPage] = useRecoilState(__totalPageInfo);
+    const setTotalUser = useSetRecoilState(totalGraduateUserInfo);
     const role = useRecoilValue(userRole);
     // checkedList를 같은 페이지 내에서 MyNewUserTable 이라는 컴포넌트가 쓰고 있기 때문에, _checkedList를 사용함
-    const [check, setCheck] = useRecoilState(_checkedList);
+    const [check, setCheck] = useRecoilState(__checkedList);
     const [roleValue, setRoleValue] = useState("");
     const [typeValue, setTypeValue] = useState("");
     const [roleChangeData, fetchRoleChangeData] = useFetch();
@@ -125,6 +131,7 @@ const MyUserTable = () => {
     const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         // 선택된 값을 업데이트
         setTypeValue(e.target.value);
+        console.log(e.target.value);
     };
 
     // role Fetch
@@ -159,34 +166,32 @@ const MyUserTable = () => {
     // 검색 버튼 클릭 핸들러
     const searchStudent = () => {
         // 검색어를 이용하여 API 호출
-
         if (searchValue.trim() !== "") {
-            fetchUser(`/members/notGraduated?search=${searchValue}`, "GET", "token");
+            fetchUser(`/members/graduated?search=${searchValue}$size=15`, "GET", "token");
         }
     };
 
     // 엔터키 press 핸들러
     const enterKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter") {
+        if (e.key === "Entdsaer") {
             searchStudent();
         }
     };
 
-    // 동아리원 현황 조회 fetch, 회원관리 / 재학생 자세히 보기 페이지 별로 다른 fetch 처리
+    // 졸업생 현황 조회 fetch
     useEffect(() => {
-        let fetchUrl = "/members/notGraduated?page=0";
-        if (path === "/staff/member/students") {
+        let fetchUrl = "/members/graduated?page=0";
+        if (path === "/staff/member/graduateStudents") {
             fetchUrl += "&size=15";
         } else if (path === "/staff/member") {
             fetchUrl += "&size=10";
         }
 
         fetchUser(fetchUrl, "GET", "token");
-
         setReload(false);
     }, [reload, access]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함
 
-    // fetch된 data로 동아리원 List 만들 data 가공
+    // fetch된 data로 졸업생 List 만들 data 가공
     useEffect(() => {
         if (user) {
             const contents = user.data.map((item: userInterface, idx: number) => ({
@@ -261,7 +266,7 @@ const MyUserTable = () => {
                             <option value="nothing" disabled hidden>
                                 관리
                             </option>
-                            <option value="GRADUATED">졸업생</option>
+                            <option value="UNDERGRADUATE">학부생</option>
                             <option value="BACHELOR">대학원생</option>
                             <option value="PROFESSOR">교수</option>
                         </Select>
@@ -326,21 +331,14 @@ const MyUserTable = () => {
                         >
                             {(role === "SECRETARY" || role === "CHIEF" || role === "VICE_CHIEF") && (
                                 <FlexDiv $padding="10px">
-                                    {element.role === "활동회원" ||
-                                    element.role === "비활동회원" ||
-                                    role === "VICE_CHIEF" ? (
-                                        <Checkbox
-                                            checked={check.includes(element.memberId) ? true : false}
-                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                                checkClickEvent(e, element.memberId)
-                                            }
-                                        />
-                                    ) : (
-                                        <Div width="20px" height="20px"></Div>
-                                    )}
+                                    <Checkbox
+                                        checked={check.includes(element.memberId) ? true : false}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                            checkClickEvent(e, element.memberId)
+                                        }
+                                    />
                                 </FlexDiv>
                             )}
-
                             {Object.entries(element).map(([key, value], idx: number) => {
                                 if (key !== "memberId") {
                                     return (
@@ -366,7 +364,7 @@ const MyUserTable = () => {
                     </FlexDiv>
                 )}
             </Div>
-            {path === "/staff/member/students" && (
+            {path === "/staff/member/graduateStudents" && (
                 <FlexDiv width="100%" $justifycontent="end" $margin="30px 0">
                     <FlexDiv>
                         <TextInput
@@ -393,14 +391,14 @@ const MyUserTable = () => {
             {userList && userList.length !== 0 && (
                 <Pagination
                     totalPage={totalPage}
-                    fetchUrl="/members/notGraduated"
+                    fetchUrl="/members/graduated"
                     token
                     paginationFetch={fetchUser}
-                    size={path === "/staff/member/students" ? 15 : 10}
+                    size={10}
                 />
             )}
         </Div>
     );
 };
 
-export default MyUserTable;
+export default MyGraduateUserTable;

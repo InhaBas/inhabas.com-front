@@ -39,6 +39,7 @@ export interface profileInterface {
     isHOF: boolean;
 }
 
+// manage user
 export interface newUserInterface {
     name: string;
     memberId: number;
@@ -57,5 +58,22 @@ export interface userInterface {
     role: string;
     generation: number;
     major: string;
-    type: string;
+    memberType: string;
+}
+
+// new user application
+export interface applicationInterface {
+    name: string;
+    grade: number;
+    major: string;
+    studentId?: string;
+    email: string;
+    phoneNumber: string;
+    dateJoined: string;
+}
+
+export interface applicationAnswersInterface {
+    questionId: number;
+    question: string;
+    answer: string;
 }

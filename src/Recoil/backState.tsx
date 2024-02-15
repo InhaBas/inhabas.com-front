@@ -1,6 +1,8 @@
 import { atom } from "recoil";
 import {
     answersInterface,
+    applicationAnswersInterface,
+    applicationInterface,
     majorInterface,
     newUserInterface,
     profileInterface,
@@ -39,6 +41,11 @@ export const totalPageInfo = atom({
 
 export const _totalPageInfo = atom({
     key: "_totalPageInfo",
+    default: 0,
+});
+
+export const __totalPageInfo = atom({
+    key: "__totalPageInfo",
     default: 0,
 });
 
@@ -92,6 +99,26 @@ export const userInfo = atom<userInterface[]>({
 export const totalUserInfo = atom({
     key: "totalUserInfo",
     default: 0,
+});
+
+export const graduateUserInfo = atom<userInterface[]>({
+    key: "graduateUserInfo",
+    default: [],
+});
+
+export const totalGraduateUserInfo = atom({
+    key: "totalGraduateUserInfo",
+    default: 0,
+});
+
+export const applicationInfo = atom<applicationInterface | null>({
+    key: "applicationInfo",
+    default: null,
+});
+
+export const applicationAnswerInfo = atom<applicationAnswersInterface[] | null>({
+    key: "applicationAnswerInfo",
+    default: null,
 });
 
 // IBAS

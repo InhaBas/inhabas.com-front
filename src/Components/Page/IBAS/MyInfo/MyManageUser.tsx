@@ -3,12 +3,13 @@ import { useRecoilValue } from "recoil";
 
 import { theme } from "../../../../styles/theme";
 
-import { totalNewUserInfo, totalUserInfo } from "../../../../Recoil/backState";
+import { totalGraduateUserInfo, totalNewUserInfo, totalUserInfo } from "../../../../Recoil/backState";
 
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
 
+import MyGraduateUserTable from "../../../Component/IBAS/MyInfo/MyGraduateUserTable";
 import MyNewUserTable from "../../../Component/IBAS/MyInfo/MyNewUserTable";
 import MyUserTable from "../../../Component/IBAS/MyInfo/MyUserTable";
 
@@ -16,6 +17,7 @@ const MyManageUser = () => {
     const navigate = useNavigate();
     const totalNewUser = useRecoilValue(totalNewUserInfo);
     const totalUser = useRecoilValue(totalUserInfo);
+    const totalGraduateUser = useRecoilValue(totalGraduateUserInfo);
 
     const movePage = (url: string) => {
         navigate(url);
@@ -69,7 +71,7 @@ const MyManageUser = () => {
                                 <Img src="/images/user_purple.svg" />
                             </FlexDiv>
                             <Div $margin="0 5px 0 0 ">
-                                <P fontWeight={600}>동아리원 현황 </P>
+                                <P fontWeight={600}>동아리원 현황</P>
                             </Div>
                             <Div>
                                 <P color="red" fontSize="xs" fontWeight={800}>
@@ -86,6 +88,39 @@ const MyManageUser = () => {
                     <FlexDiv width="100%" $justifycontent="start" $padding="30px">
                         <FlexDiv width="100%" $justifycontent="space-around">
                             <MyUserTable />
+                        </FlexDiv>
+                    </FlexDiv>
+                </Div>
+
+                <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
+                    <FlexDiv
+                        width=" 100%"
+                        $padding="20px"
+                        $justifycontent="space-between"
+                        $borderB={`1px solid ${theme.color.border}`}
+                    >
+                        <FlexDiv>
+                            <FlexDiv width="20px" height="15px" $margin="0 10px 0 0">
+                                <Img src="/images/user_purple.svg" />
+                            </FlexDiv>
+                            <Div $margin="0 5px 0 0 ">
+                                <P fontWeight={600}>졸업생 현황</P>
+                            </Div>
+                            <Div>
+                                <P color="red" fontSize="xs" fontWeight={800}>
+                                    ({totalGraduateUser})
+                                </P>
+                            </Div>
+                        </FlexDiv>
+                        <FlexDiv $pointer onClick={() => movePage("graduateStudents")}>
+                            <P color="textColor" fontSize="xs">
+                                더보기
+                            </P>
+                        </FlexDiv>
+                    </FlexDiv>
+                    <FlexDiv width="100%" $justifycontent="start" $padding="30px">
+                        <FlexDiv width="100%" $justifycontent="space-around">
+                            <MyGraduateUserTable />
                         </FlexDiv>
                     </FlexDiv>
                 </Div>
