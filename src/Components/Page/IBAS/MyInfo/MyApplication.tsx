@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 
 import styled from "styled-components";
@@ -37,13 +37,27 @@ const FailBtn = styled(Button)`
 `;
 
 const MyApplication = () => {
+    const navigate = useNavigate();
+    const memberId = useParams().id;
+
     const access = useRecoilValue(tokenAccess);
     const [applicationData, fetchApplicationData] = useFetch();
     const [application, setApplication] = useRecoilState(applicationInfo);
     const [answer, setAnswer] = useRecoilState(applicationAnswerInfo);
     const [title, setTitle] = useRecoilState(headerTitleInfo);
+    const [passFailData, fetchPassFailData] = useFetch();
 
-    const memberId = useParams().id;
+    // pass/fail Fetch
+    const passFail = (passFailValue: string) => {
+        let passFailSend = {
+            memberIdList: [memberId],
+            state: passFailValue,
+        };
+
+        console.log(passFailSend);
+        fetchPassFailData("/members/unapproved", "PUT", "token", passFailSend);
+        navigate("/staff/member");
+    };
 
     useEffect(() => {
         fetchApplicationData(`/members/${memberId}/application`, "GET", "token");
@@ -70,8 +84,6 @@ const MyApplication = () => {
             });
         }
     }, [access, applicationData]);
-
-    useEffect(() => console.log(answer), [answer]);
 
     return (
         <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
@@ -215,6 +227,7 @@ const MyApplication = () => {
                         $padding="12px 24px"
                         $borderRadius={6}
                         border={`1px solid ${theme.color.blue}`}
+                        onClick={() => passFail("pass")}
                     >
                         합격
                     </PassBtn>
@@ -224,6 +237,7 @@ const MyApplication = () => {
                         $padding="12px 24px"
                         $borderRadius={6}
                         border={`1px solid ${theme.color.red}`}
+                        onClick={() => passFail("fail")}
                     >
                         불합격
                     </FailBtn>
