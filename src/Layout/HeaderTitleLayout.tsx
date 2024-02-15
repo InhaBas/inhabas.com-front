@@ -5,6 +5,7 @@ import BoardRoute from "../Routes/BoardRoute";
 import LectureRoute from "../Routes/LectureRoute";
 import MainRoute from "../Routes/MainRoute";
 
+import MyApplication from "../Components/Page/IBAS/MyInfo/MyApplication";
 import MyManageExistUser from "../Components/Page/IBAS/MyInfo/MyManageExistUser";
 import MyManageGraduateUser from "../Components/Page/IBAS/MyInfo/MyManageGraduateUser";
 import MyManageNewUser from "../Components/Page/IBAS/MyInfo/MyManageNewUser";
@@ -22,6 +23,8 @@ const HeaderTitlePage = () => {
 
                     <Route path="staff/member" element={<MyManageUser />} />
                     <Route path="staff/member/newStudents" element={<MyManageNewUser />} />
+                    <Route path="staff/member/application/:id" element={<MyApplication />} />
+
                     <Route path="staff/member/students" element={<MyManageExistUser />} />
                     <Route path="staff/member/graduateStudents" element={<MyManageGraduateUser />} />
                 </Routes>

@@ -1,6 +1,8 @@
 import { atom } from "recoil";
 import {
     answersInterface,
+    applicationAnswersInterface,
+    applicationInterface,
     majorInterface,
     newUserInterface,
     profileInterface,
@@ -107,6 +109,16 @@ export const graduateUserInfo = atom<userInterface[]>({
 export const totalGraduateUserInfo = atom({
     key: "totalGraduateUserInfo",
     default: 0,
+});
+
+export const applicationInfo = atom<applicationInterface | null>({
+    key: "applicationInfo",
+    default: null,
+});
+
+export const applicationAnswerInfo = atom<applicationAnswersInterface[] | null>({
+    key: "applicationAnswerInfo",
+    default: null,
 });
 
 // IBAS
