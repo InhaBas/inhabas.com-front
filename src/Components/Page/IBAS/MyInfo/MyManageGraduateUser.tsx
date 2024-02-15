@@ -1,23 +1,38 @@
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { theme } from "../../../../styles/theme";
 
-import { totalGraduateUserInfo } from "../../../../Recoil/backState";
+import { headerTitleInfo, totalGraduateUserInfo } from "../../../../Recoil/backState";
 
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
 
+import { useEffect } from "react";
 import MyGraduateUserTable from "../../../Component/IBAS/MyInfo/MyGraduateUserTable";
 
 const MyManageGraduateUser = () => {
     const navigate = useNavigate();
     const totalGraduateUser = useRecoilValue(totalGraduateUserInfo);
+    const setTitle = useSetRecoilState(headerTitleInfo);
 
     const movePage = (url: string) => {
         navigate(url);
     };
+
+    useEffect(() => {
+        setTitle({
+            name: "졸업생 관리",
+            description: "졸업생을 관리 할 수 있는 페이지입니다.",
+        });
+
+        return () =>
+            setTitle({
+                name: "",
+                description: "",
+            });
+    }, []);
 
     return (
         <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
