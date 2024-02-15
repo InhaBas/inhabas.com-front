@@ -98,6 +98,7 @@ const MyNewUserTable = () => {
         }
     };
 
+    // 회원관리 / 신입생 자세히 보기 페이지 별로 다른 fetch 처리
     useEffect(() => {
         let fetchUrl = "/members/unapproved?page=0";
         if (path === "/staff/member/newStudents") {
@@ -109,6 +110,7 @@ const MyNewUserTable = () => {
         fetchNewUserData(fetchUrl, "GET", "token");
     }, [passFailData, access]);
 
+    // 받아온 데이터 가공
     useEffect(() => {
         if (newUserData) {
             const processedData = newUserData.data.map((item: newUserInterface, idx: number) => ({
@@ -121,8 +123,11 @@ const MyNewUserTable = () => {
                 memberId: item.memberId,
             }));
 
+            // totalUser, totalPage set
             setTotalNewUser(newUserData.pageInfo.totalElements);
             setTotalPage(newUserData.pageInfo.totalPages);
+
+            // 신입생 정보 set
             setNewUser(processedData);
         }
     }, [newUserData, access]);

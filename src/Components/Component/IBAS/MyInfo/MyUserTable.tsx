@@ -125,7 +125,6 @@ const MyUserTable = () => {
     const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         // 선택된 값을 업데이트
         setTypeValue(e.target.value);
-        console.log(e.target.value);
     };
 
     // role Fetch
@@ -173,13 +172,16 @@ const MyUserTable = () => {
         }
     };
 
-    // 동아리원 현황 조회 fetch
+    // 동아리원 현황 조회 fetch, 회원관리 / 재학생 자세히 보기 페이지 별로 다른 fetch 처리
     useEffect(() => {
-        {
-            path === "/staff/member/students"
-                ? fetchUser("/members/notGraduated?page=0&size=15", "GET", "token")
-                : fetchUser("/members/notGraduated?page=0&size=10", "GET", "token");
+        let fetchUrl = "/members/notGraduated?page=0";
+        if (path === "/staff/member/students") {
+            fetchUrl += "&size=15";
+        } else if (path === "/staff/member") {
+            fetchUrl += "&size=10";
         }
+
+        fetchUser(fetchUrl, "GET", "token");
 
         setReload(false);
     }, [reload, access]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함

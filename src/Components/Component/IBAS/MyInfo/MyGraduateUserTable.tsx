@@ -180,11 +180,14 @@ const MyGraduateUserTable = () => {
 
     // 졸업생 현황 조회 fetch
     useEffect(() => {
-        {
-            path === "/staff/member/graduateStudents"
-                ? fetchUser("/members/graduated?page=0&size=15", "GET", "token")
-                : fetchUser("/members/graduated?page=0&size=10", "GET", "token");
+        let fetchUrl = "/members/graduated?page=0";
+        if (path === "/staff/member/graduateStudents") {
+            fetchUrl += "&size=15";
+        } else if (path === "/staff/member") {
+            fetchUrl += "&size=10";
         }
+
+        fetchUser(fetchUrl, "GET", "token");
         setReload(false);
     }, [reload, access]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함
 
