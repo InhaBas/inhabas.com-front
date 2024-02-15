@@ -83,6 +83,11 @@ const MyApplication = () => {
                 description: "",
             });
         }
+        return () =>
+            setTitle({
+                name: "",
+                description: "",
+            });
     }, [access, applicationData]);
 
     return (

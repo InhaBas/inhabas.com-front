@@ -128,7 +128,7 @@ const HeaderTitle = () => {
                     </H1>
                 </Div>
                 <Div>
-                    <P color="wh" fontWeight={300} fontSize="lg">
+                    <P color="grey3" fontWeight={300} fontSize="lg">
                         {title && title.description}
                     </P>
                 </Div>
