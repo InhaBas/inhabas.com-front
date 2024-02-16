@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
@@ -6,7 +6,6 @@ import styled from "styled-components";
 import useFetch from "../../../../Hooks/useFetch";
 import { profileInfo, tokenAccess } from "../../../../Recoil/backState";
 
-import HeaderNav from "../../../Common/HeaderNav";
 import MyBankSupportContainer from "../../../Container/MyInfo/MyBankSupportContainer";
 import MyBoardContainer from "../../../Container/MyInfo/MyBoardContainer";
 import MyInfoContainer from "../../../Container/MyInfo/MyInfoContainer";
@@ -53,21 +52,20 @@ const MyInfo = () => {
     const [clicked, setclicked] = useState(4);
     const [info, setInfo] = useRecoilState(profileInfo);
 
-    // myInfo 정보 GET fetch
-    useEffect(() => {
-        fetchInfoData("/myInfo", "GET", "token");
-    }, [access]);
+    // // myInfo 정보 GET fetch
+    // useEffect(() => {
+    //     fetchInfoData("/myInfo", "GET", "token");
+    // }, [access]);
 
     // myInfo recoil 저장
-    useEffect(() => {
-        if (infoData) {
-            setInfo(infoData);
-        }
-    }, [infoData]);
+    // useEffect(() => {
+    //     if (infoData) {
+    //         setInfo(infoData);
+    //     }
+    // }, [infoData]);
 
     return (
         <>
-            <HeaderNav />
             <MyInfoDiv
                 $zIndex={2}
                 width="100%"
@@ -173,7 +171,7 @@ const MyInfo = () => {
             </MyInfoDiv>
             <MyInfoImgDiv width="100%" height="423px" />
 
-            <Div width="100%" $padding="0 8%">
+            <Div width="100%" $padding="4% 8%">
                 {clicked === 0 && <MyLectureContainer />}
                 {clicked === 1 && <MyManageLectureContainer />}
                 {clicked === 2 && <MyBoardContainer />}

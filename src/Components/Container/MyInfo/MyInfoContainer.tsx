@@ -1,9 +1,9 @@
 import { theme } from "../../../styles/theme";
 
 import { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import useFetch from "../../../Hooks/useFetch";
-import { profileInfo, tokenAccess } from "../../../Recoil/backState";
+import { profileInfo } from "../../../Recoil/backState";
 import { modalInfo, modalOpen, refetch } from "../../../Recoil/frontState";
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
@@ -18,7 +18,6 @@ const MyInfoContainer = () => {
     const setMoalInfo = useSetRecoilState(modalInfo);
     const [reload, setReload] = useRecoilState(refetch);
     const [infoData, fetchInfoData] = useFetch();
-    const access = useRecoilValue(tokenAccess);
 
     /*
     선택한 영역의 수정 모달을 열기 위함. 
@@ -61,9 +60,10 @@ const MyInfoContainer = () => {
     조건은 reload === true 임 
     setReload(true)는 각 모달에서 이루어짐
     */
+
     useEffect(() => {
         fetchInfoData("/myInfo", "GET", "token");
-    }, [reload === true, access]);
+    }, [reload]);
 
     /* 
     myInfo GET fetch를 성공했다면 info에 저장
