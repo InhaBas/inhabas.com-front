@@ -61,13 +61,14 @@ const ModalMajor = () => {
         };
         if (inputData.major !== "") {
             fetchChangeData("/myInfo/detail", "PUT", "token", inputData);
-            setReload(true);
         }
     };
 
     useEffect(() => {
         if (changeData) {
             alert("전공 정상적으로 수정되었습니다.");
+            setReload(true);
+
             setOpen(false);
         }
     }, [changeData]);

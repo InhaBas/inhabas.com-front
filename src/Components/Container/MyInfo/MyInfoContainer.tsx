@@ -62,7 +62,9 @@ const MyInfoContainer = () => {
     */
 
     useEffect(() => {
-        fetchInfoData("/myInfo", "GET", "token");
+        if (reload) {
+            fetchInfoData("/myInfo", "GET", "token");
+        }
     }, [reload]);
 
     /* 
@@ -70,9 +72,7 @@ const MyInfoContainer = () => {
     이 때 reload는 다시 false로 만들어 주어야 함
     */
     useEffect(() => {
-        if (infoData) {
-            setInfo(infoData);
-        }
+        setInfo(infoData);
         setReload(false);
     }, [infoData]);
 

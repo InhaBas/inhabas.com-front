@@ -55,13 +55,14 @@ const ModalChangeNumber = () => {
             alert("핸드폰번호를 정확하게 입력해주세요");
         } else if (inputRef.current?.value.length >= 13 || inputRef.current?.value.slice(0, 3) === "010") {
             fetchData("/myInfo/detail", "PUT", "token", inputData);
-            setReload(true);
         }
     };
 
     useEffect(() => {
         if (data) {
             alert("전화번호가 정상적으로 수정되었습니다.");
+            setReload(true);
+
             setOpen(false);
         }
     }, [data]);

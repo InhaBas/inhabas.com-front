@@ -34,13 +34,14 @@ const ModalChangeIntro = () => {
         };
         if (inputData.introduce !== "") {
             fetchData("/myInfo/intro", "PUT", "token", inputData);
-            setReload(true);
         }
     };
 
     useEffect(() => {
         if (data) {
             alert("자기소개가 정상적으로 수정되었습니다.");
+            setReload(true);
+
             setOpen(false);
         }
     }, [data]);
