@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import useFetch from "../../../Hooks/useFetch";
@@ -34,11 +34,17 @@ const ModalChangeIntro = () => {
         };
         if (inputData.introduce !== "") {
             fetchData("/myInfo/intro", "PUT", "token", inputData);
-            setReload(true);
         }
-
-        setOpen(false);
     };
+
+    useEffect(() => {
+        if (data) {
+            alert("자기소개가 정상적으로 수정되었습니다.");
+            setReload(true);
+
+            setOpen(false);
+        }
+    }, [data]);
 
     return (
         <FlexDiv width="44%" $backgroundColor="wh" direction="column" $justifycontent="space-between" radius={2}>

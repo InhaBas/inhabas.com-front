@@ -41,6 +41,7 @@ const ModalMajor = () => {
 
     const modalType = useRecoilValue(modalInfo);
     const [data, fetchData] = useFetch();
+    const [changeData, fetchChangeData] = useFetch();
     const [major, setMajor] = useRecoilState<MajorItem[]>(majorInfo);
     const [selectedTable, setSelectedTable] = useRecoilState(majorSelected);
     const setReload = useSetRecoilState(refetch);
@@ -59,11 +60,18 @@ const ModalMajor = () => {
             major: selectedTable.major,
         };
         if (inputData.major !== "") {
-            fetchData("/myInfo/detail", "PUT", "token", inputData);
-            setReload(true);
+            fetchChangeData("/myInfo/detail", "PUT", "token", inputData);
         }
-        setOpen(false);
     };
+
+    useEffect(() => {
+        if (changeData) {
+            alert("전공 정상적으로 수정되었습니다.");
+            setReload(true);
+
+            setOpen(false);
+        }
+    }, [changeData]);
 
     /*
         전공 정보 받기 위한 api
