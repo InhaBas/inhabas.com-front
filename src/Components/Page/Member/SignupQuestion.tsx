@@ -82,7 +82,7 @@ const SignupQuestion = () => {
                     content: ref.current[idx]?.value,
                 }));
 
-                putFetchData("/signUp", "PUT", undefined, inputData);
+                putFetchData("/signUp", "PUT", "token", inputData);
             }
         }
     };
@@ -99,7 +99,7 @@ const SignupQuestion = () => {
                     content: ref.current[idx]?.value,
                 }));
 
-                postFetchData("/signUp/answers", "POST", undefined, inputData);
+                postFetchData("/signUp/answers", "POST", "token", inputData);
             }
         }
     };
