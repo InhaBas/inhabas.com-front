@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useSetRecoilState } from "recoil";
 
 import useFetch from "../../../Hooks/useFetch";
@@ -58,6 +58,13 @@ const ModalChangeNumber = () => {
             setReload(true);
         }
     };
+
+    useEffect(() => {
+        if (data) {
+            alert("전화번호가 정상적으로 수정되었습니다.");
+            setOpen(false);
+        }
+    }, [data]);
 
     return (
         <FlexDiv width="44%" $backgroundColor="wh" direction="column" $justifycontent="space-between" radius={2}>

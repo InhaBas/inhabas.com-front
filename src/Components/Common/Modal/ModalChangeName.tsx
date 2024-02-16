@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useSetRecoilState } from "recoil";
 
 import useFetch from "../../../Hooks/useFetch";
@@ -28,8 +28,14 @@ const ModalChangeName = () => {
         if (inputData !== "") {
             fetchData("/myInfo/name", "PUT", "token", inputData);
         }
-        setOpen(false);
     };
+
+    useEffect(() => {
+        if (data) {
+            alert("이름 수정이 정상적으로 요청 되었습니다.");
+            setOpen(false);
+        }
+    }, [data]);
 
     return (
         <FlexDiv width="44%" $backgroundColor="wh" direction="column" $justifycontent="space-between" radius={2}>
