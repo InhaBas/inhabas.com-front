@@ -22,7 +22,7 @@ const MyInfoContainer = () => {
     /*
     선택한 영역의 수정 모달을 열기 위함. 
     이 때 info 에 해당하는 매개변수의 첫번째 글자는 대문자여야 함
-    Name, Number, Major, Intro 
+    Name, Number, Major, Intro, Type 
     */
     const changeInfo = (info: string) => {
         setOpen(true);
@@ -36,7 +36,7 @@ const MyInfoContainer = () => {
         } else if (info?.type === "GRADUATED") {
             setAuth("졸업생");
         } else if (info?.type === "BACHELOR") {
-            setAuth("졸업생");
+            setAuth("대학원생");
         } else if (info?.role === "CHIEF") {
             setAuth("회장");
         } else if (info?.role === "VICE_CHIEF") {
@@ -203,9 +203,16 @@ const MyInfoContainer = () => {
                                     <P>{auth}</P>
                                 </FlexDiv>
                             </FlexDiv>
-                            <FlexDiv $minWidth={`${widthList[2]}px`} $padding="10px 40px" $pointer>
-                                <P color="grey2">졸업 하셨나요?</P>
-                            </FlexDiv>
+                            {info?.type === "UNDERGRADUATE" && (
+                                <FlexDiv
+                                    onClick={() => changeInfo("Type")}
+                                    $minWidth={`${widthList[2]}px`}
+                                    $padding="10px 40px"
+                                    $pointer
+                                >
+                                    <P color="grey2">졸업 하셨나요?</P>
+                                </FlexDiv>
+                            )}
                         </FlexDiv>
                         <FlexDiv
                             width="100%"
