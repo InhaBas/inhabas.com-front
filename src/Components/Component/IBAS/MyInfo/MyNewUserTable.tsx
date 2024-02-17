@@ -177,7 +177,7 @@ const MyNewUserTable = () => {
                 <FlexDiv
                     width="100%"
                     height="45px"
-                    $justifycontent="space-between"
+                    $justifycontent="space-evenly"
                     $backgroundColor="wh"
                     $borderB={`1.5px solid ${theme.color.grey1}`}
                 >
@@ -206,7 +206,7 @@ const MyNewUserTable = () => {
                             width="100%"
                             height="45px"
                             $borderT={`1px solid ${theme.color.grey1}`}
-                            $justifycontent="space-between"
+                            $justifycontent="space-evenly"
                             $backgroundColor="wh"
                         >
                             {(role === "EXECUTIVES" || role === "CHIEF" || role === "VICE_CHIEF") && (
