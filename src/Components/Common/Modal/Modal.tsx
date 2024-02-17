@@ -7,6 +7,7 @@ import { FlexDiv } from "../../../styles/assets/Div";
 import ModalChangeIntro from "./ModalChangeIntro";
 import ModalChangeName from "./ModalChangeName";
 import ModalChangeNumber from "./ModalChangeNumber";
+import ModalChangeType from "./ModalChangeType";
 import ModalMajor from "./ModalMajor";
 
 type CustomMouseEvent = MouseEvent<HTMLElement>;
@@ -45,7 +46,8 @@ export const Modal = () => {
                         (modalType === "changeName" && <ModalChangeName />) ||
                         (modalType === "changeNumber" && <ModalChangeNumber />) ||
                         (modalType === "changeMajor" && <ModalMajor />) ||
-                        (modalType === "changeIntro" && <ModalChangeIntro />)}
+                        (modalType === "changeIntro" && <ModalChangeIntro />) ||
+                        (modalType === "changeType" && <ModalChangeType />)}
                 </ModalBackground>
             )}
         </>
