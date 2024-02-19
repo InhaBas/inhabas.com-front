@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 
-import useFetch from "../../../../Hooks/useFetch";
 import { profileInfo, tokenAccess } from "../../../../Recoil/backState";
 
 import MyBankSupportContainer from "../../../Container/MyInfo/MyBankSupportContainer";
@@ -48,21 +47,8 @@ const MyInfo = () => {
         { idx: 4, url: "/images/user_white.svg", clickedUrl: "/images/user_purple.svg", info: "내정보" },
     ];
 
-    const [infoData, fetchInfoData] = useFetch();
     const [clicked, setclicked] = useState(4);
-    const [info, setInfo] = useRecoilState(profileInfo);
-
-    // // myInfo 정보 GET fetch
-    // useEffect(() => {
-    //     fetchInfoData("/myInfo", "GET", "token");
-    // }, [access]);
-
-    // myInfo recoil 저장
-    // useEffect(() => {
-    //     if (infoData) {
-    //         setInfo(infoData);
-    //     }
-    // }, [infoData]);
+    const info = useRecoilValue(profileInfo);
 
     return (
         <>

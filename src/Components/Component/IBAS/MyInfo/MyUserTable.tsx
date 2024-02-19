@@ -33,6 +33,7 @@ const MyUserTable = () => {
     const [check, setCheck] = useRecoilState(_checkedList);
     const [roleValue, setRoleValue] = useState("");
     const [typeValue, setTypeValue] = useState("");
+    const [CategoryValue, setCategoryValue] = useState("");
     const [roleChangeData, fetchRoleChangeData] = useFetch();
     const [typeChangeData, fetchTypeChangeData] = useFetch();
     const [reload, setReload] = useRecoilState(refetch);
@@ -127,14 +128,20 @@ const MyUserTable = () => {
         setTypeValue(e.target.value);
     };
 
+    // select 값 선택에 따른 state 변경 이벤트
+    const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        // 선택된 값을 업데이트
+        setCategoryValue(e.target.value);
+    };
+
     // role Fetch
     const changeRole = () => {
         if (roleValue !== "") {
-            const typeSend = {
+            const roleSend = {
                 memberIdList: check,
                 role: roleValue,
             };
-            fetchRoleChangeData("/members/approved/role", "PUT", "token", typeSend);
+            fetchRoleChangeData("/members/approved/role", "PUT", "token", roleSend);
             setReload(true);
         }
     };
@@ -256,23 +263,63 @@ const MyUserTable = () => {
                             $borderRadius={3}
                             required
                             defaultValue="nothing"
-                            onChange={handleTypeChange}
+                            onChange={handleCategoryChange}
                         >
                             <option value="nothing" disabled hidden>
                                 관리
                             </option>
-                            <option value="GRADUATED">졸업생</option>
-                            <option value="BACHELOR">대학원생</option>
-                            <option value="PROFESSOR">교수</option>
+                            <option value="ROLE">역할</option>
+                            <option value="TYPE">소속</option>
                         </Select>
                     </Div>
+                    {CategoryValue === "ROLE" && (
+                        <Div $minWidth="100px" $margin="0 10px 0 0 ">
+                            <Select
+                                name="approved"
+                                $borderRadius={3}
+                                required
+                                defaultValue="nothing"
+                                onChange={handleRoleChange}
+                            >
+                                <option value="nothing" disabled hidden>
+                                    선택
+                                </option>
+                                <option value="CHIEF">회장</option>
+                                <option value="VICE_CHIEF">부회장</option>
+                                <option value="EXECUTIVES">운영진</option>
+                                <option value="SECRETARY">총무</option>
+                                <option value="BASIC">활동회원</option>
+                                <option value="DEACTIVATED">비활동회원</option>
+                            </Select>
+                        </Div>
+                    )}
+                    {CategoryValue === "TYPE" && (
+                        <Div $minWidth="100px" $margin="0 10px 0 0 ">
+                            <Select
+                                name="approved"
+                                $borderRadius={3}
+                                required
+                                defaultValue="nothing"
+                                onChange={handleTypeChange}
+                            >
+                                <option value="nothing" disabled hidden>
+                                    선택
+                                </option>
+                                <option value="GRADUATED">졸업생</option>
+                                <option value="BACHELOR">대학원생</option>
+                                <option value="PROFESSOR">교수</option>
+                            </Select>
+                        </Div>
+                    )}
                     <Button
                         $backgroundColor="bgColor"
                         $HBackgroundColor="bgColorHo"
                         $borderRadius={3}
                         $padding="6px 12px"
                         height="40px"
-                        onClick={() => changeType()}
+                        onClick={() => {
+                            CategoryValue === "TYPE" ? changeType() : changeRole();
+                        }}
                     >
                         <FlexDiv $margin="0 5px 0 0">
                             <FlexDiv width="15px" $margin="0 10px 0 0">
@@ -326,18 +373,12 @@ const MyUserTable = () => {
                         >
                             {(role === "SECRETARY" || role === "CHIEF" || role === "VICE_CHIEF") && (
                                 <FlexDiv $padding="10px">
-                                    {element.role === "활동회원" ||
-                                    element.role === "비활동회원" ||
-                                    role === "VICE_CHIEF" ? (
-                                        <Checkbox
-                                            checked={check.includes(element.memberId) ? true : false}
-                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                                checkClickEvent(e, element.memberId)
-                                            }
-                                        />
-                                    ) : (
-                                        <Div width="20px" height="20px"></Div>
-                                    )}
+                                    <Checkbox
+                                        checked={check.includes(element.memberId) ? true : false}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                            checkClickEvent(e, element.memberId)
+                                        }
+                                    />
                                 </FlexDiv>
                             )}
 
