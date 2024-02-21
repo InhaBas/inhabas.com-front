@@ -38,11 +38,13 @@ const ListItem = styled("li")`
 
 */
 const Dropdown = ({
+    borderRadius,
     label,
     options,
     value,
     onChange,
 }: {
+    borderRadius?: number;
     label: string;
     options: string[];
     value?: string[];
@@ -71,10 +73,10 @@ const Dropdown = ({
                 height="40px"
                 $justifycontent="space-between"
                 $padding="6px 12px"
-                radius={3}
                 $border="1px solid"
                 $borderColor="grey1"
                 $pointer
+                radius={borderRadius !== undefined ? borderRadius : 3}
             >
                 <FlexDiv>
                     <P fontSize="sm">{selectedOption || label}</P>

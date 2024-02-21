@@ -315,12 +315,15 @@ const Signup = () => {
                                 </FlexDiv>
                             ) : (
                                 <FlexDiv $justifycontent="space-between" width="90%">
-                                    <Dropdown
-                                        label="학년 선택"
-                                        options={["1학년", "2학년", "3학년", "4학년"]}
-                                        value={["1", "2", "3", "4"]}
-                                        onChange={handleGradeChange}
-                                    />
+                                    <Div width="30%" $margin="10px 0 0 0">
+                                        <Dropdown
+                                            label="학년"
+                                            options={["1학년", "2학년", "3학년", "4학년"]}
+                                            value={["1", "2", "3", "4"]}
+                                            onChange={handleGradeChange}
+                                            borderRadius={100}
+                                        />
+                                    </Div>
                                     <TextInput
                                         defaultValue={info?.studentId || ""}
                                         placeholder="학번(12112233)"
