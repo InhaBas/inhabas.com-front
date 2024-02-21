@@ -23,6 +23,7 @@ const ListItem = styled("li")`
     list-style: none;
     margin-bottom: 0.8em;
     padding: 10px 20px;
+    cursor: pointer;
     &:hover {
         background: ${(props) => props.theme.color.bgColor};
         color: ${(props) => props.theme.color.wh};
