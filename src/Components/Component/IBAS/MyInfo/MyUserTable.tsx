@@ -15,8 +15,9 @@ import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
-import { Checkbox, Select, TextInput } from "../../../../styles/assets/Input";
+import { Checkbox, TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
+import Dropdown from "../../../Common/Dropdown";
 import Pagination from "../../../Common/Pagination";
 
 const MyUserTable = () => {
@@ -117,21 +118,21 @@ const MyUserTable = () => {
     };
 
     // select 값 선택에 따른 state 변경 이벤트
-    const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleRoleChange = (value: string) => {
         // 선택된 값을 업데이트
-        setRoleValue(e.target.value);
+        setRoleValue(value);
     };
 
     // select 값 선택에 따른 state 변경 이벤트
-    const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleTypeChange = (value: string) => {
         // 선택된 값을 업데이트
-        setTypeValue(e.target.value);
+        setTypeValue(value);
     };
 
     // select 값 선택에 따른 state 변경 이벤트
-    const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleCategoryChange = (value: string) => {
         // 선택된 값을 업데이트
-        setCategoryValue(e.target.value);
+        setCategoryValue(value);
     };
 
     // role Fetch
@@ -211,6 +212,7 @@ const MyUserTable = () => {
             setUserList(contents);
             setTotalUser(user.pageInfo.totalElements);
             setTotalPage(user.pageInfo.totalPages);
+            setCheck([] as Number[]);
         }
     }, [user, access]);
 
@@ -219,19 +221,12 @@ const MyUserTable = () => {
             {role === "SECRETARY" && (
                 <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
                     <Div $minWidth="100px" $margin="0 10px 0 0 ">
-                        <Select
-                            name="approved"
-                            $borderRadius={3}
-                            required
-                            defaultValue="nothing"
+                        <Dropdown
+                            label="관리"
+                            options={["활동회원", "비활동회원"]}
+                            value={["BASIC", "DEACTIVATED"]}
                             onChange={handleRoleChange}
-                        >
-                            <option value="nothing" disabled hidden>
-                                관리
-                            </option>
-                            <option value="BASIC">활동회원</option>
-                            <option value="DEACTIVATED">비활동회원</option>
-                        </Select>
+                        />
                     </Div>
                     <Button
                         $backgroundColor="bgColor"
@@ -258,57 +253,31 @@ const MyUserTable = () => {
             {(role === "CHIEF" || role === "VICE_CHIEF") && (
                 <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
                     <Div $minWidth="100px" $margin="0 10px 0 0 ">
-                        <Select
-                            name="approved"
-                            $borderRadius={3}
-                            required
-                            defaultValue="nothing"
+                        <Dropdown
+                            label="관리"
+                            options={["역할", "소속"]}
+                            value={["ROLE", "TYPE"]}
                             onChange={handleCategoryChange}
-                        >
-                            <option value="nothing" disabled hidden>
-                                관리
-                            </option>
-                            <option value="ROLE">역할</option>
-                            <option value="TYPE">소속</option>
-                        </Select>
+                        />
                     </Div>
                     {CategoryValue === "ROLE" && (
                         <Div $minWidth="100px" $margin="0 10px 0 0 ">
-                            <Select
-                                name="approved"
-                                $borderRadius={3}
-                                required
-                                defaultValue="nothing"
+                            <Dropdown
+                                label="선택"
+                                options={["회장", "부회장", "운영진", "총무", "활동회원", "비활동회원"]}
+                                value={["CHIEF", "VICE_CHIEF", "EXECUTIVES", "SECRETARY", "BASIC", "DEACTIVATED"]}
                                 onChange={handleRoleChange}
-                            >
-                                <option value="nothing" disabled hidden>
-                                    선택
-                                </option>
-                                <option value="CHIEF">회장</option>
-                                <option value="VICE_CHIEF">부회장</option>
-                                <option value="EXECUTIVES">운영진</option>
-                                <option value="SECRETARY">총무</option>
-                                <option value="BASIC">활동회원</option>
-                                <option value="DEACTIVATED">비활동회원</option>
-                            </Select>
+                            />
                         </Div>
                     )}
                     {CategoryValue === "TYPE" && (
                         <Div $minWidth="100px" $margin="0 10px 0 0 ">
-                            <Select
-                                name="approved"
-                                $borderRadius={3}
-                                required
-                                defaultValue="nothing"
+                            <Dropdown
+                                label="선택"
+                                options={["졸업생", "대학원생", "교수"]}
+                                value={["GRADUATED", "BACHELOR", "PROFESSOR"]}
                                 onChange={handleTypeChange}
-                            >
-                                <option value="nothing" disabled hidden>
-                                    선택
-                                </option>
-                                <option value="GRADUATED">졸업생</option>
-                                <option value="BACHELOR">대학원생</option>
-                                <option value="PROFESSOR">교수</option>
-                            </Select>
+                            />
                         </Div>
                     )}
                     <Button

@@ -36,6 +36,8 @@ interface DivStyle {
     $HFilter?: string;
     $verticalAlign?: string;
     $whiteSpace?: string;
+    fontSize?: keyof DefaultTheme["fontSize"];
+    color?: keyof DefaultTheme["color"];
 }
 
 const Div = styled.div<DivStyle>`

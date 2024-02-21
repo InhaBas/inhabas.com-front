@@ -9,8 +9,8 @@ import Button from "../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import { H2 } from "../../../styles/assets/H";
 import Img from "../../../styles/assets/Img";
-import { Select } from "../../../styles/assets/Input";
 import P from "../../../styles/assets/P";
+import Dropdown from "../Dropdown";
 
 const ModalChangeType = () => {
     const setOpen = useSetRecoilState(modalOpen);
@@ -24,12 +24,12 @@ const ModalChangeType = () => {
     const [typeValue, setTypeValue] = useState("");
 
     // select 값 선택에 따른 state 변경 이벤트
-    const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleTypeChange = (value: string) => {
         // 선택된 값을 업데이트
-        setTypeValue(e.target.value);
+        setTypeValue(value);
     };
 
-    /* 번호 수정 fetch */
+    /* 타입 수정 fetch */
     const changeType = () => {
         const inputData = {
             type: typeValue,
@@ -64,19 +64,12 @@ const ModalChangeType = () => {
             </FlexDiv>
             <FlexDiv $padding="25px" width="100%" height="200px" direction="column" $justifycontent="space-around">
                 <Div width="100%" $margin="0 10px 0 0 ">
-                    <Select
-                        name="approved"
-                        $borderRadius={3}
-                        required
-                        defaultValue="nothing"
+                    <Dropdown
+                        label="승인여부"
+                        options={["졸업생", "대학원생"]}
+                        value={["GRADUATED", "BACHELOR"]}
                         onChange={handleTypeChange}
-                    >
-                        <option value="nothing" disabled hidden>
-                            선택
-                        </option>
-                        <option value="GRADUATED">졸업생</option>
-                        <option value="BACHELOR">대학원생</option>
-                    </Select>
+                    />
                 </Div>
                 <FlexDiv width="100%">
                     <Button

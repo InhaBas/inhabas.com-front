@@ -21,8 +21,9 @@ import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
-import { Checkbox, Select, TextInput } from "../../../../styles/assets/Input";
+import { Checkbox, TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
+import Dropdown from "../../../Common/Dropdown";
 import Pagination from "../../../Common/Pagination";
 
 const MyGraduateUserTable = () => {
@@ -39,6 +40,7 @@ const MyGraduateUserTable = () => {
     const [check, setCheck] = useRecoilState(__checkedList);
     const [roleValue, setRoleValue] = useState("");
     const [typeValue, setTypeValue] = useState("");
+    const [CategoryValue, setCategoryValue] = useState("");
     const [roleChangeData, fetchRoleChangeData] = useFetch();
     const [typeChangeData, fetchTypeChangeData] = useFetch();
     const [reload, setReload] = useRecoilState(refetch);
@@ -122,16 +124,21 @@ const MyGraduateUserTable = () => {
     };
 
     // select 값 선택에 따른 state 변경 이벤트
-    const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleRoleChange = (value: string) => {
         // 선택된 값을 업데이트
-        setRoleValue(e.target.value);
+        setRoleValue(value);
     };
 
     // select 값 선택에 따른 state 변경 이벤트
-    const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleTypeChange = (value: string) => {
         // 선택된 값을 업데이트
-        setTypeValue(e.target.value);
-        console.log(e.target.value);
+        setTypeValue(value);
+    };
+
+    // select 값 선택에 따른 state 변경 이벤트
+    const handleCategoryChange = (value: string) => {
+        // 선택된 값을 업데이트
+        setCategoryValue(value);
     };
 
     // role Fetch
@@ -209,6 +216,7 @@ const MyGraduateUserTable = () => {
             setUserList(contents);
             setTotalUser(user.pageInfo.totalElements);
             setTotalPage(user.pageInfo.totalPages);
+            setCheck([] as Number[]);
         }
     }, [user, access]);
 
@@ -217,19 +225,12 @@ const MyGraduateUserTable = () => {
             {role === "SECRETARY" && (
                 <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
                     <Div $minWidth="100px" $margin="0 10px 0 0 ">
-                        <Select
-                            name="approved"
-                            $borderRadius={3}
-                            required
-                            defaultValue="nothing"
+                        <Dropdown
+                            label="관리"
+                            options={["활동회원", "비활동회원"]}
+                            value={["BASIC", "DEACTIVATED"]}
                             onChange={handleRoleChange}
-                        >
-                            <option value="nothing" disabled hidden>
-                                관리
-                            </option>
-                            <option value="BASIC">활동회원</option>
-                            <option value="DEACTIVATED">비활동회원</option>
-                        </Select>
+                        />
                     </Div>
                     <Button
                         $backgroundColor="bgColor"
@@ -256,28 +257,40 @@ const MyGraduateUserTable = () => {
             {(role === "CHIEF" || role === "VICE_CHIEF") && (
                 <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
                     <Div $minWidth="100px" $margin="0 10px 0 0 ">
-                        <Select
-                            name="approved"
-                            $borderRadius={3}
-                            required
-                            defaultValue="nothing"
-                            onChange={handleTypeChange}
-                        >
-                            <option value="nothing" disabled hidden>
-                                관리
-                            </option>
-                            <option value="UNDERGRADUATE">학부생</option>
-                            <option value="BACHELOR">대학원생</option>
-                            <option value="PROFESSOR">교수</option>
-                        </Select>
+                        <Dropdown
+                            label="관리"
+                            options={["역할", "소속"]}
+                            value={["ROLE", "TYPE"]}
+                            onChange={handleCategoryChange}
+                        />
                     </Div>
+                    {CategoryValue === "ROLE" && (
+                        <Div $minWidth="100px" $margin="0 10px 0 0 ">
+                            <Dropdown
+                                label="선택"
+                                options={["회장", "부회장", "운영진", "총무", "활동회원", "비활동회원"]}
+                                value={["CHIEF", "VICE_CHIEF", "EXECUTIVES", "SECRETARY", "BASIC", "DEACTIVATED"]}
+                                onChange={handleRoleChange}
+                            />
+                        </Div>
+                    )}
+                    {CategoryValue === "TYPE" && (
+                        <Div $minWidth="100px" $margin="0 10px 0 0 ">
+                            <Dropdown
+                                label="선택"
+                                options={["학부생", "대학원생", "교수"]}
+                                value={["UNDERGRADUATE", "BACHELOR", "PROFESSOR"]}
+                                onChange={handleTypeChange}
+                            />
+                        </Div>
+                    )}
                     <Button
                         $backgroundColor="bgColor"
                         $HBackgroundColor="bgColorHo"
                         $borderRadius={3}
                         $padding="6px 12px"
                         height="40px"
-                        onClick={() => changeType()}
+                        onClick={() => (CategoryValue === "TYPE" ? changeType() : changeRole())}
                     >
                         <FlexDiv $margin="0 5px 0 0">
                             <FlexDiv width="15px" $margin="0 10px 0 0">
