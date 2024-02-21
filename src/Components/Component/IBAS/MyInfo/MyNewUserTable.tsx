@@ -15,8 +15,9 @@ import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
-import { Checkbox, Select, TextInput } from "../../../../styles/assets/Input";
+import { Checkbox, TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
+import Dropdown from "../../../Common/Dropdown";
 import Pagination from "../../../Common/Pagination";
 
 const MyNewUserTable = () => {
@@ -62,19 +63,29 @@ const MyNewUserTable = () => {
     };
 
     // select 값 선택에 따른 state 변경 이벤트
-    const handlePassFailChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handlePassFailChange = (value: string) => {
         // 선택된 값을 업데이트
-        setPassFailValue(e.target.value);
+        setPassFailValue(value);
     };
 
     // pass/fail Fetch
-    const passFail = () => {
+    const passFail = async () => {
         if (passFailValue !== "") {
             let passFailSend = {
                 memberIdList: check,
                 state: passFailValue,
             };
-            fetchPassFailData("/members/unapproved", "PUT", "token", passFailSend);
+            console.log(passFailSend);
+            await fetchPassFailData("/members/unapproved", "PUT", "token", passFailSend);
+
+            let fetchUrl = "/members/unapproved?page=0";
+            if (path === "/staff/member/newStudents") {
+                fetchUrl += "&size=15";
+            } else if (path === "/staff/member") {
+                fetchUrl += "&size=10";
+            }
+
+            await fetchNewUserData(fetchUrl, "GET", "token");
         }
     };
 
@@ -129,6 +140,8 @@ const MyNewUserTable = () => {
 
             // 신입생 정보 set
             setNewUser(processedData);
+
+            setCheck([] as Number[]);
         }
     }, [newUserData, access]);
 
@@ -138,20 +151,15 @@ const MyNewUserTable = () => {
         <Div width="100%">
             {(role === "EXECUTIVES" || role === "CHIEF" || role === "VICE_CHIEF") && (
                 <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
-                    <Div width="100px" $margin="0 10px 0 0 ">
-                        <Select
-                            name="approved"
-                            $borderRadius={3}
-                            required
-                            defaultValue="nothing"
-                            onChange={handlePassFailChange}
-                        >
-                            <option value="nothing" disabled hidden>
-                                승인여부
-                            </option>
-                            <option value="pass">합격</option>
-                            <option value="fail">불합격</option>
-                        </Select>
+                    <Div $margin="0 10px 0 0 ">
+                        <Div width="105px">
+                            <Dropdown
+                                label="승인여부"
+                                options={["합격", "불합격"]}
+                                value={["pass", "fail"]}
+                                onChange={handlePassFailChange}
+                            />
+                        </Div>
                     </Div>
                     <Button
                         $backgroundColor="bgColor"
@@ -173,6 +181,7 @@ const MyNewUserTable = () => {
                     </Button>
                 </FlexDiv>
             )}
+
             <Div width="100%">
                 <FlexDiv
                     width="100%"

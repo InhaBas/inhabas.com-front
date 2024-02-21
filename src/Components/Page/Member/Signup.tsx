@@ -12,8 +12,9 @@ import A from "../../../styles/assets/A";
 import Button from "../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
-import { Checkbox, Label, Radio, Select, TextInput } from "../../../styles/assets/Input";
+import { Checkbox, Label, Radio, TextInput } from "../../../styles/assets/Input";
 import P from "../../../styles/assets/P";
+import Dropdown from "../../Common/Dropdown";
 
 const HrSect = styled.div`
     display: flex;
@@ -102,6 +103,7 @@ const Signup = () => {
     const ref = useRef<any[]>([]);
 
     const [status, setStatus] = useState("student");
+    const [gradeValue, setGradeValue] = useState("");
     const [postData, postFetchData] = useFetch();
     const [proPostData, proPostFetchData] = useFetch();
     const [getData, getFetchData] = useFetch();
@@ -109,6 +111,12 @@ const Signup = () => {
     const [info, setInfo] = useRecoilState(signupInfo);
     const setReload = useSetRecoilState(relogin);
     const access = useRecoilValue(tokenAccess);
+
+    // select 값 선택에 따른 state 변경 이벤트
+    const handleGradeChange = (value: string) => {
+        // 선택된 값을 업데이트
+        setGradeValue(value);
+    };
 
     /*
     보낼 데이터 유효성 검사
@@ -141,6 +149,8 @@ const Signup = () => {
                 check = false;
             } else if (status === "student" && ref.current[6].value === "") {
                 alert("학번을 입력해주세요");
+            } else if (status === "student" && gradeValue === "") {
+                alert("학년을 선택해주세요");
             }
         }
         if (check && selectedMajor.major === "") {
@@ -158,7 +168,7 @@ const Signup = () => {
                 phoneNumber: ref.current[3].value,
                 studentId: status === "student" ? ref.current[6].value : ref.current[4].value,
                 memberType: status === "student" ? "UNDERGRADUATE" : "PROFESSOR",
-                grade: status === "student" ? parseInt(ref.current[5].value[0]) : null,
+                grade: status === "student" ? parseInt(gradeValue) : null,
             };
 
             if (status === "student") {
@@ -268,7 +278,6 @@ const Signup = () => {
                                     ref={(el: never) => (ref.current[1] = el)}
                                     onClick={() => setStatus("professor")}
                                 />
-                                {/* <Radio name="setStatus" value="교수님" /> */}
                                 <Label $margin="0 0 0 5px">교수님</Label>
                             </FlexDiv>
                         </FlexDiv>
@@ -306,21 +315,12 @@ const Signup = () => {
                                 </FlexDiv>
                             ) : (
                                 <FlexDiv $justifycontent="space-between" width="90%">
-                                    <Select
-                                        name="subject"
-                                        required
-                                        width="30%"
-                                        $borderRadius={100}
-                                        $margin="10px 0 0 0"
-                                        $padding="5px 10px"
-                                        ref={(el: never) => (ref.current[5] = el)}
-                                        defaultValue={info?.grade || ""}
-                                    >
-                                        <option value={1}>1학년</option>
-                                        <option value={2}>2학년</option>
-                                        <option value={3}>3학년</option>
-                                        <option value={4}>4학년</option>
-                                    </Select>
+                                    <Dropdown
+                                        label="학년 선택"
+                                        options={["1학년", "2학년", "3학년", "4학년"]}
+                                        value={["1", "2", "3", "4"]}
+                                        onChange={handleGradeChange}
+                                    />
                                     <TextInput
                                         defaultValue={info?.studentId || ""}
                                         placeholder="학번(12112233)"
