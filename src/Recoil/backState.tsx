@@ -3,6 +3,7 @@ import {
     answersInterface,
     applicationAnswersInterface,
     applicationInterface,
+    changeNameUserInterface,
     majorInterface,
     newUserInterface,
     profileInterface,
@@ -108,6 +109,16 @@ export const graduateUserInfo = atom<userInterface[]>({
 
 export const totalGraduateUserInfo = atom({
     key: "totalGraduateUserInfo",
+    default: 0,
+});
+
+export const changeNameUserInfo = atom<changeNameUserInterface[]>({
+    key: "changeNameUserInfo",
+    default: [],
+});
+
+export const changeNameTotalPageInfo = atom({
+    key: "changeNameTotalPageInfo",
     default: 0,
 });
 

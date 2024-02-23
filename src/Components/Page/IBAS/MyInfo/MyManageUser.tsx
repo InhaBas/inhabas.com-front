@@ -4,12 +4,19 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { theme } from "../../../../styles/theme";
 
-import { headerTitleInfo, totalGraduateUserInfo, totalNewUserInfo, totalUserInfo } from "../../../../Recoil/backState";
+import {
+    headerTitleInfo,
+    totalGraduateUserInfo,
+    totalNewUserInfo,
+    totalUserInfo,
+    userRole,
+} from "../../../../Recoil/backState";
 
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
 
+import MyChangeNameUserTable from "../../../Component/IBAS/MyInfo/MyChangeNameUserTable";
 import MyGraduateUserTable from "../../../Component/IBAS/MyInfo/MyGraduateUserTable";
 import MyNewUserTable from "../../../Component/IBAS/MyInfo/MyNewUserTable";
 import MyUserTable from "../../../Component/IBAS/MyInfo/MyUserTable";
@@ -19,6 +26,7 @@ const MyManageUser = () => {
     const totalNewUser = useRecoilValue(totalNewUserInfo);
     const totalUser = useRecoilValue(totalUserInfo);
     const totalGraduateUser = useRecoilValue(totalGraduateUserInfo);
+    const role = useRecoilValue(userRole);
     const setTitle = useSetRecoilState(headerTitleInfo);
 
     const movePage = (url: string) => {
@@ -139,6 +147,32 @@ const MyManageUser = () => {
                         </FlexDiv>
                     </FlexDiv>
                 </Div>
+
+                {role === "CHIEF" ||
+                    (role === "VICE_CHIEF" && (
+                        <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
+                            <FlexDiv
+                                width=" 100%"
+                                $padding="20px"
+                                $justifycontent="space-between"
+                                $borderB={`1px solid ${theme.color.border}`}
+                            >
+                                <FlexDiv>
+                                    <FlexDiv width="20px" height="15px" $margin="0 10px 0 0">
+                                        <Img src="/images/user_purple.svg" />
+                                    </FlexDiv>
+                                    <Div $margin="0 5px 0 0 ">
+                                        <P fontWeight={600}>이름 수정 요청 목록</P>
+                                    </Div>
+                                </FlexDiv>
+                            </FlexDiv>
+                            <FlexDiv width="100%" $justifycontent="start" $padding="30px">
+                                <FlexDiv width="100%" $justifycontent="space-around">
+                                    <MyChangeNameUserTable />
+                                </FlexDiv>
+                            </FlexDiv>
+                        </Div>
+                    ))}
             </Container>
         </FlexDiv>
     );

@@ -21,6 +21,11 @@ export const __checkedList = atom({
     default: [] as Number[],
 });
 
+export const checkOne = atom({
+    key: "checkOne",
+    default: 0,
+});
+
 // headerTitle
 export const menuInfo = atom({
     key: "menuInfo",
