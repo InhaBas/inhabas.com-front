@@ -61,6 +61,15 @@ export interface userInterface {
     memberType: string;
 }
 
+export interface changeNameUserInterface {
+    id: number;
+    beforeName: string;
+    afterName: string;
+    studentId: number;
+    major: string;
+    status: string;
+}
+
 // new user application
 export interface applicationInterface {
     name: string;
