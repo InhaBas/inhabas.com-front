@@ -61,7 +61,7 @@ const HeaderNav = () => {
 
     const logoutClickEvent = () => {
         setAccess("default");
-        console.log("s");
+        document.cookie = "ibas_refresh" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
     };
 
     // Scroll 위치를 감지
