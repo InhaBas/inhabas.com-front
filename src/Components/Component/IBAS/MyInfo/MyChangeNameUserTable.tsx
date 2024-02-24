@@ -19,7 +19,7 @@ import Dropdown from "../../../Common/Dropdown";
 import Pagination from "../../../Common/Pagination";
 
 const MyChangeNameUserTable = () => {
-    const widthList = [50, 100, 150, 200, 300, 300, 150];
+    const widthList = [50, 100, 150, 200, 200, 200, 100];
     const headerInfo = ["", "이름", "학번", "학과", "변경 전 이름", "변경 후 이름", "현황"];
 
     const [user, fetchUser] = useFetch();
