@@ -72,8 +72,10 @@ const MyInfoContainer = () => {
     이 때 reload는 다시 false로 만들어 주어야 함
     */
     useEffect(() => {
-        setInfo(infoData);
-        setReload(false);
+        if (infoData) {
+            setInfo(infoData);
+            setReload(false);
+        }
     }, [infoData]);
 
     return (

@@ -117,7 +117,7 @@ const HeaderNav = () => {
                 $borderB={`0.1px solid ${theme.color.whlayer}`}
             >
                 <FlexDiv width="1170px" $maxWidth="1170px" $justifycontent="space-around">
-                    <Div width="200px" height="75px" $pointer onClick={moveMain}>
+                    <Div width="200px" height="75px" $pointer onClick={() => moveMain()}>
                         {scrollPosition < 100 ? (
                             <Img src="/images/logo_white.png" />
                         ) : (
@@ -244,7 +244,7 @@ const HeaderNav = () => {
                                     alt="현재 브라우저에서 지원하지 않는 형태 입니다. "
                                 ></Img>
                             </FlexDiv>
-                            <Div $margin="0 10px" $pointer onClick={moveInfo}>
+                            <Div $margin="0 10px" $pointer onClick={() => moveInfo()}>
                                 <P
                                     fontSize="sm"
                                     fontWeight={600}
