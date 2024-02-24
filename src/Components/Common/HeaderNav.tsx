@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { styled } from "styled-components";
 
 import { theme } from "../../styles/theme";
@@ -37,7 +37,7 @@ const HeaderNav = () => {
     const [title, setTitle] = useRecoilState(headerTitleInfo);
     const [info, setInfo] = useRecoilState(profileInfo);
     const setRole = useSetRecoilState(userRole);
-    const access = useRecoilValue(tokenAccess);
+    const [access, setAccess] = useRecoilState(tokenAccess);
     const [scrollPosition, setScrollPosition] = useState(0);
 
     const menuUrl = [
@@ -48,8 +48,9 @@ const HeaderNav = () => {
         ["board/alpha", "board/beta"],
         ["contest"],
     ];
-    const moveMain = () => {
-        navigate("/");
+
+    const movePage = (url: string) => {
+        navigate(`/${url}`);
     };
 
     const menuClickEvent = (url: string, givenName: string, givenDescription: string) => {
@@ -58,8 +59,9 @@ const HeaderNav = () => {
         navigate(`/${url}`);
     };
 
-    const moveInfo = () => {
-        navigate("/myInfo");
+    const logoutClickEvent = () => {
+        setAccess("default");
+        console.log("s");
     };
 
     // Scroll 위치를 감지
@@ -116,8 +118,8 @@ const HeaderNav = () => {
                 $backgroundColor={scrollPosition < 100 ? "none" : "wh"}
                 $borderB={`0.1px solid ${theme.color.whlayer}`}
             >
-                <FlexDiv width="1170px" $maxWidth="1170px" $justifycontent="space-around">
-                    <Div width="200px" height="75px" $pointer onClick={() => moveMain()}>
+                <FlexDiv width="1170px" $maxWidth="1170px" $justifycontent="space-between">
+                    <Div width="200px" height="75px" $pointer onClick={() => movePage("")}>
                         {scrollPosition < 100 ? (
                             <Img src="/images/logo_white.png" />
                         ) : (
@@ -213,55 +215,75 @@ const HeaderNav = () => {
                                         );
                                     })}
                             </FlexDiv>
-                            <FlexDiv $pointer $margin="15px">
-                                <Div $margin="0 5px">
+                            {access === "default" ? (
+                                <FlexDiv $pointer $margin="15px" onClick={() => movePage("login")}>
+                                    <Div $margin="0 5px">
+                                        <P
+                                            fontSize="sm"
+                                            fontWeight={800}
+                                            $letterSpacing="1px"
+                                            color={scrollPosition < 100 ? "wh" : "textColor"}
+                                        >
+                                            LOG IN
+                                        </P>
+                                    </Div>
+                                    <FlexDiv width="15px">
+                                        <Img src="/images/login_white.svg" />
+                                    </FlexDiv>
+                                </FlexDiv>
+                            ) : (
+                                <FlexDiv $pointer $margin="15px" onClick={() => logoutClickEvent()}>
+                                    <Div $margin="0 5px">
+                                        <P
+                                            fontSize="sm"
+                                            fontWeight={800}
+                                            $letterSpacing="1px"
+                                            color={scrollPosition < 100 ? "wh" : "textColor"}
+                                        >
+                                            LOG OUT
+                                        </P>
+                                    </Div>
+                                    <FlexDiv width="15px">
+                                        <Img src="/images/logout_white.svg" />
+                                    </FlexDiv>
+                                </FlexDiv>
+                            )}
+                        </FlexDiv>
+                        {access !== "default" && (
+                            <FlexDiv $margin="15px 9px" onClick={() => movePage("myInfo")}>
+                                <FlexDiv
+                                    width="35px"
+                                    height="35px"
+                                    $border="2px solid"
+                                    $borderColor="red"
+                                    radius={100}
+                                    overflow="hidden"
+                                >
+                                    <Img
+                                        src={info?.picture}
+                                        $objectFit="cover"
+                                        alt="현재 브라우저에서 지원하지 않는 형태 입니다. "
+                                    ></Img>
+                                </FlexDiv>
+                                <Div $margin="0 10px" $pointer>
                                     <P
                                         fontSize="sm"
-                                        fontWeight={800}
-                                        $letterSpacing="1px"
+                                        fontWeight={600}
+                                        $letterSpacing="1.5px"
                                         color={scrollPosition < 100 ? "wh" : "textColor"}
                                     >
-                                        LOG OUT
+                                        {info?.name}
                                     </P>
                                 </Div>
-                                <FlexDiv width="15px">
-                                    <Img src="/images/logout_white.svg" />
+                                <FlexDiv $pointer width="15px">
+                                    {scrollPosition < 100 ? (
+                                        <Img src="/images/bell_white.svg" />
+                                    ) : (
+                                        <Img src="/images/bell_purple.svg" />
+                                    )}
                                 </FlexDiv>
                             </FlexDiv>
-                        </FlexDiv>
-                        <FlexDiv $margin="15px 9px">
-                            <FlexDiv
-                                width="35px"
-                                height="35px"
-                                $border="2px solid"
-                                $borderColor="red"
-                                radius={100}
-                                overflow="hidden"
-                            >
-                                <Img
-                                    src={info?.picture}
-                                    $objectFit="cover"
-                                    alt="현재 브라우저에서 지원하지 않는 형태 입니다. "
-                                ></Img>
-                            </FlexDiv>
-                            <Div $margin="0 10px" $pointer onClick={() => moveInfo()}>
-                                <P
-                                    fontSize="sm"
-                                    fontWeight={600}
-                                    $letterSpacing="1.5px"
-                                    color={scrollPosition < 100 ? "wh" : "textColor"}
-                                >
-                                    {info?.name}
-                                </P>
-                            </Div>
-                            <FlexDiv $pointer width="15px">
-                                {scrollPosition < 100 ? (
-                                    <Img src="/images/bell_white.svg" />
-                                ) : (
-                                    <Img src="/images/bell_purple.svg" />
-                                )}
-                            </FlexDiv>
-                        </FlexDiv>
+                        )}
                     </FlexDiv>
                 </FlexDiv>
             </FixedDiv>
