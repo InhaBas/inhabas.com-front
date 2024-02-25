@@ -132,7 +132,6 @@ const HeaderNav = () => {
         }
     }, [signingUserData]);
 
-    useEffect(() => console.log(info), [info]);
     useEffect(() => {
         window.addEventListener("scroll", updateScroll);
         return () => {
