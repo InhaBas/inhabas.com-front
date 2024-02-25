@@ -6,7 +6,14 @@ import { styled } from "styled-components";
 import { theme } from "../../styles/theme";
 
 import useFetch from "../../Hooks/useFetch";
-import { headerNavInfo, headerTitleInfo, profileInfo, tokenAccess, userRole } from "../../Recoil/backState";
+import {
+    headerNavInfo,
+    headerTitleInfo,
+    profileInfo,
+    signupCheck,
+    tokenAccess,
+    userRole,
+} from "../../Recoil/backState";
 
 import { menuInterface } from "../../Types/TypeCommon";
 
@@ -31,6 +38,8 @@ const HeaderNav = () => {
 
     const [data, fetchData] = useFetch();
     const [infoData, fetchInfoData] = useFetch();
+    const [signingUserData, fetchSigningUserData] = useFetch();
+    const [check, setCheck] = useRecoilState(signupCheck);
     const [activeGroup, setActiveGroup] = useState(null);
     const [activeMenu, setActiveMenu] = useState(null);
     const [nav, setNav] = useRecoilState(headerNavInfo);
@@ -104,6 +113,24 @@ const HeaderNav = () => {
             setRole(infoData.role);
         }
     }, [infoData]);
+
+    // signup이 안된 경우 profile은 null 로, accessToken은 default로 초기화해주어야 함.
+    useEffect(() => {
+        fetchSigningUserData("/signUp/check", "GET", "token");
+    }, [access]);
+
+    useEffect(() => {
+        if (signingUserData) {
+            setCheck(signingUserData.check);
+        }
+    }, [signingUserData]);
+
+    useEffect(() => {
+        if (!check) {
+            setInfo(null);
+            setAccess("default");
+        }
+    }, [signingUserData]);
 
     useEffect(() => {
         window.addEventListener("scroll", updateScroll);
