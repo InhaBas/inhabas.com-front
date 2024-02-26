@@ -88,7 +88,7 @@ const HeaderNav = () => {
     // signup이 안된 경우 profile은 null 로, accessToken은 default로 초기화해주어야 함.
     useEffect(() => {
         fetchSigningUserData("/signUp/check", "GET", "token");
-    }, [access]);
+    }, []);
 
     useEffect(() => {
         if (signingUserData) {
@@ -99,14 +99,13 @@ const HeaderNav = () => {
     useEffect(() => {
         if (!check) {
             setInfo(null);
+            setAccess("default");
         }
     }, [signingUserData]);
 
     useEffect(() => {
         if (check) {
             fetchInfoData("/myInfo", "GET", "token");
-        } else {
-            setAccess("default");
         }
     }, [access]);
 
