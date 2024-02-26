@@ -99,7 +99,6 @@ const HeaderNav = () => {
     useEffect(() => {
         if (!check) {
             setInfo(null);
-            setAccess("default");
         }
     }, [signingUserData]);
 
