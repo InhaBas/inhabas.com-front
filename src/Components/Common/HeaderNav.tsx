@@ -107,7 +107,7 @@ const HeaderNav = () => {
         if (check) {
             fetchInfoData("/myInfo", "GET", "token");
         }
-    }, [access]);
+    }, [access, signingUserData]);
 
     useEffect(() => {
         if (data && Object.keys(data).length !== 0) {
