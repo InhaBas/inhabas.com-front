@@ -105,6 +105,8 @@ const HeaderNav = () => {
     useEffect(() => {
         if (check) {
             fetchInfoData("/myInfo", "GET", "token");
+        } else {
+            setAccess("default");
         }
     }, [access]);
 
