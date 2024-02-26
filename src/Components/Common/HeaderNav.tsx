@@ -86,7 +86,9 @@ const HeaderNav = () => {
     }, []);
 
     useEffect(() => {
-        fetchInfoData("/myInfo", "GET", "token");
+        if (check) {
+            fetchInfoData("/myInfo", "GET", "token");
+        }
     }, [access]);
 
     useEffect(() => {
