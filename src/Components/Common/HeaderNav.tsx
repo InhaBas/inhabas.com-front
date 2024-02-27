@@ -86,28 +86,37 @@ const HeaderNav = () => {
     }, []);
 
     // signup이 안된 경우 profile은 null 로, accessToken은 default로 초기화해주어야 함.
+    // 1
+    const tokenValue = () => {
+        if (access === "default") {
+            return true;
+        }
+    };
     useEffect(() => {
         fetchSigningUserData("/signUp/check", "GET", "token");
-    }, []);
+    }, [tokenValue()]); // 의존성을 access로 하면 3번 때문에 무한호출 될 듯
 
+    // 2
     useEffect(() => {
         if (signingUserData) {
             setCheck(signingUserData.check);
         }
     }, [signingUserData]);
 
+    // 3
     useEffect(() => {
         if (!check) {
             setInfo(null);
-            setAccess("default");
+            setAccess("signing");
         }
     }, [signingUserData]);
 
+    // 4
     useEffect(() => {
         if (check) {
             fetchInfoData("/myInfo", "GET", "token");
         }
-    }, [access, signingUserData]);
+    }, [check]);
 
     useEffect(() => {
         if (data && Object.keys(data).length !== 0) {
@@ -247,7 +256,7 @@ const HeaderNav = () => {
                                         );
                                     })}
                             </FlexDiv>
-                            {access === "default" ? (
+                            {access === "default" || access === "signing" ? (
                                 <FlexDiv $pointer $margin="15px" onClick={() => movePage("login")}>
                                     <Div $margin="0 5px">
                                         <P
@@ -281,7 +290,7 @@ const HeaderNav = () => {
                                 </FlexDiv>
                             )}
                         </FlexDiv>
-                        {access !== "default" && (
+                        {access !== "default" && access !== "signing" && (
                             <FlexDiv $margin="15px 9px" onClick={() => movePage("myInfo")}>
                                 <FlexDiv
                                     width="35px"
