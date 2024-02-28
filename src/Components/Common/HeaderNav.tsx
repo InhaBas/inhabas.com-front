@@ -87,17 +87,21 @@ const HeaderNav = () => {
 
     // signup이 안된 경우 profile은 null 로, accessToken은 default로 초기화해주어야 함.
     // 1
+    let value;
     const tokenValue = () => {
-        if (access === "default") {
-            return true;
-        }
+        if (access === "signing") {
+            return (value = true);
+        } else value = false;
     };
     useEffect(() => {
+        console.log(1);
         fetchSigningUserData("/signUp/check", "GET", "token");
-    }, [tokenValue()]); // 의존성을 access로 하면 3번 때문에 무한호출 될 듯
+    }, []); // 의존성을 access로 하면 3번 때문에 무한호출 될 듯
 
     // 2
     useEffect(() => {
+        console.log(2);
+
         if (signingUserData) {
             setCheck(signingUserData.check);
         }
@@ -105,6 +109,9 @@ const HeaderNav = () => {
 
     // 3
     useEffect(() => {
+        console.log(3);
+
+        console.log(check);
         if (!check) {
             setInfo(null);
             setAccess("signing");
@@ -113,7 +120,11 @@ const HeaderNav = () => {
 
     // 4
     useEffect(() => {
+        console.log(4);
+
         if (check) {
+            console.log(5);
+
             fetchInfoData("/myInfo", "GET", "token");
         }
     }, [check]);
