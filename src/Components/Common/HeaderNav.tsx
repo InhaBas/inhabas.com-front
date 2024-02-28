@@ -89,14 +89,15 @@ const HeaderNav = () => {
     // 1
     let value;
     const tokenValue = () => {
-        if (access === "signing") {
+        if (access !== "signing") {
             return (value = true);
         } else value = false;
     };
     useEffect(() => {
         console.log(1);
         fetchSigningUserData("/signUp/check", "GET", "token");
-    }, []); // 의존성을 access로 하면 3번 때문에 무한호출 될 듯
+        tokenValue();
+    }, [value]); // 의존성을 access로 하면 3번 때문에 무한호출 될 듯
 
     // 2
     useEffect(() => {
