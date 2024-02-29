@@ -119,7 +119,7 @@ const HeaderNav = () => {
             setInfo(null);
             setAccess("signing");
         }
-    }, [signingUserData]);
+    }, [check]);
 
     useEffect(() => {
         if (data && Object.keys(data).length !== 0) {
