@@ -87,17 +87,13 @@ const HeaderNav = () => {
 
     // signup이 안된 경우 profile은 null 로, accessToken은 default로 초기화해주어야 함.
     // 1
-    let value;
-    const tokenValue = () => {
-        if (access !== "signing") {
-            return (value = true);
-        } else value = false;
-    };
+
     useEffect(() => {
-        console.log(1);
-        fetchSigningUserData("/signUp/check", "GET", "token");
-        tokenValue();
-    }, [value]); // 의존성을 access로 하면 3번 때문에 무한호출 될 듯
+        if (access !== "signing") {
+            console.log(1);
+            fetchSigningUserData("/signUp/check", "GET", "token");
+        }
+    }, [access]); // 의존성을 access로 하면 3번 때문에 무한호출 될 듯. 근데 access가 ~이 아니면서 access가 바뀔 때는 항상 실행해야함
 
     // 2
     useEffect(() => {
