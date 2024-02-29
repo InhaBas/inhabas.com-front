@@ -110,6 +110,7 @@ const HeaderNav = () => {
 
         console.log(check);
         if (!check) {
+            console.log(4);
             setInfo(null);
             setAccess("signing");
         }
@@ -117,10 +118,11 @@ const HeaderNav = () => {
 
     // 4
     useEffect(() => {
-        console.log(4);
+        console.log(5);
 
         if (check) {
-            console.log(5);
+            console.log(6);
+            console.log(access);
 
             fetchInfoData("/myInfo", "GET", "token");
         }
