@@ -107,8 +107,8 @@ const HeaderNav = () => {
     // 3
     useEffect(() => {
         console.log(3);
-
-        if (check) {
+        console.log(check);
+        if (check === true) {
             console.log(4);
             console.log(access);
 
