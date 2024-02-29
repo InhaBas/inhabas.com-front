@@ -86,37 +86,26 @@ const HeaderNav = () => {
     }, []);
 
     // signup이 안된 경우 profile은 null 로, accessToken은 default로 초기화해주어야 함.
-
-    // 1
+    // 의존성을 access로 하면 check가 false일 때 실행되는 코드 때문에 무한호출 됨.
+    // access가 signing이 아니면서 access가 바뀔 때는 항상 실행해야함
     useEffect(() => {
         if (access !== "signing") {
-            console.log(1);
             fetchSigningUserData("/signUp/check", "GET", "token");
         }
-    }, [access]); // 의존성을 access로 하면 3번 때문에 무한호출 될 듯. 근데 access가 ~이 아니면서 access가 바뀔 때는 항상 실행해야함
+    }, [access]);
 
-    // 2
     useEffect(() => {
-        console.log(2);
-
         if (signingUserData) {
-            console.log("ddd");
             setCheck(signingUserData.check);
         }
     }, [signingUserData]);
 
-    // 3
     useEffect(() => {
-        console.log(3);
-        console.log(check);
         if (check === true) {
-            console.log(4);
-            console.log(access);
-
             fetchInfoData("/myInfo", "GET", "token");
         } else {
-            console.log(5);
             setInfo(null);
+            // check 가 false라면 회원가입 진행중인 사람이라는 의미
             setAccess("signing");
         }
     }, [check]);
