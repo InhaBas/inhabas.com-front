@@ -100,6 +100,7 @@ const HeaderNav = () => {
         console.log(2);
 
         if (signingUserData) {
+            console.log("ddd");
             setCheck(signingUserData.check);
         }
     }, [signingUserData]);
