@@ -103,7 +103,7 @@ const HeaderNav = () => {
     useEffect(() => {
         if (check === true) {
             fetchInfoData("/myInfo", "GET", "token");
-        } else {
+        } else if (check === false) {
             setInfo(null);
             // check 가 false라면 회원가입 진행중인 사람이라는 의미
             setAccess("signing");

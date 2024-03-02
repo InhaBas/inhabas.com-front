@@ -8,6 +8,7 @@ import {
     newUserInterface,
     profileInterface,
     questionnariesInterface,
+    scheduleInterface,
     signUpInterface,
     userInterface,
 } from "../Types/IBAS/TypeMember";
@@ -129,6 +130,11 @@ export const applicationInfo = atom<applicationInterface | null>({
 
 export const applicationAnswerInfo = atom<applicationAnswersInterface[] | null>({
     key: "applicationAnswerInfo",
+    default: null,
+});
+
+export const scheduleInfo = atom<scheduleInterface | null>({
+    key: "scheduleInfo",
     default: null,
 });
 

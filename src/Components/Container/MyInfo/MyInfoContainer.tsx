@@ -1,16 +1,21 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState, useSetRecoilState } from "recoil";
+
 import { theme } from "../../../styles/theme";
 
-import { useEffect, useState } from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
 import useFetch from "../../../Hooks/useFetch";
+
 import { profileInfo } from "../../../Recoil/backState";
 import { modalInfo, modalOpen, refetch } from "../../../Recoil/frontState";
+
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
 import P from "../../../styles/assets/P";
 
 const MyInfoContainer = () => {
     const widthList = [150, 500, 150];
+    const navigate = useNavigate();
 
     const [info, setInfo] = useRecoilState(profileInfo);
     const [auth, setAuth] = useState("");
@@ -205,16 +210,31 @@ const MyInfoContainer = () => {
                                     <P>{auth}</P>
                                 </FlexDiv>
                             </FlexDiv>
-                            {info?.type === "UNDERGRADUATE" && (
-                                <FlexDiv
-                                    onClick={() => changeInfo("Type")}
-                                    $minWidth={`${widthList[2]}px`}
-                                    $padding="10px 40px"
-                                    $pointer
-                                >
-                                    <P color="grey2">졸업 하셨나요?</P>
-                                </FlexDiv>
-                            )}
+
+                            <FlexDiv>
+                                {info?.role === "CHIEF" ||
+                                    (info?.role === "VICE_CHIEF" && (
+                                        <FlexDiv
+                                            onClick={() => navigate("/staff/manage")}
+                                            $minWidth={`${widthList[2]}px`}
+                                            $padding="10px 40px"
+                                            $pointer
+                                        >
+                                            <P color="textColor">관리자페이지</P>
+                                        </FlexDiv>
+                                    ))}
+
+                                {info?.type === "UNDERGRADUATE" && (
+                                    <FlexDiv
+                                        onClick={() => changeInfo("Type")}
+                                        $minWidth={`${widthList[2]}px`}
+                                        $padding="10px 40px"
+                                        $pointer
+                                    >
+                                        <P color="grey2">졸업 하셨나요?</P>
+                                    </FlexDiv>
+                                )}
+                            </FlexDiv>
                         </FlexDiv>
                         <FlexDiv
                             width="100%"
