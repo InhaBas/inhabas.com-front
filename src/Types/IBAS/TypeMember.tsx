@@ -86,3 +86,13 @@ export interface applicationAnswersInterface {
     question: string;
     answer: string;
 }
+
+// staff/manage
+export interface scheduleInterface {
+    generation: number;
+    signupStartDate: string;
+    signupEndDate: string;
+    interviewStartDate: string;
+    interviewEndDate: string;
+    resultAnnounceDate: string;
+}

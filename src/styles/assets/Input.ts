@@ -123,7 +123,16 @@ const SearchInput = styled(TextInput)`
 `;
 
 const Date = styled.input.attrs({ type: "date" })<InputStyle>`
-    // font-size: 14px;
+    width: ${(props) => props.width || "100%"};
+    height: ${(props) => props.height || "40px"};
+    margin: ${(props) => props.$margin || "0"};
+    padding: ${(props) => props.$padding || "13px 10px"};
+    border: 1px solid ${(props) => props.theme.color.grey1};
+    border-radius: 2px;
+    color: ${(props) => props.theme.color[props.color || "bk"]};
+`;
+
+const DateTime = styled.input.attrs({ type: "datetime-local" })<InputStyle>`
     width: ${(props) => props.width || "100%"};
     height: ${(props) => props.height || "40px"};
     margin: ${(props) => props.$margin || "0"};
@@ -175,4 +184,4 @@ const Select = styled.select<InputStyle>`
     }
 `;
 
-export { Checkbox, Date, Input, Label, NumberInput, Radio, SearchInput, Select, TextArea, TextInput };
+export { Checkbox, Date, DateTime, Input, Label, NumberInput, Radio, SearchInput, Select, TextArea, TextInput };
