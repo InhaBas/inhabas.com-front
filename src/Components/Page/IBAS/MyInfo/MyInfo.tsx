@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 
-import { profileInfo, tokenAccess } from "../../../../Recoil/backState";
+import { profileInfo, userRole } from "../../../../Recoil/backState";
 
 import MyBankSupportContainer from "../../../Container/MyInfo/MyBankSupportContainer";
 import MyBoardContainer from "../../../Container/MyInfo/MyBoardContainer";
@@ -36,8 +36,6 @@ const MyInfo = () => {
         navigate(`/${url}`);
     };
 
-    const access = useRecoilValue(tokenAccess);
-
     // 탭 정보 설정
     const myInfoTabInfo = [
         { idx: 0, url: "/images/home_white.svg", clickedUrl: "/images/home_purple.svg", info: "강의실" },
@@ -49,6 +47,7 @@ const MyInfo = () => {
 
     const [clicked, setclicked] = useState(4);
     const info = useRecoilValue(profileInfo);
+    const role = useRecoilValue(userRole);
 
     return (
         <>
@@ -95,24 +94,29 @@ const MyInfo = () => {
                         </Div>
                     </Div>
                     <FlexDiv width="230px" $justifycontent="space-between">
-                        <Button
-                            $backgroundColor="grey3"
-                            width="110px"
-                            $padding="10px "
-                            $borderRadius={5}
-                            $HBackgroundColor="grey2"
-                        >
-                            <FlexDiv width="100%" onClick={() => movePageEvent("staff/member")}>
-                                <FlexDiv width="15px" height="15px" $margin="0 5px 0 0 ">
-                                    <Img src="/images/users_white.svg" />
+                        {(role === "CHIEF" ||
+                            role === "VICE_CHIEF" ||
+                            role === "EXECUTIVES" ||
+                            role === "SECRETARY") && (
+                            <Button
+                                $backgroundColor="grey3"
+                                width="110px"
+                                $padding="10px "
+                                $borderRadius={5}
+                                $HBackgroundColor="grey2"
+                            >
+                                <FlexDiv width="100%" onClick={() => movePageEvent("staff/member")}>
+                                    <FlexDiv width="15px" height="15px" $margin="0 5px 0 0 ">
+                                        <Img src="/images/users_white.svg" />
+                                    </FlexDiv>
+                                    <Div>
+                                        <P color="wh" fontSize="sm" fontWeight={300}>
+                                            회원 관리
+                                        </P>
+                                    </Div>
                                 </FlexDiv>
-                                <Div>
-                                    <P color="wh" fontSize="sm" fontWeight={300}>
-                                        회원 관리
-                                    </P>
-                                </Div>
-                            </FlexDiv>
-                        </Button>
+                            </Button>
+                        )}
                         <Button
                             $backgroundColor="bgColor"
                             width="110px"

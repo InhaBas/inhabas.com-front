@@ -66,6 +66,7 @@ export const userImage = atom({
     default: "",
 });
 
+// 숫자로 role 설정하려 했으나, 직관적인 코드를 위해 string 값으로 지정
 export const userRole = atom({
     key: "userRole",
     default: "",

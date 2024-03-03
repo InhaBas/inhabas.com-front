@@ -18,6 +18,8 @@ import { FlexDiv } from "../styles/assets/Div";
 
 const HeaderTitlePage = () => {
     const role = useRecoilValue(userRole);
+    const isAuthorizedAdmin = ["CHIEF", "VICE_CHIEF"].includes(role);
+    const isAuthorizedRole = ["CHIEF", "VICE_CHIEF", "EXECUTIVES", "SECRETARY"].includes(role);
     return (
         <>
             <HeaderTitle />
@@ -26,13 +28,21 @@ const HeaderTitlePage = () => {
                     <Route path="/*" element={<MainRoute />} />
                     <Route path="/board/*" element={<BoardRoute />} />
                     <Route path="/lecture/*" element={<LectureRoute />} />
+                    {isAuthorizedRole && (
+                        <>
+                            <Route path="staff/member" element={<MyManageUser />} />
+                            <Route path="staff/member/newStudents" element={<MyManageNewUser />} />
+                            <Route path="staff/member/application/:id" element={<MyApplication />} />
+                            <Route path="staff/member/students" element={<MyManageExistUser />} />
+                            <Route path="staff/member/graduateStudents" element={<MyManageGraduateUser />} />
+                        </>
+                    )}
 
-                    <Route path="staff/member" element={<MyManageUser />} />
-                    <Route path="staff/member/newStudents" element={<MyManageNewUser />} />
-                    <Route path="staff/member/application/:id" element={<MyApplication />} />
-                    <Route path="staff/member/students" element={<MyManageExistUser />} />
-                    <Route path="staff/member/graduateStudents" element={<MyManageGraduateUser />} />
-                    {(role === "CHIEF" || role === "VICE_CHIEF") && <Route path="staff/manage" element={<MyStaff />} />}
+                    {isAuthorizedAdmin && (
+                        <>
+                            <Route path="staff/manage" element={<MyStaff />} />
+                        </>
+                    )}
                 </Routes>
             </FlexDiv>
         </>
