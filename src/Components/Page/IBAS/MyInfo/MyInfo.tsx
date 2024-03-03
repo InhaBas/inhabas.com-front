@@ -11,6 +11,7 @@ import MyInfoContainer from "../../../Container/MyInfo/MyInfoContainer";
 import MyLectureContainer from "../../../Container/MyInfo/MyLectureContainer";
 import MyManageLectureContainer from "../../../Container/MyInfo/MyManageLectureContainer";
 
+import { isAuthorizedOverSecretary } from "../../../../Functions/authFunctions";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
@@ -94,10 +95,7 @@ const MyInfo = () => {
                         </Div>
                     </Div>
                     <FlexDiv width="230px" $justifycontent="space-between">
-                        {(role === "CHIEF" ||
-                            role === "VICE_CHIEF" ||
-                            role === "EXECUTIVES" ||
-                            role === "SECRETARY") && (
+                        {isAuthorizedOverSecretary && (
                             <Button
                                 $backgroundColor="grey3"
                                 width="110px"

@@ -1,25 +1,21 @@
 import { Route, Routes } from "react-router-dom";
-import { useRecoilValue } from "recoil";
 
-import { userRole } from "../Recoil/backState";
+import { isAuthorizedOverSecretary, isAuthorizedOverVice } from "../Functions/authFunctions";
 
 import HeaderTitle from "../Components/Common/HeaderTitle";
-import MyManageUser from "../Components/Page/IBAS/MyInfo/MyManageUser";
-import BoardRoute from "../Routes/BoardRoute";
-import LectureRoute from "../Routes/LectureRoute";
-import MainRoute from "../Routes/MainRoute";
-
 import MyApplication from "../Components/Page/IBAS/MyInfo/MyApplication";
 import MyManageExistUser from "../Components/Page/IBAS/MyInfo/MyManageExistUser";
 import MyManageGraduateUser from "../Components/Page/IBAS/MyInfo/MyManageGraduateUser";
 import MyManageNewUser from "../Components/Page/IBAS/MyInfo/MyManageNewUser";
+import MyManageUser from "../Components/Page/IBAS/MyInfo/MyManageUser";
 import MyStaff from "../Components/Page/IBAS/MyInfo/MyStaff";
+import BoardRoute from "../Routes/BoardRoute";
+import LectureRoute from "../Routes/LectureRoute";
+import MainRoute from "../Routes/MainRoute";
+
 import { FlexDiv } from "../styles/assets/Div";
 
 const HeaderTitlePage = () => {
-    const role = useRecoilValue(userRole);
-    const isAuthorizedAdmin = ["CHIEF", "VICE_CHIEF"].includes(role);
-    const isAuthorizedRole = ["CHIEF", "VICE_CHIEF", "EXECUTIVES", "SECRETARY"].includes(role);
     return (
         <>
             <HeaderTitle />
@@ -28,7 +24,7 @@ const HeaderTitlePage = () => {
                     <Route path="/*" element={<MainRoute />} />
                     <Route path="/board/*" element={<BoardRoute />} />
                     <Route path="/lecture/*" element={<LectureRoute />} />
-                    {isAuthorizedRole && (
+                    {isAuthorizedOverSecretary && (
                         <>
                             <Route path="staff/member" element={<MyManageUser />} />
                             <Route path="staff/member/newStudents" element={<MyManageNewUser />} />
@@ -38,7 +34,7 @@ const HeaderTitlePage = () => {
                         </>
                     )}
 
-                    {isAuthorizedAdmin && (
+                    {isAuthorizedOverVice && (
                         <>
                             <Route path="staff/manage" element={<MyStaff />} />
                         </>
