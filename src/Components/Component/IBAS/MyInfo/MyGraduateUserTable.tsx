@@ -6,17 +6,12 @@ import { theme } from "../../../../styles/theme";
 
 import useFetch from "../../../../Hooks/useFetch";
 
-import {
-    __totalPageInfo,
-    graduateUserInfo,
-    tokenAccess,
-    totalGraduateUserInfo,
-    userRole,
-} from "../../../../Recoil/backState";
+import { __totalPageInfo, graduateUserInfo, tokenAccess, totalGraduateUserInfo } from "../../../../Recoil/backState";
 import { __checkedList, refetch } from "../../../../Recoil/frontState";
 
 import { userInterface } from "../../../../Types/IBAS/TypeMember";
 
+import { isAuthorizedExceptExecutives, isAuthorizedOverVice, isSecretary } from "../../../../Functions/authFunctions";
 import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
@@ -35,7 +30,6 @@ const MyGraduateUserTable = () => {
     // totalPageInfo를 같은 페이지 내에서 MyNewUserTable 이라는 컴포넌트가 쓰고 있기 때문에, _totalPageInfo을 사용함
     const [totalPage, setTotalPage] = useRecoilState(__totalPageInfo);
     const setTotalUser = useSetRecoilState(totalGraduateUserInfo);
-    const role = useRecoilValue(userRole);
     // checkedList를 같은 페이지 내에서 MyNewUserTable 이라는 컴포넌트가 쓰고 있기 때문에, _checkedList를 사용함
     const [check, setCheck] = useRecoilState(__checkedList);
     const [roleValue, setRoleValue] = useState("");
@@ -222,7 +216,7 @@ const MyGraduateUserTable = () => {
 
     return (
         <Div width="100%">
-            {role === "SECRETARY" && (
+            {isSecretary && (
                 <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
                     <Div $minWidth="100px" $margin="0 10px 0 0 ">
                         <Dropdown
@@ -254,7 +248,7 @@ const MyGraduateUserTable = () => {
                 </FlexDiv>
             )}
 
-            {(role === "CHIEF" || role === "VICE_CHIEF") && (
+            {isAuthorizedOverVice && (
                 <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
                     <Div $minWidth="100px" $margin="0 10px 0 0 ">
                         <Dropdown
@@ -314,7 +308,7 @@ const MyGraduateUserTable = () => {
                     $backgroundColor="wh"
                     $borderB={`1.5px solid ${theme.color.grey1}`}
                 >
-                    {(role === "SECRETARY" || role === "CHIEF" || role === "VICE_CHIEF") && (
+                    {isAuthorizedExceptExecutives && (
                         <FlexDiv $padding="10px">
                             {userList && userList.length !== 0 && (
                                 <Checkbox
@@ -342,7 +336,7 @@ const MyGraduateUserTable = () => {
                             $justifycontent="space-evenly"
                             $backgroundColor="wh"
                         >
-                            {(role === "SECRETARY" || role === "CHIEF" || role === "VICE_CHIEF") && (
+                            {isAuthorizedExceptExecutives && (
                                 <FlexDiv $padding="10px">
                                     <Checkbox
                                         checked={check.includes(element.memberId) ? true : false}

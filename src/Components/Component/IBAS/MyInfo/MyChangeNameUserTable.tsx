@@ -10,6 +10,7 @@ import { checkOne } from "../../../../Recoil/frontState";
 
 import { changeNameUserInterface } from "../../../../Types/IBAS/TypeMember";
 
+import { isAuthorizedOverVice } from "../../../../Functions/authFunctions";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
@@ -106,7 +107,7 @@ const MyChangeNameUserTable = () => {
 
     return (
         <Div width="100%">
-            {(role === "CHIEF" || role === "VICE_CHIEF") && (
+            {isAuthorizedOverVice && (
                 <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
                     <Div $minWidth="100px" $margin="0 10px 0 0 ">
                         <Dropdown
@@ -168,7 +169,7 @@ const MyChangeNameUserTable = () => {
                             $justifycontent="space-evenly"
                             $backgroundColor="wh"
                         >
-                            {(role === "CHIEF" || role === "VICE_CHIEF") && (
+                            {isAuthorizedOverVice && (
                                 <FlexDiv $padding="10px">
                                     <Checkbox
                                         checked={check === element.id ? true : false}

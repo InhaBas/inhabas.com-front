@@ -11,6 +11,7 @@ import { _checkedList, refetch } from "../../../../Recoil/frontState";
 
 import { userInterface } from "../../../../Types/IBAS/TypeMember";
 
+import { isAuthorizedExceptExecutives, isAuthorizedOverVice } from "../../../../Functions/authFunctions";
 import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
@@ -250,7 +251,7 @@ const MyUserTable = () => {
                 </FlexDiv>
             )}
 
-            {(role === "CHIEF" || role === "VICE_CHIEF") && (
+            {isAuthorizedOverVice && (
                 <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
                     <Div $minWidth="100px" $margin="0 10px 0 0 ">
                         <Dropdown
@@ -312,7 +313,7 @@ const MyUserTable = () => {
                     $backgroundColor="wh"
                     $borderB={`1.5px solid ${theme.color.grey1}`}
                 >
-                    {(role === "SECRETARY" || role === "CHIEF" || role === "VICE_CHIEF") && (
+                    {isAuthorizedExceptExecutives && (
                         <FlexDiv $padding="10px">
                             {userList && userList.length !== 0 && (
                                 <Checkbox
@@ -340,7 +341,7 @@ const MyUserTable = () => {
                             $justifycontent="space-evenly"
                             $backgroundColor="wh"
                         >
-                            {(role === "SECRETARY" || role === "CHIEF" || role === "VICE_CHIEF") && (
+                            {isAuthorizedExceptExecutives && (
                                 <FlexDiv $padding="10px">
                                     <Checkbox
                                         checked={check.includes(element.memberId) ? true : false}

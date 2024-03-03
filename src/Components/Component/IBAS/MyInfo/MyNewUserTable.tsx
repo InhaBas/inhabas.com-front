@@ -11,6 +11,7 @@ import { checkedList } from "../../../../Recoil/frontState";
 
 import { newUserInterface } from "../../../../Types/IBAS/TypeMember";
 
+import { isAuthorizedOverExecutives } from "../../../../Functions/authFunctions";
 import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
@@ -149,7 +150,7 @@ const MyNewUserTable = () => {
 
     return (
         <Div width="100%">
-            {(role === "EXECUTIVES" || role === "CHIEF" || role === "VICE_CHIEF") && (
+            {isAuthorizedOverExecutives && (
                 <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
                     <Div $margin="0 10px 0 0 ">
                         <Div width="105px">
@@ -190,7 +191,7 @@ const MyNewUserTable = () => {
                     $backgroundColor="wh"
                     $borderB={`1.5px solid ${theme.color.grey1}`}
                 >
-                    {(role === "EXECUTIVES" || role === "CHIEF" || role === "VICE_CHIEF") && (
+                    {isAuthorizedOverExecutives && (
                         <FlexDiv $padding="10px">
                             {newUser && newUser.length !== 0 && (
                                 <Checkbox
@@ -218,7 +219,7 @@ const MyNewUserTable = () => {
                             $justifycontent="space-evenly"
                             $backgroundColor="wh"
                         >
-                            {(role === "EXECUTIVES" || role === "CHIEF" || role === "VICE_CHIEF") && (
+                            {isAuthorizedOverExecutives && (
                                 <FlexDiv $padding="10px">
                                     <Checkbox
                                         checked={check.includes(element.memberId) ? true : false}
