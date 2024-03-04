@@ -1,23 +1,29 @@
-import styled from "styled-components"
+import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
+import styled from "styled-components";
 
-import { theme } from "../../../styles/theme"
+import useFetch from "../../../Hooks/useFetch";
 
-import { Div, FlexDiv } from "../../../styles/assets/Div"
-import { H1 } from "../../../styles/assets/H"
-import Img from "../../../styles/assets/Img"
-import P from "../../../styles/assets/P"
+import { staffInfo } from "../../../Recoil/backState";
 
-import { useEffect, useState } from "react"
-import HeaderNav from "../../Common/HeaderNav"
+import { theme } from "../../../styles/theme";
+
+import { Div, FlexDiv } from "../../../styles/assets/Div";
+import { H1 } from "../../../styles/assets/H";
+import Img from "../../../styles/assets/Img";
+import P from "../../../styles/assets/P";
+
+import { staffInterface } from "../../../Types/IBAS/TypeIBAS";
+import HeaderNav from "../../Common/HeaderNav";
 
 const IntroduceSection = styled(Div)`
     min-height: 100vh;
-`
+`;
 
 const IntroImg = styled(Img)`
     object-fit: fill;
     position: absolute;
-`
+`;
 
 const IntroDiv = styled(Div)`
     animation: fadeInUp 1s;
@@ -32,12 +38,12 @@ const IntroDiv = styled(Div)`
             transform: translateZ(0);
         }
     }
-`
+`;
 const CareerClickP = styled(P)`
     &:hover {
         color: ${theme.color.wh};
     }
-`
+`;
 const Ul = styled.ul`
     max-width: 100%;
     border-left: 4px solid #7133e2;
@@ -54,14 +60,14 @@ const Ul = styled.ul`
     list-style: none;
     text-align: left;
     font-weight: 100;
-`
+`;
 
 const Li = styled.li`
     border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
     margin-bottom: 25px;
     position: relative;
     font-size: ${theme.fontSize.xxl};
-`
+`;
 
 const Introduce = () => {
     const pageData = [
@@ -93,18 +99,72 @@ const Introduce = () => {
                 비즈니스에 여러 알고리즘을 적용,특정 업무에 맞는 모델링을 구현합니다.
                 새로운 분석 모델이나 머신러닝 모델을 수정 혹은 개발하는 역할을 합니다.`,
         },
-    ]
+    ];
 
-    const [page, setPage] = useState(0)
+    const [page, setPage] = useState(0);
+    const [staffInfoData, setStaffInfoData] = useFetch();
+    const [staff, setStaff] = useRecoilState(staffInfo);
 
     const careerEvent = (clicked: number) => {
-        setPage(clicked)
-    }
+        setPage(clicked);
+    };
 
     useEffect(() => {
-        setPage(0)
-        console.log(page)
-    }, [])
+        setPage(0);
+    }, []);
+
+    // 운영진 fetch
+    useEffect(() => {
+        setStaffInfoData("/members/executive", "GET");
+    }, []);
+
+    // 역할에 대한 레이블 변환
+    // 예: 비활동회원, 활동회원, ...
+    const convertRoleLabel = (role: string) => {
+        let roleLabel = "";
+        switch (role) {
+            case "CHIEF":
+                roleLabel = "회장";
+                break;
+            case "VICE_CHIEF":
+                roleLabel = "부회장";
+                break;
+            case "EXECUTIVES":
+                roleLabel = "운영팀";
+                break;
+            case "SECRETARY":
+                roleLabel = "총무";
+                break;
+            case "BASIC":
+                roleLabel = "활동회원";
+                break;
+            case "DEACTIVATED":
+                roleLabel = "비활동회원";
+                break;
+            default:
+                roleLabel = "알 수 없음";
+        }
+        return roleLabel;
+    };
+
+    // 운영진 data set
+    useEffect(() => {
+        if (staffInfoData) {
+            // 객체를 배열로 변환
+            const staffInfoArray: [string, staffInterface][] = Object.entries(staffInfoData);
+
+            // 배열을 가공하여 contents 배열 생성
+            const contents = staffInfoArray.map(([key, value]) => ({
+                name: value.name,
+                studentId: value.studentId.substring(2, 4),
+                major: value.major,
+                role: convertRoleLabel(value.role),
+                picture: value.picture,
+            }));
+
+            setStaff(contents);
+        }
+    }, [staffInfoData]);
 
     return (
         <>
@@ -263,8 +323,8 @@ const Introduce = () => {
                             Inha Bigdata Analyst Society
                         </P>
                     </Div>
-                    <Div $margin="30px 0 0 0">
-                        <P color="wh" $letterSpacing="3px" $lineHeight={2} $whiteSpace="no-wrap">
+                    <Div $margin="30px 0 0 0" width="100%">
+                        <P color="wh" $letterSpacing="3px" $lineHeight={2} $whiteSpace="normal">
                             안녕하세요 인하대학교 빅데이터 학술동아리 IBAS입니다. 반갑습니다.
                             <br />
                             IBAS는 4차산업 혁명 시대의 흐름에 맞추어 필요한 빅데이터 역량을 갖춘 인재를 육성해 나가자는
@@ -278,52 +338,61 @@ const Introduce = () => {
                             운영진
                         </P>
                     </Div>
-                    <FlexDiv $justifycontent="start" width="100%" height="30vh" overflow="auto">
-                        <Div $margin="0 20px 50px 0">
-                            <FlexDiv width="100%">
-                                <Div
-                                    width="100px"
-                                    height="100px"
-                                    radius={100}
-                                    overflow="hidden"
-                                    $border="3px solid"
-                                    $borderColor="wh"
-                                >
-                                    <Img src="/images/career.png" alt="현재 브라우저에서 지원하지 않는 형식입니다. " />
-                                </Div>
-                            </FlexDiv>
-                            <FlexDiv width="100%" $margin="15px 0">
-                                <Div>
-                                    <P color="wh" fontWeight={700}>
-                                        김채연
-                                    </P>
-                                </Div>
+                    <FlexDiv width="100%" height="30vh" $justifycontent="start" $alignitems="start" overflow="auto">
+                        <FlexDiv $margin="0 20px 50px 0" $justifycontent="space-between" $alignitems="start">
+                            {staff &&
+                                staff.length !== 0 &&
+                                staff.map((element: staffInterface) => (
+                                    <Div $margin="0 0 15px 0">
+                                        <FlexDiv width="130px">
+                                            <FlexDiv
+                                                width="100px"
+                                                height="100px"
+                                                radius={100}
+                                                overflow="hidden"
+                                                $border="3px solid"
+                                                $borderColor="wh"
+                                            >
+                                                <Img
+                                                    src={element.picture}
+                                                    alt="현재 브라우저에서 지원하지 않는 형식입니다. "
+                                                />
+                                            </FlexDiv>
+                                        </FlexDiv>
+                                        <FlexDiv width="130px" $margin="15px 0">
+                                            <Div $margin="0 3px 0 0">
+                                                <P color="wh" fontWeight={700}>
+                                                    {element.name}
+                                                </P>
+                                            </Div>
 
-                                <Div>
-                                    <P color="wh" fontSize="xs">
-                                        (회장)
-                                    </P>
-                                </Div>
-                            </FlexDiv>
-                            <FlexDiv width="100%">
-                                <Div>
-                                    <P color="wh" fontSize="xs">
-                                        문화컨텐츠문화경영학과
-                                    </P>
-                                </Div>
-                                &nbsp;
-                                <Div>
-                                    <P color="wh" fontSize="xs">
-                                        21학번
-                                    </P>
-                                </Div>
-                            </FlexDiv>
-                        </Div>
+                                            <Div>
+                                                <P color="wh" fontSize="xs">
+                                                    ({element.role})
+                                                </P>
+                                            </Div>
+                                        </FlexDiv>
+                                        <FlexDiv width="130px">
+                                            <Div>
+                                                <P color="wh" fontSize="xs">
+                                                    {element.major}
+                                                </P>
+                                            </Div>
+                                            &nbsp;
+                                            <Div>
+                                                <P color="wh" fontSize="xs">
+                                                    {element.studentId}학번
+                                                </P>
+                                            </Div>
+                                        </FlexDiv>
+                                    </Div>
+                                ))}
+                        </FlexDiv>
                     </FlexDiv>
                 </Div>
             </FlexDiv>
         </>
-    )
-}
+    );
+};
 
-export default Introduce
+export default Introduce;
