@@ -11,7 +11,8 @@ import { __checkedList, refetch } from "../../../../Recoil/frontState";
 
 import { userInterface } from "../../../../Types/IBAS/TypeMember";
 
-import { isAuthorizedExceptExecutives, isAuthorizedOverVice, isSecretary } from "../../../../Functions/authFunctions";
+import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
+
 import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
@@ -22,6 +23,8 @@ import Dropdown from "../../../Common/Dropdown";
 import Pagination from "../../../Common/Pagination";
 
 const MyGraduateUserTable = () => {
+    const { isAuthorizedOverVice, isAuthorizedExceptExecutives, isSecretary } = GetRoleAuthorization();
+
     const widthList = [50, 100, 150, 200, 200, 130, 130, 50];
     const headerInfo = ["", "이름", "학번", "학과", "전화번호", "역할", "소속", "기수"];
 

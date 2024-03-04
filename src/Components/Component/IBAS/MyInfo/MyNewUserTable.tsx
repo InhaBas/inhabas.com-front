@@ -6,12 +6,13 @@ import { theme } from "../../../../styles/theme";
 
 import useFetch from "../../../../Hooks/useFetch";
 
-import { newUserInfo, tokenAccess, totalNewUserInfo, totalPageInfo, userRole } from "../../../../Recoil/backState";
+import { newUserInfo, tokenAccess, totalNewUserInfo, totalPageInfo } from "../../../../Recoil/backState";
 import { checkedList } from "../../../../Recoil/frontState";
 
 import { newUserInterface } from "../../../../Types/IBAS/TypeMember";
 
-import { isAuthorizedOverExecutives } from "../../../../Functions/authFunctions";
+import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
+
 import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
@@ -22,13 +23,14 @@ import Dropdown from "../../../Common/Dropdown";
 import Pagination from "../../../Common/Pagination";
 
 const MyNewUserTable = () => {
+    const { isAuthorizedOverExecutives } = GetRoleAuthorization();
+
     const widthList = [50, 100, 70, 150, 170, 310, 160];
     const headerInfo = ["", "이름", "학년", "학번", "전화번호", "학과", "지원서보기"];
 
     const [check, setCheck] = useRecoilState(checkedList);
     const [newUserData, fetchNewUserData] = useFetch();
     const [newUser, setNewUser] = useRecoilState(newUserInfo);
-    const role = useRecoilValue(userRole);
     const setTotalNewUser = useSetRecoilState(totalNewUserInfo);
     const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
     const [passFailValue, setPassFailValue] = useState("");

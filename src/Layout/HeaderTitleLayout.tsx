@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 
-import { isAuthorizedOverSecretary, isAuthorizedOverVice } from "../Functions/authFunctions";
+import { GetRoleAuthorization } from "../Functions/authFunctions";
 
 import HeaderTitle from "../Components/Common/HeaderTitle";
 import MyApplication from "../Components/Page/IBAS/MyInfo/MyApplication";
@@ -16,6 +16,8 @@ import MainRoute from "../Routes/MainRoute";
 import { FlexDiv } from "../styles/assets/Div";
 
 const HeaderTitlePage = () => {
+    const { isAuthorizedOverVice, isAuthorizedOverSecretary } = GetRoleAuthorization();
+
     return (
         <>
             <HeaderTitle />
