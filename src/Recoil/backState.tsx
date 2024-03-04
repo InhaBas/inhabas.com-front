@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { staffInterface } from "../Types/IBAS/TypeIBAS";
 import {
     answersInterface,
     applicationAnswersInterface,
@@ -162,6 +163,12 @@ export const signupAnswer = atom<answersInterface[] | null>({
 
 export const signupCheck = atom<boolean | null>({
     key: "signupCheck",
+    default: null,
+});
+
+// introduce
+export const staffInfo = atom<staffInterface[] | null>({
+    key: "staffInfoData",
     default: null,
 });
 
