@@ -4,30 +4,26 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { theme } from "../../../../styles/theme";
 
-import {
-    headerTitleInfo,
-    totalGraduateUserInfo,
-    totalNewUserInfo,
-    totalUserInfo,
-    userRole,
-} from "../../../../Recoil/backState";
+import { headerTitleInfo, totalGraduateUserInfo, totalNewUserInfo, totalUserInfo } from "../../../../Recoil/backState";
+
+import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
 
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
 
-import { isAuthorizedOverVice } from "../../../../Functions/authFunctions";
 import MyChangeNameUserTable from "../../../Component/IBAS/MyInfo/MyChangeNameUserTable";
 import MyGraduateUserTable from "../../../Component/IBAS/MyInfo/MyGraduateUserTable";
 import MyNewUserTable from "../../../Component/IBAS/MyInfo/MyNewUserTable";
 import MyUserTable from "../../../Component/IBAS/MyInfo/MyUserTable";
 
 const MyManageUser = () => {
+    const { isAuthorizedOverVice } = GetRoleAuthorization();
+
     const navigate = useNavigate();
     const totalNewUser = useRecoilValue(totalNewUserInfo);
     const totalUser = useRecoilValue(totalUserInfo);
     const totalGraduateUser = useRecoilValue(totalGraduateUserInfo);
-    const role = useRecoilValue(userRole);
     const setTitle = useSetRecoilState(headerTitleInfo);
 
     const movePage = (url: string) => {

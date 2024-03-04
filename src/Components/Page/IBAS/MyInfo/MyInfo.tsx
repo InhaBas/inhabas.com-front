@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 
-import { profileInfo, userRole } from "../../../../Recoil/backState";
+import { profileInfo } from "../../../../Recoil/backState";
+
+import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
 
 import MyBankSupportContainer from "../../../Container/MyInfo/MyBankSupportContainer";
 import MyBoardContainer from "../../../Container/MyInfo/MyBoardContainer";
@@ -11,7 +13,6 @@ import MyInfoContainer from "../../../Container/MyInfo/MyInfoContainer";
 import MyLectureContainer from "../../../Container/MyInfo/MyLectureContainer";
 import MyManageLectureContainer from "../../../Container/MyInfo/MyManageLectureContainer";
 
-import { isAuthorizedOverSecretary } from "../../../../Functions/authFunctions";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
@@ -33,6 +34,8 @@ const MyInfoDiv = styled(FlexDiv)`
 const MyInfo = () => {
     const navigate = useNavigate();
 
+    const { isAuthorizedOverSecretary } = GetRoleAuthorization();
+
     const movePageEvent = (url: string) => {
         navigate(`/${url}`);
     };
@@ -48,7 +51,6 @@ const MyInfo = () => {
 
     const [clicked, setclicked] = useState(4);
     const info = useRecoilValue(profileInfo);
-    const role = useRecoilValue(userRole);
 
     return (
         <>

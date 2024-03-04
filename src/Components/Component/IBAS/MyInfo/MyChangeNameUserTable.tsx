@@ -5,12 +5,13 @@ import { theme } from "../../../../styles/theme";
 
 import useFetch from "../../../../Hooks/useFetch";
 
-import { changeNameTotalPageInfo, changeNameUserInfo, tokenAccess, userRole } from "../../../../Recoil/backState";
+import { changeNameTotalPageInfo, changeNameUserInfo, tokenAccess } from "../../../../Recoil/backState";
 import { checkOne } from "../../../../Recoil/frontState";
 
 import { changeNameUserInterface } from "../../../../Types/IBAS/TypeMember";
 
-import { isAuthorizedOverVice } from "../../../../Functions/authFunctions";
+import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
+
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
@@ -20,13 +21,15 @@ import Dropdown from "../../../Common/Dropdown";
 import Pagination from "../../../Common/Pagination";
 
 const MyChangeNameUserTable = () => {
+    const { isAuthorizedOverVice } = GetRoleAuthorization();
+
     const widthList = [50, 100, 150, 200, 200, 200, 100];
     const headerInfo = ["", "이름", "학번", "학과", "변경 전 이름", "변경 후 이름", "현황"];
 
     const [user, fetchUser] = useFetch();
     const [userList, setUserList] = useRecoilState(changeNameUserInfo);
     const [totalPage, setTotalPage] = useRecoilState(changeNameTotalPageInfo);
-    const role = useRecoilValue(userRole);
+
     const [check, setCheck] = useRecoilState(checkOne);
     const [value, setValue] = useState("");
     const [nameChangeData, fetchNameChangeData] = useFetch();
