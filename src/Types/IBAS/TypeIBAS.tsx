@@ -9,7 +9,7 @@ export interface staffInterface {
 }
 
 export interface historyInterface {
-    id?: number;
+    id: number;
     title: string;
     content?: string;
     writerId?: number;

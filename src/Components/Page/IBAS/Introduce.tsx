@@ -14,7 +14,7 @@ import Img from "../../../styles/assets/Img";
 import P from "../../../styles/assets/P";
 
 import { GetRoleAuthorization } from "../../../Functions/authFunctions";
-import { modalInfo, modalOpen } from "../../../Recoil/frontState";
+import { modalInfo, modalOpen, refetch } from "../../../Recoil/frontState";
 import { historyInterface, staffInterface } from "../../../Types/IBAS/TypeIBAS";
 import HeaderNav from "../../Common/HeaderNav";
 
@@ -41,11 +41,13 @@ const IntroDiv = styled(Div)`
         }
     }
 `;
+
 const CareerClickP = styled(P)`
     &:hover {
         color: ${theme.color.wh};
     }
 `;
+
 const Ul = styled.ul`
     max-width: 100%;
     border-left: 4px solid #7133e2;
@@ -130,16 +132,25 @@ const Introduce = () => {
     const [page, setPage] = useState(0);
     const [historyInfoData, setHistoryInfoData] = useFetch();
     const [history, setHistory] = useRecoilState(historyInfo);
+    const [deleteHistoryData, fetchDeleteHistoryData] = useFetch();
     const [staffInfoData, setStaffInfoData] = useFetch();
     const [staff, setStaff] = useRecoilState(staffInfo);
+    const [reload, setReload] = useRecoilState(refetch);
 
     const careerEvent = (clicked: number) => {
         setPage(clicked);
     };
 
-    const openModal = () => {
+    // type의 첫 문자는 대문자여야 함
+    const openModal = (type: string, id?: number) => {
         setOpen(true);
-        setModalInfo("history");
+        setModalInfo({ type: `history${type}`, content: `${id}` });
+    };
+
+    const deleteHistory = (id: number) => {
+        if (window.confirm("정말 삭제 하시겠습니까?")) {
+            fetchDeleteHistoryData(`/club/history/${id}`, "DELETE", "token");
+        }
     };
 
     // 역할에 대한 레이블 변환
@@ -175,10 +186,18 @@ const Introduce = () => {
         setPage(0);
     }, []);
 
-    // 연혁 get fetch
+    // 연혁 get fetch ( 처음 페이지 렌더링 시 )
     useEffect(() => {
         setHistoryInfoData("/club/histories", "GET");
     }, []);
+
+    // 연혁 get fetch ( 추가, 수정, 삭제 시 )
+    useEffect(() => {
+        if (reload || deleteHistoryData) {
+            setHistoryInfoData("/club/histories", "GET");
+            setReload(false);
+        }
+    }, [reload, deleteHistoryData]);
 
     useEffect(() => {
         if (historyInfoData) {
@@ -193,6 +212,7 @@ const Introduce = () => {
                 prevYear = currentYear;
 
                 return {
+                    id: value.id,
                     title: value.title,
                     content: value.content,
                     dateHistory: value.dateHistory.split("T")[0],
@@ -333,7 +353,7 @@ const Introduce = () => {
                                 $padding="3px"
                                 $pointer
                                 $borderB={`1.5px solid ${theme.color.wh}`}
-                                onClick={() => openModal()}
+                                onClick={() => openModal("Post")}
                             >
                                 <P color="wh" fontSize="lg">
                                     동아리 연혁 추가하기
@@ -362,25 +382,52 @@ const Introduce = () => {
                                     <Div width="80%">
                                         <Ul>
                                             <Li>
-                                                {element.title}
-                                                <Div $padding="20px 0">
+                                                <FlexDiv>
+                                                    <P color="wh" fontSize="xxl">
+                                                        {element.title}
+                                                    </P>
+                                                </FlexDiv>
+                                                <Div
+                                                    $padding="20px 0"
+                                                    $margin={element.content === null ? "0 0 50px 0" : "0"}
+                                                >
                                                     <P color="wh">{element.dateHistory}</P>
                                                 </Div>
-                                                <Div>
-                                                    <P color="wh" fontSize="xl" fontWeight={300}>
+                                                <Div $margin="0 0 50px 0">
+                                                    <P color="wh" fontSize="xl" fontWeight={400}>
                                                         {element.content}
                                                     </P>
                                                 </Div>
-                                                <FlexDiv width="100%" $justifycontent="end" $margin="0 0 10px 0">
-                                                    <Div width="15px" $pointer>
-                                                        <Img src="/images/pencil_white.svg" />
-                                                    </Div>
-                                                </FlexDiv>
-                                                <FlexDiv width="100%" $justifycontent="end" $margin="0 0 10px 0">
-                                                    <Div width="15px" $pointer>
-                                                        <Img src="/images/trash_white.svg" />
-                                                    </Div>
-                                                </FlexDiv>
+                                                {isAuthorizedOverExecutives && (
+                                                    <>
+                                                        <FlexDiv
+                                                            width="100%"
+                                                            $justifycontent="end"
+                                                            $margin="0 0 10px 0"
+                                                        >
+                                                            <Div
+                                                                width="15px"
+                                                                $pointer
+                                                                onClick={() => openModal("Put", element.id)}
+                                                            >
+                                                                <Img src="/images/pencil_white.svg" />
+                                                            </Div>
+                                                        </FlexDiv>
+                                                        <FlexDiv
+                                                            width="100%"
+                                                            $justifycontent="end"
+                                                            $margin="0 0 10px 0"
+                                                        >
+                                                            <Div
+                                                                width="15px"
+                                                                $pointer
+                                                                onClick={() => deleteHistory(element.id)}
+                                                            >
+                                                                <Img src="/images/trash_white.svg" />
+                                                            </Div>
+                                                        </FlexDiv>
+                                                    </>
+                                                )}
                                             </Li>
                                         </Ul>
                                     </Div>

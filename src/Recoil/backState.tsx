@@ -172,6 +172,11 @@ export const historyInfo = atom<historyInterface[] | null>({
     default: null,
 });
 
+export const oneHistoryInfo = atom<historyInterface | null>({
+    key: "oneHistoryInfo",
+    default: null,
+});
+
 export const staffInfo = atom<staffInterface[] | null>({
     key: "staffInfo",
     default: null,
