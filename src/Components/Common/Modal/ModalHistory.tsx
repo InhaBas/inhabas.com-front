@@ -36,11 +36,6 @@ const ModalHistory = () => {
             check = false;
         }
 
-        if (check && inputRef.current[2].value === "") {
-            alert("설명을 입력해주세요");
-            check = false;
-        }
-
         if (check) {
             let inputData = {
                 title: inputRef.current[1].value,
