@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { staffInterface } from "../Types/IBAS/TypeIBAS";
+import { historyInterface, staffInterface } from "../Types/IBAS/TypeIBAS";
 import {
     answersInterface,
     applicationAnswersInterface,
@@ -167,8 +167,13 @@ export const signupCheck = atom<boolean | null>({
 });
 
 // introduce
+export const historyInfo = atom<historyInterface[] | null>({
+    key: "historyInfo",
+    default: null,
+});
+
 export const staffInfo = atom<staffInterface[] | null>({
-    key: "staffInfoData",
+    key: "staffInfo",
     default: null,
 });
 

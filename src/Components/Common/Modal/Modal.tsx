@@ -8,6 +8,7 @@ import ModalChangeIntro from "./ModalChangeIntro";
 import ModalChangeName from "./ModalChangeName";
 import ModalChangeNumber from "./ModalChangeNumber";
 import ModalChangeType from "./ModalChangeType";
+import ModalHistory from "./ModalHistory";
 import ModalMajor from "./ModalMajor";
 
 type CustomMouseEvent = MouseEvent<HTMLElement>;
@@ -47,7 +48,8 @@ export const Modal = () => {
                         (modalType === "changeNumber" && <ModalChangeNumber />) ||
                         (modalType === "changeMajor" && <ModalMajor />) ||
                         (modalType === "changeIntro" && <ModalChangeIntro />) ||
-                        (modalType === "changeType" && <ModalChangeType />)}
+                        (modalType === "changeType" && <ModalChangeType />) ||
+                        (modalType === "history" && <ModalHistory />)}
                 </ModalBackground>
             )}
         </>
