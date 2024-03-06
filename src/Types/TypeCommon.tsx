@@ -30,3 +30,9 @@ export interface paginationPropsInterface {
     token?: boolean;
     paginationFetch: any;
 }
+
+// modal
+export interface modalInterface {
+    type: string;
+    content?: string;
+}

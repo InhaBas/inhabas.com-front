@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { modalInterface } from "../Types/TypeCommon";
 
 // common
 export const refetch = atom({
@@ -43,10 +44,13 @@ export const majorSelected = atom({
     default: { college: "", major: "" },
 });
 
-// board
-export const modalInfo = atom({
+// modal
+export const modalInfo = atom<modalInterface>({
     key: "modalInfoState",
-    default: "",
+    default: {
+        type: "",
+        content: "",
+    },
 });
 
 export const modalOpen = atom({

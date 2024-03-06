@@ -31,7 +31,7 @@ const MyInfoContainer = () => {
     */
     const changeInfo = (info: string) => {
         setOpen(true);
-        setMoalInfo(`change${info}`);
+        setMoalInfo({ type: `change${info}` });
     };
 
     /* 권한 출력 위한 auth 지정  */

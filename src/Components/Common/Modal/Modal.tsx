@@ -43,13 +43,14 @@ export const Modal = () => {
         <>
             {open && (
                 <ModalBackground ref={backgroundRef} onClick={clickBackground}>
-                    {(modalType === "major" && <ModalMajor />) ||
-                        (modalType === "changeName" && <ModalChangeName />) ||
-                        (modalType === "changeNumber" && <ModalChangeNumber />) ||
-                        (modalType === "changeMajor" && <ModalMajor />) ||
-                        (modalType === "changeIntro" && <ModalChangeIntro />) ||
-                        (modalType === "changeType" && <ModalChangeType />) ||
-                        (modalType === "history" && <ModalHistory />)}
+                    {(modalType.type === "major" && <ModalMajor />) ||
+                        (modalType.type === "changeName" && <ModalChangeName />) ||
+                        (modalType.type === "changeNumber" && <ModalChangeNumber />) ||
+                        (modalType.type === "changeMajor" && <ModalMajor />) ||
+                        (modalType.type === "changeIntro" && <ModalChangeIntro />) ||
+                        (modalType.type === "changeType" && <ModalChangeType />) ||
+                        (modalType.type === "historyPost" && <ModalHistory />) ||
+                        (modalType.type === "historyPut" && <ModalHistory />)}
                 </ModalBackground>
             )}
         </>
