@@ -58,21 +58,15 @@ const Ul = styled.ul`
     position: relative;
     line-height: 1.4em;
     font-size: 1.03em;
-    padding: 50px;
+    padding: 50px 50px 0 50px;
     list-style: none;
     text-align: left;
     font-weight: 100;
 `;
 
 const Li = styled.li`
-    // border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
-    // margin-bottom: 25px;
-    // position: relative;
-    // font-size: ${theme.fontSize.xxl};
     position: relative;
     border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
-    margin-bottom: 25px;
-    // padding-left: 20px; /* 왼쪽 여백을 줍니다. */
     font-size: ${theme.fontSize.xxl};
 
     &::before {
@@ -382,7 +376,7 @@ const Introduce = () => {
                                                         <Img src="/images/pencil_white.svg" />
                                                     </Div>
                                                 </FlexDiv>
-                                                <FlexDiv width="100%" $justifycontent="end">
+                                                <FlexDiv width="100%" $justifycontent="end" $margin="0 0 10px 0">
                                                     <Div width="15px" $pointer>
                                                         <Img src="/images/trash_white.svg" />
                                                     </Div>
