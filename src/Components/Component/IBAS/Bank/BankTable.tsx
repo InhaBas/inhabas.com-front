@@ -21,7 +21,7 @@ const BankTable = () => {
         setOpen(true);
         console.log("gg");
 
-        setModalInfo("bank");
+        setModalInfo({ type: "bank" });
     };
 
     const headerInfo = ["사용일", "게시일", "수정일", "내용", "수입액", "지출액", "증빙"];

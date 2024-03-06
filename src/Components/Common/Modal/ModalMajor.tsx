@@ -190,7 +190,7 @@ const ModalMajor = () => {
                     </>
                 )}
 
-                {modalType === "major" ? (
+                {modalType.type === "major" ? (
                     <FlexDiv width="100%">
                         <Button
                             $backgroundColor="bgColor"
