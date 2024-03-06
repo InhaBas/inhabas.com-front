@@ -7,3 +7,12 @@ export interface staffInterface {
     major: string;
     picture: string;
 }
+
+export interface historyInterface {
+    id?: number;
+    title: string;
+    content?: string;
+    writerId?: number;
+    dateHistory: string;
+    year?: string;
+}

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 
 import useFetch from "../../../Hooks/useFetch";
 
-import { staffInfo } from "../../../Recoil/backState";
+import { historyInfo, staffInfo } from "../../../Recoil/backState";
 
 import { theme } from "../../../styles/theme";
 
@@ -13,7 +13,9 @@ import { H1 } from "../../../styles/assets/H";
 import Img from "../../../styles/assets/Img";
 import P from "../../../styles/assets/P";
 
-import { staffInterface } from "../../../Types/IBAS/TypeIBAS";
+import { GetRoleAuthorization } from "../../../Functions/authFunctions";
+import { modalInfo, modalOpen } from "../../../Recoil/frontState";
+import { historyInterface, staffInterface } from "../../../Types/IBAS/TypeIBAS";
 import HeaderNav from "../../Common/HeaderNav";
 
 const IntroduceSection = styled(Div)`
@@ -63,10 +65,37 @@ const Ul = styled.ul`
 `;
 
 const Li = styled.li`
+    // border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    // margin-bottom: 25px;
+    // position: relative;
+    // font-size: ${theme.fontSize.xxl};
+    position: relative;
     border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
     margin-bottom: 25px;
-    position: relative;
+    // padding-left: 20px; /* 왼쪽 여백을 줍니다. */
     font-size: ${theme.fontSize.xxl};
+
+    &::before {
+        content: "";
+        position: absolute;
+        left: -62px; /* padding 50px, border px 고려해야함 */
+        top: 5px;
+        width: 20px; /* 큰 동그라미의 지름 */
+        height: 20px; /* 큰 동그라미의 지름 */
+        border-radius: 50%;
+        background-color: #7133e2; /* 보라색 */
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        left: -57px; /* 작은 동그라미의 위치를 조절합니다. */
+        top: 10px;
+        width: 10px; /* 작은 동그라미의 지름 */
+        height: 10px; /* 작은 동그라미의 지름 */
+        border-radius: 50%;
+        background-color: #441f87; /* 작은 동그라미의 색상 */
+    }
 `;
 
 const Introduce = () => {
@@ -101,7 +130,12 @@ const Introduce = () => {
         },
     ];
 
+    const { isAuthorizedOverExecutives } = GetRoleAuthorization();
+    const setOpen = useSetRecoilState(modalOpen);
+    const setModalInfo = useSetRecoilState(modalInfo);
     const [page, setPage] = useState(0);
+    const [historyInfoData, setHistoryInfoData] = useFetch();
+    const [history, setHistory] = useRecoilState(historyInfo);
     const [staffInfoData, setStaffInfoData] = useFetch();
     const [staff, setStaff] = useRecoilState(staffInfo);
 
@@ -109,14 +143,10 @@ const Introduce = () => {
         setPage(clicked);
     };
 
-    useEffect(() => {
-        setPage(0);
-    }, []);
-
-    // 운영진 fetch
-    useEffect(() => {
-        setStaffInfoData("/members/executive", "GET");
-    }, []);
+    const openModal = () => {
+        setOpen(true);
+        setModalInfo("history");
+    };
 
     // 역할에 대한 레이블 변환
     // 예: 비활동회원, 활동회원, ...
@@ -146,6 +176,44 @@ const Introduce = () => {
         }
         return roleLabel;
     };
+
+    useEffect(() => {
+        setPage(0);
+    }, []);
+
+    // 연혁 get fetch
+    useEffect(() => {
+        setHistoryInfoData("/club/histories", "GET");
+    }, []);
+
+    useEffect(() => {
+        if (historyInfoData) {
+            let prevYear = ""; // 이전 연도를 기록하기 위한 변수
+            const historyInfoArray: [string, historyInterface][] = Object.entries(historyInfoData);
+            const content = historyInfoArray.map(([key, value]) => {
+                // 현재 아이템의 연도 추출
+                const currentYear = value.dateHistory.split("-")[0];
+                // 이전 연도와 현재 아이템의 연도가 다를 경우에만 연도를 할당
+                const year = prevYear !== currentYear ? currentYear : "";
+                // 이전 연도 업데이트
+                prevYear = currentYear;
+
+                return {
+                    title: value.title,
+                    content: value.content,
+                    dateHistory: value.dateHistory.split("T")[0],
+                    year: year, // 현재 아이템의 연도 할당
+                };
+            });
+
+            setHistory(content);
+        }
+    }, [historyInfoData]);
+
+    // 운영진 fetch
+    useEffect(() => {
+        setStaffInfoData("/members/executive", "GET");
+    }, []);
 
     // 운영진 data set
     useEffect(() => {
@@ -265,46 +333,65 @@ const Introduce = () => {
                                 HISTORY
                             </P>
                         </Div>
-                        <Div $margin="10px" $padding="3px" $pointer $borderB={`1.5px solid ${theme.color.wh}`}>
-                            <P color="wh" fontSize="lg">
-                                동아리 연혁 추가하기
-                            </P>
-                        </Div>
-                    </Div>
-                    <Div width="80%" $zIndex={2} $position="absolute" $top="40%" $left="10%">
-                        <FlexDiv width="100%" $alignitems="start">
-                            <Div $padding="50px">
-                                <P color="grey1" fontSize="xxl">
-                                    2020
+                        {isAuthorizedOverExecutives && (
+                            <Div
+                                $margin="10px"
+                                $padding="3px"
+                                $pointer
+                                $borderB={`1.5px solid ${theme.color.wh}`}
+                                onClick={() => openModal()}
+                            >
+                                <P color="wh" fontSize="lg">
+                                    동아리 연혁 추가하기
                                 </P>
                             </Div>
-                            <Div width="80%">
-                                <Ul>
-                                    <Li>
-                                        1기 회원모집 시작
-                                        <Div $padding="20px 0">
-                                            <P color="wh">2020.10.10</P>
-                                        </Div>
-                                        <Div>
-                                            <P color="wh" fontSize="xl" fontWeight={300}>
-                                                통계학, 선형대수 특강 진행 - 김형기 교수님
-                                            </P>
-                                        </Div>
-                                        <FlexDiv width="100%" $justifycontent="end" $margin="0 0 10px 0">
-                                            <Div width="15px" $pointer>
-                                                <Img src="/images/pencil_white.svg" />
-                                            </Div>
-                                        </FlexDiv>
-                                        <FlexDiv width="100%" $justifycontent="end">
-                                            <Div width="15px" $pointer>
-                                                <Img src="/images/trash_white.svg" />
-                                            </Div>
-                                        </FlexDiv>
-                                    </Li>
-                                </Ul>
-                            </Div>
-                        </FlexDiv>
-                        <FlexDiv></FlexDiv>
+                        )}
+                    </Div>
+                    <Div
+                        width="80%"
+                        height="70vh"
+                        $zIndex={2}
+                        $position="absolute"
+                        $top="30%"
+                        $left="10%"
+                        overflow="auto"
+                    >
+                        {history &&
+                            history.length !== 0 &&
+                            Object.values(history).map((element: historyInterface) => (
+                                <FlexDiv width="100%" $alignitems="start">
+                                    <Div $padding="50px" width="200px">
+                                        <P color="grey1" fontSize="xxl">
+                                            {element.year}
+                                        </P>
+                                    </Div>
+                                    <Div width="80%">
+                                        <Ul>
+                                            <Li>
+                                                {element.title}
+                                                <Div $padding="20px 0">
+                                                    <P color="wh">{element.dateHistory}</P>
+                                                </Div>
+                                                <Div>
+                                                    <P color="wh" fontSize="xl" fontWeight={300}>
+                                                        {element.content}
+                                                    </P>
+                                                </Div>
+                                                <FlexDiv width="100%" $justifycontent="end" $margin="0 0 10px 0">
+                                                    <Div width="15px" $pointer>
+                                                        <Img src="/images/pencil_white.svg" />
+                                                    </Div>
+                                                </FlexDiv>
+                                                <FlexDiv width="100%" $justifycontent="end">
+                                                    <Div width="15px" $pointer>
+                                                        <Img src="/images/trash_white.svg" />
+                                                    </Div>
+                                                </FlexDiv>
+                                            </Li>
+                                        </Ul>
+                                    </Div>
+                                </FlexDiv>
+                            ))}
                     </Div>
                 </Div>
             </IntroduceSection>
