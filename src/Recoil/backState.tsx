@@ -1,18 +1,15 @@
 import { atom } from "recoil";
 import { historyInterface, staffInterface } from "../Types/IBAS/TypeIBAS";
+import { answersInterface, majorInterface, questionnariesInterface, signUpInterface } from "../Types/IBAS/TypeMember";
 import {
-    answersInterface,
     applicationAnswersInterface,
     applicationInterface,
     changeNameUserInterface,
-    majorInterface,
     newUserInterface,
     profileInterface,
-    questionnariesInterface,
     scheduleInterface,
-    signUpInterface,
     userInterface,
-} from "../Types/IBAS/TypeMember";
+} from "../Types/IBAS/TypeMyinfo";
 import { chiefInterface, menuInterface, policyInterface } from "../Types/TypeCommon";
 
 //headerNav

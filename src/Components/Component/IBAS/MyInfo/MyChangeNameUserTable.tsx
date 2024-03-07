@@ -8,7 +8,7 @@ import useFetch from "../../../../Hooks/useFetch";
 import { changeNameTotalPageInfo, changeNameUserInfo, tokenAccess } from "../../../../Recoil/backState";
 import { checkOne } from "../../../../Recoil/frontState";
 
-import { changeNameUserInterface } from "../../../../Types/IBAS/TypeMember";
+import { changeNameUserInterface } from "../../../../Types/IBAS/TypeMyinfo";
 
 import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
 

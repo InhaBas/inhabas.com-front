@@ -9,7 +9,7 @@ import useFetch from "../../../../Hooks/useFetch";
 import { newUserInfo, tokenAccess, totalNewUserInfo, totalPageInfo } from "../../../../Recoil/backState";
 import { checkedList } from "../../../../Recoil/frontState";
 
-import { newUserInterface } from "../../../../Types/IBAS/TypeMember";
+import { newUserInterface } from "../../../../Types/IBAS/TypeMyinfo";
 
 import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
 
