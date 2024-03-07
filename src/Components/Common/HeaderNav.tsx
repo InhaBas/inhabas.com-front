@@ -71,6 +71,7 @@ const HeaderNav = () => {
     const logoutClickEvent = () => {
         if (window.confirm("정말 로그아웃 하시겠습니까?")) {
             setAccess("default");
+            setRole("");
             document.cookie = "ibas_refresh" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
             navigate("/");
         }
