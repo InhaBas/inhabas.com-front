@@ -9,7 +9,7 @@ import useFetch from "../../../../Hooks/useFetch";
 import { applicationAnswerInfo, applicationInfo, headerTitleInfo, tokenAccess } from "../../../../Recoil/backState";
 
 import dateFunction from "../../../../Functions/dateFunction";
-import { applicationAnswersInterface } from "../../../../Types/IBAS/TypeMember";
+import { applicationAnswersInterface } from "../../../../Types/IBAS/TypeMyinfo";
 import Button from "../../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import P from "../../../../styles/assets/P";
