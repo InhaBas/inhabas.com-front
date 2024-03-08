@@ -82,6 +82,9 @@ const ModalHistory = () => {
 
             setHistory(content);
         }
+        return () => {
+            setHistory(null);
+        };
     }, [historyInfoData]);
 
     return (
