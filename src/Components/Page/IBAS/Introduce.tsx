@@ -2,20 +2,23 @@ import { useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 
+import { theme } from "../../../styles/theme";
+
 import useFetch from "../../../Hooks/useFetch";
 
 import { historyInfo, staffInfo } from "../../../Recoil/backState";
+import { modalInfo, modalOpen, refetch } from "../../../Recoil/frontState";
 
-import { theme } from "../../../styles/theme";
+import { historyInterface, staffInterface } from "../../../Types/IBAS/TypeIBAS";
+
+import { GetRoleAuthorization } from "../../../Functions/authFunctions";
+import { ConvertLabel } from "../../../Functions/convertLabelFunctions";
 
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import { H1 } from "../../../styles/assets/H";
 import Img from "../../../styles/assets/Img";
 import P from "../../../styles/assets/P";
 
-import { GetRoleAuthorization } from "../../../Functions/authFunctions";
-import { modalInfo, modalOpen, refetch } from "../../../Recoil/frontState";
-import { historyInterface, staffInterface } from "../../../Types/IBAS/TypeIBAS";
 import HeaderNav from "../../Common/HeaderNav";
 
 const IntroduceSection = styled(Div)`
@@ -127,6 +130,7 @@ const Introduce = () => {
     ];
 
     const { isAuthorizedOverExecutives } = GetRoleAuthorization();
+    const { convertRoleLabel } = ConvertLabel();
     const setOpen = useSetRecoilState(modalOpen);
     const setModalInfo = useSetRecoilState(modalInfo);
     const [page, setPage] = useState(0);
@@ -151,35 +155,6 @@ const Introduce = () => {
         if (window.confirm("정말 삭제 하시겠습니까?")) {
             fetchDeleteHistoryData(`/club/history/${id}`, "DELETE", "token");
         }
-    };
-
-    // 역할에 대한 레이블 변환
-    // 예: 비활동회원, 활동회원, ...
-    const convertRoleLabel = (role: string) => {
-        let roleLabel = "";
-        switch (role) {
-            case "CHIEF":
-                roleLabel = "회장";
-                break;
-            case "VICE_CHIEF":
-                roleLabel = "부회장";
-                break;
-            case "EXECUTIVES":
-                roleLabel = "운영팀";
-                break;
-            case "SECRETARY":
-                roleLabel = "총무";
-                break;
-            case "BASIC":
-                roleLabel = "활동회원";
-                break;
-            case "DEACTIVATED":
-                roleLabel = "비활동회원";
-                break;
-            default:
-                roleLabel = "알 수 없음";
-        }
-        return roleLabel;
     };
 
     useEffect(() => {

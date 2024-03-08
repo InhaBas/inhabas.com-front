@@ -12,6 +12,7 @@ import { __checkedList, refetch } from "../../../../Recoil/frontState";
 import { userInterface } from "../../../../Types/IBAS/TypeMyinfo";
 
 import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
+import { ConvertLabel } from "../../../../Functions/convertLabelFunctions";
 
 import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
@@ -24,6 +25,7 @@ import Pagination from "../../../Common/Pagination";
 
 const MyGraduateUserTable = () => {
     const { isAuthorizedOverVice, isAuthorizedExceptExecutives, isSecretary } = GetRoleAuthorization();
+    const { convertRoleLabel, convertTypeLabel } = ConvertLabel();
 
     const widthList = [50, 100, 150, 200, 200, 130, 130, 50];
     const headerInfo = ["", "이름", "학번", "학과", "전화번호", "역할", "소속", "기수"];
@@ -45,61 +47,6 @@ const MyGraduateUserTable = () => {
     const [searchValue, setSearchValue] = useState(""); // 검색어
 
     const path = useLocation().pathname;
-
-    // 역할에 대한 레이블 변환
-    // 예: 비활동회원, 활동회원, ...
-    const convertRoleLabel = (role: string) => {
-        let roleLabel = "";
-        switch (role) {
-            case "CHIEF":
-                roleLabel = "회장";
-                break;
-            case "VICE_CHIEF":
-                roleLabel = "부회장";
-                break;
-            case "EXECUTIVES":
-                roleLabel = "운영팀";
-                break;
-            case "SECRETARY":
-                roleLabel = "총무";
-                break;
-            case "BASIC":
-                roleLabel = "활동회원";
-                break;
-            case "DEACTIVATED":
-                roleLabel = "비활동회원";
-                break;
-            default:
-                roleLabel = "알 수 없음";
-        }
-        return roleLabel;
-    };
-
-    // 소속에 대한 레이블 변환
-    // 예: 대학원생, 학부생, ...
-    const convertTypeLabel = (type: string) => {
-        let typeLabel = "";
-        switch (type) {
-            case "UNDERGRADUATE":
-                typeLabel = "학부생";
-                break;
-            case "GRADUATED":
-                typeLabel = "졸업생";
-                break;
-            case "BACHELOR":
-                typeLabel = "대학원생";
-                break;
-            case "PROFESSOR":
-                typeLabel = "교수";
-                break;
-            case "OTHER":
-                typeLabel = "기타";
-                break;
-            default:
-                typeLabel = "알 수 없음";
-        }
-        return typeLabel;
-    };
 
     // 단일 체크박스 클릭시 checkedList update
     const checkClickEvent = (e: React.ChangeEvent<HTMLInputElement>, memberId: number) => {

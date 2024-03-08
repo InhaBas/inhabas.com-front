@@ -11,6 +11,7 @@ import { checkOne } from "../../../../Recoil/frontState";
 import { changeNameUserInterface } from "../../../../Types/IBAS/TypeMyinfo";
 
 import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
+import { ConvertLabel } from "../../../../Functions/convertLabelFunctions";
 
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
@@ -22,6 +23,7 @@ import Pagination from "../../../Common/Pagination";
 
 const MyChangeNameUserTable = () => {
     const { isAuthorizedOverVice } = GetRoleAuthorization();
+    const { convertStatusLabel } = ConvertLabel();
 
     const widthList = [50, 100, 150, 200, 200, 200, 100];
     const headerInfo = ["", "이름", "학번", "학과", "변경 전 이름", "변경 후 이름", "현황"];
@@ -47,27 +49,6 @@ const MyChangeNameUserTable = () => {
     const handleValueChange = (value: string) => {
         // 선택된 값을 업데이트
         setValue(value);
-    };
-
-    // 상태에 대한 레이블 변환
-    // 예: 승인, 거절, ...
-    const convertStatusLabel = (status: string) => {
-        let statusLabel = "";
-        switch (status) {
-            case "PENDING":
-                statusLabel = "대기중";
-                break;
-            case "APPROVED":
-                statusLabel = "승인";
-                break;
-            case "REJECTED":
-                statusLabel = "거절";
-                break;
-
-            default:
-                statusLabel = "알 수 없음";
-        }
-        return statusLabel;
     };
 
     // change Name fetch
