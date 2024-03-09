@@ -4,7 +4,10 @@ import { useRecoilState } from "recoil";
 
 import { tokenAccess } from "../Recoil/backState";
 
-const useFetch = (): [any, (url: string, method: string, token?: string, sendData?: any) => Promise<void>] => {
+const useFetch = (): [
+    any,
+    (url: string, method: string, token?: string, sendData?: any, media?: boolean) => Promise<void>
+] => {
     const navigate = useNavigate();
     const [data, setData] = useState<any>(null);
     const [access, setAccess] = useRecoilState(tokenAccess);
@@ -53,14 +56,15 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
         }
     };
 
-    const fetchData = async (url: string, method: string, token?: string, sendData?: any) => {
+    const fetchData = async (url: string, method: string, token?: string, sendData?: any, media?: boolean) => {
         try {
             let res;
             let result;
 
             let headers = {
                 Authorization: `Bearer ${access}`,
-                "Content-Type": "application/json",
+                // "Content-Type": media ? "multipart/form-data" : "application/json",
+                ...(media ? {} : { "Content-Type": "application/json" }),
             };
 
             const fetchWithoutToken = async () => {
@@ -91,15 +95,16 @@ const useFetch = (): [any, (url: string, method: string, token?: string, sendDat
             };
 
             const fetchWithToken = async () => {
-                if (method.toUpperCase() === "GET") {
+                if (method.toUpperCase() !== "GET") {
+                    let bodyData = media ? sendData : JSON.stringify(sendData);
                     res = await fetch(`${process.env.REACT_APP_API_URL}${url}`, {
                         method: method,
+                        body: bodyData,
                         headers: headers,
                     });
                 } else {
                     res = await fetch(`${process.env.REACT_APP_API_URL}${url}`, {
                         method: method,
-                        body: JSON.stringify(sendData),
                         headers: headers,
                     });
                 }

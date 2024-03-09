@@ -57,3 +57,9 @@ export const modalOpen = atom({
     key: "modalOpenState",
     default: false,
 });
+
+// dragNdrop
+export const selectedFile = atom<File[]>({
+    key: "selectedFile",
+    default: [],
+});
