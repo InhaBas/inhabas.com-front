@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import { modalInfo, modalOpen } from "../../../Recoil/frontState";
 import { FlexDiv } from "../../../styles/assets/Div";
+import ModalChangeImg from "./ModalChangeImg";
 import ModalChangeIntro from "./ModalChangeIntro";
 import ModalChangeName from "./ModalChangeName";
 import ModalChangeNumber from "./ModalChangeNumber";
@@ -47,6 +48,7 @@ export const Modal = () => {
                         (modalType.type === "changeName" && <ModalChangeName />) ||
                         (modalType.type === "changeNumber" && <ModalChangeNumber />) ||
                         (modalType.type === "changeMajor" && <ModalMajor />) ||
+                        (modalType.type === "changeImg" && <ModalChangeImg />) ||
                         (modalType.type === "changeIntro" && <ModalChangeIntro />) ||
                         (modalType.type === "changeType" && <ModalChangeType />) ||
                         (modalType.type === "historyPost" && <ModalHistory />) ||

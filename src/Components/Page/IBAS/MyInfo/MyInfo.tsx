@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 
 import { profileInfo } from "../../../../Recoil/backState";
+import { modalInfo, modalOpen } from "../../../../Recoil/frontState";
 
 import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
 
@@ -35,10 +36,8 @@ const MyInfo = () => {
     const navigate = useNavigate();
 
     const { isAuthorizedOverSecretary } = GetRoleAuthorization();
-
-    const movePageEvent = (url: string) => {
-        navigate(`/${url}`);
-    };
+    const setOpen = useSetRecoilState(modalOpen);
+    const setModalInfo = useSetRecoilState(modalInfo);
 
     // 탭 정보 설정
     const myInfoTabInfo = [
@@ -51,6 +50,15 @@ const MyInfo = () => {
 
     const [clicked, setclicked] = useState(4);
     const info = useRecoilValue(profileInfo);
+
+    const movePageEvent = (url: string) => {
+        navigate(`/${url}`);
+    };
+
+    const openModal = () => {
+        setOpen(true);
+        setModalInfo({ type: "changeImg" });
+    };
 
     return (
         <>
@@ -104,8 +112,9 @@ const MyInfo = () => {
                                 $padding="10px "
                                 $borderRadius={5}
                                 $HBackgroundColor="grey2"
+                                onClick={() => movePageEvent("staff/member")}
                             >
-                                <FlexDiv width="100%" onClick={() => movePageEvent("staff/member")}>
+                                <FlexDiv width="100%">
                                     <FlexDiv width="15px" height="15px" $margin="0 5px 0 0 ">
                                         <Img src="/images/users_white.svg" />
                                     </FlexDiv>
@@ -123,6 +132,7 @@ const MyInfo = () => {
                             $padding="10px"
                             $borderRadius={5}
                             $HBackgroundColor="bgColorHo"
+                            onClick={() => openModal()}
                         >
                             <FlexDiv width="100%">
                                 <FlexDiv width="15px" height="15px" $margin="0 5px 0 0 ">
