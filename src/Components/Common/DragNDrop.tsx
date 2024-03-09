@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useSetRecoilState } from "recoil";
+import { selectedFile } from "../../Recoil/frontState";
 import { Div, FlexDiv, InputLabel } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import { Input } from "../../styles/assets/Input";
@@ -12,6 +14,7 @@ interface DragNDropProps {
 const DragNDrop: React.FC<DragNDropProps> = ({ single = false, onlyImg = false }) => {
     const [previews, setPreviews] = useState<{ url: string; name: string; width: string; height: string }[]>([]);
     const [hover, setHover] = useState<number | null>(null);
+    const setSelectedFile = useSetRecoilState(selectedFile);
 
     const isImageFile = (file: File): boolean => {
         const acceptedImageTypes: string[] = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
@@ -20,8 +23,10 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single = false, onlyImg = false }
 
     const handleFileChange = (files: FileList | null): void => {
         if (files) {
+            const fileList = Array.from(files);
+            setSelectedFile(fileList);
             const newPreviews: { url: string; name: string; width: string; height: string }[] = [];
-            Array.from(files).forEach((file, index) => {
+            fileList.forEach((file, index) => {
                 if (index === 0 || !single) {
                     if (isImageFile(file)) {
                         const reader = new FileReader();
