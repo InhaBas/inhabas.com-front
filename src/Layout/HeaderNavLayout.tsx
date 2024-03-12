@@ -4,6 +4,7 @@ import Honor from "../Components/Page/IBAS/Honor";
 import Introduce from "../Components/Page/IBAS/Introduce";
 import Main from "../Components/Page/IBAS/Main";
 import MyInfo from "../Components/Page/IBAS/MyInfo/MyInfo";
+import Scholarship from "../Components/Page/IBAS/Scholarship/Scholarship";
 import { Div } from "../styles/assets/Div";
 import HeaderTitleLayout from "./HeaderTitleLayout";
 
@@ -18,6 +19,8 @@ const HeaderNavPage = () => {
                 <Route path="honor" element={<Honor />} />
 
                 <Route path="myInfo" element={<MyInfo />} />
+
+                <Route path="scholarship" element={<Scholarship />} />
 
                 <Route path="/*" element={<HeaderTitleLayout />} />
             </Routes>
