@@ -3,15 +3,17 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 
 import { theme } from "../../../../styles/theme";
 
-import { headerTitleInfo, scheduleInfo } from "../../../../Recoil/backState";
+import { headerTitleInfo, scheduleInfo, totalPolicy } from "../../../../Recoil/backState";
 
 import useFetch from "../../../../Hooks/useFetch";
 
+import { policyInterface } from "../../../../Types/TypeCommon";
 import Button from "../../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
-import { DateTime, NumberInput } from "../../../../styles/assets/Input";
+import { DateTime, NumberInput, TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
+import TextEditor from "../../../Common/TextEditor";
 
 const MyStaff = () => {
     let fontStyle: React.CSSProperties = {};
@@ -21,7 +23,16 @@ const MyStaff = () => {
     const setTitle = useSetRecoilState(headerTitleInfo);
     const [scheduleInfoData, fetchScheduleInfoData] = useFetch();
     const [putScheduleInfoData, fetchPutScheduleInfoData] = useFetch();
+
+    const [policyData1, policyFetchData1] = useFetch();
+    const [policyData2, policyFetchData2] = useFetch();
+    const [policyData3, policyFetchData3] = useFetch();
+    const [policy, setPolicy] = useRecoilState(totalPolicy);
+    const [putPolicyData, fetchPutPolicyData] = useFetch();
     const [schedule, setSchedule] = useRecoilState(scheduleInfo);
+
+    const editorRef = useRef<any[]>([]);
+    const editorTitleRef = useRef<any[]>([]);
 
     useEffect(() => {
         setTitle({
@@ -104,6 +115,17 @@ const MyStaff = () => {
         }
     };
 
+    const changeRule = (idx: number) => {
+        let inputData = {
+            // title: editorTitleRef.current[idx - 1]?.value,
+            content: editorRef.current[idx - 1].getInstance().getMarkdown(),
+        };
+
+        console.log(inputData);
+        fetchPutPolicyData(`/policy/${idx}`, "PUT", "token", inputData);
+    };
+
+    // 회원가입 일정
     useEffect(() => {
         fetchScheduleInfoData("/signUp/schedule", "GET");
     }, []);
@@ -118,6 +140,48 @@ const MyStaff = () => {
         if (putScheduleInfoData) {
             alert("정상적으로 적용되었습니다.");
         }
+    }, [putScheduleInfoData]);
+
+    // 정책 api 불러오기
+    // api 바뀌면 다시 조정
+    useEffect(() => {
+        policyFetchData1("/policy/1", "GET");
+    }, []);
+    useEffect(() => {
+        policyFetchData2("/policy/2", "GET");
+    }, []);
+    useEffect(() => {
+        policyFetchData3("/policy/3", "GET");
+    }, []);
+
+    useEffect(() => {
+        setPolicy([policyData1, policyData2, policyData3]);
+    }, [policyData1, policyData2, policyData3]);
+
+    useEffect(() => {
+        if (policy && policy.length > 0) {
+            policy.forEach((item: policyInterface, idx: number) => {
+                if (editorRef.current[idx]) {
+                    editorRef.current[idx].getInstance().setMarkdown(item?.content);
+                }
+            });
+        }
+    }, [policy]);
+
+    useEffect(() => {
+        if (putPolicyData) {
+            alert("정상적으로 적용되었습니다.");
+        }
+    }, [putScheduleInfoData]);
+
+    useEffect(() => {
+        policyFetchData1("/policy/1", "GET");
+    }, [putScheduleInfoData]);
+    useEffect(() => {
+        policyFetchData2("/policy/2", "GET");
+    }, [putScheduleInfoData]);
+    useEffect(() => {
+        policyFetchData3("/policy/3", "GET");
     }, [putScheduleInfoData]);
 
     return (
@@ -270,6 +334,68 @@ const MyStaff = () => {
                         </FlexDiv>
                     </Div>
                 </Div>
+
+                {policy &&
+                    policy.map((item: policyInterface, idx: number) => (
+                        <Div
+                            width="100%"
+                            $border="1px solid"
+                            $borderColor="border"
+                            $margin=" 0 0 20px 0"
+                            radius={6}
+                            key={`policy${idx}`}
+                        >
+                            <FlexDiv
+                                width=" 100%"
+                                $padding="20px"
+                                $justifycontent="start"
+                                $borderB={`1px solid ${theme.color.border}`}
+                            >
+                                <FlexDiv>
+                                    <FlexDiv width="20px" height="15px" $margin="0 10px 0 0">
+                                        <Img src="/images/user_purple.svg" />
+                                    </FlexDiv>
+                                    <Div>
+                                        <P fontWeight={600}>{item?.title} 설정</P>
+                                    </Div>
+                                </FlexDiv>
+                            </FlexDiv>
+                            <Div width="100%" $padding="50px">
+                                <TextInput
+                                    defaultValue={item?.title}
+                                    placeholder="정책 제목을 입력해주세요"
+                                    width="100%"
+                                    height="55px"
+                                    $margin="0 0 30px 0"
+                                    fontSize="lg"
+                                    ref={(el: never) => (editorTitleRef.current[idx] = el)}
+                                />
+                                <TextEditor key={`editor${idx}`} ref={(editor) => (editorRef.current[idx] = editor)} />
+
+                                <FlexDiv width="100%">
+                                    <Button
+                                        $backgroundColor="bgColor"
+                                        $HBackgroundColor="bgColorHo"
+                                        $padding="10px 15px"
+                                        $borderRadius={3}
+                                        $margin="30px 0 0 0"
+                                        onClick={() => changeRule(idx + 1)}
+                                    >
+                                        <FlexDiv>
+                                            <FlexDiv $margin="0 10px 0 0">
+                                                <Img src="/images/check_white.svg" />
+                                            </FlexDiv>
+                                            <FlexDiv>
+                                                <P color="wh" fontSize="sm">
+                                                    적용하기
+                                                </P>
+                                            </FlexDiv>
+                                        </FlexDiv>
+                                    </Button>
+                                </FlexDiv>
+                            </Div>
+                        </Div>
+                    ))}
             </Container>
         </FlexDiv>
     );

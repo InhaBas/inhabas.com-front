@@ -76,6 +76,11 @@ export const policyInfo = atom<policyInterface | null>({
     default: null,
 });
 
+export const totalPolicy = atom<policyInterface[] | null>({
+    key: "totalPolicyInterface",
+    default: [],
+});
+
 // myInfo
 export const profileInfo = atom<profileInterface | null>({
     key: "profileInfo",
