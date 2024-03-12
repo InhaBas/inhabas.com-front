@@ -4,6 +4,7 @@ import { Editor } from "@toast-ui/react-editor";
 // Color Syntax Plugin
 import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
 import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
+import { forwardRef } from "react";
 import "tui-color-picker/dist/tui-color-picker.css";
 
 const colorSyntaxOptions = {
@@ -27,9 +28,10 @@ const colorSyntaxOptions = {
     ],
 };
 
-const TextEditor = () => {
+const TextEditor = forwardRef((props, ref) => {
     return (
         <Editor
+            ref={ref as React.MutableRefObject<Editor>}
             height="500px"
             previewStyle="vertical"
             initialEditType="markdown"
@@ -45,6 +47,6 @@ const TextEditor = () => {
             plugins={[[colorSyntax, colorSyntaxOptions]]}
         />
     );
-};
+});
 
 export default TextEditor;
