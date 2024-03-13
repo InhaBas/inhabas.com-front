@@ -190,6 +190,11 @@ export const boardListInfo = atom({
     default: [],
 });
 
+export const boardListDataInfo = atom({
+    key: "boardListDataInfo",
+    default: [],
+});
+
 //lectureRoom
 export const lectureRoomInfo = atom({
     key: "lectureRoomInfo",
