@@ -10,6 +10,7 @@ import {
     scheduleInterface,
     userInterface,
 } from "../Types/IBAS/TypeMyinfo";
+import { boardMenuInterface } from "../Types/TypeBoard";
 import { chiefInterface, menuInterface, policyInterface } from "../Types/TypeCommon";
 
 //headerNav
@@ -185,8 +186,13 @@ export const staffInfo = atom<staffInterface[] | null>({
 });
 
 //board
-export const boardListInfo = atom({
-    key: "boardListInfo",
+export const boardMenuInfo = atom<boardMenuInterface[] | []>({
+    key: "boardMenuInfo",
+    default: [],
+});
+
+export const boardListDataInfo = atom({
+    key: "boardListDataInfo",
     default: [],
 });
 
