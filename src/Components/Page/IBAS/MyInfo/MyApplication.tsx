@@ -8,8 +8,10 @@ import { theme } from "../../../../styles/theme";
 import useFetch from "../../../../Hooks/useFetch";
 import { applicationAnswerInfo, applicationInfo, headerTitleInfo, tokenAccess } from "../../../../Recoil/backState";
 
-import dateFunction from "../../../../Functions/dateFunction";
+import { DateFunction } from "../../../../Functions/dateFunction";
+
 import { applicationAnswersInterface } from "../../../../Types/IBAS/TypeMyinfo";
+
 import Button from "../../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import P from "../../../../styles/assets/P";
@@ -39,6 +41,8 @@ const FailBtn = styled(Button)`
 const MyApplication = () => {
     const navigate = useNavigate();
     const memberId = useParams().id;
+
+    const { formatDateMinute } = DateFunction();
 
     const access = useRecoilValue(tokenAccess);
     const [applicationData, fetchApplicationData] = useFetch();
@@ -71,7 +75,7 @@ const MyApplication = () => {
                 major: applicationData.major,
                 email: applicationData.email,
                 phoneNumber: applicationData.phoneNumber,
-                dateJoined: dateFunction({ datejoined: applicationData.dateJoined }),
+                dateJoined: formatDateMinute({ date: applicationData.dateJoined }),
             };
 
             setApplication(contents);
