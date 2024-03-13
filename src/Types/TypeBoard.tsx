@@ -1,4 +1,4 @@
-// policy
+// board
 export interface boardListInterface {
     id?: number;
     title: string;
@@ -8,4 +8,10 @@ export interface boardListInterface {
     dateCreated: string;
     dateUpdated?: string;
     isPinned?: boolean;
+}
+
+export interface boardMenuInterface {
+    menuName: string;
+    count: string;
+    // boardType?: string;
 }

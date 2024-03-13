@@ -22,11 +22,12 @@ const NavigateTable = (props: NavigateTableProp) => {
     };
 
     return (
-        <Div width="100%" $borderB={`1px solid ${theme.color.grey1}`}>
+        <Div width="100%">
             <FlexDiv
                 width="100%"
                 height="45px"
                 $borderT={`1px solid ${theme.color.grey1}`}
+                $borderB={`1px solid ${theme.color.grey1}`}
                 $justifycontent="space-between"
                 $padding="0 18px"
             >
@@ -45,7 +46,7 @@ const NavigateTable = (props: NavigateTableProp) => {
                         </FlexDiv>
                     ))}
             </FlexDiv>
-            {contents &&
+            {contents.length !== 0 ? (
                 contents.map((element: object, idx: number) => (
                     <FlexDiv
                         key={`contentItem${idx}`}
@@ -75,7 +76,20 @@ const NavigateTable = (props: NavigateTableProp) => {
                             </FlexDiv>
                         ))}
                     </FlexDiv>
-                ))}
+                ))
+            ) : (
+                <FlexDiv
+                    width="100%"
+                    height="45px"
+                    $borderT={`1px solid ${theme.color.grey1}`}
+                    $padding="0 18px"
+                    $backgroundColor="wh"
+                >
+                    <Div>
+                        <P>게시글이 존재하지 않습니다</P>
+                    </Div>
+                </FlexDiv>
+            )}
         </Div>
     );
 };

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
@@ -41,13 +41,13 @@ const BoardList = () => {
 
     useEffect(() => {
         if (url === "opensource") {
-            fetchBoardListData("/board/storage", "GET", "token");
+            fetchBoardListData("/board/storage?page=0&size=15", "GET", "token");
         } else if (url === "alpha" || url === "beta") {
             console.log("sss");
         } else {
-            fetchBoardListData(`/board/${url}?page=0&size=10`, "GET", "token");
+            fetchBoardListData(`/board/${url}?page=0&size=15`, "GET", "token");
         }
-    }, []);
+    }, [url]);
 
     useEffect(() => {
         if (boardListData) {
@@ -63,6 +63,8 @@ const BoardList = () => {
         }
     }, [boardListData]);
 
+    useEffect(() => setBoardList([]), [url]);
+
     return (
         <Container $alignitems="start">
             <StickyDiv $padding="0 15px">
@@ -75,7 +77,9 @@ const BoardList = () => {
                 </Div>
             </StickyDiv>
             <Div $padding="0 15px">
-                <NavigateTable header={headerInfo} width={widthList} contents={boardList} url="detail" />
+                <Suspense fallback={<Img src="/images/loading.svg" />}>
+                    <NavigateTable header={headerInfo} width={widthList} contents={boardList} url="detail" />
+                </Suspense>
                 <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">
                     <Button
                         display="flex"

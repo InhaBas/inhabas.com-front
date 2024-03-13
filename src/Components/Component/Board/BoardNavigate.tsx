@@ -1,67 +1,48 @@
-import { useEffect } from "react"
-import { useRecoilState } from "recoil"
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
 
-import { theme } from "../../../styles/theme"
+import { theme } from "../../../styles/theme";
 
-import { boardListInfo } from "../../../Recoil/backState"
+import useFetch from "../../../Hooks/useFetch";
 
-import { useNavigate } from "react-router-dom"
-import { Div, FlexDiv } from "../../../styles/assets/Div"
-import P from "../../../styles/assets/P"
+import { boardMenuInfo } from "../../../Recoil/backState";
+
+import { Div, FlexDiv } from "../../../styles/assets/Div";
+import P from "../../../styles/assets/P";
+import { boardMenuInterface } from "../../../Types/TypeBoard";
 
 const BoardNavigate = () => {
-    const navigate = useNavigate()
-    const tempMenu = [
-        {
-            id: 0,
-            group_name: "전체 게시글",
-            total: 32,
-            url: "total",
-        },
-        {
-            id: 1,
-            group_name: "공지사항",
-            total: 22,
-            url: "announce",
-        },
-        {
-            id: 2,
-            group_name: "자유게시판",
-            total: 5,
-            url: "free",
-        },
-        {
-            id: 3,
-            group_name: "질문게시판",
-            total: 2,
-            url: "question",
-        },
-        {
-            id: 4,
-            group_name: "공모전게시판",
-            total: 26,
-            url: "contest",
-        },
-        {
-            id: 5,
-            group_name: "활동게시판",
-            total: 37,
-            url: "activity",
-        },
-    ]
+    const navigate = useNavigate();
+    //     {
+    //         id: 0,
+    //         group_name: "전체 게시글",
+    //         total: 32,
+    //         url: "total",
+    //     },
+    //
 
     const movePageEvent = (url: string) => {
-        navigate(`/${url}`)
-    }
+        navigate(`/${url}`);
+    };
 
-    const [menu, setMenu] = useRecoilState<any>(boardListInfo)
+    const [menu, setMenu] = useRecoilState<boardMenuInterface[]>(boardMenuInfo);
+    const [menuData, fetchMenuData] = useFetch();
 
     useEffect(() => {
-        setMenu(tempMenu)
-        // return () => {
-        //     setMenu({})
-        // }
-    }, [])
+        fetchMenuData("/board/count", "GET", "token");
+    }, []);
+
+    // api 바뀌면 url 요소 추가하기
+    useEffect(() => {
+        if (menuData) {
+            const contents = Object.values(menuData).map((item: any) => ({
+                menuName: item.menuName,
+                count: item.count,
+            }));
+            setMenu(contents);
+        }
+    }, [menuData]);
 
     return (
         <>
@@ -73,36 +54,36 @@ const BoardNavigate = () => {
                 </Div>
 
                 <Div width="100%">
-                    {menu?.map((item: any, idx: number) => {
-                        return (
-                            <Div key={idx} width="100%">
-                                <FlexDiv
-                                    width="100%"
-                                    $padding="15px 0"
-                                    $justifycontent="space-between"
-                                    $borderT={idx !== 0 ? `1px dashed ${theme.color.border}` : "none"}
-                                    onClick={() => movePageEvent(item.url)}
-                                    $pointer
-                                >
-                                    <Div>
-                                        <P color="grey" fontSize="sm" fontWeight={400}>
-                                            {item.group_name}
-                                        </P>
-                                    </Div>
-                                    <Div>
-                                        <P color="grey" fontSize="sm" fontWeight={400}>
-                                            ({item.total - 1}+)
-                                        </P>
-                                    </Div>
-                                </FlexDiv>
-                            </Div>
-                        )
-                    })}
-                    {/* <Button onClick={tmpEvent}>ddd</Button> */}
+                    {menu &&
+                        menu.map((item: any, idx: number) => {
+                            return (
+                                <Div key={idx} width="100%">
+                                    <FlexDiv
+                                        width="100%"
+                                        $padding="15px 0"
+                                        $justifycontent="space-between"
+                                        $borderT={idx !== 0 ? `1px dashed ${theme.color.border}` : "none"}
+                                        onClick={() => movePageEvent(item.url)}
+                                        $pointer
+                                    >
+                                        <Div>
+                                            <P color="grey" fontSize="sm" fontWeight={400}>
+                                                {item.menuName}
+                                            </P>
+                                        </Div>
+                                        <Div>
+                                            <P color="grey" fontSize="sm" fontWeight={400}>
+                                                ({item.count})
+                                            </P>
+                                        </Div>
+                                    </FlexDiv>
+                                </Div>
+                            );
+                        })}
                 </Div>
             </Div>
         </>
-    )
-}
+    );
+};
 
-export default BoardNavigate
+export default BoardNavigate;
