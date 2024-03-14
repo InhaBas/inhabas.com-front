@@ -125,7 +125,6 @@ const Scholarship = () => {
                     </Div>
                 </FlexDiv>
 
-
             </ScholarshipSection>
         </>
     );
