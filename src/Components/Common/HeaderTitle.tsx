@@ -107,6 +107,13 @@ const HeaderTitle = () => {
 
     useEffect(() => {
         const id = titleInfo(pathNameInfo[0], pathNameInfo[1]);
+        if (title.name === null) {
+            fetchTitleData(`/menu/${id}`, "GET");
+        }
+    }, []);
+
+    useEffect(() => {
+        const id = titleInfo(pathNameInfo[0], pathNameInfo[1]);
         // 이전 titleId와 새로운 titleId가 다를 때에만 fetchTitleData 호출
 
         if (Object.keys(nav).length === 0) {
@@ -115,23 +122,29 @@ const HeaderTitle = () => {
     }, [pathNameInfo[0], pathNameInfo[1]]); // pathNameInfo와 titleId가 변경될 때마다 useEffect가 실행되도록 함
 
     useEffect(() => {
-        setTitle(titleData);
+        if (titleData) {
+            setTitle(titleData);
+        }
         return () => setTitle({ name: "", description: "" });
     }, [titleData]);
 
     return (
         <>
             <HeaderHDiv $zIndex={2} width="100%" height="423px" $backgroundColor="bklayer" direction="column">
-                <Div $margin="0 0 20px 0">
-                    <H1 color="wh" fontWeight={700} fontSize="xxxl">
-                        {title && title.name}
-                    </H1>
-                </Div>
-                <Div>
-                    <P color="grey3" fontWeight={300} fontSize="lg">
-                        {title && title.description}
-                    </P>
-                </Div>
+                {title && (
+                    <>
+                        <Div $margin="0 0 20px 0">
+                            <H1 color="wh" fontWeight={700} fontSize="xxxl">
+                                {title.name}
+                            </H1>
+                        </Div>
+                        <Div>
+                            <P color="grey3" fontWeight={300} fontSize="lg">
+                                {title.description}
+                            </P>
+                        </Div>
+                    </>
+                )}
             </HeaderHDiv>
             <HeaderImgDiv width="100%" height="423px" />
         </>
