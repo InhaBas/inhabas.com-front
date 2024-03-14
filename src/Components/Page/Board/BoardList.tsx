@@ -54,8 +54,8 @@ const BoardList = () => {
             const contents = boardListData.data.map((item: boardListInterface, idx: number) => ({
                 id: idx + 1,
                 title: item.title,
-                dateCreated: formatDateDay({ date: item.dateCreated }),
                 writerName: item.writerName,
+                dateCreated: formatDateDay({ date: item.dateCreated }),
                 isPinned: item.isPinned,
             }));
             setBoardList(contents);
@@ -95,7 +95,7 @@ const BoardList = () => {
                             </Div>
                         </FlexDiv>
                         <Div $pointer height="15px">
-                            <A color="wh" fontSize="sm" href="/board/create" $hoverColor="wh">
+                            <A color="wh" fontSize="sm" href={`/board/${url}/create`} $hoverColor="wh">
                                 게시글 작성
                             </A>
                         </Div>
