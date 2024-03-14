@@ -26,3 +26,10 @@ export interface scholarshipHistoryInterface {
         content: string;
     }[];
 }
+
+export interface scholarshipDetailListInterface {
+    contents: {
+        date: string;
+        content: string;
+    }[];
+}
