@@ -19,7 +19,7 @@ export interface historyInterface {
 }
 
 // scholarship
-export interface changesInterface {
+export interface scholarshipHistoryInterface {
     year: number | null;
     contents: {
         date: string;

@@ -1,10 +1,10 @@
 import { Div, FlexDiv } from "../../../../styles/assets/Div"
 import P from "../../../../styles/assets/P"
 
-import { changesInterface } from "../../../../Types/IBAS/TypeIBAS"
+import { scholarshipHistoryInterface } from "../../../../Types/IBAS/TypeIBAS"
 
 // 년도와 날짜 별 콘텐츠
-const ChangesContent: React.FC<changesInterface> = ({year, contents}) => {
+const ChangesContent: React.FC<scholarshipHistoryInterface> = ({year, contents}) => {
     return (
         <>
             <Div>
