@@ -17,3 +17,12 @@ export interface historyInterface {
     dateHistory: string;
     year?: string;
 }
+
+// scholarship
+export interface scholarshipHistoryInterface {
+    year: number | null;
+    contents: {
+        date: string;
+        content: string;
+    }[];
+}
