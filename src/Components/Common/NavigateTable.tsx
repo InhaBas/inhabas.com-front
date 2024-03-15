@@ -13,6 +13,7 @@ type NavigateTableProp = {
 };
 
 // navigate url, headerInfo, widthList, contents를 props로 받아올 것
+// contents 에서 첫 요소는 idx + 1을, 두번째 요소는 데이터 id 값을, 3번째 요소는 title을 받아와야 함
 const NavigateTable = (props: NavigateTableProp) => {
     const { contents, url, width, header } = props;
     const navigate = useNavigate();
@@ -36,7 +37,7 @@ const NavigateTable = (props: NavigateTableProp) => {
                         <FlexDiv
                             key={`headerInfo${idx}`}
                             width={width && `${width[idx]}px`}
-                            $justifycontent={idx === 0 || idx === 1 ? "start" : "center"}
+                            $justifycontent={idx === 0 || idx === 2 ? "start" : "center"}
                         >
                             <Div>
                                 <P fontWeight={idx === 0 ? 800 : 500} color={idx === 0 ? "grey3" : "bk"}>
@@ -56,22 +57,24 @@ const NavigateTable = (props: NavigateTableProp) => {
                         $padding="0 18px"
                         $backgroundColor="wh"
                     >
-                        {Object.values(element).map((item, idx) => (
+                        {Object.entries(element).map(([key, value], idx) => (
                             <FlexDiv
                                 key={`itemValue${idx}`}
                                 width={width && `${width[idx]}px`}
-                                $justifycontent={idx === 0 || idx === 1 ? "start" : "center"}
-                                onClick={() => url && idx === 1 && movePage(url, (element as { id: number }).id)}
-                                $pointer={url && idx === 1 ? true : false}
+                                $justifycontent={idx === 0 || idx === 2 ? "start" : "center"}
+                                onClick={() => url && idx === 2 && movePage(url, (element as { id: number }).id)}
+                                $pointer={url && idx === 2 ? true : false}
                             >
                                 <Div>
-                                    <A
-                                        $hoverColor={idx === 1 ? "textColor" : idx === 0 ? "grey3" : "bk"}
-                                        fontWeight={idx === 1 ? 700 : idx === 0 ? 900 : 500}
-                                        color={idx === 0 ? "grey3" : "bk"}
-                                    >
-                                        {item}
-                                    </A>
+                                    {key !== "id" && (
+                                        <A
+                                            $hoverColor={idx === 2 ? "textColor" : idx === 0 ? "grey3" : "bk"}
+                                            fontWeight={idx === 2 ? 700 : idx === 0 ? 900 : 500}
+                                            color={idx === 0 ? "grey3" : "bk"}
+                                        >
+                                            {value}
+                                        </A>
+                                    )}
                                 </Div>
                             </FlexDiv>
                         ))}

@@ -27,8 +27,8 @@ const StickyDiv = styled(Div)`
 `;
 
 const BoardList = () => {
-    const headerInfo = ["no.", "제목", "작성자", "작성일"];
-    const widthList = [45, 450, 120, 120];
+    const headerInfo = ["no.", "", "제목", "작성자", "작성일"];
+    const widthList = [45, 0, 450, 120, 120];
 
     const { formatDateDay } = DateFunction();
 
@@ -54,7 +54,8 @@ const BoardList = () => {
     useEffect(() => {
         if (boardListData) {
             const contents = boardListData.data.map((item: boardListInterface, idx: number) => ({
-                id: idx + 1,
+                number: idx + 1,
+                id: item.id,
                 title: item.title,
                 writerName: item.writerName,
                 dateCreated: formatDateDay({ date: item.dateCreated }),
