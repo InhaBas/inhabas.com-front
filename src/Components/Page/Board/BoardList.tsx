@@ -1,11 +1,11 @@
 import { Suspense, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 
 import useFetch from "../../../Hooks/useFetch";
 
-import { boardListDataInfo, totalPageInfo } from "../../../Recoil/backState";
+import { boardListDataInfo, tokenAccess, totalPageInfo } from "../../../Recoil/backState";
 
 import { boardListInterface } from "../../../Types/TypeBoard";
 
@@ -35,20 +35,10 @@ const BoardList = () => {
     const location = useLocation();
     const url = location.pathname.split("/")[2];
 
+    const access = useRecoilValue(tokenAccess);
     const [boardList, setBoardList] = useRecoilState(boardListDataInfo);
     const [boardListData, fetchBoardListData] = useFetch();
     const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
-
-    // 페이지 내 새로고침용
-    useEffect(() => {
-        if (url === "opensource") {
-            fetchBoardListData("/board/storage?page=0&size=15", "GET", "token");
-        } else if (url === "alpha" || url === "beta") {
-            console.log("sss");
-        } else {
-            fetchBoardListData(`/board/${url}?page=0&size=15`, "GET", "token");
-        }
-    }, []);
 
     // url 바뀔 때마다 해당 table fetch 할 수 있도록
     useEffect(() => {
@@ -59,7 +49,7 @@ const BoardList = () => {
         } else {
             fetchBoardListData(`/board/${url}?page=0&size=15`, "GET", "token");
         }
-    }, [url]);
+    }, [url, access]);
 
     useEffect(() => {
         if (boardListData) {
