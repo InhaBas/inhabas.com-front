@@ -15,3 +15,27 @@ export interface boardMenuInterface {
     count: string;
     // boardType?: string;
 }
+
+export interface boardDetailInterface {
+    id: number;
+    title: string;
+    content: string;
+    writerId?: 2;
+    writerName: string;
+    datePinExpiration?: string;
+    dateCreated: string;
+    dateUpdated: string;
+    images?: [
+        {
+            name: string;
+            url: string;
+        }
+    ];
+    otherFiles?: [
+        {
+            name: string;
+            url: string;
+        }
+    ];
+    isPinned?: boolean;
+}

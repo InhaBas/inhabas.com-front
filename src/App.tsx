@@ -1,8 +1,13 @@
+import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+
 import { ThemeProvider } from "styled-components";
 
 import GlobalStyle from "./styles/Globalstyles";
 import { theme } from "./styles/theme";
+
+import { tokenAccess } from "./Recoil/backState";
 
 import Bottom from "./Components/Common/Bottom";
 import Carousel from "./Components/Common/Carousel";
@@ -16,13 +21,13 @@ import HeaderNavLayout from "./Layout/HeaderNavLayout";
 
 import { Div } from "./styles/assets/Div";
 
-import { useEffect } from "react";
-import { useRecoilValue } from "recoil";
-import { tokenAccess } from "./Recoil/backState";
+import "./index.css";
 
 const App = () => {
     const access = useRecoilValue(tokenAccess);
+
     useEffect(() => console.log(access), [access]);
+
     return (
         <ThemeProvider theme={theme}>
             <GlobalStyle />
@@ -38,6 +43,7 @@ const App = () => {
                     <Route path="rule/:id" element={<Rule />} />
                     <Route path="/*" element={<HeaderNavLayout />} />
                 </Routes>
+
                 <Bottom />
             </Div>
         </ThemeProvider>
