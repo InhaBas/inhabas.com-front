@@ -44,6 +44,7 @@ const BoardList = () => {
 
     // url 바뀔 때마다 해당 table fetch 할 수 있도록
     useEffect(() => {
+        setIsLoading(true);
         if (url === "opensource") {
             fetchBoardListData("/board/storage?page=0&size=15", "GET", "token");
         } else if (url === "alpha" || url === "beta") {
