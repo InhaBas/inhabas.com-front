@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
@@ -16,6 +16,7 @@ import Button from "../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
 
+import Loading from "../../Common/Loading";
 import NavigateTable from "../../Common/NavigateTable";
 import Pagination from "../../Common/Pagination";
 import BoardNavigate from "../../Component/Board/BoardNavigate";
@@ -39,6 +40,7 @@ const BoardList = () => {
     const [boardList, setBoardList] = useRecoilState(boardListDataInfo);
     const [boardListData, fetchBoardListData] = useFetch();
     const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
+    const [isLoading, setIsLoading] = useState(true);
 
     // url 바뀔 때마다 해당 table fetch 할 수 있도록
     useEffect(() => {
@@ -63,57 +65,64 @@ const BoardList = () => {
             }));
             setBoardList(contents);
             setTotalPage(boardListData.pageInfo.totalPages);
+            setIsLoading(false);
         }
     }, [boardListData]);
 
     useEffect(() => setBoardList([]), [url]);
 
     return (
-        <Container $alignitems="start">
-            <StickyDiv $padding="0 15px">
-                <Div $margin="0 0 30px 0">
-                    <BoardSearch />
-                </Div>
-
-                <Div>
-                    <BoardNavigate />
-                </Div>
-            </StickyDiv>
-            <Div $padding="0 15px">
-                <Suspense fallback={<Img src="/images/loading.svg" />}>
-                    <NavigateTable header={headerInfo} width={widthList} contents={boardList} url="detail" />
-                </Suspense>
-                <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">
-                    <Button
-                        display="flex"
-                        $backgroundColor="bgColor"
-                        $margin="0 10px 0 0"
-                        $padding="12px 15px"
-                        $borderRadius={30}
-                        $HBackgroundColor="bgColorHo"
-                    >
-                        <FlexDiv height="15px">
-                            <Div width="12px" height="12px" $margin="0 10px 0 0">
-                                <Img src="/images/plus_white.svg" />
-                            </Div>
-                        </FlexDiv>
-                        <Div $pointer height="15px">
-                            <A color="wh" fontSize="sm" href={`/board/${url}/create`} $hoverColor="wh">
-                                게시글 작성
-                            </A>
+        <>
+            {isLoading ? (
+                <Loading />
+            ) : (
+                <Container $alignitems="start">
+                    <StickyDiv $padding="0 15px">
+                        <Div $margin="0 0 30px 0">
+                            <BoardSearch />
                         </Div>
-                    </Button>
-                </FlexDiv>
-                {boardList && boardList.length !== 0 && (
-                    <Pagination
-                        totalPage={totalPage}
-                        fetchUrl={`/board/${url}?`}
-                        token
-                        paginationFetch={fetchBoardListData}
-                    />
-                )}
-            </Div>
-        </Container>
+
+                        <Div>
+                            <BoardNavigate />
+                        </Div>
+                    </StickyDiv>
+                    <Div $padding="0 15px">
+                        <Suspense fallback={<Img src="/images/loading.svg" />}>
+                            <NavigateTable header={headerInfo} width={widthList} contents={boardList} url="detail" />
+                        </Suspense>
+                        <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">
+                            <Button
+                                display="flex"
+                                $backgroundColor="bgColor"
+                                $margin="0 10px 0 0"
+                                $padding="12px 15px"
+                                $borderRadius={30}
+                                $HBackgroundColor="bgColorHo"
+                            >
+                                <FlexDiv height="15px">
+                                    <Div width="12px" height="12px" $margin="0 10px 0 0">
+                                        <Img src="/images/plus_white.svg" />
+                                    </Div>
+                                </FlexDiv>
+                                <Div $pointer height="15px">
+                                    <A color="wh" fontSize="sm" href={`/board/${url}/create`} $hoverColor="wh">
+                                        게시글 작성
+                                    </A>
+                                </Div>
+                            </Button>
+                        </FlexDiv>
+                        {boardList && boardList.length !== 0 && (
+                            <Pagination
+                                totalPage={totalPage}
+                                fetchUrl={`/board/${url}?`}
+                                token
+                                paginationFetch={fetchBoardListData}
+                            />
+                        )}
+                    </Div>
+                </Container>
+            )}
+        </>
     );
 };
 

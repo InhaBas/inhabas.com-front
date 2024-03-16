@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 
 import { theme } from "../../../styles/theme";
 
-import { boardDetailData } from "../../../Recoil/backState";
+import { boardDetailData, tokenAccess } from "../../../Recoil/backState";
 
 import useFetch from "../../../Hooks/useFetch";
 
@@ -19,6 +19,7 @@ import { DetailContainer, Div, FlexDiv } from "../../../styles/assets/Div";
 import { H2 } from "../../../styles/assets/H";
 import Img from "../../../styles/assets/Img";
 import P from "../../../styles/assets/P";
+import Loading from "../../Common/Loading";
 import TextViewer from "../../Common/TextViewer";
 
 const HorizonScrollDiv = styled(Div)`
@@ -37,6 +38,7 @@ const BoardDetail = () => {
     const [detail, setDetail] = useRecoilState(boardDetailData);
     const [detailData, detailDataFetch] = useFetch();
     const [isLoading, setIsLoading] = useState(true);
+    const access = useRecoilValue(tokenAccess);
 
     const openWindow = (url: string) => {
         window.open(url);
@@ -44,11 +46,10 @@ const BoardDetail = () => {
 
     useEffect(() => {
         detailDataFetch(`/board/${url}/${boardId}`, "GET", "token");
-    }, []);
+    }, [access]);
 
     useEffect(() => {
         if (detailData) {
-            console.log(22);
             setDetail(detailData);
             setIsLoading(false);
         }
@@ -58,11 +59,7 @@ const BoardDetail = () => {
     return (
         <>
             {isLoading ? (
-                <FlexDiv width="100%" height="100vh">
-                    <FlexDiv width="50px">
-                        <Img src="/images/loading.svg" />
-                    </FlexDiv>
-                </FlexDiv>
+                <Loading />
             ) : (
                 <FlexDiv width="100%">
                     <DetailContainer $alignitems="start">
