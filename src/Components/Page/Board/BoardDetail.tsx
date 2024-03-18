@@ -37,6 +37,7 @@ const BoardDetail = () => {
 
     const [detail, setDetail] = useRecoilState(boardDetailData);
     const [detailData, detailDataFetch] = useFetch();
+    const [deleteData, deleteDataFetch] = useFetch();
     const [isLoading, setIsLoading] = useState(true);
     const access = useRecoilValue(tokenAccess);
 
@@ -44,7 +45,13 @@ const BoardDetail = () => {
         window.open(url);
     };
 
+    const deleteDetail = () => {
+        setIsLoading(true);
+        deleteDataFetch(`/board/${url}/${boardId}`, "DELETE", "token");
+    };
+
     useEffect(() => {
+        setIsLoading(true);
         detailDataFetch(`/board/${url}/${boardId}`, "GET", "token");
     }, [access]);
 
@@ -55,6 +62,15 @@ const BoardDetail = () => {
         }
         return () => setDetail(null);
     }, [detailData]);
+
+    useEffect(() => {
+        if (deleteData) {
+            alert("게시글이 삭제 되었습니다");
+            setIsLoading(false);
+            navigate(`/board/${url}`);
+        }
+        return () => setDetail(null);
+    }, [deleteData]);
 
     return (
         <>
@@ -172,6 +188,7 @@ const BoardDetail = () => {
                                     $padding="12px 15px"
                                     $borderRadius={30}
                                     $HBackgroundColor="red"
+                                    onClick={() => deleteDetail()}
                                 >
                                     <Div width="12px" $margin="0 10px 0 0">
                                         <Img src="/images/trash_white.svg" />
