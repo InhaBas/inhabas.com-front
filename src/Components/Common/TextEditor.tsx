@@ -28,13 +28,14 @@ const colorSyntaxOptions = {
     ],
 };
 
-const TextEditor = forwardRef((props, ref) => {
+const TextEditor = forwardRef(({ initialContent }: { initialContent?: string }, ref) => {
     return (
         <Editor
             ref={ref as React.MutableRefObject<Editor>}
             height="500px"
             previewStyle="vertical"
             initialEditType="markdown"
+            initialValue={initialContent}
             toolbarItems={[
                 // 툴바 옵션 설정
                 ["heading", "bold", "italic", "strike"],
