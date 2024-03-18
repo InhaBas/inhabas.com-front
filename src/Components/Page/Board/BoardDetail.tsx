@@ -155,6 +155,7 @@ const BoardDetail = () => {
                                     $padding="12px 15px"
                                     $borderRadius={30}
                                     $HBackgroundColor="bgColorHo"
+                                    onClick={() => navigate(`/board/${url}/update/${boardId}`)}
                                 >
                                     <Div width="12px" $margin="0 10px 0 0">
                                         <Img src="/images/pencil_white.svg" />

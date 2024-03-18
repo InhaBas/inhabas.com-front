@@ -1,31 +1,45 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { theme } from "../../../styles/theme";
 
 import DragNDrop from "../../Common/DragNDrop";
 import Dropdown from "../../Common/Dropdown";
-import TextEditor from "../../Common/TextEditor";
 
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import useFetch from "../../../Hooks/useFetch";
+import { boardDetailData } from "../../../Recoil/backState";
 import { selectedFile } from "../../../Recoil/frontState";
 import Button from "../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
 import { TextInput } from "../../../styles/assets/Input";
 import P from "../../../styles/assets/P";
+import TextEditor from "../../Common/TextEditor";
 
 const BoardCreate = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const url = location.pathname.split("/")[2];
+    const paramID = useParams().id;
 
     const inputRef = useRef<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [pinValue, setPinValue] = useState("");
     const [postData, postFetchData] = useFetch();
+    const [getData, getFetchData] = useFetch();
+    const [putData, putFetchData] = useFetch();
     const [files, setFiles] = useRecoilState(selectedFile);
+    const [update, setUpdate] = useState("create");
+    const [detail, setDetail] = useRecoilState(boardDetailData);
+    const setSelectedFile = useSetRecoilState(selectedFile);
+
+    useEffect(() => {
+        if (paramID) {
+            console.log(111);
+            setUpdate("update");
+        }
+    }, []);
 
     // select 값 선택에 따른 state 변경 이벤트
     const handlePinChange = (value: string) => {
@@ -62,8 +76,21 @@ const BoardCreate = () => {
             for (let i = 0; i < files.length; i++) {
                 formdata.append("files", files[i]);
             }
+            // // FormData의 key 확인
+            // for (let key of formdata.keys()) {
+            //     console.log(key);
+            // }
 
-            postFetchData(`/board/${url}`, "POST", "token", formdata, true);
+            // // FormData의 value 확인
+            // for (let value of formdata.values()) {
+            //     console.log(value);
+            // }
+            console.log(inputData);
+            if (update === "create") {
+                postFetchData(`/board/${url}`, "POST", "token", formdata, true);
+            } else if (update === "update") {
+                postFetchData(`/board/${url}/${paramID}`, "POST", "token", formdata, true);
+            }
         }
     };
 
@@ -73,7 +100,25 @@ const BoardCreate = () => {
             alert("글이 정상적으로 등록되었습니다");
             navigate(`/board/${url}`);
         }
-    });
+    }, [postData]);
+
+    useEffect(() => {
+        console.log(1122);
+        console.log(update);
+        if (update == "update") {
+            console.log(2333);
+            getFetchData(`/board/${url}/${paramID}`, "GET", "token"); // 로딩 상태 해제
+        }
+    }, [update]);
+
+    useEffect(() => {
+        if (getData) {
+            setDetail(getData);
+            setIsLoading(false);
+            setSelectedFile([getData.otherFiles, getData.images]);
+        }
+        return () => setDetail(null);
+    }, [getData]);
 
     return (
         <FlexDiv width="100%">
@@ -132,6 +177,7 @@ const BoardCreate = () => {
                                     fontSize="xl"
                                     $borderRadius={5}
                                     ref={(el: never) => (inputRef.current[0] = el)}
+                                    defaultValue={detail?.title}
                                 ></TextInput>
                             </Div>
                         </Div>
@@ -140,7 +186,10 @@ const BoardCreate = () => {
                             <DragNDrop />
                         </Div>
                         <Div width="100%" $padding="20px">
-                            <TextEditor ref={(el: never) => (inputRef.current[1] = el)} />
+                            <TextEditor
+                                ref={(el: never) => (inputRef.current[1] = el)}
+                                initialContent={detail?.content}
+                            />
                         </Div>
                     </Div>
 
@@ -153,7 +202,7 @@ const BoardCreate = () => {
                             width="400px"
                             onClick={() => sendInput()}
                         >
-                            <P color="wh">작성하기</P>
+                            {update === "create" ? <P color="wh">작성하기</P> : <P color="wh">수정하기</P>}
                         </Button>
                     </FlexDiv>
                 </Div>
