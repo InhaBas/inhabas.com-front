@@ -42,16 +42,26 @@ const BoardList = () => {
     const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
     const [isLoading, setIsLoading] = useState(true);
 
+    let fetchUrl: string;
+    if (url === "alpha") {
+        fetchUrl = "/project/alpha";
+    } else if (url === "beta") {
+        fetchUrl = "/project/beta";
+    } else if (url === "scholarship-sponsor") {
+        fetchUrl = "/scholarship/sponsor";
+    } else if (url === "scholarship-usage") {
+        fetchUrl = "/scholarship/usage";
+    } else if (url === "opensource") {
+        fetchUrl = "/board/storage";
+    } else {
+        fetchUrl = `/board/${url}`;
+    }
+
     // url 바뀔 때마다 해당 table fetch 할 수 있도록
     useEffect(() => {
         setIsLoading(true);
-        if (url === "opensource") {
-            fetchBoardListData("/board/storage?page=0&size=15", "GET", "token");
-        } else if (url === "alpha" || url === "beta") {
-            console.log("sss");
-        } else {
-            fetchBoardListData(`/board/${url}?page=0&size=15`, "GET", "token");
-        }
+
+        fetchBoardListData(`${fetchUrl}`, "GET", "token");
     }, [url, access]);
 
     useEffect(() => {
