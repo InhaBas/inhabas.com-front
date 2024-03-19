@@ -38,6 +38,14 @@ const BoardRoute = () => {
             <Route path="beta" element={<BoardList />} />
             <Route path="beta/detail/:id" element={<BoardDetail />} />
             <Route path="beta/create" element={<BoardCreate />} />
+
+            <Route path="scholarship-sponsor" element={<BoardList />} />
+            <Route path="scholarship-sponsor/detail/:id" element={<BoardDetail />} />
+            <Route path="scholarship-sponsor/create" element={<BoardCreate />} />
+
+            <Route path="scholarchip-usage" element={<BoardList />} />
+            <Route path="scholarship-usage/detail/:id" element={<BoardDetail />} />
+            <Route path="scholarship-usage/create" element={<BoardCreate />} />
         </Routes>
     );
 };

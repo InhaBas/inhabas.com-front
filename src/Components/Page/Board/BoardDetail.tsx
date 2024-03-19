@@ -41,19 +41,36 @@ const BoardDetail = () => {
     const [isLoading, setIsLoading] = useState(true);
     const access = useRecoilValue(tokenAccess);
 
+    let fetchUrl: string;
+    if (url === "alpha") {
+        fetchUrl = "/project/alpha";
+    } else if (url === "beta") {
+        fetchUrl = "/project/beta";
+    } else if (url === "scholarship-sponsor") {
+        fetchUrl = "/scholarship/sponsor";
+    } else if (url === "scholarship-usage") {
+        fetchUrl = "/scholarship/usage";
+    } else if (url === "opensource") {
+        fetchUrl = "/board/storage";
+    } else {
+        fetchUrl = `/board/${url}`;
+    }
+
     const openWindow = (url: string) => {
         window.open(url);
     };
 
     const deleteDetail = () => {
-        setIsLoading(true);
-        deleteDataFetch(`/board/${url}/${boardId}`, "DELETE", "token");
+        if (window.confirm("정말 삭제 하시겠습니까?")) {
+            setIsLoading(true);
+            deleteDataFetch(`${fetchUrl}/${boardId}`, "DELETE", "token");
+        }
     };
 
     useEffect(() => {
         setIsLoading(true);
-        detailDataFetch(`/board/${url}/${boardId}`, "GET", "token");
-    }, [access]);
+        detailDataFetch(`${fetchUrl}/${boardId}`, "GET", "token");
+    }, [access, url]);
 
     useEffect(() => {
         if (detailData) {

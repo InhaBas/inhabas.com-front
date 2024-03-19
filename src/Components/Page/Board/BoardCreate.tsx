@@ -50,6 +50,22 @@ const BoardCreate = () => {
     const sendInput = () => {
         let check = true;
 
+        const url = location.pathname.split("/")[2];
+        let fetchUrl;
+        if (url === "alpha") {
+            fetchUrl = "/project/alpha";
+        } else if (url === "beta") {
+            fetchUrl = "/project/beta";
+        } else if (url === "scholarship-sponsor") {
+            fetchUrl = "/scholarship/sponsor";
+        } else if (url === "scholarship-usage") {
+            fetchUrl = "/scholarship/usage";
+        } else if (url === "opensource") {
+            fetchUrl = "/board/storage";
+        } else {
+            fetchUrl = `/board/${url}`;
+        }
+
         if (check && inputRef.current[0].value === "") {
             alert("제목을 입력해주세요");
             check = false;
@@ -87,9 +103,9 @@ const BoardCreate = () => {
             // }
             console.log(inputData);
             if (update === "create") {
-                postFetchData(`/board/${url}`, "POST", "token", formdata, true);
+                postFetchData(`${fetchUrl}`, "POST", "token", formdata, true);
             } else if (update === "update") {
-                postFetchData(`/board/${url}/${paramID}`, "POST", "token", formdata, true);
+                postFetchData(`${fetchUrl}/${paramID}`, "POST", "token", formdata, true);
             }
         }
     };
