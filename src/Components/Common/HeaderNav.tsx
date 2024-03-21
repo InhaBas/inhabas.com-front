@@ -17,6 +17,7 @@ import {
 
 import { menuInterface } from "../../Types/TypeCommon";
 
+import { GetRoleAuthorization } from "../../Functions/authFunctions";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
@@ -35,6 +36,7 @@ interface Group {
 
 const HeaderNav = () => {
     const navigate = useNavigate();
+    const { isAuthorizedOverSecretary } = GetRoleAuthorization();
 
     const [data, fetchData] = useFetch();
     const [infoData, fetchInfoData] = useFetch();
@@ -51,7 +53,7 @@ const HeaderNav = () => {
 
     const menuUrl = [
         ["introduce", "activity", "honor"],
-        ["board/notice", "board/free", "board/question", "board/suggest", "board/opensource", "board/executives"],
+        ["board/notice", "board/free", "board/question", "board/suggest", "board/opensource", "board/executive"],
         ["lecture", "lecture", "lecture", "lecture"],
         ["bank/support", "bank"],
         ["board/alpha", "board/beta"],
@@ -204,43 +206,87 @@ const HeaderNav = () => {
                                                         {item.menuList &&
                                                             Object.values(item.menuList).map(
                                                                 (element: any, idx: number) => {
-                                                                    return (
-                                                                        <Div
-                                                                            $padding="8px 20px"
-                                                                            width="100%"
-                                                                            $pointer
-                                                                            key={idx}
-                                                                            onMouseEnter={() =>
-                                                                                setActiveMenu(element.name)
-                                                                            }
-                                                                            $backgroundColor={
-                                                                                activeMenu === element.name
-                                                                                    ? "bgColor"
-                                                                                    : "wh"
-                                                                            }
-                                                                            onClick={() =>
-                                                                                menuClickEvent(
-                                                                                    element.url,
-                                                                                    element.name,
-                                                                                    element.description
-                                                                                )
-                                                                            }
-                                                                        >
-                                                                            <Div>
-                                                                                <P
-                                                                                    fontSize="sm"
-                                                                                    $letterSpacing="2px"
-                                                                                    color={
-                                                                                        activeMenu === element.name
-                                                                                            ? "wh"
-                                                                                            : "bk"
-                                                                                    }
-                                                                                >
-                                                                                    {element.name}
-                                                                                </P>
+                                                                    if (
+                                                                        element.url === "board/executive" &&
+                                                                        isAuthorizedOverSecretary
+                                                                    ) {
+                                                                        return (
+                                                                            <Div
+                                                                                key={`menu${idx}`}
+                                                                                $padding="8px 20px"
+                                                                                width="100%"
+                                                                                $pointer
+                                                                                onMouseEnter={() =>
+                                                                                    setActiveMenu(element.name)
+                                                                                }
+                                                                                $backgroundColor={
+                                                                                    activeMenu === element.name
+                                                                                        ? "bgColor"
+                                                                                        : "wh"
+                                                                                }
+                                                                                onClick={() =>
+                                                                                    menuClickEvent(
+                                                                                        element.url,
+                                                                                        element.name,
+                                                                                        element.description
+                                                                                    )
+                                                                                }
+                                                                            >
+                                                                                <Div>
+                                                                                    <P
+                                                                                        fontSize="sm"
+                                                                                        $letterSpacing="2px"
+                                                                                        color={
+                                                                                            activeMenu === element.name
+                                                                                                ? "wh"
+                                                                                                : "bk"
+                                                                                        }
+                                                                                    >
+                                                                                        {element.name}
+                                                                                    </P>
+                                                                                </Div>
                                                                             </Div>
-                                                                        </Div>
-                                                                    );
+                                                                        );
+                                                                    } else if (element.url !== "board/executive") {
+                                                                        return (
+                                                                            <Div
+                                                                                $padding="8px 20px"
+                                                                                width="100%"
+                                                                                $pointer
+                                                                                key={`menu${idx}`}
+                                                                                onMouseEnter={() =>
+                                                                                    setActiveMenu(element.name)
+                                                                                }
+                                                                                $backgroundColor={
+                                                                                    activeMenu === element.name
+                                                                                        ? "bgColor"
+                                                                                        : "wh"
+                                                                                }
+                                                                                onClick={() =>
+                                                                                    menuClickEvent(
+                                                                                        element.url,
+                                                                                        element.name,
+                                                                                        element.description
+                                                                                    )
+                                                                                }
+                                                                            >
+                                                                                <Div>
+                                                                                    <P
+                                                                                        fontSize="sm"
+                                                                                        $letterSpacing="2px"
+                                                                                        color={
+                                                                                            activeMenu === element.name
+                                                                                                ? "wh"
+                                                                                                : "bk"
+                                                                                        }
+                                                                                    >
+                                                                                        {element.name}
+                                                                                    </P>
+                                                                                </Div>
+                                                                            </Div>
+                                                                        );
+                                                                    }
+                                                                    return null; // element.url === "board/executive" && !isAuthorizedOverSecretary 인 경우
                                                                 }
                                                             )}
                                                     </Div>

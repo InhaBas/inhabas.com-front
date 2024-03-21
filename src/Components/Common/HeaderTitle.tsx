@@ -64,7 +64,7 @@ const HeaderTitle = () => {
                     case "opensource":
                         titleId = 8;
                         break;
-                    case "executives":
+                    case "executive":
                         titleId = 9;
                         break;
                     case "alpha":

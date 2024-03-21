@@ -1,3 +1,4 @@
+import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -13,6 +14,7 @@ import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin
 import "@toast-ui/editor/dist/toastui-editor.css";
 
 import { DateFunction } from "../../../Functions/dateFunction";
+import { tokenInterface } from "../../../Types/TypeCommon";
 import A from "../../../styles/assets/A";
 import Button from "../../../styles/assets/Button";
 import { DetailContainer, Div, FlexDiv } from "../../../styles/assets/Div";
@@ -40,6 +42,9 @@ const BoardDetail = () => {
     const [deleteData, deleteDataFetch] = useFetch();
     const [isLoading, setIsLoading] = useState(true);
     const access = useRecoilValue(tokenAccess);
+
+    const decoded = jwtDecode(access) as tokenInterface;
+    const userId = decoded.memberId;
 
     let fetchUrl: string;
     if (url === "alpha") {
@@ -179,44 +184,46 @@ const BoardDetail = () => {
                                     </FlexDiv>
                                 )}
                             </FlexDiv>
-
-                            <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
-                                <Button
-                                    display="flex"
-                                    $backgroundColor="bgColor"
-                                    $margin="0 10px 0 0"
-                                    $padding="12px 15px"
-                                    $borderRadius={30}
-                                    $HBackgroundColor="bgColorHo"
-                                    onClick={() => navigate(`/board/${url}/update/${boardId}`)}
-                                >
-                                    <Div width="12px" $margin="0 10px 0 0">
-                                        <Img src="/images/pencil_white.svg" />
-                                    </Div>
-                                    <Div $pointer>
-                                        <P color="wh" fontSize="sm">
-                                            게시글 수정
-                                        </P>
-                                    </Div>
-                                </Button>
-                                <Button
-                                    display="flex"
-                                    $backgroundColor="red"
-                                    $padding="12px 15px"
-                                    $borderRadius={30}
-                                    $HBackgroundColor="red"
-                                    onClick={() => deleteDetail()}
-                                >
-                                    <Div width="12px" $margin="0 10px 0 0">
-                                        <Img src="/images/trash_white.svg" />
-                                    </Div>
-                                    <Div $pointer>
-                                        <P color="wh" fontSize="sm">
-                                            게시글 삭제
-                                        </P>
-                                    </Div>
-                                </Button>
-                            </FlexDiv>
+                            {detail?.writerId === userId}
+                            {detail?.writerId === userId && (
+                                <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
+                                    <Button
+                                        display="flex"
+                                        $backgroundColor="bgColor"
+                                        $margin="0 10px 0 0"
+                                        $padding="12px 15px"
+                                        $borderRadius={30}
+                                        $HBackgroundColor="bgColorHo"
+                                        onClick={() => navigate(`/board/${url}/update/${boardId}`)}
+                                    >
+                                        <Div width="12px" $margin="0 10px 0 0">
+                                            <Img src="/images/pencil_white.svg" />
+                                        </Div>
+                                        <Div $pointer>
+                                            <P color="wh" fontSize="sm">
+                                                게시글 수정
+                                            </P>
+                                        </Div>
+                                    </Button>
+                                    <Button
+                                        display="flex"
+                                        $backgroundColor="red"
+                                        $padding="12px 15px"
+                                        $borderRadius={30}
+                                        $HBackgroundColor="red"
+                                        onClick={() => deleteDetail()}
+                                    >
+                                        <Div width="12px" $margin="0 10px 0 0">
+                                            <Img src="/images/trash_white.svg" />
+                                        </Div>
+                                        <Div $pointer>
+                                            <P color="wh" fontSize="sm">
+                                                게시글 삭제
+                                            </P>
+                                        </Div>
+                                    </Button>
+                                </FlexDiv>
+                            )}
                         </Div>
                     </DetailContainer>
                 </FlexDiv>
