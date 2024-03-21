@@ -36,3 +36,14 @@ export interface modalInterface {
     type: string;
     content?: string;
 }
+
+// token payload
+export interface tokenInterface {
+    sub: string;
+    memberId: number;
+    provider: string;
+    email: string;
+    authorities: [string];
+    iat: number;
+    exp: number;
+}
