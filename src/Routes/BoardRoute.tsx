@@ -1,18 +1,27 @@
+import { useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 import BoardCreate from "../Components/Page/Board/BoardCreate";
 import BoardDetail from "../Components/Page/Board/BoardDetail";
 import BoardList from "../Components/Page/Board/BoardList";
 import { GetRoleAuthorization } from "../Functions/authFunctions";
+import { userRole } from "../Recoil/backState";
 
 const BoardRoute = () => {
     const navigate = useNavigate();
     const { isAuthorizedOverBasic, isAuthorizedOverSecretary, isAuthorizedOverDeactivate } = GetRoleAuthorization();
-    if (!isAuthorizedOverBasic && !isAuthorizedOverSecretary && !isAuthorizedOverDeactivate) {
-        alert("권한이 없습니다");
-        setTimeout(() => {
-            navigate(-1); // 이전 페이지로 돌아감
-        }, 0);
-    }
+    const role = useRecoilValue(userRole);
+
+    useEffect(() => {
+        if (role !== "") {
+            if (!isAuthorizedOverBasic && !isAuthorizedOverSecretary && !isAuthorizedOverDeactivate) {
+                alert("권한이 없습니다");
+                setTimeout(() => {
+                    navigate(-1); // 이전 페이지로 돌아감
+                }, 0);
+            }
+        }
+    }, [role]);
 
     return (
         <Routes>
