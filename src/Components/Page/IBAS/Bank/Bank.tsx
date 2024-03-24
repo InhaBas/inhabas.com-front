@@ -7,8 +7,8 @@ import Pagination from "../../../Common/Pagination";
 
 import useFetch from "../../../../Hooks/useFetch";
 
-import { bankHistoryInfo, totalPageInfo, bankBalanceInfo, bankYearsInfo } from "../../../../Recoil/backState";
-import { useRecoilState } from "recoil";
+import { bankHistoryInfo, totalPageInfo, bankBalanceInfo, bankYearsInfo, tokenAccess } from "../../../../Recoil/backState";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { useEffect, useState } from "react";
 
 import { modalInfo } from "../../../../Recoil/frontState";
@@ -35,6 +35,7 @@ const Bank = () => {
     const [bankHistory, setBankHistory] = useRecoilState(bankHistoryInfo);
     const [bankBalance, setBankBalance] = useRecoilState(bankBalanceInfo);
     const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
+    const accessToken = useRecoilValue(tokenAccess);
 
     const [bankYearsData, fetchBankYearsData] = useFetch();
     const [bankYears, setBankYears] = useRecoilState(bankYearsInfo);
@@ -48,7 +49,7 @@ const Bank = () => {
     // 연도 데이터 패치
     useEffect(() => {
         fetchBankYearsData('/budget/histories/years', 'GET');
-    }, [])
+    }, [accessToken])
 
     // 연도 데이터 패치 후 bankYears에 매핑
     useEffect(() => {
@@ -62,7 +63,7 @@ const Bank = () => {
         if (bankYears && bankYears[0]) {
             fetchBankHistoryData(`/budget/histories?year=${selectedYear}&page=${'0'}&size=${'15'}`, "GET", "token")
         }
-    }, [bankYears, selectedYear])
+    }, [bankYears, selectedYear, accessToken])
 
     useEffect(() => {
         if (bankHistoryData) {
