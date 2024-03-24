@@ -27,6 +27,11 @@ export const checkOne = atom({
     default: 0,
 });
 
+export const menuId = atom({
+    key: "menuId",
+    default: 0,
+});
+
 // headerTitle
 export const menuInfo = atom({
     key: "menuInfo",
@@ -59,7 +64,7 @@ export const modalOpen = atom({
 });
 
 // dragNdrop
-export const selectedFile = atom<File[]>({
+export const selectedFile = atom<any[]>({
     key: "selectedFile",
     default: [],
 });
