@@ -6,6 +6,7 @@ import { theme } from "../../../styles/theme";
 import useFetch from "../../../Hooks/useFetch";
 
 import { modalOpen, selectedStudentInfos, selectedFile, modalInfo } from "../../../Recoil/frontState";
+import { tokenAccess } from "../../../Recoil/backState";
 
 import Button from "../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../styles/assets/Div";
@@ -23,6 +24,7 @@ const ModalUpdateBankHistory = () => {
     const [historyInfo, fetchGetHistory] = useFetch();
 
     const modalContent = useRecoilValue(modalInfo)!;
+    const accessToken = useRecoilValue(tokenAccess);
 
     const [_update, fetchUpdateHistory] = useFetch();
 
@@ -41,7 +43,7 @@ const ModalUpdateBankHistory = () => {
 
     useEffect(() => {
         fetchGetHistory(`/budget/history/${modalContent.content}`, 'GET', "token")
-    }, [])
+    }, [accessToken])
 
     useEffect(() => {
         setSelectedInfos(prev => ({

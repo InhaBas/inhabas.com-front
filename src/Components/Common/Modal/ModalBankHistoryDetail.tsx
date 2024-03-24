@@ -7,6 +7,7 @@ import { theme } from "../../../styles/theme";
 import useFetch from "../../../Hooks/useFetch";
 
 import { modalInfo, modalOpen } from "../../../Recoil/frontState";
+import { tokenAccess } from "../../../Recoil/backState";
 
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import { H2 } from "../../../styles/assets/H";
@@ -21,11 +22,14 @@ const ModalBankHistoryDetail = () => {
     };
 
     const modalInfos = useRecoilValue(modalInfo);
+    const accessToken = useRecoilValue(tokenAccess);
+
     const [data, fetchData] = useFetch();
+    
     useEffect(() => {
         fetchData(`/budget/history/${modalInfos?.content}`, "GET", "token");
         console.log(data)
-    }, []);
+    }, [accessToken]);
 
     return (
         <FlexDiv
