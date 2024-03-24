@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { styled } from "styled-components";
 
@@ -18,6 +18,7 @@ import {
 import { menuInterface } from "../../Types/TypeCommon";
 
 import { GetRoleAuthorization } from "../../Functions/authFunctions";
+import { menuId } from "../../Recoil/frontState";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
@@ -37,7 +38,7 @@ interface Group {
 const HeaderNav = () => {
     const navigate = useNavigate();
     const { isAuthorizedOverSecretary } = GetRoleAuthorization();
-
+    const location = useLocation();
     const [data, fetchData] = useFetch();
     const [infoData, fetchInfoData] = useFetch();
     const [signingUserData, fetchSigningUserData] = useFetch();
@@ -50,6 +51,80 @@ const HeaderNav = () => {
     const setRole = useSetRecoilState(userRole);
     const [access, setAccess] = useRecoilState(tokenAccess);
     const [scrollPosition, setScrollPosition] = useState(0);
+    const setCurrentMenuId = useSetRecoilState(menuId);
+    const pathNameInfo = location.pathname.substring(1).split("/");
+    let titleId = 0;
+
+    const titleInfo = (pathName1: string, pathName2: string) => {
+        // case 분기 -> pathNameInfo[1] 번째 비교해서 또 분기
+        switch (pathName1) {
+            case "introduce":
+                titleId = 1;
+                break;
+            case "activity":
+                titleId = 2;
+                break;
+            case "honor":
+                titleId = 3;
+                break;
+            case "board":
+                // pathName2에 따라 분기
+                switch (pathName2) {
+                    case "notice":
+                        titleId = 4;
+                        break;
+                    case "free":
+                        titleId = 5;
+                        break;
+                    case "question":
+                        titleId = 6;
+                        break;
+                    case "suggest":
+                        titleId = 7;
+                        break;
+                    case "opensource":
+                        titleId = 8;
+                        break;
+                    case "executive":
+                        titleId = 9;
+                        break;
+                    case "alpha":
+                        titleId = 16;
+                        break;
+                    case "beta":
+                        titleId = 17;
+                        break;
+                    default: // 혹은 다른 값으로 설정
+                        // pathName1이 위의 case에 일치하지 않는 경우에 대한 처리
+                        titleId = 0;
+                        break;
+                }
+                break;
+            case "lecture":
+                titleId = 10;
+                break;
+            case "study":
+                titleId = 11;
+                break;
+            case "hobby":
+                titleId = 12;
+                break;
+            case "lecture-application":
+                titleId = 13;
+                break;
+            case "bank":
+                titleId = 15;
+                if (pathName2 === "support") {
+                    titleId = 14;
+                }
+                break;
+
+            case "contest":
+                titleId = 18;
+                break;
+        }
+        return titleId;
+    };
 
     const menuUrl = [
         ["introduce", "activity", "honor"],
@@ -64,16 +139,16 @@ const HeaderNav = () => {
         navigate(`/${url}`);
     };
 
-    const menuClickEvent = (url: string, givenName: string, givenDescription: string) => {
+    const menuClickEvent = (url: string, givenName: string, givenDescription: string, menuIdx: number) => {
         setTitle({ ...title, name: givenName, description: givenDescription });
-
+        setCurrentMenuId(menuIdx);
         navigate(`/${url}`);
     };
 
     const logoutClickEvent = () => {
         if (window.confirm("정말 로그아웃 하시겠습니까?")) {
             setAccess("default");
-            setRole("");
+            setRole("logout");
             document.cookie = "ibas_refresh" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
             navigate("/");
         }
@@ -85,6 +160,8 @@ const HeaderNav = () => {
     };
 
     useEffect(() => {
+        const id = titleInfo(pathNameInfo[0], pathNameInfo[1]);
+        setCurrentMenuId(id);
         fetchData("/menus", "GET");
     }, []);
 
@@ -228,7 +305,8 @@ const HeaderNav = () => {
                                                                                     menuClickEvent(
                                                                                         element.url,
                                                                                         element.name,
-                                                                                        element.description
+                                                                                        element.description,
+                                                                                        idx + 1
                                                                                     )
                                                                                 }
                                                                             >
@@ -266,7 +344,8 @@ const HeaderNav = () => {
                                                                                     menuClickEvent(
                                                                                         element.url,
                                                                                         element.name,
-                                                                                        element.description
+                                                                                        element.description,
+                                                                                        idx + 1
                                                                                     )
                                                                                 }
                                                                             >

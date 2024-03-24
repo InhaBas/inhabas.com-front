@@ -6,10 +6,11 @@ import { theme } from "../../../styles/theme";
 import DragNDrop from "../../Common/DragNDrop";
 import Dropdown from "../../Common/Dropdown";
 
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import useFetch from "../../../Hooks/useFetch";
-import { boardDetailData } from "../../../Recoil/backState";
-import { selectedFile } from "../../../Recoil/frontState";
+import { boardDetailData, fileIdList } from "../../../Recoil/backState";
+import { menuId, refetch, selectedFile } from "../../../Recoil/frontState";
+import { boardDetailInterface } from "../../../Types/TypeBoard";
 import Button from "../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
@@ -28,18 +29,35 @@ const BoardCreate = () => {
     const [pinValue, setPinValue] = useState("");
     const [postData, postFetchData] = useFetch();
     const [getData, getFetchData] = useFetch();
-    const [putData, putFetchData] = useFetch();
     const [files, setFiles] = useRecoilState(selectedFile);
     const [update, setUpdate] = useState("create");
     const [detail, setDetail] = useRecoilState(boardDetailData);
     const setSelectedFile = useSetRecoilState(selectedFile);
+    const fileSelected = useRecoilValue(selectedFile);
+    const currentMenuId = useRecoilValue(menuId);
+    const [fileId, setFileList] = useRecoilState(fileIdList);
+    const setReload = useSetRecoilState(refetch);
 
     useEffect(() => {
         if (paramID) {
-            console.log(111);
             setUpdate("update");
         }
     }, []);
+
+    let fetchUrl = "";
+    if (url === "alpha") {
+        fetchUrl = "/project/alpha";
+    } else if (url === "beta") {
+        fetchUrl = "/project/beta";
+    } else if (url === "scholarship-sponsor") {
+        fetchUrl = "/scholarship/sponsor";
+    } else if (url === "scholarship-usage") {
+        fetchUrl = "/scholarship/usage";
+    } else if (url === "opensource") {
+        fetchUrl = "/board/storage";
+    } else {
+        fetchUrl = `/board/${url}`;
+    }
 
     // select 값 선택에 따른 state 변경 이벤트
     const handlePinChange = (value: string) => {
@@ -49,22 +67,6 @@ const BoardCreate = () => {
 
     const sendInput = () => {
         let check = true;
-
-        const url = location.pathname.split("/")[2];
-        let fetchUrl;
-        if (url === "alpha") {
-            fetchUrl = "/project/alpha";
-        } else if (url === "beta") {
-            fetchUrl = "/project/beta";
-        } else if (url === "scholarship-sponsor") {
-            fetchUrl = "/scholarship/sponsor";
-        } else if (url === "scholarship-usage") {
-            fetchUrl = "/scholarship/usage";
-        } else if (url === "opensource") {
-            fetchUrl = "/board/storage";
-        } else {
-            fetchUrl = `/board/${url}`;
-        }
 
         if (check && inputRef.current[0].value === "") {
             alert("제목을 입력해주세요");
@@ -81,13 +83,14 @@ const BoardCreate = () => {
             const inputData = {
                 title: inputRef.current[0].value,
                 content: inputRef.current[1].getInstance().getMarkdown(),
+                files: fileId,
                 pinOption: pinValue !== "" ? pinValue : "0",
             };
 
-            const jsonData = JSON.stringify(inputData);
+            // const jsonData = JSON.stringify(inputData);
 
             const formdata = new FormData();
-            formdata.append("form", new Blob([jsonData], { type: "application/json" }));
+            // formdata.append("form", new Blob([jsonData], { type: "application/json" }));
 
             for (let i = 0; i < files.length; i++) {
                 formdata.append("files", files[i]);
@@ -103,9 +106,10 @@ const BoardCreate = () => {
             // }
             console.log(inputData);
             if (update === "create") {
-                postFetchData(`${fetchUrl}`, "POST", "token", formdata, true);
+                // postFetchData(`${fetchUrl}`, "POST", "token", formdata, true);
+                postFetchData(`${fetchUrl}`, "POST", "token", inputData);
             } else if (update === "update") {
-                postFetchData(`${fetchUrl}/${paramID}`, "POST", "token", formdata, true);
+                postFetchData(`${fetchUrl}/${paramID}`, "POST", "token", inputData);
             }
         }
     };
@@ -123,7 +127,7 @@ const BoardCreate = () => {
         console.log(update);
         if (update == "update") {
             console.log(2333);
-            getFetchData(`/board/${url}/${paramID}`, "GET", "token"); // 로딩 상태 해제
+            getFetchData(`${fetchUrl}/${paramID}`, "GET", "token");
         }
     }, [update]);
 
@@ -131,10 +135,29 @@ const BoardCreate = () => {
         if (getData) {
             setDetail(getData);
             setIsLoading(false);
-            setSelectedFile([getData.otherFiles, getData.images]);
+
+            // DragNDrop update 설정
+            const files = [
+                ...getData.images.map((item: boardDetailInterface) => item),
+                ...getData.otherFiles.map((item: boardDetailInterface) => item),
+            ];
+            setSelectedFile(files);
+            const fileIds = [
+                ...getData.images.map((item: boardDetailInterface) => item.id),
+                ...getData.otherFiles.map((item: boardDetailInterface) => item.id),
+            ];
+            setFileList(fileIds);
+            // DragNDrop reload true일 때만 불러온 파일들 렌더링 할 있음
+            setReload(true);
         }
-        return () => setDetail(null);
+        return () => {
+            setDetail(null);
+            // DragNDrop fileList 초기화
+            setFileList([]);
+        };
     }, [getData]);
+
+    useEffect(() => console.log(fileSelected), [fileSelected]);
 
     return (
         <FlexDiv width="100%">
@@ -199,7 +222,7 @@ const BoardCreate = () => {
                         </Div>
 
                         <Div width="100%" $padding="20px">
-                            <DragNDrop />
+                            <DragNDrop fileFetch menuId={currentMenuId} />
                         </Div>
                         <Div width="100%" $padding="20px">
                             <TextEditor

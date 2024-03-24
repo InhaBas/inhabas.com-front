@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { useSetRecoilState } from "recoil";
-import { selectedFile } from "../../Recoil/frontState";
+import React, { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
+import useFetch from "../../Hooks/useFetch";
+import { fileIdList } from "../../Recoil/backState";
+import { refetch, selectedFile } from "../../Recoil/frontState";
 import { Div, FlexDiv, InputLabel } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import { Input } from "../../styles/assets/Input";
@@ -9,53 +11,67 @@ import P from "../../styles/assets/P";
 interface DragNDropProps {
     single?: boolean;
     onlyImg?: boolean;
+    fileFetch?: boolean;
+    menuId?: number;
 }
 
-const DragNDrop: React.FC<DragNDropProps> = ({ single = false, onlyImg = false }) => {
+const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch, menuId }) => {
     const [previews, setPreviews] = useState<{ url: string; name: string; width: string; height: string }[]>([]);
     const [hover, setHover] = useState<number | null>(null);
-    const setSelectedFile = useSetRecoilState(selectedFile);
+    const [fileSelected, setFileSelected] = useRecoilState(selectedFile);
+    const [fileData, fetchFileData] = useFetch();
+    const [fileId, setFileIdList] = useRecoilState(fileIdList);
 
     const isImageFile = (file: File): boolean => {
         const acceptedImageTypes: string[] = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
         return file && acceptedImageTypes.includes(file.type);
     };
 
+    const isFileSizeExceeded = (file: File, maxSizeInBytes: number): boolean => {
+        return file.size > maxSizeInBytes;
+    };
+
     const handleFileChange = (files: FileList | null): void => {
         if (files) {
             const fileList = Array.from(files);
-            setSelectedFile(fileList);
-            const newPreviews: { url: string; name: string; width: string; height: string }[] = [];
+
+            setFileSelected(fileList);
+
             fileList.forEach((file, index) => {
                 if (index === 0 || !single) {
+                    const newPreview: { url: string; name: string; width: string; height: string; id: string } = {
+                        url: "",
+                        name: "",
+                        width: "",
+                        height: "",
+                        id: "",
+                    };
+
                     if (isImageFile(file)) {
                         const reader = new FileReader();
                         reader.onloadend = () => {
                             if (typeof reader.result === "string") {
-                                newPreviews.push({
-                                    url: reader.result,
-                                    name: file.name,
-                                    width: "100%",
-                                    height: "100%",
-                                });
-                                setPreviews(newPreviews);
+                                newPreview.url = reader.result;
+                                newPreview.name = file.name;
+                                newPreview.width = "100%";
+                                newPreview.height = "100%";
+                                setPreviews((prevPreviews) => [...prevPreviews, newPreview]);
                             }
                         };
                         reader.readAsDataURL(file);
                     } else {
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                            if (typeof reader.result === "string") {
-                                newPreviews.push({
-                                    url: "/images/attachment_grey.svg",
-                                    name: file.name,
-                                    width: "60%",
-                                    height: "60%",
-                                });
-                                setPreviews(newPreviews);
-                            }
-                        };
-                        reader.readAsDataURL(file);
+                        newPreview.url = "/images/attachment_grey.svg";
+                        newPreview.name = file.name;
+                        newPreview.width = "60%";
+                        newPreview.height = "60%";
+                        setPreviews((prevPreviews) => [...prevPreviews, newPreview]);
+                    }
+
+                    if (fileFetch) {
+                        // fetch 요청을 각 파일마다 발생
+                        const previewsFormData = new FormData();
+                        previewsFormData.append("file", file); // 파일을 FormData에 추가
+                        fetchFileData(`/file/upload/${menuId}`, "POST", "token", previewsFormData, true);
                     }
                 }
             });
@@ -71,10 +87,55 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single = false, onlyImg = false }
     };
 
     const handleDeletePreview = (index: number): void => {
-        const updatedPreviews = previews.slice(); // 배열 복제
-        updatedPreviews.splice(index, 1); // 배열에서 요소 삭제
-        setPreviews(updatedPreviews); // 업데이트된 배열로 상태 업데이트
+        const updatedPreviews = previews.slice(); // 썸네일 배열 복제
+        updatedPreviews.splice(index, 1); // 선택한 썸네일 삭제
+        setPreviews(updatedPreviews); // 변경된 썸네일 배열로 상태 업데이트
+
+        // 삭제된 파일의 ID 찾기
+        const deletedFileId = fileId[index]; // fileIdList에서 삭제된 파일의 ID
+        if (deletedFileId) {
+            // fileIdList에서 삭제된 파일의 ID를 제거
+            setFileIdList((prevFileIdList) => prevFileIdList.filter((fileId) => fileId !== deletedFileId));
+        }
+
+        // fileSelected에서 삭제된 파일 제거
+        const updatedFileSelected = fileSelected.filter((file, idx) => idx !== index);
+        setFileSelected(updatedFileSelected); // 변경된 파일 목록으로 상태 업데이트
     };
+
+    useEffect(() => {
+        if (fileData) {
+            // 파일이 업로드되면 fileId를 추가
+            setFileIdList((prevFileList) => [...prevFileList, fileData.id]);
+        }
+    }, [fileData]);
+
+    const [reload, setReload] = useRecoilState(refetch);
+
+    useEffect(() => {
+        if (fileSelected.length !== 0 && reload === true) {
+            setReload(false);
+            console.log(fileSelected);
+            const fileList = fileSelected;
+            fileList.forEach((item) => {
+                console.log(typeof item);
+
+                const url = isImageFile(item) ? item.url : "/images/attachment_grey.svg";
+                const size = isImageFile(item) ? "100%" : "60%";
+                setPreviews((prevPreviews) => [
+                    ...prevPreviews,
+
+                    {
+                        url: url,
+                        name: item.name,
+                        width: size,
+                        height: size,
+                        id: item.id, // 파일 객체에 ID 추가
+                    },
+                ]);
+            });
+        }
+    }, [reload]);
 
     return (
         <>

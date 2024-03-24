@@ -64,6 +64,8 @@ const useFetch = (): [
             let headers = {
                 Authorization: `Bearer ${access}`,
                 // "Content-Type": media ? "multipart/form-data" : "application/json",
+                // "Content-Type": "application/json",
+
                 ...(media ? {} : { "Content-Type": "application/json" }),
             };
 
