@@ -217,3 +217,19 @@ export const lectureRoomTutorInfo = atom({
     key: "lectureRoomTutorInfo",
     default: [],
 });
+
+//bank
+export const bankHistoryInfo = atom({
+    key: "bankHistoryInfo",
+    default: [],
+});
+
+export const bankBalanceInfo = atom({
+    key: "bankBalanceInfo",
+    default: 0,
+});
+
+export const bankYearsInfo = atom({
+    key: "bankYearsInfo",
+    default: [],
+});

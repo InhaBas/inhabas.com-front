@@ -68,3 +68,9 @@ export const selectedFile = atom<any[]>({
     key: "selectedFile",
     default: [],
 });
+
+// bank
+export const selectedStudentInfos = atom({
+    key: "selectedStudentInfos",
+    default: { name: "", major: '', studentId: '' },
+});
