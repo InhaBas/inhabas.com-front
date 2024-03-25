@@ -202,6 +202,11 @@ export const boardListDataInfo = atom({
     default: [],
 });
 
+export const boardListPinnedDataInfo = atom({
+    key: "boardListPinnedDataInfo",
+    default: [],
+});
+
 export const boardDetailData = atom<boardDetailInterface | null>({
     key: "boardDetailData",
     default: null,

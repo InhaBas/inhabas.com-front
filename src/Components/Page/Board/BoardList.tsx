@@ -1,11 +1,11 @@
 import { Suspense, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 
 import useFetch from "../../../Hooks/useFetch";
 
-import { boardListDataInfo, tokenAccess, totalPageInfo } from "../../../Recoil/backState";
+import { boardListDataInfo, boardListPinnedDataInfo, tokenAccess, totalPageInfo } from "../../../Recoil/backState";
 
 import { boardListInterface } from "../../../Types/TypeBoard";
 
@@ -34,10 +34,12 @@ const BoardList = () => {
     const { formatDateDay } = DateFunction();
 
     const location = useLocation();
+    const navigate = useNavigate();
     const url = location.pathname.split("/")[2];
 
     const access = useRecoilValue(tokenAccess);
     const [boardList, setBoardList] = useRecoilState(boardListDataInfo);
+    const [boardPinnedList, setBoardPinnedList] = useRecoilState(boardListPinnedDataInfo);
     const [boardListData, fetchBoardListData] = useFetch();
     const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
     const [isLoading, setIsLoading] = useState(true);
@@ -74,6 +76,15 @@ const BoardList = () => {
                 dateCreated: formatDateDay({ date: item.dateCreated }),
                 isPinned: item.isPinned,
             }));
+            const pinnedContents = boardListData.pinnedData?.map((item: boardListInterface, idx: number) => ({
+                // number: idx + 1,
+                id: item.id,
+                title: item.title,
+                writerName: item.writerName,
+                dateCreated: formatDateDay({ date: item.dateCreated }),
+                isPinned: item.isPinned,
+            }));
+            setBoardPinnedList(pinnedContents);
             setBoardList(contents);
             setTotalPage(boardListData.pageInfo.totalPages);
             setIsLoading(false);
@@ -99,7 +110,13 @@ const BoardList = () => {
                     </StickyDiv>
                     <Div $padding="0 15px">
                         <Suspense fallback={<Img src="/images/loading.svg" />}>
-                            <NavigateTable header={headerInfo} width={widthList} contents={boardList} url="detail" />
+                            <NavigateTable
+                                width={widthList}
+                                header={headerInfo}
+                                contents={boardList}
+                                pinnedContents={boardPinnedList}
+                                url="detail"
+                            />
                         </Suspense>
                         <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">
                             <Button
@@ -109,6 +126,7 @@ const BoardList = () => {
                                 $padding="12px 15px"
                                 $borderRadius={30}
                                 $HBackgroundColor="bgColorHo"
+                                onClick={() => navigate(`/board/${url}/create`)}
                             >
                                 <FlexDiv height="15px">
                                     <Div width="12px" height="12px" $margin="0 10px 0 0">
@@ -116,7 +134,7 @@ const BoardList = () => {
                                     </Div>
                                 </FlexDiv>
                                 <Div $pointer height="15px">
-                                    <A color="wh" fontSize="sm" href={`/board/${url}/create`} $hoverColor="wh">
+                                    <A color="wh" fontSize="sm" $hoverColor="wh">
                                         게시글 작성
                                     </A>
                                 </Div>
