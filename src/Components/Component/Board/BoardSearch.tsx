@@ -1,12 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { theme } from "../../../styles/theme";
 
 import { useLocation } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { DateFunction } from "../../../Functions/dateFunction";
 import useFetch from "../../../Hooks/useFetch";
-import { boardListDataInfo, totalPageInfo } from "../../../Recoil/backState";
+import { boardListDataInfo, boardListPinnedDataInfo, totalPageInfo } from "../../../Recoil/backState";
 import { boardListInterface } from "../../../Types/TypeBoard";
 import Button from "../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../styles/assets/Div";
@@ -22,33 +22,55 @@ const BoardSearch = () => {
 
     const { formatDateDay } = DateFunction();
 
-    const [boardList, setBoardList] = useRecoilState(boardListDataInfo);
+    const setBoardList = useSetRecoilState(boardListDataInfo);
     const [boardListData, fetchBoardListData] = useFetch();
-    const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
+    const setTotalPage = useSetRecoilState(totalPageInfo);
+    const setBoardPinnedList = useSetRecoilState(boardListPinnedDataInfo);
+    const [isLoading, setIsLoading] = useState(true);
+
+    let fetchUrl: string;
+    if (url === "alpha") {
+        fetchUrl = "/project/alpha";
+    } else if (url === "beta") {
+        fetchUrl = "/project/beta";
+    } else if (url === "scholarship-sponsor") {
+        fetchUrl = "/scholarship/sponsor";
+    } else if (url === "scholarship-usage") {
+        fetchUrl = "/scholarship/usage";
+    } else if (url === "opensource") {
+        fetchUrl = "/board/storage";
+    } else {
+        fetchUrl = `/board/${url}`;
+    }
 
     const searchEvent = () => {
         if (inputRef.current !== null && inputRef.current.value !== null) {
-            if (url === "opensource") {
-                fetchBoardListData("/board/storagesearch=${inputRef.current}&page=0&size=15", "GET", "token");
-            } else if (url === "alpha" || url === "beta") {
-                console.log("sss");
-            } else {
-                fetchBoardListData(`/board/${url}?search=${inputRef.current.value}&page=0&size=15`, "GET", "token");
-            }
+            fetchBoardListData(`${fetchUrl}?search=${inputRef.current.value}&page=0&size=15`, "GET", "token");
         }
     };
 
     useEffect(() => {
         if (boardListData) {
             const contents = boardListData.data.map((item: boardListInterface, idx: number) => ({
-                id: idx + 1,
+                number: idx + 1,
+                id: item.id,
                 title: item.title,
-                dateCreated: formatDateDay({ date: item.dateCreated }),
                 writerName: item.writerName,
+                dateCreated: formatDateDay({ date: item.dateCreated }),
                 isPinned: item.isPinned,
             }));
+            const pinnedContents = boardListData.pinnedData?.map((item: boardListInterface, idx: number) => ({
+                // number: idx + 1,
+                id: item.id,
+                title: item.title,
+                writerName: item.writerName,
+                dateCreated: formatDateDay({ date: item.dateCreated }),
+                isPinned: item.isPinned,
+            }));
+            setBoardPinnedList(pinnedContents);
             setBoardList(contents);
             setTotalPage(boardListData.pageInfo.totalPages);
+            setIsLoading(false);
         }
     }, [boardListData]);
 
