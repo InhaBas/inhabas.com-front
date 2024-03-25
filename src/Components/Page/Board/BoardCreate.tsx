@@ -1,21 +1,25 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+
+import useFetch from "../../../Hooks/useFetch";
+
+import { boardDetailData, fileIdList } from "../../../Recoil/backState";
+import { menuId, refetch, selectedFile } from "../../../Recoil/frontState";
+
+import { boardDetailInterface } from "../../../Types/TypeBoard";
 
 import { theme } from "../../../styles/theme";
 
 import DragNDrop from "../../Common/DragNDrop";
 import Dropdown from "../../Common/Dropdown";
 
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import useFetch from "../../../Hooks/useFetch";
-import { boardDetailData, fileIdList } from "../../../Recoil/backState";
-import { menuId, refetch, selectedFile } from "../../../Recoil/frontState";
-import { boardDetailInterface } from "../../../Types/TypeBoard";
 import Button from "../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
 import { TextInput } from "../../../styles/assets/Input";
 import P from "../../../styles/assets/P";
+import Loading from "../../Common/Loading";
 import TextEditor from "../../Common/TextEditor";
 
 const BoardCreate = () => {
@@ -25,7 +29,7 @@ const BoardCreate = () => {
     const paramID = useParams().id;
 
     const inputRef = useRef<any[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [pinValue, setPinValue] = useState("");
     const [postData, postFetchData] = useFetch();
     const [getData, getFetchData] = useFetch();
@@ -41,6 +45,8 @@ const BoardCreate = () => {
     useEffect(() => {
         if (paramID) {
             setUpdate("update");
+        } else {
+            setIsLoading(false);
         }
     }, []);
 
@@ -161,91 +167,90 @@ const BoardCreate = () => {
 
     return (
         <FlexDiv width="100%">
-            {isLoading && (
-                <FlexDiv width="100%" height="100%" $justifycontent="center" $alignitems="center">
-                    <FlexDiv width="10%">
-                        <Img src="/images/loading.svg" />
-                    </FlexDiv>
-                </FlexDiv>
-            )}
-            <Container $alignitems="start">
-                <Div width="100%" $margin="0 0 30px 0">
-                    <FlexDiv
-                        $padding="15px 20px"
-                        width="100%"
-                        $justifycontent="start"
-                        radius={5}
-                        $border="1px solid"
-                        $borderColor="bgColor"
-                    >
-                        <Div width="25px" height="25px" $margin="0 10px 0 0">
-                            <Img src="/images/triangle-warning_purple.svg"></Img>
-                        </Div>
-                        <Div>
-                            <P color="bgColor" fontSize="sm" fontWeight={700}>
-                                웹사이트 운영 정책을 위반하는 게시글은 예고 없이 삭제 될 수 있습니다.
-                            </P>
-                        </Div>
-                    </FlexDiv>
-
-                    <Div width="100%" $border="1px solid" $borderColor="border" $margin="20px 0" radius={6}>
+            {isLoading ? (
+                <Loading />
+            ) : (
+                <Container $alignitems="start">
+                    <Div width="100%" $margin="0 0 30px 0">
                         <FlexDiv
-                            width=" 100%"
-                            $padding="20px"
-                            $justifycontent="space-between"
-                            $borderB={`1px solid ${theme.color.border}`}
+                            $padding="15px 20px"
+                            width="100%"
+                            $justifycontent="start"
+                            radius={5}
+                            $border="1px solid"
+                            $borderColor="bgColor"
                         >
-                            <Div>
-                                <P fontWeight={600}>게시글 작성</P>
+                            <Div width="25px" height="25px" $margin="0 10px 0 0">
+                                <Img src="/images/triangle-warning_purple.svg"></Img>
                             </Div>
                             <Div>
-                                <Dropdown
-                                    label="상단고정여부"
-                                    options={["고정안함", "2주고정", "영구고정"]}
-                                    value={["0", "1", "2"]}
-                                    onChange={handlePinChange}
-                                />
+                                <P color="bgColor" fontSize="sm" fontWeight={700}>
+                                    웹사이트 운영 정책을 위반하는 게시글은 예고 없이 삭제 될 수 있습니다.
+                                </P>
                             </Div>
                         </FlexDiv>
-                        <Div width="100%" $padding="20px">
-                            <Div width="100%">
-                                <TextInput
-                                    width="100%"
-                                    height="60px"
-                                    placeholder="제목을 입력해주세요"
-                                    fontSize="xl"
-                                    $borderRadius={5}
-                                    ref={(el: never) => (inputRef.current[0] = el)}
-                                    defaultValue={detail?.title}
-                                ></TextInput>
+
+                        <Div width="100%" $border="1px solid" $borderColor="border" $margin="20px 0" radius={6}>
+                            <FlexDiv
+                                width=" 100%"
+                                $padding="20px"
+                                $justifycontent="space-between"
+                                $borderB={`1px solid ${theme.color.border}`}
+                            >
+                                <Div>
+                                    <P fontWeight={600}>게시글 작성</P>
+                                </Div>
+                                {(url === "notice" || url === "executive") && (
+                                    <Div>
+                                        <Dropdown
+                                            label="상단고정여부"
+                                            options={["고정안함", "2주고정", "영구고정"]}
+                                            value={["0", "1", "2"]}
+                                            onChange={handlePinChange}
+                                        />
+                                    </Div>
+                                )}
+                            </FlexDiv>
+                            <Div width="100%" $padding="20px">
+                                <Div width="100%">
+                                    <TextInput
+                                        width="100%"
+                                        height="60px"
+                                        placeholder="제목을 입력해주세요"
+                                        fontSize="xl"
+                                        $borderRadius={5}
+                                        ref={(el: never) => (inputRef.current[0] = el)}
+                                        defaultValue={detail?.title}
+                                    ></TextInput>
+                                </Div>
+                            </Div>
+
+                            <Div width="100%" $padding="20px">
+                                <DragNDrop fileFetch menuId={currentMenuId} />
+                            </Div>
+                            <Div width="100%" $padding="20px">
+                                <TextEditor
+                                    ref={(el: never) => (inputRef.current[1] = el)}
+                                    initialContent={detail?.content}
+                                />
                             </Div>
                         </Div>
 
-                        <Div width="100%" $padding="20px">
-                            <DragNDrop fileFetch menuId={currentMenuId} />
-                        </Div>
-                        <Div width="100%" $padding="20px">
-                            <TextEditor
-                                ref={(el: never) => (inputRef.current[1] = el)}
-                                initialContent={detail?.content}
-                            />
-                        </Div>
+                        <FlexDiv width="100%" $margin="30px 0 0 0">
+                            <Button
+                                $backgroundColor="bgColor"
+                                $HBackgroundColor="bgColorHo"
+                                $borderRadius={2}
+                                $padding="15px 30px"
+                                width="400px"
+                                onClick={() => sendInput()}
+                            >
+                                {update === "create" ? <P color="wh">작성하기</P> : <P color="wh">수정하기</P>}
+                            </Button>
+                        </FlexDiv>
                     </Div>
-
-                    <FlexDiv width="100%" $margin="30px 0 0 0">
-                        <Button
-                            $backgroundColor="bgColor"
-                            $HBackgroundColor="bgColorHo"
-                            $borderRadius={2}
-                            $padding="15px 30px"
-                            width="400px"
-                            onClick={() => sendInput()}
-                        >
-                            {update === "create" ? <P color="wh">작성하기</P> : <P color="wh">수정하기</P>}
-                        </Button>
-                    </FlexDiv>
-                </Div>
-            </Container>
+                </Container>
+            )}
         </FlexDiv>
     );
 };
