@@ -81,13 +81,13 @@ const BoardRoute = () => {
             <Route path="opensource" element={<BoardList />} />
             <Route path="opensource/detail/:id" element={<BoardDetail />} />
 
-            <Route path="scholarship-sponsor" element={<BoardList />} />
-            <Route path="scholarship-sponsor/detail/:id" element={<BoardDetail />} />
-            <Route path="scholarship-sponsor/create" element={<BoardCreate />} />
+            <Route path="sponsor" element={<BoardList />} />
+            <Route path="sponsor/detail/:id" element={<BoardDetail />} />
+            <Route path="sponsor/create" element={<BoardCreate />} />
 
-            <Route path="scholarchip-usage" element={<BoardList />} />
-            <Route path="scholarship-usage/detail/:id" element={<BoardDetail />} />
-            <Route path="scholarship-usage/create" element={<BoardCreate />} />
+            <Route path="usage" element={<BoardList />} />
+            <Route path="usage/detail/:id" element={<BoardDetail />} />
+            <Route path="usage/create" element={<BoardCreate />} />
         </Routes>
     );
 };
