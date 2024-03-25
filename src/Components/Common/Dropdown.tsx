@@ -43,12 +43,14 @@ const Dropdown = ({
     options,
     value,
     onChange,
+    purple
 }: {
     borderRadius?: number;
     label: string;
     options: string[];
     value?: string[];
     onChange: (value: string) => void;
+    purple?: boolean;
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState("");
@@ -76,13 +78,19 @@ const Dropdown = ({
                 $border="1px solid"
                 $borderColor="grey1"
                 $pointer
-                radius={borderRadius !== undefined ? borderRadius : 3}
+                $backgroundColor={purple ? 'bgColor': 'transparent'}
+                radius={borderRadius !== undefined ? borderRadius : (purple ? 20 : 3)}
             >
                 <FlexDiv>
-                    <P fontSize="sm">{selectedOption || label}</P>
+                    <P
+                        fontSize="sm"
+                        color={purple ? 'wh': 'bk'}
+                    >
+                        {selectedOption || label}
+                    </P>
                 </FlexDiv>
-                <FlexDiv width="10px">
-                    <Img src="/images/chevron-down_grey.svg" />
+                <FlexDiv width="10px" $margin="0 0 0 5px">
+                    {purple ? (<Img src="/images/chevron-down_white.svg" />) : (<Img src="/images/chevron-down_grey.svg" />)}
                 </FlexDiv>
             </FlexDiv>
             {isOpen && (
