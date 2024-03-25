@@ -78,7 +78,7 @@ const useFetch = (): [
 
                     if (res.ok) {
                         if (res.status === 204 || res.headers.get("content-length") === "0" || res.body === null) {
-                            setData("noContents");
+                            setData((new Date()).toLocaleString())
                         } else {
                             result = await res.json();
                             console.log({ ...result });
@@ -113,7 +113,7 @@ const useFetch = (): [
 
                 if (res.ok) {
                     if (res.status === 204 || res.headers.get("content-length") === "0" || res.body === null) {
-                        setData("noContents");
+                        setData((new Date()).toLocaleString())
                     } else {
                         result = await res.json();
                         console.log({ ...result });

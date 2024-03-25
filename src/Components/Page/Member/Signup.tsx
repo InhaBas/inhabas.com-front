@@ -228,14 +228,16 @@ const Signup = () => {
 
     /* 학생용 signUp api 가 잘 POST 된 경우 */
     useEffect(() => {
-        if (postData === "noContents") {
+        // if (postData === "noContents") {
+        if (postData) {
             navigate("/signup/question");
         }
     }, [postData]);
 
     /* 교수용 signUp api 가 잘 POST 된 경우 */
     useEffect(() => {
-        if (proPostData === "noContents") {
+        // if (proPostData === "noContents") {
+        if (proPostData) {
             setReload(true);
             navigate("/");
         }
