@@ -109,7 +109,8 @@ const SignupQuestion = () => {
     토큰에 저장되어 있는 정보가 달라지므로, 회원 가입 후에는 항상 reload 해주어야 함
      */
     useEffect(() => {
-        if (putData === "noContents") {
+        // if (putData === "noContents") {
+        if (putData) {
             alert("회원가입을 축하합니다!");
             setReload(true);
             navigate("/");
@@ -120,7 +121,8 @@ const SignupQuestion = () => {
     답변 저장에 성공한 경우
     */
     useEffect(() => {
-        if (postData === "noContents") {
+        // if (postData === "noContents") {
+        if (postData) {
             alert("답변이 저장되었습니다.");
         }
     }, [postData]);
