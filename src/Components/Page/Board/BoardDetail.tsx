@@ -51,9 +51,9 @@ const BoardDetail = () => {
         fetchUrl = "/project/alpha";
     } else if (url === "beta") {
         fetchUrl = "/project/beta";
-    } else if (url === "scholarship-sponsor") {
+    } else if (url === "sponsor") {
         fetchUrl = "/scholarship/sponsor";
-    } else if (url === "scholarship-usage") {
+    } else if (url === "usage") {
         fetchUrl = "/scholarship/usage";
     } else if (url === "opensource") {
         fetchUrl = "/board/storage";

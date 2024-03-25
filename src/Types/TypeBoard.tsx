@@ -38,4 +38,5 @@ export interface boardDetailInterface {
         }
     ];
     isPinned?: boolean;
+    dateHistory?: string;
 }
