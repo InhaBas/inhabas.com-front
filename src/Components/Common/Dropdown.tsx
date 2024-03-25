@@ -74,7 +74,7 @@ const Dropdown = ({
                 width="100%"
                 height="40px"
                 $justifycontent="space-between"
-                $padding={purple ? '6px 12px' : "6px 12px"}
+                $padding="6px 12px"
                 $border="1px solid"
                 $borderColor="grey1"
                 $pointer
