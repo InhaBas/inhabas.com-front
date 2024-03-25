@@ -27,6 +27,21 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch, menuI
         return file && acceptedImageTypes.includes(file.type);
     };
 
+    const isOtherFile = (file: File): boolean => {
+        const acceptedTypes: string[] = [
+            "application/vnd.ms-excel", // xls
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // xlsx
+            "application/msword", // doc
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // docx
+            "application/vnd.ms-powerpoint", // ppt
+            "text/plain", // txt
+            "application/pdf", // pdf
+            "application/zip", // zip
+            "text/csv", // csv
+        ];
+        return file && acceptedTypes.includes(file.type);
+    };
+
     const isFileSizeExceeded = (file: File, maxSizeInBytes: number): boolean => {
         return file.size > maxSizeInBytes;
     };
@@ -35,7 +50,14 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch, menuI
         if (files) {
             const fileList = Array.from(files);
 
-            setFileSelected(fileList);
+            // 파일 크기가 20MB를 초과하는지 확인
+            const isOverMaxSize = fileList.some((file) => isFileSizeExceeded(file, 1024 * 1024 * 20));
+
+            if (isOverMaxSize) {
+                // 파일 크기가 20MB를 초과하는 경우 알림 띄우기
+                alert("파일 크기는 최대 20MB까지 허용됩니다.");
+                return; // 파일 첨부 중단
+            }
 
             fileList.forEach((file, index) => {
                 if (index === 0 || !single) {
@@ -48,6 +70,8 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch, menuI
                     };
 
                     if (isImageFile(file)) {
+                        setFileSelected(fileList);
+
                         const reader = new FileReader();
                         reader.onloadend = () => {
                             if (typeof reader.result === "string") {
@@ -59,19 +83,32 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch, menuI
                             }
                         };
                         reader.readAsDataURL(file);
-                    } else {
-                        newPreview.url = "/images/attachment_grey.svg";
-                        newPreview.name = file.name;
-                        newPreview.width = "60%";
-                        newPreview.height = "60%";
-                        setPreviews((prevPreviews) => [...prevPreviews, newPreview]);
-                    }
 
-                    if (fileFetch) {
-                        // fetch 요청을 각 파일마다 발생
-                        const previewsFormData = new FormData();
-                        previewsFormData.append("file", file); // 파일을 FormData에 추가
-                        fetchFileData(`/file/upload/${menuId}`, "POST", "token", previewsFormData, true);
+                        if (fileFetch) {
+                            // fetch 요청을 각 파일마다 발생
+                            const previewsFormData = new FormData();
+                            previewsFormData.append("file", file); // 파일을 FormData에 추가
+                            fetchFileData(`/file/upload/${menuId}`, "POST", "token", previewsFormData, true);
+                        }
+                    } else {
+                        if (isOtherFile(file)) {
+                            setFileSelected(fileList);
+
+                            newPreview.url = "/images/attachment_grey.svg";
+                            newPreview.name = file.name;
+                            newPreview.width = "60%";
+                            newPreview.height = "60%";
+                            setPreviews((prevPreviews) => [...prevPreviews, newPreview]);
+
+                            if (fileFetch) {
+                                // fetch 요청을 각 파일마다 발생
+                                const previewsFormData = new FormData();
+                                previewsFormData.append("file", file); // 파일을 FormData에 추가
+                                fetchFileData(`/file/upload/${menuId}`, "POST", "token", previewsFormData, true);
+                            }
+                        } else {
+                            alert("업로드할 수 있는 확장자 파일이 아닙니다.");
+                        }
                     }
                 }
             });
