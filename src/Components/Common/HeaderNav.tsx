@@ -94,6 +94,12 @@ const HeaderNav = () => {
                     case "beta":
                         titleId = 17;
                         break;
+                    case "sponsor":
+                        titleId = 21;
+                        break;
+                    case "usage":
+                        titleId = 22;
+                        break;
                     default: // 혹은 다른 값으로 설정
                         // pathName1이 위의 case에 일치하지 않는 경우에 대한 처리
                         titleId = 0;
@@ -120,8 +126,14 @@ const HeaderNav = () => {
                 break;
 
             case "contest":
-                titleId = 18;
-                break;
+                switch (pathName2) {
+                    case "":
+                        titleId = 18;
+                        break;
+                    case "activity":
+                        titleId = 19;
+                        break;
+                }
         }
         return titleId;
     };
@@ -132,7 +144,8 @@ const HeaderNav = () => {
         ["lecture", "lecture", "lecture", "lecture"],
         ["bank/support", "bank"],
         ["board/alpha", "board/beta"],
-        ["contest"],
+        ["contest", "contest/activity"],
+        ["scholarship", "board/sponsor", "board/usage"],
     ];
 
     const movePage = (url: string) => {

@@ -17,7 +17,7 @@ import Dropdown from "../../Common/Dropdown";
 import Button from "../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
-import { TextInput } from "../../../styles/assets/Input";
+import { Date, TextInput } from "../../../styles/assets/Input";
 import P from "../../../styles/assets/P";
 import Loading from "../../Common/Loading";
 import TextEditor from "../../Common/TextEditor";
@@ -55,9 +55,9 @@ const BoardCreate = () => {
         fetchUrl = "/project/alpha";
     } else if (url === "beta") {
         fetchUrl = "/project/beta";
-    } else if (url === "scholarship-sponsor") {
+    } else if (url === "sponsor") {
         fetchUrl = "/scholarship/sponsor";
-    } else if (url === "scholarship-usage") {
+    } else if (url === "usage") {
         fetchUrl = "/scholarship/usage";
     } else if (url === "opensource") {
         fetchUrl = "/board/storage";
@@ -78,6 +78,10 @@ const BoardCreate = () => {
             alert("제목을 입력해주세요");
             check = false;
         }
+        if (check && (url === "sponsor" || url === "usage") && inputRef.current[2].value === "") {
+            alert("날짜를 입력해주세요");
+            check = false;
+        }
 
         if (check && inputRef.current[1].getInstance().getMarkdown().trim() === "") {
             alert("내용을 입력해주세요");
@@ -90,26 +94,16 @@ const BoardCreate = () => {
                 title: inputRef.current[0].value,
                 content: inputRef.current[1].getInstance().getMarkdown(),
                 files: fileId,
-                pinOption: pinValue !== "" ? pinValue : "0",
+                ...(url !== "sponsor" && url !== "usage" && { pinOption: pinValue !== "" ? pinValue : "0" }),
+                ...((url === "sponsor" || url === "usage") && { dateHistory: inputRef.current[2].value + "T00:00:00" }),
             };
 
-            // const jsonData = JSON.stringify(inputData);
-
             const formdata = new FormData();
-            // formdata.append("form", new Blob([jsonData], { type: "application/json" }));
 
             for (let i = 0; i < files.length; i++) {
                 formdata.append("files", files[i]);
             }
-            // // FormData의 key 확인
-            // for (let key of formdata.keys()) {
-            //     console.log(key);
-            // }
 
-            // // FormData의 value 확인
-            // for (let value of formdata.values()) {
-            //     console.log(value);
-            // }
             console.log(inputData);
             if (update === "create") {
                 // postFetchData(`${fetchUrl}`, "POST", "token", formdata, true);
@@ -224,6 +218,21 @@ const BoardCreate = () => {
                                     ></TextInput>
                                 </Div>
                             </Div>
+
+                            {(url === "sponsor" || url === "usage") && (
+                                <Div width="100%" $padding="20px">
+                                    <Div width="100%">
+                                        <Date
+                                            width="100%"
+                                            height="60px"
+                                            fontSize="xl"
+                                            $borderRadius={5}
+                                            ref={(el: never) => (inputRef.current[2] = el)}
+                                            defaultValue={detail?.dateHistory}
+                                        />
+                                    </Div>
+                                </Div>
+                            )}
 
                             <Div width="100%" $padding="20px">
                                 <DragNDrop fileFetch menuId={currentMenuId} />
