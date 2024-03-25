@@ -58,7 +58,7 @@ const ModalBankHistoryDetail = () => {
                         <Img src="/images/check-calendar_black.svg"/>
                     </FlexDiv>
                     <FlexDiv>
-                        <P fontSize="md" fontWeight={700}>{data?.dateCreated.split('T')[0].substr(2)}</P>
+                        <P fontSize="md" fontWeight={700}>{data?.dateCreated.split('T')[0]}</P>
                     </FlexDiv>
                 </FlexDiv>
 

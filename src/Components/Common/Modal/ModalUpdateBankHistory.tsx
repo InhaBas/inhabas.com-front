@@ -5,8 +5,8 @@ import { theme } from "../../../styles/theme";
 
 import useFetch from "../../../Hooks/useFetch";
 
-import { modalOpen, selectedStudentInfos, selectedFile, modalInfo } from "../../../Recoil/frontState";
-import { tokenAccess } from "../../../Recoil/backState";
+import { modalOpen, selectedStudentInfos, selectedFile, modalInfo, refetch, menuId } from "../../../Recoil/frontState";
+import { tokenAccess, fileIdList } from "../../../Recoil/backState";
 
 import Button from "../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../styles/assets/Div";
@@ -25,11 +25,15 @@ const ModalUpdateBankHistory = () => {
 
     const modalContent = useRecoilValue(modalInfo)!;
     const accessToken = useRecoilValue(tokenAccess);
+    const [files, setFileIdList] = useRecoilState(fileIdList);
+    const [reload, setReload] = useRecoilState(refetch);
+    const currentMenuId = useRecoilValue(menuId);
 
     const [_update, fetchUpdateHistory] = useFetch();
 
     const [historyType, setHistoryType] = useState('');
     const [selectedInfos, setSelectedInfos] = useRecoilState(selectedStudentInfos)
+    const [fileSelected, setFileSelected] = useRecoilState(selectedFile);
 
     const [infos, setInfos] = useState({
         "dateUsed": "",
@@ -42,6 +46,7 @@ const ModalUpdateBankHistory = () => {
     })
 
     useEffect(() => {
+        setFileSelected([])
         fetchGetHistory(`/budget/history/${modalContent.content}`, 'GET', "token")
     }, [accessToken])
 
@@ -56,21 +61,25 @@ const ModalUpdateBankHistory = () => {
         infos.details = historyInfo?.details;
         infos.income = String(historyInfo?.income);
         infos.outcome = String(historyInfo?.outcome);
+        if (historyInfo?.receipts) {
+            setFileSelected(historyInfo?.receipts)
+        }
+        setFileIdList((prev) => [
+            ...prev,
+            ...(historyInfo?.receipts ? historyInfo.receipts.map((receipt: any) => receipt?.id ?? []) : [])
+        ]);
 
         if (historyInfo?.income === 0) {
             setHistoryType('outcome')
         } else if (historyInfo?.outcome === 0) {
             setHistoryType('income')
         }
-
+        setReload(true);
     }, [historyInfo])
 
     const closeModal = () => {
         setOpen(false);
     };
-    
-
-    const [files, setFiles] = useRecoilState(selectedFile);
 
     const checkIsCompletedContents = () => {
         if (historyType === 'income') {
@@ -106,16 +115,17 @@ const ModalUpdateBankHistory = () => {
 
         // 파일 담기
         const inputData = {
-            dateUsed: infos.dateUsed += 'T00:00:00',
+            dateUsed: infos?.dateUsed?.includes('T') ? infos?.dateUsed : infos.dateUsed + 'T00:00:00',
             title: infos.title,
             details: infos.details,
             memberStudentIdReceived: '12180543',
             memberNameReceived: '김지성',
             income: infos.income,
             outcome: infos.outcome,
-            files: ['fa0a2a4c-0cee-4a5e-b818-ea4e2c6dc6fa']
+            files: files
+            // files: ['fa0a2a4c-0cee-4a5e-b818-ea4e2c6dc6fa']
         }
-
+        console.log(inputData)
         fetchUpdateHistory('/budget/history', 'UPDATE', "token", inputData)
     };
 
@@ -220,7 +230,7 @@ const ModalUpdateBankHistory = () => {
                         </FlexDiv>
                     </FlexDiv>
                     <FlexDiv width="100%">
-                        <DragNDrop onlyImg />
+                        <DragNDrop fileFetch menuId={currentMenuId} onlyImg  />
                     </FlexDiv>
                 </FlexDiv>
 

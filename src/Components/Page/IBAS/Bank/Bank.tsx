@@ -1,17 +1,17 @@
+import { useRecoilState, useRecoilValue } from "recoil";
+import { useEffect, useState } from "react";
+
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import { H2 } from "../../../../styles/assets/H";
-import { Select } from "../../../../styles/assets/Input";
 
 import BankTable from "../../../Component/IBAS/Bank/BankTable";
 import Pagination from "../../../Common/Pagination";
+import Dropdown from "../../../Common/Dropdown";
 
 import useFetch from "../../../../Hooks/useFetch";
 
 import { bankHistoryInfo, totalPageInfo, bankBalanceInfo, bankYearsInfo, tokenAccess } from "../../../../Recoil/backState";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { useEffect, useState } from "react";
-
-import { modalInfo } from "../../../../Recoil/frontState";
+import { modalInfo, refetch } from "../../../../Recoil/frontState";
 
 export interface bankHistoryInterface {
     id?: number;
@@ -28,22 +28,21 @@ export interface bankHistoryInterface {
 }
 
 const Bank = () => {
-
-    const [nowModalInfo, setNowModalInfo] = useRecoilState(modalInfo);
     
     const [bankHistoryData, fetchBankHistoryData] = useFetch();
     const [bankHistory, setBankHistory] = useRecoilState(bankHistoryInfo);
     const [bankBalance, setBankBalance] = useRecoilState(bankBalanceInfo);
     const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
     const accessToken = useRecoilValue(tokenAccess);
+    const [reload, setReload] = useRecoilState(refetch);
 
     const [bankYearsData, fetchBankYearsData] = useFetch();
     const [bankYears, setBankYears] = useRecoilState(bankYearsInfo);
 
     const [selectedYear, setSelectedYear] = useState('');
 
-    const handleSelectedYear = (e: any) => {
-        setSelectedYear(e.target.value);
+    const handleSelectedYear = (value: string) => {
+        setSelectedYear(value);
     }
 
     // 연도 데이터 패치
@@ -63,15 +62,17 @@ const Bank = () => {
         if (bankYears && bankYears[0]) {
             fetchBankHistoryData(`/budget/histories?year=${selectedYear}&page=${'0'}&size=${'15'}`, "GET", "token")
         }
-    }, [bankYears, selectedYear, accessToken])
+        setReload(false);
+        console.log(reload)
+    }, [bankYears, selectedYear, accessToken, reload])
 
     useEffect(() => {
         if (bankHistoryData) {
             const contents = bankHistoryData?.page?.data?.map((data : any) => ({
                 id: data?.id,
-                사용일: data?.dateUsed?.split('T')[0].substr(2),
-                게시일: data?.dateCreated?.split('T')[0].substr(2),
-                수정일: data?.dateUpdated?.split('T')[0].substr(2),
+                사용일: data?.dateUsed?.split('T')[0],
+                게시일: data?.dateCreated?.split('T')[0],
+                수정일: data?.dateUpdated?.split('T')[0],
                 내용: data?.title,
                 수입액: String(data?.income)?.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
                 지출액: String(data?.outcome)?.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
@@ -101,22 +102,13 @@ const Bank = () => {
                             </H2>
                         </Div>
                         <Div>
-                            <Select
-                                name="subject"
-                                required
-                                width="100px"
-                                $backgroundColor="bgColor"
-                                $borderRadius={100}
-                                color="wh"
-                                $padding="10px"
+                            <Dropdown
+                                label="전체보기"
+                                options={Object.values(bankYears).sort((a, b) => b-a).map((bankYear) => String(bankYear))}
+                                value={Object?.values(bankYears)?.sort((a, b) => b-a)?.map((bankYear) => String(bankYear))}
                                 onChange={handleSelectedYear}
-                                value={selectedYear}
-                                >
-                                <option hidden>전체보기</option>
-                                {Object.values(bankYears).sort((a, b) => b-a).map((bankYear => (
-                                    <option value={String(bankYear)}>{bankYear}</option>
-                                )))}
-                            </Select>
+                                purple
+                            />
                         </Div>
                     </FlexDiv>
                     <BankTable />

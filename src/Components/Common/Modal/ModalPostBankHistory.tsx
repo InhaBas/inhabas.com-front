@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import { theme } from "../../../styles/theme";
 
 import useFetch from "../../../Hooks/useFetch";
 
+import { fileIdList } from "../../../Recoil/backState";
+
 import { modalOpen, selectedStudentInfos } from "../../../Recoil/frontState";
-import { selectedFile } from "../../../Recoil/frontState";
+import { menuId, refetch } from "../../../Recoil/frontState";
 
 import Button from "../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../styles/assets/Div";
@@ -26,8 +28,10 @@ const ModalPostBankHistory = () => {
         setOpen(false);
     };
     
-    const [files, setFiles] = useRecoilState(selectedFile);
-    const selectedInfos = useRecoilValue(selectedStudentInfos);
+    const [selectedInfos, setSelectedInfos] = useRecoilState(selectedStudentInfos);
+    const currentMenuId = useRecoilValue(menuId);
+    const [files, setFiles] = useRecoilState(fileIdList);
+    const setReload = useSetRecoilState(refetch);
 
     const [infos, setInfos] = useState({
         "dateUsed": "",
@@ -39,7 +43,7 @@ const ModalPostBankHistory = () => {
         "outcome": '0'
     })
     const [historyType, setHistoryType] = useState('income');    
-    const [_post, fetchPostHistory] = useFetch();
+    const [postHistory, fetchPostHistory] = useFetch();
 
     const resetInfos = () => {
         setInfos({
@@ -92,13 +96,27 @@ const ModalPostBankHistory = () => {
             details: infos.details,
             memberStudentIdReceived: '12180543',
             memberNameReceived: '김지성',
-            income: infos.income,
-            outcome: infos.outcome,
-            files: ['fa0a2a4c-0cee-4a5e-b818-ea4e2c6dc6fa']
+            income: Number(infos.income),
+            outcome: Number(infos.outcome),
+            files: files
         }
-
+        console.log(inputData)
         fetchPostHistory('/budget/history', 'POST', "token", inputData)
     };
+
+    useEffect(() => {
+        console.log(postHistory)
+        if (postHistory) {
+            alert('회계 내역이 정상적으로 등록되었습니다.');
+            closeModal();
+            setReload(true);
+            resetInfos();
+            // 선택 학생 초기화
+            setSelectedInfos({ name: "", major: '', studentId: '' })
+            // 파일 리스트 초기화
+            setFiles([])
+        }
+    }, [postHistory])
 
     return (
         <FlexDiv
@@ -216,7 +234,6 @@ const ModalPostBankHistory = () => {
                     </>
                 )}
 
-
                 <FlexDiv width="90%" direction="column">
                     <FlexDiv width="100%" $justifycontent="flex-start" $margin="0 0 10px 0">
                         <FlexDiv $margin="0 10px 0 0">
@@ -232,7 +249,7 @@ const ModalPostBankHistory = () => {
                         </FlexDiv>
                     </FlexDiv>
                     <FlexDiv width="100%">
-                        <DragNDrop onlyImg />
+                        <DragNDrop fileFetch menuId={currentMenuId} onlyImg  />
                     </FlexDiv>
                 </FlexDiv>
 
