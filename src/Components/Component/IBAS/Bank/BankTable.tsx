@@ -1,28 +1,23 @@
-import { useNavigate } from "react-router-dom";
+import { MouseEvent, useEffect } from "react";
+
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
+import { modalInfo, modalOpen, refetch } from "../../../../Recoil/frontState";
+import { bankHistoryInfo, bankBalanceInfo } from "../../../../Recoil/backState";
+
 import { theme } from "../../../../styles/theme";
-
-import { MouseEvent, useState } from "react";
-
-import { modalInfo, modalOpen } from "../../../../Recoil/frontState";
-
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
 
-import { bankHistoryInfo, bankBalanceInfo } from "../../../../Recoil/backState";
-
-import Modal from "../../../Common/Modal/ModalHistory";
 import useFetch from "../../../../Hooks/useFetch";
 
 const BankTable = () => {
-    const navigate = useNavigate();
-
     const setOpen = useSetRecoilState(modalOpen);
     const setModalInfo = useSetRecoilState(modalInfo);
+    const setReload = useSetRecoilState(refetch);
 
-    const [_delete, fetchDeleteHistory] = useFetch();
+    const [deleteHistory, fetchDeleteHistory] = useFetch();
 
     const clickDetailEvent = (ev: MouseEvent, name: string, selectedId: number) => {
         setOpen(true);
@@ -45,6 +40,14 @@ const BankTable = () => {
         }
     };
 
+    useEffect(() => {
+        if (deleteHistory) {
+            alert('내역이 정상적으로 삭제되었습니다.')
+            setReload(true);
+            console.log(deleteHistory)
+        }
+    }, [deleteHistory])
+
     const clickPostEvent = (ev: MouseEvent, name: string, content: string) => {
         setOpen(true);
         console.log("gg");
@@ -53,7 +56,7 @@ const BankTable = () => {
     };
 
     const headerInfo = ["사용일", "게시일", "수정일", "내용", "수입액", "지출액", "증빙"];
-    const widthList = [90, 90, 90, 350, 100, 100, 40];
+    const widthList = [120, 120, 120, 350, 100, 100, 40];
 
     const contents = useRecoilValue(bankHistoryInfo);
     const bankBalance = useRecoilValue(bankBalanceInfo);
@@ -93,7 +96,7 @@ const BankTable = () => {
                     >
                         {Object.values(element).slice(1).map((item: any, idx: number) => (
                             <FlexDiv key={`itemValue${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
-                                <P $center fontWeight={500}>
+                                <P $center fontWeight={500} >
                                     {item === "0" ? "-" : item}
                                 </P>
                             </FlexDiv>
