@@ -238,3 +238,8 @@ export const bankYearsInfo = atom({
     key: "bankYearsInfo",
     default: [],
 });
+
+export const bankListDataInfo = atom({
+    key: "bankListDataInfo",
+    default: [],
+});
