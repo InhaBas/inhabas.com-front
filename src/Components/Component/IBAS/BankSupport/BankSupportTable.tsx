@@ -4,7 +4,6 @@ import { theme } from "../../../../styles/theme";
 
 import { useRecoilState } from "recoil";
 import { bankListDataInfo } from "../../../../Recoil/backState";
-import { refetch } from "../../../../Recoil/frontState";
 import A from "../../../../styles/assets/A";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import P from "../../../../styles/assets/P";
@@ -16,8 +15,6 @@ const BankSupportTable = () => {
     const widthList = [45, 500, 120, 120, 120];
 
     const [bankList, setBankList] = useRecoilState(bankListDataInfo);
-
-    const [reload, setReload] = useRecoilState(refetch);
 
     const movePage = (idx: number) => {
         navigate(`/bank/support/detail/${idx}`);
@@ -51,48 +48,50 @@ const BankSupportTable = () => {
                             $justifycontent="space-between"
                             $backgroundColor="wh"
                         >
-                            {Object.values(element).map((item: any, idx: number) => (
-                                <FlexDiv
-                                    key={`itemValue${idx}`}
-                                    $minWidth={`${widthList[idx]}px`}
-                                    $padding="10px"
-                                    $justifycontent={idx === 1 ? "start" : "center"}
-                                    onClick={() => idx === 1 && movePage((element as { id: number }).id)}
-                                    $pointer={idx === 1 ? true : false}
-                                >
-                                    {idx === 4 ? (
-                                        <Div width="70%">
-                                            <P
-                                                color={
-                                                    item === "승인 대기"
-                                                        ? "bk"
-                                                        : item === "승인 완료"
-                                                        ? "green"
-                                                        : item === "승인 거절"
-                                                        ? "red"
-                                                        : item === "처리 완료"
-                                                        ? "blue"
-                                                        : "bk"
-                                                }
-                                                style={{ fontStyle: item === "승인 대기" ? "italic" : "normal" }}
-                                            >
-                                                {item}
-                                            </P>
-                                        </Div>
-                                    ) : (
-                                        <Div>
-                                            <A
-                                                $center={idx === 1 ? false : true}
-                                                fontWeight={idx === 1 ? 700 : idx === 0 ? 900 : 500}
-                                                $hoverColor={idx === 1 ? "textColor" : idx === 0 ? "grey3" : "bk"}
-                                                color={idx === 0 ? "grey3" : "bk"}
-                                            >
-                                                {item}
-                                            </A>
-                                        </Div>
-                                    )}
-                                </FlexDiv>
-                            ))}
+                            {Object.values(element)
+                                .slice(0, 5)
+                                .map((item: any, idx: number) => (
+                                    <FlexDiv
+                                        key={`itemValue${idx}`}
+                                        $minWidth={`${widthList[idx]}px`}
+                                        $padding="10px"
+                                        $justifycontent={idx === 1 ? "start" : "center"}
+                                        onClick={() => idx === 1 && movePage((element as { id: number }).id)}
+                                        $pointer={idx === 1 ? true : false}
+                                    >
+                                        {idx === 4 ? (
+                                            <Div width="70%">
+                                                <P
+                                                    color={
+                                                        item === "승인 대기"
+                                                            ? "bk"
+                                                            : item === "승인 완료"
+                                                            ? "green"
+                                                            : item === "승인 거절"
+                                                            ? "red"
+                                                            : item === "처리 완료"
+                                                            ? "blue"
+                                                            : "bk"
+                                                    }
+                                                    style={{ fontStyle: item === "승인 대기" ? "italic" : "normal" }}
+                                                >
+                                                    {item}
+                                                </P>
+                                            </Div>
+                                        ) : (
+                                            <Div>
+                                                <A
+                                                    $center={idx === 1 ? false : true}
+                                                    fontWeight={idx === 1 ? 700 : idx === 0 ? 900 : 500}
+                                                    $hoverColor={idx === 1 ? "textColor" : idx === 0 ? "grey3" : "bk"}
+                                                    color={idx === 0 ? "grey3" : "bk"}
+                                                >
+                                                    {item}
+                                                </A>
+                                            </Div>
+                                        )}
+                                    </FlexDiv>
+                                ))}
                         </FlexDiv>
                     ))
                 ) : (
