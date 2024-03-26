@@ -30,7 +30,6 @@ const BankSupport = () => {
                         <BankSupportTable />
                         <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">
                             <Button
-                                display="flex"
                                 $backgroundColor="bgColor"
                                 $margin="0 10px 0 0"
                                 $padding="12px 15px"
@@ -38,14 +37,16 @@ const BankSupport = () => {
                                 $HBackgroundColor="bgColorHo"
                                 onClick={() => moveCreate()}
                             >
-                                <Div width="12px" $margin="0 10px 0 0">
-                                    <Img src="/images/plus_white.svg" />
-                                </Div>
-                                <Div $pointer>
-                                    <A color="wh" fontSize="sm" href="/bank/support/create" $hoverColor="wh">
-                                        신청하기
-                                    </A>
-                                </Div>
+                                <FlexDiv width="100%">
+                                    <Div width="12px" height="12px" $margin="0 10px 0 0">
+                                        <Img src="/images/plus_white.svg" />
+                                    </Div>
+                                    <Div $pointer>
+                                        <A color="wh" fontSize="sm" $hoverColor="wh">
+                                            신청하기
+                                        </A>
+                                    </Div>
+                                </FlexDiv>
                             </Button>
                         </FlexDiv>
                         {/* <Pagination /> */}
