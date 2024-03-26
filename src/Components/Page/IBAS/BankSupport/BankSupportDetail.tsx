@@ -26,6 +26,10 @@ const BankSupportDetail = () => {
     const [deleteData, deleteDataFetch] = useFetch();
     const [detail, setDetail] = useRecoilState(bankDetailDataInfo);
 
+    const movePage = () => {
+        navigate(`/bank/support/update/${applicationId}`);
+    };
+
     const deleteDetail = () => {
         if (window.confirm("정말 철회 하시겠습니까?")) {
             setIsLoading(true);
@@ -241,6 +245,7 @@ const BankSupportDetail = () => {
                         $padding="12px 15px"
                         $borderRadius={30}
                         $HBackgroundColor="bgColorHo"
+                        onClick={() => movePage()}
                     >
                         <Div width="12px" $margin="0 10px 0 0">
                             <Img src="/images/pencil_white.svg" />
