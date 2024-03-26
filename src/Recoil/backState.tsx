@@ -202,6 +202,11 @@ export const boardListDataInfo = atom({
     default: [],
 });
 
+export const boardListPinnedDataInfo = atom({
+    key: "boardListPinnedDataInfo",
+    default: [],
+});
+
 export const boardDetailData = atom<boardDetailInterface | null>({
     key: "boardDetailData",
     default: null,
@@ -231,5 +236,10 @@ export const bankBalanceInfo = atom({
 
 export const bankYearsInfo = atom({
     key: "bankYearsInfo",
+    default: [],
+});
+
+export const bankListDataInfo = atom({
+    key: "bankListDataInfo",
     default: [],
 });
