@@ -25,15 +25,15 @@ const ModalUpdateBankHistory = () => {
 
     const modalContent = useRecoilValue(modalInfo)!;
     const accessToken = useRecoilValue(tokenAccess);
-    const [files, setFileIdList] = useRecoilState(fileIdList);
-    const [reload, setReload] = useRecoilState(refetch);
     const currentMenuId = useRecoilValue(menuId);
+    const [files, setFileIdList] = useRecoilState(fileIdList);
+    const setReload = useSetRecoilState(refetch);
+    const [selectedInfos, setSelectedInfos] = useRecoilState(selectedStudentInfos)
+    const setFileSelected = useSetRecoilState(selectedFile);
 
-    const [_update, fetchUpdateHistory] = useFetch();
+    const [updateHistory, fetchUpdateHistory] = useFetch();
 
     const [historyType, setHistoryType] = useState('');
-    const [selectedInfos, setSelectedInfos] = useRecoilState(selectedStudentInfos)
-    const [fileSelected, setFileSelected] = useRecoilState(selectedFile);
 
     const [infos, setInfos] = useState({
         "dateUsed": "",
@@ -81,6 +81,18 @@ const ModalUpdateBankHistory = () => {
         setOpen(false);
     };
 
+    const resetInfos = () => {
+        setInfos({
+        "dateUsed": "",
+        "title": "",
+        "details": "",
+        "memberStudentIdReceived": "",
+        "memberNameReceived": "",
+        "income": '',
+        "outcome": ''
+        })
+    }
+
     const checkIsCompletedContents = () => {
         if (historyType === 'income') {
             if (infos.dateUsed === '') { alert('사용일을 입력해주세요'); return false}
@@ -123,11 +135,22 @@ const ModalUpdateBankHistory = () => {
             income: infos.income,
             outcome: infos.outcome,
             files: files
-            // files: ['fa0a2a4c-0cee-4a5e-b818-ea4e2c6dc6fa']
         }
         console.log(inputData)
-        fetchUpdateHistory('/budget/history', 'UPDATE', "token", inputData)
+        fetchUpdateHistory(`/budget/history/${modalContent.content}`, 'POST', "token", inputData)
     };
+
+    useEffect(() => {
+        if (updateHistory) {
+            alert('회계 내역이 정상적으로 수정되었습니다.')
+            closeModal();
+            setReload(true);
+            resetInfos();
+            setSelectedInfos({ name: "", major: '', studentId: '' })
+            // 파일 리스트 초기화
+            setFileIdList([])
+        }
+    }, [updateHistory])
 
     return (
         <FlexDiv
