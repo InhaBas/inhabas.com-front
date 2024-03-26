@@ -50,7 +50,7 @@ const Scholarship = () => {
 
     // 연혁 useEffect
     useEffect(() => {
-        fetchChangesContentData(`/scholarship/histories`, "GET", "token")
+        fetchChangesContentData(`/scholarship/histories`, "GET")
         setReload(false);
     }, [reload])
 
@@ -63,7 +63,7 @@ const Scholarship = () => {
 
     // 후원내용 useEffect
     useEffect(() => {
-        fetchScholarshipSponsorData(`/scholarship/SPONSOR?page=0&size=9999`, "GET", "token")
+        fetchScholarshipSponsorData(`/scholarship/SPONSOR?page=0&size=9999`, "GET")
     }, [])
 
     useEffect(() => {
@@ -93,7 +93,7 @@ const Scholarship = () => {
 
     // 사용 내역 useEffect
     useEffect(() => {
-        fetchScholarshipUsageData(`/scholarship/USAGE?page=0&size=3`, "GET", "token")
+        fetchScholarshipUsageData(`/scholarship/USAGE?page=0&size=3`, "GET")
     }, [])
 
     useEffect(() => {
@@ -285,13 +285,13 @@ const Scholarship = () => {
                                         content: title,
                                         id: String(id)
                                     }))} 
-                                    mainUrl='/board/sponsor/detail'
+                                    mainUrl='/board/usage/detail'
                                 />
                             </Div>
                             <Div width="100%" $margin="20px 0 0 0">
                                 <Button>
                                     <FlexDiv $justifycontent="flex-start">
-                                        <SeeMoreButton url={"/board/sponsor"}/>
+                                        <SeeMoreButton url={"/board/usage"}/>
                                     </FlexDiv>
                                 </Button>
                             </Div>
