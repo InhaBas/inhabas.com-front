@@ -130,8 +130,8 @@ const ModalUpdateBankHistory = () => {
             dateUsed: infos?.dateUsed?.includes('T') ? infos?.dateUsed : infos.dateUsed + 'T00:00:00',
             title: infos.title,
             details: infos.details,
-            memberStudentIdReceived: '12180543',
-            memberNameReceived: '김지성',
+            memberStudentIdReceived: infos.memberStudentIdReceived,
+            memberNameReceived: infos.memberNameReceived,
             income: infos.income,
             outcome: infos.outcome,
             files: files
