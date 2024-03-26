@@ -21,9 +21,10 @@ export interface historyInterface {
 // scholarship
 export interface scholarshipHistoryInterface {
     year: number | null;
-    contents: {
-        date: string;
-        content: string;
+    data: {
+        id: number,
+        title: string;
+        dateHistory: string;
     }[];
 }
 
@@ -31,5 +32,7 @@ export interface scholarshipDetailListInterface {
     contents: {
         date: string;
         content: string;
+        id: string;
     }[];
+    mainUrl: string;
 }
