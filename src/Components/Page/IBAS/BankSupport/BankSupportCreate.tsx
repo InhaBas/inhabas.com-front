@@ -3,11 +3,12 @@ import "@toast-ui/editor/dist/toastui-editor.css";
 import { theme } from "../../../../styles/theme";
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useNavigate, useParams } from "react-router-dom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import useFetch from "../../../../Hooks/useFetch";
-import { fileIdList } from "../../../../Recoil/backState";
-import { menuId } from "../../../../Recoil/frontState";
+import { bankDetailDataInfo, fileIdList, tokenAccess } from "../../../../Recoil/backState";
+import { menuId, refetch, selectedFile } from "../../../../Recoil/frontState";
+import { supportDetailInterface } from "../../../../Types/TypeBank";
 import Button from "../../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import { Date, TextInput } from "../../../../styles/assets/Input";
@@ -16,8 +17,18 @@ import DragNDrop from "../../../Common/DragNDrop";
 
 const BankSupportCreate = () => {
     const navigate = useNavigate();
+    const paramID = useParams().id;
     const currentMenuId = useRecoilValue(menuId);
+    const [isLoading, setIsLoading] = useState(true);
+    const [update, setUpdate] = useState("create");
+    const [getData, getFetchData] = useFetch();
     const [files, setFiles] = useRecoilState(fileIdList);
+    const [detail, setDetail] = useRecoilState(bankDetailDataInfo);
+    const access = useRecoilValue(tokenAccess);
+    const setSelectedFile = useSetRecoilState(selectedFile);
+    const [fileId, setFileList] = useRecoilState(fileIdList);
+    const setReload = useSetRecoilState(refetch);
+
     const [infos, setInfos] = useState({
         title: "",
         details: "",
@@ -26,6 +37,49 @@ const BankSupportCreate = () => {
         account: "",
     });
     const [postSupport, fetchPostSupport] = useFetch();
+
+    useEffect(() => {
+        if (paramID) {
+            setUpdate("update");
+        } else {
+            setIsLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (update == "update") {
+            getFetchData(`/budget/application/${paramID}`, "GET", "token");
+        }
+    }, [update, access]);
+
+    useEffect(() => {
+        if (getData) {
+            setDetail(getData);
+            setInfos((prev) => ({
+                ...prev,
+                title: getData.title,
+                details: getData.details,
+                dateUsed: getData.dateUsed,
+                outcome: getData.outcome,
+                account: getData.account,
+            }));
+
+            setIsLoading(false);
+
+            // DragNDrop update 설정
+            const files = [...getData.receipts.map((item: supportDetailInterface) => item)];
+            setSelectedFile(files);
+            const fileIds = [...getData.receipts.map((item: supportDetailInterface) => item.id)];
+            setFiles(fileIds);
+            // DragNDrop reload true일 때만 불러온 파일들 렌더링 할 있음
+            setReload(true);
+        }
+        return () => {
+            setDetail(null);
+            // DragNDrop fileList 초기화
+            setFiles([]);
+        };
+    }, [getData]);
 
     const checkIsCompletedContents = () => {
         if (infos.title === "") {
@@ -77,7 +131,11 @@ const BankSupportCreate = () => {
             files: files,
         };
         console.log(inputData);
-        fetchPostSupport("/budget/application", "POST", "token", inputData);
+        {
+            update === "create"
+                ? fetchPostSupport("/budget/application", "POST", "token", inputData)
+                : fetchPostSupport(`/budget/application/${paramID}`, "POST", "token", inputData);
+        }
     };
 
     useEffect(() => {
@@ -126,7 +184,7 @@ const BankSupportCreate = () => {
                         <Div width="100%" $padding="20px">
                             <Date
                                 width="100%"
-                                value={infos.dateUsed}
+                                value={infos.dateUsed?.split("T")[0]}
                                 onChange={(e: any) => setInfos((prev) => ({ ...prev, dateUsed: e.target.value }))}
                             />
                         </Div>
@@ -219,7 +277,7 @@ const BankSupportCreate = () => {
                             width="400px"
                             onClick={() => clickPostEvent()}
                         >
-                            <P color="wh">작성하기</P>
+                            {update === "create" ? <P color="wh">작성하기</P> : <P color="wh">수정하기</P>}
                         </Button>
                     </FlexDiv>
                 </Div>
