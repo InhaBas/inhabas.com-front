@@ -52,7 +52,8 @@ export const __totalPageInfo = atom({
 
 export const tokenAccess = atom({
     key: "tokenAccess",
-    default: "default",
+    default:
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTgwODg4MDc1ODQxMTcwNDE0MjUiLCJtZW1iZXJJZCI6MjcsInByb3ZpZGVyIjoiR09PR0xFIiwiZW1haWwiOiJ5eWoxMWtyQGdtYWlsLmNvbSIsImF1dGhvcml0aWVzIjpbIlJPTEVfVklDRV9DSElFRiJdLCJpYXQiOjE3MTE0MTQ2ODUsImV4cCI6MTcxMTQxNjQ4NX0.9HdGWaUcdawen65kX0YTQhjOJwm3iCmkKG91kDcF8kx26A_Pi9DsdinVPrHuRNu20SHZhTEsqAHgyrN0kSS__A",
 });
 
 export const userEmail = atom({
@@ -236,5 +237,10 @@ export const bankBalanceInfo = atom({
 
 export const bankYearsInfo = atom({
     key: "bankYearsInfo",
+    default: [],
+});
+
+export const bankListDataInfo = atom({
+    key: "bankListDataInfo",
     default: [],
 });
