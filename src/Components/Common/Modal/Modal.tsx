@@ -14,6 +14,7 @@ import ModalMajor from "./ModalMajor";
 import ModalBankHistoryDetail from "./ModalBankHistoryDetail";
 import ModalPostBankHistory from "./ModalPostBankHistory";
 import ModalUpdateBankHistory from "./ModalUpdateBankHistory";
+import ModalScholarshipHistory from "./ModalScholarshipHistory";
 
 type CustomMouseEvent = MouseEvent<HTMLElement>;
 
@@ -58,7 +59,9 @@ export const Modal = () => {
                         (modalType.type === "historyPut" && <ModalHistory />) ||
                         (modalType.type === "bankHistory" && <ModalBankHistoryDetail />) ||
                         (modalType.type === "bankHistoryPost" && <ModalPostBankHistory />) ||
-                        (modalType.type === "bankHistoryUpdate" && <ModalUpdateBankHistory />)
+                        (modalType.type === "bankHistoryUpdate" && <ModalUpdateBankHistory />)||
+                        (modalType.type === "scholarshipPost" && <ModalScholarshipHistory />)||
+                        (modalType.type === "scholarshipUpdate" && <ModalScholarshipHistory />)
                         } ||
                 </ModalBackground>
             )}

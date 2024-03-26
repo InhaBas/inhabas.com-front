@@ -16,8 +16,9 @@ const MainRoute = () => {
 
             <Route path="bank" element={<Bank />} />
             <Route path="bank/support" element={<BankSupport />} />
-            <Route path="bank/support/detail" element={<BankSupportDetail />} />
+            <Route path="bank/support/detail/:id" element={<BankSupportDetail />} />
             <Route path="bank/support/create" element={<BankSupportCreate />} />
+            <Route path="bank/support/update/:id" element={<BankSupportCreate />} />
         </Routes>
     );
 };
