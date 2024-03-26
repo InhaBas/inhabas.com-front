@@ -10,6 +10,7 @@ import {
     scheduleInterface,
     userInterface,
 } from "../Types/IBAS/TypeMyinfo";
+import { supportDetailInterface } from "../Types/TypeBank";
 import { boardDetailInterface, boardMenuInterface } from "../Types/TypeBoard";
 import { chiefInterface, menuInterface, policyInterface } from "../Types/TypeCommon";
 
@@ -242,4 +243,9 @@ export const bankYearsInfo = atom({
 export const bankListDataInfo = atom({
     key: "bankListDataInfo",
     default: [],
+});
+
+export const bankDetailDataInfo = atom<supportDetailInterface | null>({
+    key: "bankDetailDataInfo",
+    default: null,
 });

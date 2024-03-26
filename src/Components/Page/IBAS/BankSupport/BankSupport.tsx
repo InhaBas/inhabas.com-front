@@ -46,7 +46,7 @@ const BankSupport = () => {
         if (bankListData) {
             const contents = bankListData.data.map((item: supportListInterface, idx: number) => ({
                 number: idx + 1,
-                // id: item.id,
+
                 title: item.title,
                 applicantName: item.applicantName,
                 dateCreated: formatDateDay({ date: item.dateCreated }),
@@ -60,6 +60,7 @@ const BankSupport = () => {
                         : item.status === "COMPLETED"
                         ? "처리 완료"
                         : "error",
+                id: item.id,
             }));
 
             setBankList(contents);
