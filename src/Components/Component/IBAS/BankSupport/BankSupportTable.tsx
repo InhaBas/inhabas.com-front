@@ -2,73 +2,29 @@ import { useNavigate } from "react-router-dom";
 
 import { theme } from "../../../../styles/theme";
 
-import { useEffect } from "react";
-
-import { useRecoilState, useRecoilValue } from "recoil";
-import { DateFunction } from "../../../../Functions/dateFunction";
-import useFetch from "../../../../Hooks/useFetch";
-import { bankListDataInfo, tokenAccess, totalPageInfo } from "../../../../Recoil/backState";
-import { supportListInterface } from "../../../../Types/TypeBank";
+import { useRecoilState } from "recoil";
+import { bankListDataInfo } from "../../../../Recoil/backState";
+import { refetch } from "../../../../Recoil/frontState";
 import A from "../../../../styles/assets/A";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
-import { Select } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
 
 const BankSupportTable = () => {
     const navigate = useNavigate();
 
     const headerInfo = ["no.", "제목", "작성자", "작성일", "상태"];
-    const widthList = [45, 450, 120, 120, 120];
+    const widthList = [45, 500, 120, 120, 120];
 
-    const { formatDateDay } = DateFunction();
-
-    const access = useRecoilValue(tokenAccess);
-    const [bankListData, fetchBankListData] = useFetch();
     const [bankList, setBankList] = useRecoilState(bankListDataInfo);
-    const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
+
+    const [reload, setReload] = useRecoilState(refetch);
 
     const movePage = (idx: number) => {
         navigate(`/bank/support/detail/${idx}`);
     };
 
-    // url 바뀔 때마다 해당 table fetch 할 수 있도록
-    useEffect(() => {
-        fetchBankListData(`/budget/applications?page=0&size=15`, "GET", "token");
-    }, [access]);
-
-    useEffect(() => {
-        if (bankListData) {
-            const contents = bankListData.data.map((item: supportListInterface, idx: number) => ({
-                number: idx + 1,
-                id: item.id,
-                title: item.title,
-                applicantName: item.applicantName,
-                dateCreated: formatDateDay({ date: item.dateCreated }),
-                status: item.status,
-            }));
-
-            setBankList(contents);
-            setTotalPage(bankListData.pageInfo.totalPages);
-            // setIsLoading(false);
-        }
-    }, [bankListData]);
-
     return (
         <>
-            <Select
-                name="subject"
-                required
-                width="100px"
-                $backgroundColor="bgColor"
-                $borderRadius={100}
-                color="wh"
-                $padding="10px"
-            >
-                <option hidden>전체보기</option>
-                <option>승인 대기</option>
-                <option>승인 완료</option>
-                <option>승인 거절</option>
-            </Select>
             <Div width="100%" $padding="20px 0">
                 <FlexDiv
                     width="100%"
@@ -94,7 +50,6 @@ const BankSupportTable = () => {
                             $borderT={`1px solid ${theme.color.grey1}`}
                             $justifycontent="space-between"
                             $backgroundColor="wh"
-                            $pointer
                         >
                             {Object.values(element).map((item: any, idx: number) => (
                                 <FlexDiv
@@ -103,10 +58,26 @@ const BankSupportTable = () => {
                                     $padding="10px"
                                     $justifycontent={idx === 1 ? "start" : "center"}
                                     onClick={() => idx === 1 && movePage((element as { id: number }).id)}
+                                    $pointer={idx === 1 ? true : false}
                                 >
                                     {idx === 4 ? (
-                                        <Div>
-                                            <A color="red">{item}</A>
+                                        <Div width="70%">
+                                            <P
+                                                color={
+                                                    item === "승인 대기"
+                                                        ? "bk"
+                                                        : item === "승인 완료"
+                                                        ? "green"
+                                                        : item === "승인 거절"
+                                                        ? "red"
+                                                        : item === "처리 완료"
+                                                        ? "blue"
+                                                        : "bk"
+                                                }
+                                                style={{ fontStyle: item === "승인 대기" ? "italic" : "normal" }}
+                                            >
+                                                {item}
+                                            </P>
                                         </Div>
                                     ) : (
                                         <Div>
@@ -114,6 +85,7 @@ const BankSupportTable = () => {
                                                 $center={idx === 1 ? false : true}
                                                 fontWeight={idx === 1 ? 700 : idx === 0 ? 900 : 500}
                                                 $hoverColor={idx === 1 ? "textColor" : idx === 0 ? "grey3" : "bk"}
+                                                color={idx === 0 ? "grey3" : "bk"}
                                             >
                                                 {item}
                                             </A>
