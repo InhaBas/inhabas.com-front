@@ -4,6 +4,8 @@ import styled from "styled-components";
 
 import { modalInfo, modalOpen } from "../../../Recoil/frontState";
 import { FlexDiv } from "../../../styles/assets/Div";
+import ModalBankHistoryDetail from "./ModalBankHistoryDetail";
+import ModalBankSupportReject from "./ModalBankSupportReject";
 import ModalChangeImg from "./ModalChangeImg";
 import ModalChangeIntro from "./ModalChangeIntro";
 import ModalChangeName from "./ModalChangeName";
@@ -11,7 +13,6 @@ import ModalChangeNumber from "./ModalChangeNumber";
 import ModalChangeType from "./ModalChangeType";
 import ModalHistory from "./ModalHistory";
 import ModalMajor from "./ModalMajor";
-import ModalBankHistoryDetail from "./ModalBankHistoryDetail";
 import ModalPostBankHistory from "./ModalPostBankHistory";
 import ModalUpdateBankHistory from "./ModalUpdateBankHistory";
 import ModalScholarshipHistory from "./ModalScholarshipHistory";
@@ -61,8 +62,10 @@ export const Modal = () => {
                         (modalType.type === "bankHistoryPost" && <ModalPostBankHistory />) ||
                         (modalType.type === "bankHistoryUpdate" && <ModalUpdateBankHistory />)||
                         (modalType.type === "scholarshipPost" && <ModalScholarshipHistory />)||
-                        (modalType.type === "scholarshipUpdate" && <ModalScholarshipHistory />)
+                        (modalType.type === "scholarshipUpdate" && <ModalScholarshipHistory /> ||
+                        (modalType.type === "bankSupportStatus" && <ModalBankSupportReject />)})
                         } ||
+
                 </ModalBackground>
             )}
         </>
