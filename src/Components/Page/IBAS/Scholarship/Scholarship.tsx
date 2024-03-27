@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import useFetch from "../../../../Hooks/useFetch";
 
 import styled from "styled-components";
@@ -14,12 +14,17 @@ import ChangesContent from "../../../Component/IBAS/Scholarship/ChangesContent";
 import SeeMoreButton from "../../../Component/IBAS/Scholarship/SeeMoreButton";
 import ScholarshipDetailList from "../../../Component/IBAS/Scholarship/ScholarshipDetailList";
 
+import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
+import { userRole } from "../../../../Recoil/backState";
 
 const ScholarshipSection = styled(Div)`
     min-height: 100vh;
 `
 
 const Scholarship = () => {
+
+    const { isAuthorizedOverSecretary } = GetRoleAuthorization();
+    const role = useRecoilValue(userRole);
 
     const [changesContentData, fetchChangesContentData] = useFetch();
     const [scholarshipUsageData, fetchScholarshipUsageData] = useFetch();
@@ -178,16 +183,20 @@ const Scholarship = () => {
                                 연혁
                             </P>
                         </Div>
-                        <FlexDiv $margin="5px 0 5px 0" $padding="5px" onClick={(e: any) => clickPostEvent(e, "ss", '')} $pointer>
-                            <FlexDiv width="20px" height="20px">
-                                <Img src="/images/plus_grey.svg" />
-                            </FlexDiv>
-                            <FlexDiv $margin="0 0 0 5px">
-                                <P color="grey3" fontSize="md">
-                                    연혁 추가
-                                </P>
-                            </FlexDiv>
-                        </FlexDiv>
+                        {
+                            role && isAuthorizedOverSecretary && (
+                                <FlexDiv $margin="5px 0 5px 0" $padding="5px" onClick={(e: any) => clickPostEvent(e, "ss", '')} $pointer>
+                                    <FlexDiv width="20px" height="20px">
+                                        <Img src="/images/plus_grey.svg" />
+                                    </FlexDiv>
+                                    <FlexDiv $margin="0 0 0 5px">
+                                        <P color="grey3" fontSize="md">
+                                            연혁 추가
+                                        </P>
+                                    </FlexDiv>
+                                </FlexDiv>
+                            )
+                        }
                         <Div $margin="30px 0 0 15px" $borderL="grey solid 2px">
                             <Div $position="relative" $left="-7.5px" $top="-10px">
                                 <ChangesContent changesContent={changesContent} />

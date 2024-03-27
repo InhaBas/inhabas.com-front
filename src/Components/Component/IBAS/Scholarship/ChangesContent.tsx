@@ -4,13 +4,19 @@ import Img from "../../../../styles/assets/Img"
 
 import useFetch from "../../../../Hooks/useFetch"
 
-import { useSetRecoilState } from "recoil"
+import { useSetRecoilState, useRecoilValue } from "recoil"
 import { refetch, modalOpen, modalInfo } from "../../../../Recoil/frontState"
 import { useEffect } from "react"
 
 import { scholarshipHistoryInterface } from "../../../../Types/IBAS/TypeIBAS"
 
+import { GetRoleAuthorization } from "../../../../Functions/authFunctions"
+import { userRole } from "../../../../Recoil/backState"
+
 const ChangesContent = ({changesContent} : {changesContent: scholarshipHistoryInterface[]}) => {   
+
+    const { isAuthorizedOverSecretary } = GetRoleAuthorization();
+    const role = useRecoilValue(userRole);
 
     const [deleteChange, fetchDeleteChange] = useFetch();
     
@@ -58,14 +64,18 @@ const ChangesContent = ({changesContent} : {changesContent: scholarshipHistoryIn
                                     <FlexDiv $margin="5px">
                                         <P color="grey3">{title}</P>
                                     </FlexDiv>
-                                    <FlexDiv $margin="3px">
-                                        <FlexDiv width="15px" $margin="0 6px" $pointer onClick={() => clickUpdateEvent(String(id))}>
-                                            <Img src="/images/pencil_grey.svg" />
-                                        </FlexDiv>
-                                        <FlexDiv width="15px" $pointer onClick={() => clickDeleteEvent(String(id))}>
-                                            <Img src="/images/trash_grey.svg" />
-                                        </FlexDiv>
-                                    </FlexDiv>
+                                    {
+                                        role && isAuthorizedOverSecretary && (
+                                            <FlexDiv $margin="3px">
+                                                <FlexDiv width="15px" $margin="0 6px" $pointer onClick={() => clickUpdateEvent(String(id))}>
+                                                    <Img src="/images/pencil_grey.svg" />
+                                                </FlexDiv>
+                                                <FlexDiv width="15px" $pointer onClick={() => clickDeleteEvent(String(id))}>
+                                                    <Img src="/images/trash_grey.svg" />
+                                                </FlexDiv>
+                                            </FlexDiv>
+                                        )
+                                    }
                                 </FlexDiv>
                             ))}
                         </FlexDiv>
