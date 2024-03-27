@@ -8,7 +8,10 @@ import useFetch from "../../../../Hooks/useFetch";
 
 import { bankDetailDataInfo, tokenAccess } from "../../../../Recoil/backState";
 
+import { jwtDecode } from "jwt-decode";
+import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
 import { modalInfo, modalOpen, refetch } from "../../../../Recoil/frontState";
+import { tokenInterface } from "../../../../Types/TypeCommon";
 import Button from "../../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import { H2 } from "../../../../styles/assets/H";
@@ -23,6 +26,9 @@ const BankSupportDetail = () => {
     const applicationId = location.pathname.split("/")[4];
     const access = useRecoilValue(tokenAccess);
 
+    const decoded = jwtDecode(access) as tokenInterface;
+    const userId = decoded.memberId;
+
     const [isLoading, setIsLoading] = useState(true);
     const [detailData, detailDataFetch] = useFetch();
     const [deleteData, deleteDataFetch] = useFetch();
@@ -34,6 +40,8 @@ const BankSupportDetail = () => {
     const setOpen = useSetRecoilState(modalOpen);
     const setModalInfo = useSetRecoilState(modalInfo);
     const [reload, setReload] = useRecoilState(refetch);
+
+    const { isSecretary } = GetRoleAuthorization();
 
     const movePage = () => {
         navigate(`/bank/support/update/${applicationId}`);
@@ -322,44 +330,46 @@ const BankSupportDetail = () => {
                                 </Div>
                             </Div>
                         </Div>
-                        <FlexDiv width="100%" $justifycontent="end">
-                            <Button
-                                display="flex"
-                                $backgroundColor="bgColor"
-                                $margin="0 10px 0 0"
-                                $padding="12px 15px"
-                                $borderRadius={30}
-                                $HBackgroundColor="bgColorHo"
-                                onClick={() => movePage()}
-                            >
-                                <Div width="12px" $margin="0 10px 0 0">
-                                    <Img src="/images/pencil_white.svg" />
-                                </Div>
-                                <Div $pointer>
-                                    <P color="wh" fontSize="sm">
-                                        지원신청 수정
-                                    </P>
-                                </Div>
-                            </Button>
-                            <Button
-                                display="flex"
-                                $backgroundColor="red"
-                                $padding="12px 15px"
-                                $borderRadius={30}
-                                $HBackgroundColor="red"
-                                onClick={() => deleteDetail()}
-                            >
-                                <Div width="12px" $margin="0 10px 0 0">
-                                    <Img src="/images/trash_white.svg" />
-                                </Div>
-                                <Div $pointer>
-                                    <P color="wh" fontSize="sm">
-                                        지원신청 철회
-                                    </P>
-                                </Div>
-                            </Button>
-                        </FlexDiv>
-                        {detail?.status === "PENDING" && (
+                        {detail?.applicantId === userId && (
+                            <FlexDiv width="100%" $justifycontent="end">
+                                <Button
+                                    display="flex"
+                                    $backgroundColor="bgColor"
+                                    $margin="0 10px 0 0"
+                                    $padding="12px 15px"
+                                    $borderRadius={30}
+                                    $HBackgroundColor="bgColorHo"
+                                    onClick={() => movePage()}
+                                >
+                                    <Div width="12px" $margin="0 10px 0 0">
+                                        <Img src="/images/pencil_white.svg" />
+                                    </Div>
+                                    <Div $pointer>
+                                        <P color="wh" fontSize="sm">
+                                            지원신청 수정
+                                        </P>
+                                    </Div>
+                                </Button>
+                                <Button
+                                    display="flex"
+                                    $backgroundColor="red"
+                                    $padding="12px 15px"
+                                    $borderRadius={30}
+                                    $HBackgroundColor="red"
+                                    onClick={() => deleteDetail()}
+                                >
+                                    <Div width="12px" $margin="0 10px 0 0">
+                                        <Img src="/images/trash_white.svg" />
+                                    </Div>
+                                    <Div $pointer>
+                                        <P color="wh" fontSize="sm">
+                                            지원신청 철회
+                                        </P>
+                                    </Div>
+                                </Button>
+                            </FlexDiv>
+                        )}
+                        {isSecretary && detail?.status === "PENDING" && (
                             <FlexDiv width="100%">
                                 <Button
                                     width="300px"
@@ -400,7 +410,7 @@ const BankSupportDetail = () => {
                                 </Button>
                             </FlexDiv>
                         )}
-                        {detail?.status === "APPROVED" && (
+                        {isSecretary && detail?.status === "APPROVED" && (
                             <FlexDiv width="100%">
                                 <Button
                                     width="300px"
