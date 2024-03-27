@@ -12,7 +12,14 @@ import P from "../../../../styles/assets/P";
 
 import useFetch from "../../../../Hooks/useFetch";
 
+import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
+import { userRole } from "../../../../Recoil/backState";
+
 const BankTable = () => {
+
+    const { isSecretary } = GetRoleAuthorization();
+    const role = useRecoilValue(userRole);
+
     const setOpen = useSetRecoilState(modalOpen);
     const setModalInfo = useSetRecoilState(modalInfo);
     const setReload = useSetRecoilState(refetch);
@@ -79,11 +86,15 @@ const BankTable = () => {
                         </FlexDiv>
                     ))}
                     {/* 권한 여부 체크 */}
-                    <FlexDiv $minWidth="60px" $padding="10px">
-                        <P $center fontWeight={700}>
-                            비고
-                        </P>
-                    </FlexDiv>
+                {
+                    role && isSecretary && (
+                        <FlexDiv $minWidth="60px" $padding="10px">
+                            <P $center fontWeight={700}>
+                                비고
+                            </P>
+                        </FlexDiv>
+                    )
+                }
                 </FlexDiv>
                 {contents?.map((element: any, idx: number) => (
                     <FlexDiv
@@ -107,22 +118,32 @@ const BankTable = () => {
                             </Div>
                         </FlexDiv>
                         {/* 권한 여부 체크 */}
-                        <FlexDiv $minWidth={'60px'} $padding="10px">
-                            <FlexDiv width="15px" $margin="0 6px" onClick={ (e: MouseEvent) => clickUpdateEvent(e, "ss", element?.id) } $pointer>
-                                <Img src="/images/pencil_grey.svg"/>
-                            </FlexDiv>
-                            <FlexDiv width="15px" onClick={ (e: MouseEvent) => clickDeleteEvent(e, "ss", element?.id) } $pointer>
-                                <Img src="/images/trash_grey.svg"/>
-                            </FlexDiv>
-                        </FlexDiv>
+
+                        {
+                            role && isSecretary && (
+                                <FlexDiv $minWidth={'60px'} $padding="10px">
+                                    <FlexDiv width="15px" $margin="0 6px" onClick={ (e: MouseEvent) => clickUpdateEvent(e, "ss", element?.id) } $pointer>
+                                        <Img src="/images/pencil_grey.svg"/>
+                                    </FlexDiv>
+                                    <FlexDiv width="15px" onClick={ (e: MouseEvent) => clickDeleteEvent(e, "ss", element?.id) } $pointer>
+                                        <Img src="/images/trash_grey.svg"/>
+                                    </FlexDiv>
+                                </FlexDiv>
+                            )
+                        }
                     </FlexDiv>
                 ))}
             </Div>
-            <FlexDiv width="100%" $justifycontent="flex-end" $padding="0 20px 10px 0" $margin="0 20px 0 0">
-                <FlexDiv width="20px" height="20px" radius={50} onClick={ (e: MouseEvent) => clickPostEvent(e, "ss", '') } $pointer>
-                    <Img src="/images/plus_grey.svg" />
-                </FlexDiv>
-            </FlexDiv>
+
+            {
+                role && isSecretary && (
+                    <FlexDiv width="100%" $justifycontent="flex-end" $padding="0 20px 10px 0" $margin="0 20px 0 0">
+                        <FlexDiv width="20px" height="20px" radius={50} onClick={ (e: MouseEvent) => clickPostEvent(e, "ss", '') } $pointer>
+                            <Img src="/images/plus_grey.svg" />
+                        </FlexDiv>
+                    </FlexDiv>
+                )
+            }
             <FlexDiv width="100%">
                 <Div $padding="10px 20px" $backgroundColor="bgColor" radius={50}>
                     <P color="wh"> 잔액 : ₩ { String(bankBalance)?.replace(/\B(?=(\d{3})+(?!\d))/g, ',') } </P>
