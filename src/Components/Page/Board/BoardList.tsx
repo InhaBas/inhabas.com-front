@@ -104,9 +104,11 @@ const BoardList = () => {
                             <BoardSearch />
                         </Div>
 
-                        <Div>
-                            <BoardNavigate />
-                        </Div>
+                        {url !== "sponsor" && url !== "usage" && (
+                            <Div>
+                                <BoardNavigate />
+                            </Div>
+                        )}
                     </StickyDiv>
                     <Div $padding="0 15px">
                         <Suspense fallback={<Img src="/images/loading.svg" />}>

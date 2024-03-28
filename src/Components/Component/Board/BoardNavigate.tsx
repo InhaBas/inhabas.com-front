@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 
 import { theme } from "../../../styles/theme";
@@ -14,23 +14,22 @@ import { boardMenuInterface } from "../../../Types/TypeBoard";
 
 const BoardNavigate = () => {
     const navigate = useNavigate();
-    //     {
-    //         id: 0,
-    //         group_name: "전체 게시글",
-    //         total: 32,
-    //         url: "total",
-    //     },
-    //
+    const location = useLocation();
+    const url = location.pathname.split("/")[2];
 
     const movePageEvent = (url: string) => {
-        navigate(`/${url}`);
+        navigate(`${url}`);
     };
 
     const [menu, setMenu] = useRecoilState<boardMenuInterface[]>(boardMenuInfo);
     const [menuData, fetchMenuData] = useFetch();
 
     useEffect(() => {
-        fetchMenuData("/board/count", "GET", "token");
+        if (url === "alpha" || url === "beta") {
+            fetchMenuData("/project/count", "GET", "token");
+        } else {
+            fetchMenuData("/board/count", "GET", "token");
+        }
     }, []);
 
     // api 바뀌면 url 요소 추가하기
@@ -39,9 +38,11 @@ const BoardNavigate = () => {
             const contents = Object.values(menuData).map((item: any) => ({
                 menuName: item.menuName,
                 count: item.count,
+                url: item.type === "STORAGE" ? "/board/opensource" : `/board/${item.type.toLowerCase()}`,
             }));
             setMenu(contents);
         }
+        return () => setMenu([]);
     }, [menuData]);
 
     return (
