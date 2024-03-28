@@ -87,7 +87,7 @@ const Bank = () => {
     return (
         <FlexDiv width="100%">
             <FlexDiv $padding="80px">
-                <FlexDiv width="100%">
+                <FlexDiv width="90vw">
                     <FlexDiv
                         $border="3px solid"
                         $borderColor="border"
