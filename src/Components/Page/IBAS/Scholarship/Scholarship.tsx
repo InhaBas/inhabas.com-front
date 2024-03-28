@@ -245,7 +245,7 @@ const Scholarship = () => {
                             <Div width="100%" height="65%">
                                 <ScholarshipDetailList
                                     contents={scholarshipSponsor[selectedYear]}
-                                    mainUrl='/board/usage/detail'
+                                    mainUrl='/board/sponsor/detail'
                                 />
                             </Div>
                             <Div width="100%">
@@ -310,7 +310,7 @@ const Scholarship = () => {
 
                 {/* Thanks for 부분 */}
                 {/* 임시로 비워둠 */}
-                <FlexDiv width="100%" height="100vh">
+                <FlexDiv width="100%" height="50vh">
                     {/* <Div width="70%">
                         <Div>
                             <Div $borderT="2px solid white" $padding="5px">
