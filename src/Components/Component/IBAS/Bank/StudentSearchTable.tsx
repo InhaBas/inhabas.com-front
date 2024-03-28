@@ -54,6 +54,8 @@ const StudentSearchTable = () => {
         setSelectedStudent(studentInfo); // 선택된 학생 정보 업데이트
     };
 
+    const filteredResults = studentInfos?.filter((item: any) => item?.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
     // 학생 정보 테이블의 헤더
     const headerInfo = ['학과', '이름', '학번'];
     // 각 열의 최소 너비
@@ -97,7 +99,7 @@ const StudentSearchTable = () => {
                         </FlexDiv>
                         <Div width="100%" height="135px" overflow="auto">
                             {/* 검색 결과 테이블 내용 */}
-                            {studentInfos?.map((element: searchedMemberInterface, idx:number) => (
+                            {filteredResults?.map((element: searchedMemberInterface, idx:number) => (
                                 <TableHover
                                     key={`contentItem${idx}`}
                                     width="100%"
