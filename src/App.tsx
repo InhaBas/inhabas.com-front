@@ -18,6 +18,7 @@ import Rule from "./Components/Page/Member/Rule";
 import Signup from "./Components/Page/Member/Signup";
 import SignupQuestion from "./Components/Page/Member/SignupQuestion";
 import HeaderNavLayout from "./Layout/HeaderNavLayout";
+import NotFound from "./Components/Page/Error/NotFound";
 
 import { Div } from "./styles/assets/Div";
 
@@ -42,8 +43,8 @@ const App = () => {
                     <Route path="signup/question" element={<SignupQuestion />} />
                     <Route path="rule/:id" element={<Rule />} />
                     <Route path="/*" element={<HeaderNavLayout />} />
+                    <Route path="notfound" element={<NotFound />} />
                 </Routes>
-
                 <Bottom />
             </Div>
         </ThemeProvider>
