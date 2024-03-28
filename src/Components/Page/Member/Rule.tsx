@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import useFetch from "../../../Hooks/useFetch";
 import { policyInfo } from "../../../Recoil/backState";
+import Button from "../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import { H2 } from "../../../styles/assets/H";
 import Img from "../../../styles/assets/Img";
@@ -59,9 +60,11 @@ const Rule = () => {
                                 {policy?.title}
                             </H2>
                         </FlexDiv>
+
+                        <Hr />
                     </FlexDiv>
-                    <Hr />
-                    <Div width="100%" height="80%" overflow="scroll">
+
+                    <Div width="100%" height="85%" overflow="auto">
                         {policy && (
                             <div>
                                 <P
@@ -71,6 +74,18 @@ const Rule = () => {
                                 />
                             </div>
                         )}
+
+                        <FlexDiv width="100%" $margin="50px 0 0 0">
+                            <Button
+                                $padding="15px 20px"
+                                $backgroundColor="bgColor"
+                                $HBackgroundColor="bgColorHo"
+                                $borderRadius={3}
+                                onClick={() => movePage()}
+                            >
+                                <P color="wh"> 홈화면으로 돌아가기 </P>
+                            </Button>
+                        </FlexDiv>
                     </Div>
                 </FlexDiv>
                 <Div width="44%" height="100vh" overflow="hidden">
