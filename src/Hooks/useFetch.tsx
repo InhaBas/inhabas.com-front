@@ -89,6 +89,10 @@ const useFetch = (): [
                             // 에러 응답에서 오류 메시지 추출
                             const errorResponse = await res.json();
                             console.error("Network response was not ok. Error:", errorResponse.message);
+                            // 404처리
+                            if (errorResponse.status === 404) {
+                                navigate('/notfound')
+                            }
                         } catch (error) {
                             console.error("Failed to parse error response:", error);
                         }
@@ -122,6 +126,7 @@ const useFetch = (): [
                 } else {
                     // Handle error response
                     const errorResponse = await res.json();
+                    console.log(errorResponse)
                     console.error("Network response was not ok. Error:", errorResponse.message, errorResponse.code);
                     if (
                         errorResponse.code === "A005" ||
@@ -133,6 +138,10 @@ const useFetch = (): [
                     if (errorResponse.status === 403) {
                         navigate(-1);
                         alert("권한이 없습니다");
+                    }
+                    // 404 처리
+                    if (errorResponse.status === 404) {
+                        navigate('/notfound')
                     }
                 }
             };
