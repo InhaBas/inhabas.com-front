@@ -69,7 +69,7 @@ const BoardList = () => {
     useEffect(() => {
         if (boardListData) {
             const contents = boardListData.data.map((item: boardListInterface, idx: number) => ({
-                number: idx + 1,
+                number: boardListData.pageInfo.pageNumber * boardListData.pageInfo.pageSize + idx + 1,
                 id: item.id,
                 title: item.title,
                 writerName: item.writerName,
