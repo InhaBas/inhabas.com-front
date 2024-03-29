@@ -1,8 +1,24 @@
 import { useRecoilValue } from "recoil";
 import { userRole } from "../Recoil/backState";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useEffect } from "react";
+
+export interface AuthorizationInterface {
+    authorization: 'OverVice' |
+                  'OverExecutives' |
+                  'OverSecretary' |
+                  'OverBasic' |
+                  'OverDeactivate' |
+                  'ExceptExecutives' |
+                  'Secretary';
+}
 
 // userRole 상태값을 가져와서 필요한 변수들을 계산하여 내보냅니다.
 export const GetRoleAuthorization = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { id } = useParams();
+
     const role = useRecoilValue(userRole);
     const isAuthorizedOverVice = ["CHIEF", "VICE_CHIEF"].includes(role);
     const isAuthorizedOverExecutives = ["CHIEF", "VICE_CHIEF", "EXECUTIVES"].includes(role);
@@ -20,6 +36,63 @@ export const GetRoleAuthorization = () => {
     const isAuthorizedExceptExecutives = ["CHIEF", "VICE_CHIEF", "SECRETARY"].includes(role);
     const isSecretary = ["SECRETARY"].includes(role);
 
+    const authorizationLocation: { [key: string]: string[] } = {
+        OverBasic: [
+            "/bank",
+            "/bank/support",
+            `/bank/support/detail/${id}`,
+            "/bank/support/create",
+            `/bank/support/update/${id}`,
+        ],
+        OverSecretary: [
+            "/staff/member",
+            "/staff/member/newStudents",
+            `/staff/member/application/${id}`,
+            "/staff/member/students",
+            "/staff/member/graduateStudents",
+        ],
+        OverVice: [
+            "/staff/manage",
+        ]
+    }
+
+    let isNavigation = false;
+
+    useEffect(() => {
+        if (isNavigation) {
+            alert('해당 게시판에 대한 접근 권한이 없습니다')
+            navigate(-1);
+        }
+    }, [isNavigation])
+    
+    const isAccessible = (authorization: AuthorizationInterface['authorization']) => {
+        isNavigation = false;
+
+        const isAuthorized = {
+            OverVice: isAuthorizedOverVice,
+            OverExecutives: isAuthorizedOverExecutives,
+            OverSecretary: isAuthorizedOverSecretary,
+            OverBasic: isAuthorizedOverBasic,
+            OverDeactivate: isAuthorizedOverDeactivate,
+            ExceptExecutives: isAuthorizedExceptExecutives,
+            Secretary: isSecretary,
+        }
+
+        // 라우터 탐색 중 실행되는 경우(확인 함수가 라우터를 탐색하는 과정에서 모두 켜짐)
+        if (!authorizationLocation[authorization]?.includes(location?.pathname)) {
+            return true;
+        }
+
+        // 허가 => 접속한 주소에 따른 권한 검사가 맞는지 && 해당 권한을 가지고 있는지
+        if (authorizationLocation[authorization]?.includes(location?.pathname) && isAuthorized[authorization]) {
+            return true;
+        }
+        
+        // 불허
+        isNavigation = true;
+        return false;
+    }
+
     return {
         isAuthorizedOverVice,
         isAuthorizedOverSecretary,
@@ -28,6 +101,7 @@ export const GetRoleAuthorization = () => {
         isAuthorizedOverDeactivate,
         isAuthorizedExceptExecutives,
         isSecretary,
+        isAccessible,
     };
 };
 

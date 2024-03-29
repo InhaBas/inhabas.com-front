@@ -16,7 +16,7 @@ import MainRoute from "../Routes/MainRoute";
 import { FlexDiv } from "../styles/assets/Div";
 
 const HeaderTitlePage = () => {
-    const { isAuthorizedOverVice, isAuthorizedOverSecretary } = GetRoleAuthorization();
+    const { isAccessible } = GetRoleAuthorization();
 
     return (
         <>
@@ -26,7 +26,7 @@ const HeaderTitlePage = () => {
                     <Route path="/*" element={<MainRoute />} />
                     <Route path="/board/*" element={<BoardRoute />} />
                     <Route path="/lecture/*" element={<LectureRoute />} />
-                    {isAuthorizedOverSecretary && (
+                    {isAccessible('OverSecretary') && (
                         <>
                             <Route path="staff/member" element={<MyManageUser />} />
                             <Route path="staff/member/newStudents" element={<MyManageNewUser />} />
@@ -35,12 +35,12 @@ const HeaderTitlePage = () => {
                             <Route path="staff/member/graduateStudents" element={<MyManageGraduateUser />} />
                         </>
                     )}
-
-                    {isAuthorizedOverVice && (
+                    {isAccessible('OverVice') && (
                         <>
                             <Route path="staff/manage" element={<MyStaff />} />
                         </>
                     )}
+                    
                 </Routes>
             </FlexDiv>
         </>
