@@ -70,3 +70,20 @@ export interface scheduleInterface {
     interviewEndDate: string;
     resultAnnounceDate: string;
 }
+
+export interface MyBoardInterface {
+    id?: number; //게시글 id
+    menuId?: number; //menuId
+    menuName: string;
+    title: string;
+    dateCreated: string;
+}
+
+export interface MySupportInterface {
+    id: number;
+    status: string;
+    title: string;
+    dateCreated: string;
+    dateChecked: string;
+    dateDeposited: string;
+}

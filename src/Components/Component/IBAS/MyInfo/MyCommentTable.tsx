@@ -1,6 +1,5 @@
 import { theme } from "../../../../styles/theme";
 
-import A from "../../../../styles/assets/A";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import P from "../../../../styles/assets/P";
 
@@ -62,7 +61,7 @@ const MyCommentTable = () => {
                         </FlexDiv>
                     ))}
                 </FlexDiv>
-                {contents.map((element: object, idx: number) => (
+                {/* {contents.map((element: object, idx: number) => (
                     <FlexDiv
                         key={`contentItem${idx}`}
                         width="100%"
@@ -88,7 +87,19 @@ const MyCommentTable = () => {
                             </FlexDiv>
                         ))}
                     </FlexDiv>
-                ))}
+                ))} */}
+
+                <FlexDiv
+                    width="100%"
+                    height="45px"
+                    $borderT={`1px solid ${theme.color.grey1}`}
+                    $padding="0 18px"
+                    $backgroundColor="wh"
+                >
+                    <Div>
+                        <P>내가 작성한 댓글이 존재하지 않습니다</P>
+                    </Div>
+                </FlexDiv>
 
                 {/* <Pagination /> */}
             </Div>

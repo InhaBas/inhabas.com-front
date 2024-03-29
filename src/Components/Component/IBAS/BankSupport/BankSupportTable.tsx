@@ -66,7 +66,7 @@ const BankSupportTable = () => {
                                                         item === "승인 대기"
                                                             ? "bk"
                                                             : item === "승인 완료"
-                                                            ? "green"
+                                                            ? "success"
                                                             : item === "승인 거절"
                                                             ? "red"
                                                             : item === "처리 완료"
