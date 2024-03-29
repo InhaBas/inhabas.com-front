@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import useFetch from "../../Hooks/useFetch";
 import { fileIdList } from "../../Recoil/backState";
 import { refetch, selectedFile } from "../../Recoil/frontState";
@@ -7,6 +7,8 @@ import { Div, FlexDiv, InputLabel } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import { Input } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
+import { menuId } from "../../Recoil/frontState";
+import { useLocation } from "react-router-dom";
 
 interface DragNDropProps {
     single?: boolean;
@@ -15,17 +17,108 @@ interface DragNDropProps {
     menuId?: number;
 }
 
-const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch, menuId }) => {
+const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => {
     const [previews, setPreviews] = useState<{ url: string; name: string; width: string; height: string }[]>([]);
     const [hover, setHover] = useState<number | null>(null);
     const [fileSelected, setFileSelected] = useRecoilState(selectedFile);
     const [fileData, fetchFileData] = useFetch();
     const [fileId, setFileIdList] = useRecoilState(fileIdList);
+    const [currentMenuId, setCurrentMenuId] = useRecoilState(menuId);
+    const location = useLocation();
 
     const isImageFile = (file: File): boolean => {
         const acceptedImageTypes: string[] = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
         return file && acceptedImageTypes.includes(file.type);
     };
+
+    const pathNameInfo = location.pathname.substring(1).split("/");
+    let titleId = 0;
+
+    const titleInfo = (pathName1: string, pathName2: string) => {
+        console.log(pathName1, pathName2)
+        // case 분기 -> pathNameInfo[1] 번째 비교해서 또 분기
+        switch (pathName1) {
+            case "introduce":
+                titleId = 1;
+                break;
+            case "activity":
+                titleId = 2;
+                break;
+            case "honor":
+                titleId = 3;
+                break;
+            case "board":
+                // pathName2에 따라 분기
+                switch (pathName2) {
+                    case "notice":
+                        titleId = 4;
+                        break;
+                    case "free":
+                        titleId = 5;
+                        break;
+                    case "question":
+                        titleId = 6;
+                        break;
+                    case "suggest":
+                        titleId = 7;
+                        break;
+                    case "opensource":
+                        titleId = 8;
+                        break;
+                    case "executive":
+                        titleId = 9;
+                        break;
+                    case "alpha":
+                        titleId = 16;
+                        break;
+                    case "beta":
+                        titleId = 17;
+                        break;
+                    case "sponsor":
+                        titleId = 21;
+                        break;
+                    case "usage":
+                        titleId = 22;
+                        break;
+                    default: // 혹은 다른 값으로 설정
+                        // pathName1이 위의 case에 일치하지 않는 경우에 대한 처리
+                        titleId = 0;
+                        break;
+                }
+                break;
+            case "lecture":
+                titleId = 10;
+                break;
+            case "study":
+                titleId = 11;
+                break;
+            case "hobby":
+                titleId = 12;
+                break;
+            case "lecture-application":
+                titleId = 13;
+                break;
+            case "bank":
+                titleId = 15;
+                if (pathName2 === "support") {
+                    titleId = 14;
+                }
+                break;
+
+            case "contest":
+                switch (pathName2) {
+                    case "":
+                        titleId = 18;
+                        break;
+                    case "activity":
+                        titleId = 19;
+                        break;
+                }
+        }
+        return titleId;
+    };
+
+    setCurrentMenuId(titleInfo(pathNameInfo[0], pathNameInfo[1]))
 
     const isOtherFile = (file: File): boolean => {
         const acceptedTypes: string[] = [
@@ -86,9 +179,10 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch, menuI
 
                         if (fileFetch) {
                             // fetch 요청을 각 파일마다 발생
+                            console.log(currentMenuId)
                             const previewsFormData = new FormData();
                             previewsFormData.append("file", file); // 파일을 FormData에 추가
-                            fetchFileData(`/file/upload/${menuId}`, "POST", "token", previewsFormData, true);
+                            fetchFileData(`/file/upload/${currentMenuId}`, "POST", "token", previewsFormData, true);
                         }
                     } else {
                         if (isOtherFile(file)) {
@@ -102,9 +196,10 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch, menuI
 
                             if (fileFetch) {
                                 // fetch 요청을 각 파일마다 발생
+                                console.log(currentMenuId)
                                 const previewsFormData = new FormData();
                                 previewsFormData.append("file", file); // 파일을 FormData에 추가
-                                fetchFileData(`/file/upload/${menuId}`, "POST", "token", previewsFormData, true);
+                                fetchFileData(`/file/upload/${currentMenuId}`, "POST", "token", previewsFormData, true);
                             }
                         } else {
                             alert("업로드할 수 있는 확장자 파일이 아닙니다.");

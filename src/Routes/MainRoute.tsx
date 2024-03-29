@@ -1,9 +1,6 @@
-import { useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
 
 import { GetRoleAuthorization } from "../Functions/authFunctions";
-import { userRole } from "../Recoil/backState";
 
 import Activity from "../Components/Page/IBAS/Activity/Activity";
 import ActivityCreate from "../Components/Page/IBAS/Activity/ActivityCreate";
@@ -14,27 +11,14 @@ import BankSupportCreate from "../Components/Page/IBAS/BankSupport/BankSupportCr
 import BankSupportDetail from "../Components/Page/IBAS/BankSupport/BankSupportDetail";
 
 const MainRoute = () => {
-    const navigate = useNavigate();
-    const { isAuthorizedOverBasic } = GetRoleAuthorization();
-    const role = useRecoilValue(userRole);
-
-    useEffect(() => {
-        if (role !== "") {
-            if (!isAuthorizedOverBasic) {
-                alert("권한이 없습니다");
-                setTimeout(() => {
-                    navigate(-1); // 이전 페이지로 돌아감
-                }, 0);
-            }
-        }
-    }, [role]);
-
+    const { isAccessible } = GetRoleAuthorization();
+    
     return (
         <Routes>
             <Route path="activity" element={<Activity />} />
             <Route path="activity/detail" element={<ActivityDetail />} />
             <Route path="activity/create" element={<ActivityCreate />} />
-            {isAuthorizedOverBasic && (
+            {isAccessible('OverBasic') && (
                 <>
                     <Route path="bank" element={<Bank />} />
                     <Route path="bank/support" element={<BankSupport />} />
