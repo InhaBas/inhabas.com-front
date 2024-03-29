@@ -94,8 +94,8 @@ const ModalPostBankHistory = () => {
             dateUsed: infos.dateUsed += 'T00:00:00',
             title: infos.title,
             details: infos.details,
-            memberStudentIdReceived: infos.memberStudentIdReceived,
-            memberNameReceived: infos.memberNameReceived,
+            memberStudentIdReceived: infos.memberStudentIdReceived === "" ? null : infos.memberStudentIdReceived,
+            memberNameReceived: infos.memberNameReceived === "" ? null : infos.memberNameReceived,
             income: Number(infos.income),
             outcome: Number(infos.outcome),
             files: files
