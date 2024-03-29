@@ -71,7 +71,7 @@ const NavigateTable = (props: NavigateTableProp) => {
                                 key={`itemValue${idx}`}
                                 width={width && `${width[idx + 1]}px`}
                                 $justifycontent={idx === 1 ? "start" : "center"}
-                                onClick={() => url && idx === 2 && movePage(url, (element as { id: number }).id)}
+                                onClick={() => url && idx === 1 && movePage(url, (element as { id: number }).id)}
                                 $pointer={url && idx === 1 ? true : false}
                             >
                                 <Div>
