@@ -13,6 +13,8 @@ import useFetch from "../../../Hooks/useFetch";
 import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css";
 import "@toast-ui/editor/dist/toastui-editor.css";
 
+import { GetRoleAuthorization } from "../../../Functions/authFunctions";
+
 import { DateFunction } from "../../../Functions/dateFunction";
 import { tokenInterface } from "../../../Types/TypeCommon";
 import A from "../../../styles/assets/A";
@@ -34,6 +36,7 @@ const BoardDetail = () => {
     const navigate = useNavigate();
     const url = location.pathname.split("/")[2];
     const boardId = location.pathname.split("/")[4];
+    const { isAuthorizedOverSecretary } = GetRoleAuthorization();
 
     const { formatDateMinute } = DateFunction();
 
@@ -185,7 +188,7 @@ const BoardDetail = () => {
                                 )}
                             </FlexDiv>
                             {detail?.writerId === userId}
-                            {detail?.writerId === userId && (
+                            {(detail?.writerId === userId || isAuthorizedOverSecretary) && (
                                 <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
                                     <Button
                                         display="flex"
