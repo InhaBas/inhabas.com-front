@@ -119,7 +119,7 @@ const HeaderTitle = () => {
 
     useEffect(() => {
         const id = titleInfo(pathNameInfo[0], pathNameInfo[1]);
-        if (title.name === null) {
+        if (title.name === null || title.name === "") {
             fetchTitleData(`/menu/${id}`, "GET");
         }
     }, []);
