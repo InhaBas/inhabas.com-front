@@ -171,7 +171,7 @@ const MyInfo = () => {
             </MyInfoDiv>
             <MyInfoImgDiv width="100%" height="423px" />
 
-            <Div width="100%" $padding="4% 8%">
+            <Div width="100%" $padding="4% 15%">
                 {clicked === 0 && <MyLectureContainer />}
                 {clicked === 1 && <MyManageLectureContainer />}
                 {clicked === 2 && <MyBoardContainer />}

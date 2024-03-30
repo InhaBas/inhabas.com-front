@@ -16,7 +16,7 @@ import P from "../../../../styles/assets/P";
 import Pagination from "../../../Common/Pagination";
 
 const MyBoardTable = () => {
-    const widthList = [200, 600, 200];
+    const widthList = [15, 65, 15];
     const headerInfo = ["게시판 유형", "제목", "작성일"];
 
     const { formatDateDay } = DateFunction();
@@ -60,8 +60,15 @@ const MyBoardTable = () => {
                     $backgroundColor="wh"
                 >
                     {headerInfo.map((item: string, idx: number) => (
-                        <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
-                            <P fontWeight={700}>{item}</P>
+                        <FlexDiv
+                            key={`headerInfo${idx}`}
+                            $minWidth={`${widthList[idx]}%`}
+                            $padding="10px"
+                            $justifycontent={idx === 1 ? "start" : "center"}
+                        >
+                            <Div>
+                                <P fontWeight={700}>{item}</P>
+                            </Div>
                         </FlexDiv>
                     ))}
                 </FlexDiv>
@@ -81,25 +88,30 @@ const MyBoardTable = () => {
                                     <FlexDiv
                                         $pointer={idx === 1 ? true : false}
                                         key={`itemValue${idx}`}
-                                        $minWidth={`${widthList[idx]}px`}
+                                        $minWidth={`${widthList[idx]}%`}
                                         $padding="10px"
+                                        $justifycontent={idx === 1 ? "start" : "center"}
                                     >
                                         {idx === 1 ? (
-                                            <P
-                                                color="bgColor"
-                                                fontWeight={700}
-                                                onClick={() =>
-                                                    navigate(
-                                                        `/board/${(element as { menuType: string }).menuType}/detail/${
-                                                            (element as { id: number }).id
-                                                        }`
-                                                    )
-                                                }
-                                            >
-                                                {item}
-                                            </P>
+                                            <Div>
+                                                <P
+                                                    color="bgColor"
+                                                    fontWeight={700}
+                                                    onClick={() =>
+                                                        navigate(
+                                                            `/board/${
+                                                                (element as { menuType: string }).menuType
+                                                            }/detail/${(element as { id: number }).id}`
+                                                        )
+                                                    }
+                                                >
+                                                    {item}
+                                                </P>
+                                            </Div>
                                         ) : (
-                                            <P>{item}</P>
+                                            <Div>
+                                                <P>{item}</P>
+                                            </Div>
                                         )}
                                     </FlexDiv>
                                 ))}
