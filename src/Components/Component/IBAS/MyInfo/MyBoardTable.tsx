@@ -41,7 +41,7 @@ const MyBoardTable = () => {
                 dateCreated: formatDateDay({ date: item.dateCreated }),
 
                 id: item.id,
-                menuName: item.menuName,
+                menuType: item.menuType === "STORAGE" ? "opensource" : item.menuType.toLowerCase(),
             }));
 
             setBoardList(contents);
@@ -90,7 +90,7 @@ const MyBoardTable = () => {
                                                 fontWeight={700}
                                                 onClick={() =>
                                                     navigate(
-                                                        `/board/menuType적용하기/detail/${
+                                                        `/board/${(element as { menuType: string }).menuType}/detail/${
                                                             (element as { id: number }).id
                                                         }`
                                                     )

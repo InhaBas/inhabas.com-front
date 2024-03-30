@@ -75,6 +75,7 @@ export interface MyBoardInterface {
     id?: number; //게시글 id
     menuId?: number; //menuId
     menuName: string;
+    menuType: string;
     title: string;
     dateCreated: string;
 }
