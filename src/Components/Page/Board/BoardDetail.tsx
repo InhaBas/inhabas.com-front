@@ -43,8 +43,11 @@ const BoardDetail = () => {
     const [isLoading, setIsLoading] = useState(true);
     const access = useRecoilValue(tokenAccess);
 
-    const decoded = jwtDecode(access) as tokenInterface;
-    const userId = decoded.memberId;
+    let decoded;
+    if (access !== "default") {
+        decoded = jwtDecode(access) as tokenInterface;
+    }
+    const userId = decoded?.memberId;
 
     let fetchUrl: string;
     if (url === "alpha") {

@@ -40,8 +40,11 @@ const BankSupportDetail = () => {
 
     const { isSecretary } = GetRoleAuthorization();
 
-    const decoded = jwtDecode(access) as tokenInterface;
-    const userId = decoded.memberId;
+    let decoded;
+    if (access !== "default") {
+        decoded = jwtDecode(access) as tokenInterface;
+    }
+    const userId = decoded?.memberId;
 
     const movePage = () => {
         navigate(`/bank/support/update/${applicationId}`);
