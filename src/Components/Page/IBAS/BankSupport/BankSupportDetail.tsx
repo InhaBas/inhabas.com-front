@@ -26,9 +26,6 @@ const BankSupportDetail = () => {
     const applicationId = location.pathname.split("/")[4];
     const access = useRecoilValue(tokenAccess);
 
-    const decoded = jwtDecode(access) as tokenInterface;
-    const userId = decoded.memberId;
-
     const [isLoading, setIsLoading] = useState(true);
     const [detailData, detailDataFetch] = useFetch();
     const [deleteData, deleteDataFetch] = useFetch();
@@ -42,6 +39,9 @@ const BankSupportDetail = () => {
     const [reload, setReload] = useRecoilState(refetch);
 
     const { isSecretary } = GetRoleAuthorization();
+
+    const decoded = jwtDecode(access) as tokenInterface;
+    const userId = decoded.memberId;
 
     const movePage = () => {
         navigate(`/bank/support/update/${applicationId}`);
