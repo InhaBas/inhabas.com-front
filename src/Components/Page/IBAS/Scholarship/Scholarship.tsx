@@ -310,21 +310,89 @@ const Scholarship = () => {
 
                 {/* Thanks for 부분 */}
                 {/* 임시로 비워둠 */}
-                <FlexDiv width="100%" height="50vh">
-                    {/* <Div width="70%">
-                        <Div>
+                <FlexDiv width="100%" height="100vh">
+                    <Div width="70%">
+                        <Div width="100%">
                             <Div $borderT="2px solid white" $padding="5px">
                                 <P color="wh" style={{fontSize: titleFontSize}}>
                                     Thanks for
                                 </P>
                             </Div>
-                            <Div $margin="5px 0 0 0">
-                                <P color="wh">
-                                    해당 내용 첨부
-                                </P>
-                            </Div>
+                            <FlexDiv $margin="70px 0 0 0" width="100%" $justifycontent="flex-start">
+                                <FlexDiv direction="column" width="25%" height="340px">
+                                    <Div width="150px" height="150px" $backgroundColor="wh" radius={100} overflow="hidden">
+                                        <Img src="/images/최태성선배님.jpg" $objectFit="cover" />
+                                    </Div>
+                                    <Div $margin="20px 0 0 0">
+                                        <P color="wh" fontSize="lg" fontWeight={700}>경영학과 최태성 교수님</P>
+                                    </Div>
+                                    <FlexDiv height="120px" $margin="20px 0 0 0" direction="column" $justifycontent="flex-start">
+                                        <Div $margin="0 0 10px 0"><P color="wh">인하대학교 경영학과 교수</P></Div>
+                                    </FlexDiv>
+                                </FlexDiv>
+                                <FlexDiv direction="column" width="25%" height="340px">
+                                    <Div width="150px" height="150px" $backgroundColor="wh" radius={100} overflow="hidden">
+                                        <Img src="/images/김형기선배님.jpg" $objectFit="cover" />
+                                    </Div>
+                                    <Div $margin="20px 0 0 0">
+                                        <P color="wh" fontSize="lg" fontWeight={700}>경영학과 84 김형기 교수님</P>
+                                    </Div>
+                                    <FlexDiv height="120px" $margin="20px 0 0 0" direction="column" $justifycontent="flex-start">
+                                        <Div $margin="0 0 10px 0"><P color="wh">인하대학교 경영학과 교수</P></Div>
+                                        <Div $margin="0 0 10px 0"><P color="wh">IBAS 동아리 지도교수</P></Div>
+                                    </FlexDiv>
+                                </FlexDiv>
+                                <FlexDiv direction="column" width="25%" height="340px">
+                                    <Div width="150px" height="150px" $backgroundColor="wh" radius={100} overflow="hidden">
+                                        <Img src="/images/default_profile.png" $objectFit="cover" />
+                                    </Div>
+                                    <Div $margin="20px 0 0 0">
+                                        <P color="wh" fontSize="lg" fontWeight={700}>경영학과 81 이종수 선배님</P>
+                                    </Div>
+                                    <FlexDiv height="120px" $margin="20px 0 0 0" direction="column" $justifycontent="flex-start">
+                                        <Div $margin="0 0 10px 0"><P color="wh">IBAS 서버 컴퓨터 지원</P></Div>
+                                    </FlexDiv>
+                                </FlexDiv>
+                                <FlexDiv direction="column" width="25%" height="340px">
+                                    <Div width="150px" height="150px" $backgroundColor="wh" radius={100} overflow="hidden">
+                                        <Img src="/images/default_profile.png" $objectFit="cover" />
+                                    </Div>
+                                    <Div $margin="20px 0 0 0">
+                                        <P color="wh" fontSize="lg" fontWeight={700}>경영학과 84 장만식 선배님</P>
+                                    </Div>
+                                    <FlexDiv height="120px" $margin="20px 0 0 0" direction="column" $justifycontent="flex-start">
+                                        <Div $margin="0 0 10px 0"><P color="wh">최태성 장학회 前 회장</P></Div>
+                                    </FlexDiv>
+                                </FlexDiv>
+                            </FlexDiv>
+                            <FlexDiv $margin="15px 0 0 0" width="100%" $justifycontent="flex-start">
+                                <FlexDiv direction="column" width="25%" height="340px">
+                                    <Div width="150px" height="150px" $backgroundColor="wh" radius={100} overflow="hidden">
+                                        <Img src="/images/김인종선배님.jpg" $objectFit="cover" />
+                                    </Div>
+                                    <Div $margin="20px 0 0 0">
+                                        <P color="wh" fontSize="lg" fontWeight={700}>경영학과 89 김인종 선배님</P>
+                                    </Div>
+                                    <FlexDiv height="120px" $margin="20px 0 0 0" direction="column" $justifycontent="flex-start">
+                                        <Div $margin="0 0 10px 0"><P color="wh">최태성 장학회 現 회장</P></Div>
+                                        <Div $margin="0 0 10px 0"><P color="wh">미강상사 대표</P></Div>
+                                    </FlexDiv>
+                                </FlexDiv>
+                                <FlexDiv direction="column" width="25%" height="340px">
+                                    <Div width="150px" height="150px" $backgroundColor="wh" radius={100} overflow="hidden">
+                                        <Img src="/images/default_profile.png" $objectFit="cover" />
+                                    </Div>
+                                    <Div $margin="20px 0 0 0">
+                                        <P color="wh" fontSize="lg" fontWeight={700}>경영학과 00 김태경 선배님</P>
+                                    </Div>
+                                    <FlexDiv height="120px" $margin="20px 0 0 0" direction="column" $justifycontent="flex-start">
+                                        <Div $margin="0 0 10px 0"><P color="wh">최태성 장학회 現 총무</P></Div>
+                                        <Div $margin="0 0 10px 0"><P color="wh">NAVER 재직 중</P></Div>
+                                    </FlexDiv>
+                                </FlexDiv>
+                            </FlexDiv>
                         </Div>
-                    </Div> */}
+                    </Div>
                 </FlexDiv>
 
             </ScholarshipSection>
