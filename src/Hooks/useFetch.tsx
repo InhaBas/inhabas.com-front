@@ -78,7 +78,7 @@ const useFetch = (): [
 
                     if (res.ok) {
                         if (res.status === 204 || res.headers.get("content-length") === "0" || res.body === null) {
-                            setData((new Date()).toLocaleString())
+                            setData(new Date().toLocaleString());
                         } else {
                             result = await res.json();
                             console.log({ ...result });
@@ -91,7 +91,7 @@ const useFetch = (): [
                             console.error("Network response was not ok. Error:", errorResponse.message);
                             // 404처리
                             if (errorResponse.status === 404) {
-                                navigate('/notfound')
+                                navigate("/notfound");
                             }
                         } catch (error) {
                             console.error("Failed to parse error response:", error);
@@ -117,7 +117,7 @@ const useFetch = (): [
 
                 if (res.ok) {
                     if (res.status === 204 || res.headers.get("content-length") === "0" || res.body === null) {
-                        setData((new Date()).toLocaleString())
+                        setData(new Date().toLocaleString());
                     } else {
                         result = await res.json();
                         console.log({ ...result });
@@ -126,7 +126,7 @@ const useFetch = (): [
                 } else {
                     // Handle error response
                     const errorResponse = await res.json();
-                    console.log(errorResponse)
+                    console.log(errorResponse);
                     console.error("Network response was not ok. Error:", errorResponse.message, errorResponse.code);
                     if (
                         errorResponse.code === "A005" ||
@@ -137,11 +137,11 @@ const useFetch = (): [
                     }
                     if (errorResponse.status === 403) {
                         navigate(-1);
-                        alert("권한이 없습니다");
+                        alert(errorResponse.message);
                     }
                     // 404 처리
                     if (errorResponse.status === 404) {
-                        navigate('/notfound')
+                        navigate("/notfound");
                     }
                 }
             };
