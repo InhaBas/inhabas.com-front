@@ -79,3 +79,9 @@ export const bankSupportRejectReasonInfo = atom({
     key: "bankSupportRejectReasonInfo",
     default: "",
 });
+
+// useFetch
+export const failRefreshing = atom({
+    key: "failRefreshing",
+    default: false,
+});

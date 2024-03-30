@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 import { tokenAccess } from "../Recoil/backState";
+import { failRefreshing } from "../Recoil/frontState";
 
 const useFetch = (): [
     any,
@@ -11,6 +12,7 @@ const useFetch = (): [
     const navigate = useNavigate();
     const [data, setData] = useState<any>(null);
     const [access, setAccess] = useRecoilState(tokenAccess);
+    const setIsLogin = useSetRecoilState(failRefreshing);
 
     const getCookie = (name: string) => {
         let matches = document.cookie.match(
@@ -49,6 +51,7 @@ const useFetch = (): [
                     setAccess("default");
                 } catch (error) {
                     console.error("Failed to parse error response:", error);
+                    setIsLogin(false);
                 }
             }
         } catch (error) {
@@ -135,6 +138,10 @@ const useFetch = (): [
                     ) {
                         await refreshAccessToken();
                     }
+                    // if (errorResponse.status === 401) {
+                    //     navigate(-1);
+                    //     alert(errorResponse.message);
+                    // }
                     if (errorResponse.status === 403) {
                         navigate(-1);
                         alert(errorResponse.message);
