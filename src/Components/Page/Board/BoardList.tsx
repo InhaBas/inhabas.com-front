@@ -21,6 +21,7 @@ import NavigateTable from "../../Common/NavigateTable";
 import Pagination from "../../Common/Pagination";
 import BoardNavigate from "../../Component/Board/BoardNavigate";
 import BoardSearch from "../../Component/Board/BoardSearch";
+import { GetRoleAuthorization } from "../../../Functions/authFunctions";
 
 const StickyDiv = styled(Div)`
     position: sticky;
@@ -36,13 +37,14 @@ const BoardList = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const url = location.pathname.split("/")[2];
-
+    console.log('url', url)
     const access = useRecoilValue(tokenAccess);
     const [boardList, setBoardList] = useRecoilState(boardListDataInfo);
     const [boardPinnedList, setBoardPinnedList] = useRecoilState(boardListPinnedDataInfo);
     const [boardListData, fetchBoardListData] = useFetch();
     const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
     const [isLoading, setIsLoading] = useState(true);
+    const { isAuthorizedOverSecretary, isAuthorizedOverDeactivate, isSecretary, isAuthorizedOverBasic } = GetRoleAuthorization();
 
     let fetchUrl: string;
     if (url === "alpha") {
@@ -57,6 +59,24 @@ const BoardList = () => {
         fetchUrl = "/board/storage";
     } else {
         fetchUrl = `/board/${url}`;
+    }
+
+    const checkWritingAuthorization = () => {
+        // 회장단
+        if (['notice', 'sponsor', 'usage'].includes(url) && isAuthorizedOverSecretary) {
+            return true;
+        // 비활동 회원
+        } else if (['free', 'question', 'suggest', 'support'].includes(url) && isAuthorizedOverDeactivate) {
+            return true;
+        // 활동 회원
+        } else if (['opensource'].includes(url) && isAuthorizedOverBasic) {
+            return true;
+        // 총무
+        } else if (['executive'].includes(url) && isSecretary) {
+            return true;
+        // url이 잘못된 경우
+        }
+        return false;
     }
 
     // url 바뀔 때마다 해당 table fetch 할 수 있도록
@@ -119,28 +139,30 @@ const BoardList = () => {
                                 url="detail"
                             />
                         </Suspense>
-                        <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">
-                            <Button
-                                display="flex"
-                                $backgroundColor="bgColor"
-                                $margin="0 10px 0 0"
-                                $padding="12px 15px"
-                                $borderRadius={30}
-                                $HBackgroundColor="bgColorHo"
-                                onClick={() => navigate(`/board/${url}/create`)}
-                            >
-                                <FlexDiv height="15px">
-                                    <Div width="12px" height="12px" $margin="0 10px 0 0">
-                                        <Img src="/images/plus_white.svg" />
+                        {checkWritingAuthorization() && (
+                            <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">
+                                <Button
+                                    display="flex"
+                                    $backgroundColor="bgColor"
+                                    $margin="0 10px 0 0"
+                                    $padding="12px 15px"
+                                    $borderRadius={30}
+                                    $HBackgroundColor="bgColorHo"
+                                    onClick={() => navigate(`/board/${url}/create`)}
+                                >
+                                    <FlexDiv height="15px">
+                                        <Div width="12px" height="12px" $margin="0 10px 0 0">
+                                            <Img src="/images/plus_white.svg" />
+                                        </Div>
+                                    </FlexDiv>
+                                    <Div $pointer height="15px">
+                                        <A color="wh" fontSize="sm" $hoverColor="wh">
+                                            게시글 작성
+                                        </A>
                                     </Div>
-                                </FlexDiv>
-                                <Div $pointer height="15px">
-                                    <A color="wh" fontSize="sm" $hoverColor="wh">
-                                        게시글 작성
-                                    </A>
-                                </Div>
-                            </Button>
-                        </FlexDiv>
+                                </Button>
+                            </FlexDiv>
+                        )}
                         {boardList && boardList.length !== 0 && (
                             <Pagination
                                 totalPage={totalPage}
