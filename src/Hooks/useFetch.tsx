@@ -12,7 +12,7 @@ const useFetch = (): [
     const navigate = useNavigate();
     const [data, setData] = useState<any>(null);
     const [access, setAccess] = useRecoilState(tokenAccess);
-    const setIsLogin = useSetRecoilState(failRefreshing);
+    const setIsNotLogin = useSetRecoilState(failRefreshing);
 
     const getCookie = (name: string) => {
         let matches = document.cookie.match(
@@ -43,6 +43,7 @@ const useFetch = (): [
                 setAccess(newAccessToken);
             } else {
                 console.log("fail refresh");
+                setIsNotLogin(true);
 
                 try {
                     // 에러 응답에서 오류 메시지 추출
@@ -51,11 +52,11 @@ const useFetch = (): [
                     setAccess("default");
                 } catch (error) {
                     console.error("Failed to parse error response:", error);
-                    setIsLogin(false);
                 }
             }
         } catch (error) {
             console.error("Error refreshing access token:", error);
+            setIsNotLogin(true);
         }
     };
 
