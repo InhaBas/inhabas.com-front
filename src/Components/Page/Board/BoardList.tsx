@@ -99,17 +99,16 @@ const BoardList = () => {
                 <Loading />
             ) : (
                 <Container $alignitems="start">
-                    <StickyDiv $padding="0 15px">
-                        <Div $margin="0 0 30px 0">
-                            <BoardSearch />
-                        </Div>
-
-                        {url !== "sponsor" && url !== "usage" && (
+                    {url !== "sponsor" && url !== "usage" && (
+                        <StickyDiv $padding="0 15px">
+                            <Div $margin="0 0 30px 0">
+                                <BoardSearch />
+                            </Div>
                             <Div>
                                 <BoardNavigate />
                             </Div>
-                        )}
-                    </StickyDiv>
+                        </StickyDiv>
+                    )}
                     <Div $padding="0 15px">
                         <Suspense fallback={<Img src="/images/loading.svg" />}>
                             <NavigateTable
