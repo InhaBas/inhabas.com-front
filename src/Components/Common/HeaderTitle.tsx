@@ -39,12 +39,12 @@ const HeaderTitle = () => {
     let titleId = 0;
 
     useEffect(() => {
+        console.log(isNotLogin)
         if (isNotLogin && !['/board/opensource', '/contest']?.includes(location?.pathname)) {
             alert('로그인을 해주세요');
-            navigate(-1);
-            setIsNotLogin(false);
+            navigate('/');
         }
-    }, [isNotLogin])
+    }, [location])
 
     const titleInfo = (pathName1: string, pathName2: string) => {
         // case 분기 -> pathNameInfo[1] 번째 비교해서 또 분기
