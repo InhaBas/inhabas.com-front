@@ -2,6 +2,7 @@ import { useRecoilValue } from "recoil";
 import { userRole } from "../Recoil/backState";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useEffect } from "react";
+import { failRefreshing } from "../Recoil/frontState";
 
 export interface AuthorizationInterface {
     authorization: 'OverVice' |
@@ -18,6 +19,7 @@ export const GetRoleAuthorization = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { id } = useParams();
+    const isNotLogin = useRecoilValue(failRefreshing); 
 
     const role = useRecoilValue(userRole);
     const isAuthorizedOverVice = ["CHIEF", "VICE_CHIEF"].includes(role);
@@ -59,7 +61,7 @@ export const GetRoleAuthorization = () => {
     let isNavigation = false;
 
     useEffect(() => {
-        if (isNavigation) {
+        if (!isNotLogin && isNavigation) {
             alert('해당 게시판에 대한 접근 권한이 없습니다')
             navigate(-1);
         }
