@@ -61,7 +61,7 @@ export const GetRoleAuthorization = () => {
     let isNavigation = false;
 
     useEffect(() => {
-        if (!isNotLogin && isNavigation) {
+        if (!isNotLogin && isNavigation && role !== "") {
             alert('해당 게시판에 대한 접근 권한이 없습니다')
             navigate(-1);
         }
