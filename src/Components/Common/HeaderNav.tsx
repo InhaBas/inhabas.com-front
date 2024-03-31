@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { styled } from "styled-components";
 
+import { GetRoleAuthorization } from "../../Functions/authFunctions";
+
 import { theme } from "../../styles/theme";
 
 import useFetch from "../../Hooks/useFetch";
@@ -17,7 +19,6 @@ import {
 
 import { menuInterface } from "../../Types/TypeCommon";
 
-import { GetRoleAuthorization } from "../../Functions/authFunctions";
 import { menuId } from "../../Recoil/frontState";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
@@ -37,7 +38,7 @@ interface Group {
 
 const HeaderNav = () => {
     const navigate = useNavigate();
-    const { isAuthorizedOverSecretary } = GetRoleAuthorization();
+    const { isAuthorizedOverSecretary, isAuthorizedOverBasic, isAuthorizedOverDeactivate } = GetRoleAuthorization();
     const location = useLocation();
     const [data, fetchData] = useFetch();
     const [infoData, fetchInfoData] = useFetch();
@@ -53,6 +54,7 @@ const HeaderNav = () => {
     const [scrollPosition, setScrollPosition] = useState(0);
     const setCurrentMenuId = useSetRecoilState(menuId);
     const pathNameInfo = location.pathname.substring(1).split("/");
+    
     let titleId = 0;
 
     const titleInfo = (pathName1: string, pathName2: string) => {
@@ -420,13 +422,14 @@ const HeaderNav = () => {
                                 </FlexDiv>
                             )}
                         </FlexDiv>
+                        {/* 로그인 프로필 사진 */}
                         {access !== "default" && access !== "signing" && (
                             <FlexDiv $margin="15px 9px" onClick={() => movePage("myInfo")}>
                                 <FlexDiv
                                     width="35px"
                                     height="35px"
                                     $border="2px solid"
-                                    $borderColor="red"
+                                    $borderColor={isAuthorizedOverBasic ? "success" : (isAuthorizedOverDeactivate ? "yellow" : "red")}
                                     radius={100}
                                     overflow="hidden"
                                 >
@@ -446,13 +449,14 @@ const HeaderNav = () => {
                                         {info?.name}
                                     </P>
                                 </Div>
-                                <FlexDiv $pointer width="15px">
+                                {/* 종 주석 처리 */}
+                                {/* <FlexDiv $pointer width="15px">
                                     {scrollPosition < 100 ? (
                                         <Img src="/images/bell_white.svg" />
                                     ) : (
                                         <Img src="/images/bell_purple.svg" />
                                     )}
-                                </FlexDiv>
+                                </FlexDiv> */}
                             </FlexDiv>
                         )}
                     </FlexDiv>

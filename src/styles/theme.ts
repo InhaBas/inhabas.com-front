@@ -27,6 +27,7 @@ const color = {
     bgColor: "#4611a7",
     bgColorHo: "#7133e2",
     none: "rgba(0, 0, 0, 0.1)",
+    yellow: "#ffc107",
 };
 
 const fontSize = {
