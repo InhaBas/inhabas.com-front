@@ -36,7 +36,7 @@ const BoardDetail = () => {
     const navigate = useNavigate();
     const url = location.pathname.split("/")[2];
     const boardId = location.pathname.split("/")[4];
-    const { isAuthorizedOverSecretary } = GetRoleAuthorization();
+    const { isAuthorizedOverVice } = GetRoleAuthorization();
 
     const { formatDateMinute } = DateFunction();
 
@@ -191,7 +191,7 @@ const BoardDetail = () => {
                                 )}
                             </FlexDiv>
                             {detail?.writerId === userId}
-                            {(detail?.writerId === userId || isAuthorizedOverSecretary) && (
+                            {(detail?.writerId === userId || isAuthorizedOverVice) && (
                                 <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
                                     <Button
                                         display="flex"
