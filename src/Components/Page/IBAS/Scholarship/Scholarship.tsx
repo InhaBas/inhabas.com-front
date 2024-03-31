@@ -309,8 +309,7 @@ const Scholarship = () => {
                 </FlexDiv>
 
                 {/* Thanks for 부분 */}
-                {/* 임시로 비워둠 */}
-                <FlexDiv width="100%" height="100vh">
+                <FlexDiv width="100%" height="1200px">
                     <Div width="70%">
                         <Div width="100%">
                             <Div $borderT="2px solid white" $padding="5px">
