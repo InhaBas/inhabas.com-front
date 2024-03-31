@@ -16,12 +16,12 @@ import Button from "../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
 
+import { GetRoleAuthorization } from "../../../Functions/authFunctions";
 import Loading from "../../Common/Loading";
 import NavigateTable from "../../Common/NavigateTable";
 import Pagination from "../../Common/Pagination";
 import BoardNavigate from "../../Component/Board/BoardNavigate";
 import BoardSearch from "../../Component/Board/BoardSearch";
-import { GetRoleAuthorization } from "../../../Functions/authFunctions";
 
 const StickyDiv = styled(Div)`
     position: sticky;
@@ -37,14 +37,15 @@ const BoardList = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const url = location.pathname.split("/")[2];
-    console.log('url', url)
+    console.log("url", url);
     const access = useRecoilValue(tokenAccess);
     const [boardList, setBoardList] = useRecoilState(boardListDataInfo);
     const [boardPinnedList, setBoardPinnedList] = useRecoilState(boardListPinnedDataInfo);
     const [boardListData, fetchBoardListData] = useFetch();
     const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
     const [isLoading, setIsLoading] = useState(true);
-    const { isAuthorizedOverSecretary, isAuthorizedOverDeactivate, isSecretary, isAuthorizedOverBasic } = GetRoleAuthorization();
+    const { isAuthorizedOverSecretary, isAuthorizedOverDeactivate, isSecretary, isAuthorizedOverBasic } =
+        GetRoleAuthorization();
 
     let fetchUrl: string;
     if (url === "alpha") {
@@ -63,21 +64,21 @@ const BoardList = () => {
 
     const checkWritingAuthorization = () => {
         // 회장단
-        if (['notice', 'sponsor', 'usage'].includes(url) && isAuthorizedOverSecretary) {
+        if (["notice", "sponsor", "usage"].includes(url) && isAuthorizedOverSecretary) {
             return true;
-        // 비활동 회원
-        } else if (['free', 'question', 'suggest', 'support'].includes(url) && isAuthorizedOverDeactivate) {
+            // 비활동 회원
+        } else if (["free", "question", "suggest", "support"].includes(url) && isAuthorizedOverDeactivate) {
             return true;
-        // 활동 회원
-        } else if (['opensource'].includes(url) && isAuthorizedOverBasic) {
+            // 활동 회원
+        } else if (["opensource"].includes(url) && isAuthorizedOverBasic) {
             return true;
-        // 총무
-        } else if (['executive'].includes(url) && isSecretary) {
+            // 총무
+        } else if (["executive"].includes(url) && isSecretary) {
             return true;
-        // url이 잘못된 경우
+            // url이 잘못된 경우
         }
         return false;
-    }
+    };
 
     // url 바뀔 때마다 해당 table fetch 할 수 있도록
     useEffect(() => {
@@ -119,16 +120,16 @@ const BoardList = () => {
                 <Loading />
             ) : (
                 <Container $alignitems="start">
-                    {url !== "sponsor" && url !== "usage" && (
-                        <StickyDiv $padding="0 15px">
-                            <Div $margin="0 0 30px 0">
-                                <BoardSearch />
-                            </Div>
+                    <Div $margin="0 0 30px 0">
+                        <BoardSearch />
+                    </Div>
+                    <StickyDiv $padding="0 15px">
+                        {url !== "sponsor" && url !== "usage" && (
                             <Div>
                                 <BoardNavigate />
                             </Div>
-                        </StickyDiv>
-                    )}
+                        )}
+                    </StickyDiv>
                     <Div $padding="0 15px">
                         <Suspense fallback={<Img src="/images/loading.svg" />}>
                             <NavigateTable
