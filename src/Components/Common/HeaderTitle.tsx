@@ -39,13 +39,6 @@ const HeaderTitle = () => {
     let titleId = 0;
 
     useEffect(() => {
-        if (['/contest', '/contest/activity', '/lecture'].includes(location.pathname)) {
-            navigate(-1);
-            alert('사용할 수 없는 기능입니다.')
-        }
-    }, [location])
-
-    useEffect(() => {
         console.log(isNotLogin)
         if (isNotLogin && !['/board/opensource', '/contest']?.includes(location?.pathname)) {
             alert('로그인을 해주세요');

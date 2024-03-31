@@ -156,8 +156,12 @@ const HeaderNav = () => {
     };
 
     const menuClickEvent = (url: string, givenName: string, givenDescription: string) => {
-        setTitle({ ...title, name: givenName, description: givenDescription });
+        if (['contest', 'contest/activity', 'lecture'].includes(url)) {
+            alert('사용할 수 없는 기능입니다.')
+            return
+        }
         navigate(`/${url}`);
+        setTitle({ ...title, name: givenName, description: givenDescription });
     };
 
     const logoutClickEvent = () => {
