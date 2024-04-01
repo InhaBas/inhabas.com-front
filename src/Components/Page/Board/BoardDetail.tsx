@@ -80,7 +80,11 @@ const BoardDetail = () => {
 
     useEffect(() => {
         setIsLoading(true);
-        detailDataFetch(`${fetchUrl}/${boardId}`, "GET", "token");
+        if (url === "opensource") {
+            detailDataFetch(`${fetchUrl}/${boardId}`, "GET");
+        } else {
+            detailDataFetch(`${fetchUrl}/${boardId}`, "GET", "token");
+        }
     }, [access, url]);
 
     useEffect(() => {
