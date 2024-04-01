@@ -104,8 +104,8 @@ const Bank = () => {
                         <Div>
                             <Dropdown
                                 label="전체보기"
-                                options={Object.values(bankYears).sort((a, b) => b-a).map((bankYear) => String(bankYear))}
-                                value={Object?.values(bankYears)?.sort((a, b) => b-a)?.map((bankYear) => String(bankYear))}
+                                options={["전체보기", ...Object.values(bankYears).sort((a, b) => b-a).map((bankYear) => String(bankYear))]}
+                                value={["", ...Object?.values(bankYears)?.sort((a, b) => b-a)?.map((bankYear) => String(bankYear))]}
                                 onChange={handleSelectedYear}
                                 purple
                             />
