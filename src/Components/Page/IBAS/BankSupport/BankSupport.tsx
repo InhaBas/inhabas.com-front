@@ -113,7 +113,7 @@ const BankSupport = () => {
                                 fetchUrl={`/budget/applications`}
                                 token
                                 paginationFetch={fetchBankListData}
-                                search={`status=${statusValue}`}
+                                search={statusValue === "" ? "" : `&status=${statusValue}`}
                             />
                         )}
                     </Div>
