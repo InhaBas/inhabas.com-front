@@ -120,10 +120,10 @@ const BoardList = () => {
                 <Loading />
             ) : (
                 <Container $alignitems="start">
-                    <Div $margin="0 0 30px 0">
-                        <BoardSearch />
-                    </Div>
                     <StickyDiv $padding="0 15px">
+                        <Div $margin="0 0 30px 0">
+                            <BoardSearch />
+                        </Div>
                         {url !== "sponsor" && url !== "usage" && (
                             <Div>
                                 <BoardNavigate />
