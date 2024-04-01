@@ -41,7 +41,7 @@ const HeaderTitle = () => {
 
     useEffect(() => {
         console.log(isNotLogin)
-        if (isNotLogin && !['/board/opensource', '/contest']?.includes(location?.pathname)) {
+        if (isNotLogin && !['/board/opensource', '/contest', '/board/sponsor', '/board/usage']?.includes(location?.pathname)) {
             alert('로그인을 해주세요');
             navigate('/');
         }
