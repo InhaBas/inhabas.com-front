@@ -44,6 +44,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
             "text/plain", // txt
             "application/pdf", // pdf
             "application/zip", // zip
+            "application/x-zip-compressed", // zip
             "text/csv", // csv
         ];
         return file && acceptedTypes.includes(file.type);
