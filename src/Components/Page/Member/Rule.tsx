@@ -43,7 +43,7 @@ const Rule = () => {
     return (
         <>
             <FlexDiv width="100%" height="100vh">
-                <FlexDiv
+                <Div
                     width="56%"
                     height="80%"
                     direction="column"
@@ -87,7 +87,7 @@ const Rule = () => {
                             </Button>
                         </FlexDiv>
                     </Div>
-                </FlexDiv>
+                </Div>
                 <Div width="44%" height="100vh" overflow="hidden">
                     <Img src="/images/member-background.jpg" />
                 </Div>
