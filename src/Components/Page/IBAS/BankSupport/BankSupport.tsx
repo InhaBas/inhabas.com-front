@@ -110,9 +110,10 @@ const BankSupport = () => {
                         {bankList && bankList.length !== 0 && (
                             <Pagination
                                 totalPage={totalPage}
-                                fetchUrl={`/budget/applications?status=${statusValue}`}
+                                fetchUrl={`/budget/applications`}
                                 token
                                 paginationFetch={fetchBankListData}
+                                search={`status=${statusValue}`}
                             />
                         )}
                     </Div>
