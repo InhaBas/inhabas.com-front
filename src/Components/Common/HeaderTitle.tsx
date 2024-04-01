@@ -36,6 +36,7 @@ const HeaderTitle = () => {
     const accessToken = useRecoilValue(tokenAccess);
     const navigate = useNavigate();
     const [isNotLogin, setIsNotLogin] = useRecoilState(failRefreshing);
+    
     let titleId = 0;
 
     useEffect(() => {
@@ -131,7 +132,7 @@ const HeaderTitle = () => {
 
     useEffect(() => {
         const id = titleInfo(pathNameInfo[0], pathNameInfo[1]);
-        if (title.name === null || title.name === "") {
+        if ((title.name === null || title.name === "") && pathNameInfo[0] !== "staff") {
             fetchTitleData(`/menu/${id}`, "GET");
         }
     }, []);
@@ -140,7 +141,7 @@ const HeaderTitle = () => {
         const id = titleInfo(pathNameInfo[0], pathNameInfo[1]);
         // 이전 titleId와 새로운 titleId가 다를 때에만 fetchTitleData 호출
 
-        if (Object.keys(nav).length === 0) {
+        if (Object.keys(nav).length === 0 && pathNameInfo[0] !== "staff") {
             fetchTitleData(`/menu/${id}`, "GET");
         }
     }, [pathNameInfo[0], pathNameInfo[1]]); // pathNameInfo와 titleId가 변경될 때마다 useEffect가 실행되도록 함
