@@ -167,7 +167,7 @@ const BoardList = () => {
                         {boardList && boardList.length !== 0 && (
                             <Pagination
                                 totalPage={totalPage}
-                                fetchUrl={`/board/${url}`}
+                                fetchUrl={`${fetchUrl}`}
                                 token
                                 paginationFetch={fetchBoardListData}
                             />
