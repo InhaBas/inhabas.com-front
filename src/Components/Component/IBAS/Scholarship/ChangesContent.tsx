@@ -14,7 +14,7 @@ import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
 import { userRole } from "../../../../Recoil/backState";
 
 const ChangesContent = ({ changesContent }: { changesContent: scholarshipHistoryInterface[] }) => {
-    const { isAuthorizedOverSecretary } = GetRoleAuthorization();
+    const { isAuthorizedOverVice } = GetRoleAuthorization();
     const role = useRecoilValue(userRole);
 
     const [deleteChange, fetchDeleteChange] = useFetch();
@@ -65,7 +65,7 @@ const ChangesContent = ({ changesContent }: { changesContent: scholarshipHistory
                                     <FlexDiv $margin="5px">
                                         <P color="grey2">{title}</P>
                                     </FlexDiv>
-                                    {role && isAuthorizedOverSecretary && (
+                                    {role && isAuthorizedOverVice && (
                                         <FlexDiv $margin="3px">
                                             <FlexDiv
                                                 width="15px"
