@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useLocation } from "react-router-dom";
+import { useRecoilState } from "recoil";
+
 import useFetch from "../../Hooks/useFetch";
+
 import { fileIdList } from "../../Recoil/backState";
-import { refetch, selectedFile } from "../../Recoil/frontState";
+import { menuId, refetch, selectedFile } from "../../Recoil/frontState";
+
 import { Div, FlexDiv, InputLabel } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import { Input } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
-import { menuId } from "../../Recoil/frontState";
-import { useLocation } from "react-router-dom";
 
 interface DragNDropProps {
     single?: boolean;
@@ -31,11 +33,26 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
         return file && acceptedImageTypes.includes(file.type);
     };
 
+    const isOtherFile = (file: File): boolean => {
+        const acceptedTypes: string[] = [
+            "application/vnd.ms-excel", // xls
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // xlsx
+            "application/msword", // doc
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // docx
+            "application/vnd.ms-powerpoint", // ppt
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation", //pptx
+            "text/plain", // txt
+            "application/pdf", // pdf
+            "application/zip", // zip
+            "text/csv", // csv
+        ];
+        return file && acceptedTypes.includes(file.type);
+    };
+
     const pathNameInfo = location.pathname.substring(1).split("/");
     let titleId = 0;
 
     const titleInfo = (pathName1: string, pathName2: string) => {
-        console.log(pathName1, pathName2)
         // case 분기 -> pathNameInfo[1] 번째 비교해서 또 분기
         switch (pathName1) {
             case "introduce":
@@ -118,22 +135,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
         return titleId;
     };
 
-    setCurrentMenuId(titleInfo(pathNameInfo[0], pathNameInfo[1]))
-
-    const isOtherFile = (file: File): boolean => {
-        const acceptedTypes: string[] = [
-            "application/vnd.ms-excel", // xls
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // xlsx
-            "application/msword", // doc
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // docx
-            "application/vnd.ms-powerpoint", // ppt
-            "text/plain", // txt
-            "application/pdf", // pdf
-            "application/zip", // zip
-            "text/csv", // csv
-        ];
-        return file && acceptedTypes.includes(file.type);
-    };
+    setCurrentMenuId(titleInfo(pathNameInfo[0], pathNameInfo[1]));
 
     const isFileSizeExceeded = (file: File, maxSizeInBytes: number): boolean => {
         return file.size > maxSizeInBytes;
@@ -179,7 +181,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
 
                         if (fileFetch) {
                             // fetch 요청을 각 파일마다 발생
-                            console.log(currentMenuId)
+                            console.log(currentMenuId);
                             const previewsFormData = new FormData();
                             previewsFormData.append("file", file); // 파일을 FormData에 추가
                             fetchFileData(`/file/upload/${currentMenuId}`, "POST", "token", previewsFormData, true);
@@ -196,7 +198,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
 
                             if (fileFetch) {
                                 // fetch 요청을 각 파일마다 발생
-                                console.log(currentMenuId)
+                                console.log(currentMenuId);
                                 const previewsFormData = new FormData();
                                 previewsFormData.append("file", file); // 파일을 FormData에 추가
                                 fetchFileData(`/file/upload/${currentMenuId}`, "POST", "token", previewsFormData, true);
