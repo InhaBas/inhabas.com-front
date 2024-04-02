@@ -144,7 +144,11 @@ const useFetch = (): [
                     //     alert(errorResponse.message);
                     // }
                     if (errorResponse.status === 403) {
-                        navigate(-1);
+                        if (url === '/signUp') {
+                            navigate('/');
+                        } else {
+                            navigate(-1);
+                        }
                         alert(errorResponse.message);
                     }
                     // 404 처리
