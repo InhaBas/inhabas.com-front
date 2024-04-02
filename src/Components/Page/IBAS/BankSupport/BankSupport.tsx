@@ -38,7 +38,7 @@ const BankSupport = () => {
     };
 
     useEffect(() => {
-        fetchBankListData(`/budget/applications?status=${statusValue}&page=0&size=15`, "GET", "token");
+        fetchBankListData(`/budget/applications?status=${statusValue}&page=0&size=10`, "GET", "token");
         setIsLoading(false);
     }, [access, statusValue]);
 
