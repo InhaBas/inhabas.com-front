@@ -31,7 +31,7 @@ const BankSupportTable = () => {
                     $alignitems="center"
                 >
                     {headerInfo.map((item: string, idx: number) => (
-                        <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
+                        <FlexDiv key={`headerInfo${idx}`} width={`${widthList[idx]}px`} $padding="10px">
                             <P $center fontWeight={700}>
                                 {item}
                             </P>
@@ -53,7 +53,7 @@ const BankSupportTable = () => {
                                 .map((item: any, idx: number) => (
                                     <FlexDiv
                                         key={`itemValue${idx}`}
-                                        $minWidth={`${widthList[idx]}px`}
+                                        width={`${widthList[idx]}px`}
                                         $padding="10px"
                                         $justifycontent={idx === 1 ? "start" : "center"}
                                         onClick={() => idx === 1 && movePage((element as { id: number }).id)}
