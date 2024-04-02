@@ -44,9 +44,14 @@ const BoardSearch = () => {
     }
 
     const searchEvent = () => {
+        // 토큰 없이 fetch
         if (inputRef.current !== null && inputRef.current.value !== null) {
-            fetchBoardListData(`${fetchUrl}?search=${inputRef.current.value}&page=0&size=15`, "GET", "token");
-        }
+            if (['usage, sponsor'].includes(url)) {
+                fetchBoardListData(`${fetchUrl}?search=${inputRef.current.value}&page=0&size=15`, "GET");
+            } else {
+                fetchBoardListData(`${fetchUrl}?search=${inputRef.current.value}&page=0&size=15`, "GET", "token");
+            }
+        } 
     };
 
     useEffect(() => {
