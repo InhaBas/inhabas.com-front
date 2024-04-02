@@ -33,7 +33,6 @@ const MyStaffRuleContainer = () => {
             content: editorRef.current[idx - 1].getInstance().getMarkdown(),
         };
 
-        console.log(inputData);
         fetchPutPolicyData(`/policy/${idx}`, "PUT", "token", inputData);
         setAlertMessage(true);
     };

@@ -182,7 +182,6 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
 
                         if (fileFetch) {
                             // fetch 요청을 각 파일마다 발생
-                            console.log(currentMenuId);
                             const previewsFormData = new FormData();
                             previewsFormData.append("file", file); // 파일을 FormData에 추가
                             fetchFileData(`/file/upload/${currentMenuId}`, "POST", "token", previewsFormData, true);
@@ -199,7 +198,6 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
 
                             if (fileFetch) {
                                 // fetch 요청을 각 파일마다 발생
-                                console.log(currentMenuId);
                                 const previewsFormData = new FormData();
                                 previewsFormData.append("file", file); // 파일을 FormData에 추가
                                 fetchFileData(`/file/upload/${currentMenuId}`, "POST", "token", previewsFormData, true);
@@ -250,11 +248,8 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
     useEffect(() => {
         if (fileSelected.length !== 0 && reload === true) {
             setReload(false);
-            console.log(fileSelected);
             const fileList = fileSelected;
             fileList.forEach((item) => {
-                console.log(typeof item);
-
                 const url = isImageFile(item) ? item.url : "/images/attachment_grey.svg";
                 const size = isImageFile(item) ? "100%" : "60%";
                 setPreviews((prevPreviews) => [

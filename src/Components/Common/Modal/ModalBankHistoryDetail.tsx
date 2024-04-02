@@ -28,7 +28,6 @@ const ModalBankHistoryDetail = () => {
     
     useEffect(() => {
         fetchData(`/budget/history/${modalInfos?.content}`, "GET", "token");
-        console.log(data)
     }, [accessToken]);
 
     return (

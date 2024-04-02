@@ -137,7 +137,6 @@ const Signup = () => {
             check = false;
         }
 
-        console.log((check && ref.current[3].value.length < 13) || ref.current[3].value.slice(0, 3) !== "010");
 
         if ((check && ref.current[3].value.length < 13) || ref.current[3].value.slice(0, 3) !== "010") {
             alert("핸드폰번호를 정확하게 입력해주세요");
@@ -178,7 +177,6 @@ const Signup = () => {
             if (status === "professor") {
                 proPostFetchData("/signUp", "POST", "token", inputData);
             }
-            console.log(proPostData);
         }
     };
 

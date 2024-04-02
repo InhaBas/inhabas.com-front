@@ -97,7 +97,7 @@ const ModalUpdateBankHistory = () => {
         if (historyType === 'income') {
             if (infos.dateUsed === '') { alert('사용일을 입력해주세요'); return false}
             if (infos.title === '') { alert('제목을 입력해주세요'); return false}
-            if (infos.income !== String(parseInt(infos.income))) { console.log(typeof infos.income); alert('올바른 수입액을 입력해주세요'); return false}
+            if (infos.income !== String(parseInt(infos.income))) { alert('올바른 수입액을 입력해주세요'); return false}
             if (parseInt(infos.income) <= 0) { alert('1원 이상의 수입액을 입력해주세요'); return false}
         }
         
@@ -136,7 +136,6 @@ const ModalUpdateBankHistory = () => {
             outcome: infos.outcome,
             files: files
         }
-        console.log(inputData)
         fetchUpdateHistory(`/budget/history/${modalContent.content}`, 'POST', "token", inputData)
     };
 
@@ -193,7 +192,7 @@ const ModalUpdateBankHistory = () => {
                 {historyType === 'income' && (
                     <>
                         <FlexDiv width="90%" $margin="20px 0 20px 0" $borderB={`1px solid ${theme.color.grey1}`} $justifycontent="flex-start" height="50px">
-                            <Input type="number" $padding="0" placeholder="수입액을 입력하세요" width="100%" value={infos.income === '0' ? '' : infos.income} onChange={(e:any) => {setInfos(prev => ({ ...prev, income: e.target.value })); console.log(infos.income)}} />
+                            <Input type="number" $padding="0" placeholder="수입액을 입력하세요" width="100%" value={infos.income === '0' ? '' : infos.income} onChange={(e:any) => {setInfos(prev => ({ ...prev, income: e.target.value })); }} />
                         </FlexDiv>
                     </>
                 )}

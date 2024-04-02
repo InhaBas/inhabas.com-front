@@ -36,7 +36,6 @@ const ModalChangeType = () => {
         };
 
         if (inputData.type !== "") {
-            console.log(inputData);
             fetchData("/myInfo/detail", "PUT", "token", inputData);
         }
     };

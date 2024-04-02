@@ -61,7 +61,6 @@ const Scholarship = () => {
 
     useEffect(() => {
         if (changesContentData) {
-            console.log(Object?.values(changesContentData))
             setChangesContent(Object?.values(changesContentData))
         }
     }, [changesContentData])
