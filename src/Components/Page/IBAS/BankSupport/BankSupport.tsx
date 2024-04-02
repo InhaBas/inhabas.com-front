@@ -45,8 +45,7 @@ const BankSupport = () => {
     useEffect(() => {
         if (bankListData) {
             const contents = bankListData.data.map((item: supportListInterface, idx: number) => ({
-                number: idx + 1,
-
+                number: bankListData.pageInfo.pageNumber * bankListData.pageInfo.pageSize + idx + 1,
                 title: item.title,
                 applicantName: item.applicantName,
                 dateCreated: formatDateDay({ date: item.dateCreated }),
