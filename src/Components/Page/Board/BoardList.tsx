@@ -83,12 +83,12 @@ const BoardList = () => {
     // url 바뀔 때마다 해당 table fetch 할 수 있도록
     useEffect(() => {
         setIsLoading(true);
-        if (url === "opensource") {
+        if (["opensource", "usage", "sponsor"].includes(url)) {
             fetchBoardListData(`${fetchUrl}`, "GET");
         } else {
             fetchBoardListData(`${fetchUrl}`, "GET", "token");
         }
-    }, [url, access]);
+    }, [url, access])
 
     useEffect(() => {
         if (boardListData) {

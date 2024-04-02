@@ -79,8 +79,8 @@ const BankSupport = () => {
                         <Div>
                             <Dropdown
                                 label="전체보기"
-                                options={["승인 대기", "승인 완료", "승인 거절", "처리 완료"]}
-                                value={["PENDING", "APPROVED", "REJECTED", "COMPLETED"]}
+                                options={["전체보기", "승인 대기", "승인 완료", "승인 거절", "처리 완료"]}
+                                value={["", "PENDING", "APPROVED", "REJECTED", "COMPLETED"]}
                                 onChange={handleStatusChange}
                                 purple
                             />
