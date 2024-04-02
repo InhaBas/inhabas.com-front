@@ -28,7 +28,6 @@ const ModalChangeImg = () => {
         let inputFormData = new FormData();
         inputFormData.append("picture", files[0]);
 
-        console.log(inputFormData);
         if (inputFormData) {
             fetchData("/myInfo/picture", "POST", "token", inputFormData, true);
         }

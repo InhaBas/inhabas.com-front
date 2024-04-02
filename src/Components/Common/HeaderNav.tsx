@@ -58,7 +58,6 @@ const HeaderNav = () => {
     let titleId = 0;
 
     const titleInfo = (pathName1: string, pathName2: string) => {
-        console.log(pathName1, pathName2)
         // case 분기 -> pathNameInfo[1] 번째 비교해서 또 분기
         switch (pathName1) {
             case "introduce":
@@ -179,7 +178,6 @@ const HeaderNav = () => {
     };
 
     useEffect(() => {
-        console.log(pathNameInfo[0], pathNameInfo[1])
         const id = titleInfo(pathNameInfo[0], pathNameInfo[1]);
         setCurrentMenuId(id);
         fetchData("/menus", "GET");

@@ -37,7 +37,6 @@ const BoardList = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const url = location.pathname.split("/")[2];
-    console.log("url", url);
     const access = useRecoilValue(tokenAccess);
     const [boardList, setBoardList] = useRecoilState(boardListDataInfo);
     const [boardPinnedList, setBoardPinnedList] = useRecoilState(boardListPinnedDataInfo);

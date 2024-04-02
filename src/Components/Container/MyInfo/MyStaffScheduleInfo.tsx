@@ -86,7 +86,6 @@ const MyStaffScheduleInfo = () => {
                 resultAnnounceDate: ref.current[5].value + ":00",
             };
 
-            console.log(inputData);
             fetchPutScheduleInfoData("/signUp/schedule", "PUT", "token", inputData);
         }
     };

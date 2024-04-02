@@ -63,7 +63,6 @@ const Bank = () => {
             fetchBankHistoryData(`/budget/histories?year=${selectedYear}&page=${'0'}&size=${'15'}`, "GET", "token")
         }
         setReload(false);
-        console.log(reload)
     }, [bankYears, selectedYear, accessToken, reload])
 
     useEffect(() => {

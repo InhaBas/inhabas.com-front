@@ -40,7 +40,6 @@ const HeaderTitle = () => {
     let titleId = 0;
 
     useEffect(() => {
-        console.log(isNotLogin)
         if ((isNotLogin && (!['opensource', 'sponsor', 'usage']?.includes(pathNameInfo[1]) && 'contest' !== pathNameInfo[0]))) {
             alert('로그인을 해주세요');
             navigate('/');

@@ -28,15 +28,12 @@ const BankTable = () => {
 
     const clickDetailEvent = (ev: MouseEvent, name: string, selectedId: number) => {
         setOpen(true);
-        console.log("gg");
 
         setModalInfo({ type: "bankHistory", content: String(selectedId) });
     };
 
     const clickUpdateEvent = (ev: MouseEvent, name: string, selectedIdx: number) => {
         setOpen(true);
-        console.log("gg");
-        console.log(selectedIdx)
 
         setModalInfo({ type: "bankHistoryUpdate", content: String(selectedIdx) });
     };
@@ -51,13 +48,11 @@ const BankTable = () => {
         if (deleteHistory) {
             alert('내역이 정상적으로 삭제되었습니다.')
             setReload(true);
-            console.log(deleteHistory)
         }
     }, [deleteHistory])
 
     const clickPostEvent = (ev: MouseEvent, name: string, content: string) => {
         setOpen(true);
-        console.log("gg");
 
         setModalInfo({ type: "bankHistoryPost" });
     };

@@ -28,8 +28,6 @@ import "./index.css";
 const App = () => {
     const access = useRecoilValue(tokenAccess);
 
-    useEffect(() => console.log(access), [access]);
-
     return (
         <ThemeProvider theme={theme}>
             <GlobalStyle />

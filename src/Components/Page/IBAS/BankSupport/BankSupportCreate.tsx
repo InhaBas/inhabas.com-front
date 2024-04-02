@@ -130,7 +130,6 @@ const BankSupportCreate = () => {
             account: infos.account,
             files: files,
         };
-        console.log(inputData);
         {
             update === "create"
                 ? fetchPostSupport("/budget/application", "POST", "token", inputData)
@@ -139,7 +138,6 @@ const BankSupportCreate = () => {
     };
 
     useEffect(() => {
-        console.log(postSupport);
         if (postSupport) {
             alert("예산 지원 신청이 정상적으로 등록되었습니다.");
             // setReload(true);

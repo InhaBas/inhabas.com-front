@@ -44,13 +44,11 @@ const StudentSearchTable = () => {
     }, [])
 
     useEffect(() => {
-        console.log(studentInfoList?.data)
         setNotGraduatedStudents(studentInfoList?.data)
     }, [studentInfoList])
 
     // 학생 선택 시 실행되는 함수
     const chooseStudent = (studentInfo: any,) => {
-        console.log(studentInfo)
         setSelectedStudent(studentInfo); // 선택된 학생 정보 업데이트
     };
 

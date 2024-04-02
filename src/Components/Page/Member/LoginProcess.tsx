@@ -86,7 +86,6 @@ const LoginProcess = () => {
     const [check, setCheck] = useRecoilState(signupCheck);
 
     useEffect(() => {
-        console.log(access);
         if (access !== "default") {
             getFetchData("/signUp/check", "GET", "token");
         }
@@ -102,7 +101,6 @@ const LoginProcess = () => {
     }, [getData, setCheck]);
 
     useEffect(() => {
-        console.log(check);
         if (check) {
             navigate("/");
         } else if (check === false) {

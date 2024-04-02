@@ -58,7 +58,6 @@ const MyApplication = () => {
             state: passFailValue,
         };
 
-        console.log(passFailSend);
         fetchPassFailData("/members/unapproved", "PUT", "token", passFailSend);
         navigate("/staff/member");
     };

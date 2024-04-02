@@ -47,7 +47,6 @@ const ModalHistory = () => {
                 content: inputRef.current[2].value,
                 dateHistory: inputRef.current[0].value + "T00:00:00",
             };
-            console.log(inputData);
             if (modalData.type === "historyPost") {
                 fetchData("/club/history", "POST", "token", inputData);
             } else if (modalData.type === "historyPut") {

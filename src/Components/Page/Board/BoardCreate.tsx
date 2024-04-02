@@ -104,7 +104,6 @@ const BoardCreate = () => {
                 formdata.append("files", files[i]);
             }
 
-            console.log(inputData);
             if (update === "create") {
                 // postFetchData(`${fetchUrl}`, "POST", "token", formdata, true);
                 postFetchData(`${fetchUrl}`, "POST", "token", inputData);
@@ -123,10 +122,7 @@ const BoardCreate = () => {
     }, [postData]);
 
     useEffect(() => {
-        console.log(1122);
-        console.log(update);
         if (update == "update") {
-            console.log(2333);
             getFetchData(`${fetchUrl}/${paramID}`, "GET", "token");
         }
     }, [update]);
@@ -156,9 +152,7 @@ const BoardCreate = () => {
             setFileList([]);
         };
     }, [getData]);
-
-    useEffect(() => console.log(fileSelected), [fileSelected]);
-
+    
     return (
         <FlexDiv width="100%">
             {isLoading ? (

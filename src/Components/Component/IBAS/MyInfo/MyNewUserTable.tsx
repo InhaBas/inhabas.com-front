@@ -78,7 +78,6 @@ const MyNewUserTable = () => {
                 memberIdList: check,
                 state: passFailValue,
             };
-            console.log(passFailSend);
             await fetchPassFailData("/members/unapproved", "PUT", "token", passFailSend);
 
             let fetchUrl = "/members/unapproved?page=0";
