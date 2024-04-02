@@ -80,7 +80,7 @@ const BoardDetail = () => {
 
     useEffect(() => {
         setIsLoading(true);
-        if (["opensource", "board/usage", "board/sponsor"].includes(url)) {
+        if (["opensource", "usage", "sponsor"].includes(url)) {
             detailDataFetch(`${fetchUrl}/${boardId}`, "GET");
         } else {
             detailDataFetch(`${fetchUrl}/${boardId}`, "GET", "token");
