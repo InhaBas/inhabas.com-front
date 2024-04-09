@@ -31,6 +31,26 @@ export interface paginationPropsInterface {
     paginationFetch: any;
 }
 
+// comment
+export interface commentInterface {
+    id: number;
+    content: string;
+    childrenComment?: Array<commentInterface>;
+    dateUpdated: number;
+    writer: {
+        id: number;
+        name: string;
+        major: string;
+        pictureUrl: string;
+    };
+}
+
+export interface commentPropsInterface {
+    boardId?: string;
+    menuId?: number;
+    boardType?: string;
+}
+
 // modal
 export interface modalInterface {
     type: string;
