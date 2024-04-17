@@ -23,6 +23,8 @@ import { DetailContainer, Div, FlexDiv } from "../../../styles/assets/Div";
 import { H2 } from "../../../styles/assets/H";
 import Img from "../../../styles/assets/Img";
 import P from "../../../styles/assets/P";
+import Comment from "../../Common/Comment";
+import CommentInput from "../../Common/CommentInput";
 import Loading from "../../Common/Loading";
 import TextViewer from "../../Common/TextViewer";
 
@@ -46,6 +48,8 @@ const BoardDetail = () => {
     const [isLoading, setIsLoading] = useState(true);
     const access = useRecoilValue(tokenAccess);
 
+    const pathNameInfo = location.pathname.substring(1).split("/");
+
     let decoded;
     if (access !== "default") {
         decoded = jwtDecode(access) as tokenInterface;
@@ -66,6 +70,91 @@ const BoardDetail = () => {
     } else {
         fetchUrl = `/board/${url}`;
     }
+
+    let menuId: number;
+
+    const titleInfo = (pathName1: string, pathName2: string) => {
+        // case 분기 -> pathNameInfo[1] 번째 비교해서 또 분기
+        switch (pathName1) {
+            case "introduce":
+                menuId = 1;
+                break;
+            case "activity":
+                menuId = 2;
+                break;
+            case "honor":
+                menuId = 3;
+                break;
+            case "board":
+                // pathName2에 따라 분기
+                switch (pathName2) {
+                    case "notice":
+                        menuId = 4;
+                        break;
+                    case "free":
+                        menuId = 5;
+                        break;
+                    case "question":
+                        menuId = 6;
+                        break;
+                    case "suggest":
+                        menuId = 7;
+                        break;
+                    case "opensource":
+                        menuId = 8;
+                        break;
+                    case "executive":
+                        menuId = 9;
+                        break;
+                    case "alpha":
+                        menuId = 16;
+                        break;
+                    case "beta":
+                        menuId = 17;
+                        break;
+                    case "sponsor":
+                        menuId = 21;
+                        break;
+                    case "usage":
+                        menuId = 22;
+                        break;
+                    default: // 혹은 다른 값으로 설정
+                        // pathName1이 위의 case에 일치하지 않는 경우에 대한 처리
+                        menuId = 0;
+                        break;
+                }
+                break;
+            case "lecture":
+                menuId = 10;
+                break;
+            case "study":
+                menuId = 11;
+                break;
+            case "hobby":
+                menuId = 12;
+                break;
+            case "lecture-application":
+                menuId = 13;
+                break;
+            case "bank":
+                menuId = 15;
+                if (pathName2 === "support") {
+                    menuId = 14;
+                }
+                break;
+
+            case "contest":
+                switch (pathName2) {
+                    case "":
+                        menuId = 18;
+                        break;
+                    case "activity":
+                        menuId = 19;
+                        break;
+                }
+        }
+        return menuId;
+    };
 
     const openWindow = (url: string) => {
         window.open(url);
@@ -235,6 +324,8 @@ const BoardDetail = () => {
                                 </FlexDiv>
                             )}
                         </Div>
+                        <Comment boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />
+                        <CommentInput boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />
                     </DetailContainer>
                 </FlexDiv>
             )}
