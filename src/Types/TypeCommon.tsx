@@ -36,7 +36,8 @@ export interface commentInterface {
     id: number;
     content: string;
     childrenComment?: Array<commentInterface>;
-    dateUpdated: number;
+    dateUpdated: Date;
+    parentAuthor?: string;
     writer: {
         id: number;
         name: string;
@@ -49,6 +50,7 @@ export interface commentPropsInterface {
     boardId?: string;
     menuId?: number;
     boardType?: string;
+    parentId?: number;
 }
 
 // modal

@@ -22,7 +22,7 @@ const CommentAbsoluteDiv = styled(Div)`
 `;
 
 const CommentInput = (props: commentPropsInterface) => {
-    const { boardId, menuId, boardType } = props;
+    const { boardId, menuId, boardType, parentId } = props;
     const [commentInput, setCommentInput] = useState("");
     const [postComment, fetchPostComment] = useFetch();
     const setReload = useSetRecoilState(refetch);
@@ -40,9 +40,9 @@ const CommentInput = (props: commentPropsInterface) => {
         if (checkCommentInput() === false) {
             return;
         }
-
+        console.log(parentId);
         const inputData = {
-            parentCommentId: "",
+            parentCommentId: parentId !== undefined ? parentId : null,
             content: commentInput,
         };
 

@@ -12,7 +12,7 @@ import {
 } from "../Types/IBAS/TypeMyinfo";
 import { supportDetailInterface } from "../Types/TypeBank";
 import { boardDetailInterface, boardMenuInterface } from "../Types/TypeBoard";
-import { chiefInterface, menuInterface, policyInterface } from "../Types/TypeCommon";
+import { chiefInterface, commentInterface, menuInterface, policyInterface } from "../Types/TypeCommon";
 
 //headerNav
 export const headerNavInfo = atom({
@@ -211,6 +211,12 @@ export const boardListPinnedDataInfo = atom({
 export const boardDetailData = atom<boardDetailInterface | null>({
     key: "boardDetailData",
     default: null,
+});
+
+// comment
+export const commentInfo = atom<commentInterface[] | []>({
+    key: "commentInfo",
+    default: [],
 });
 
 //lectureRoom
