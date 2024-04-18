@@ -40,6 +40,7 @@ const useFetch = (): [
 
                 const result = await res.json();
                 const newAccessToken = result.accessToken;
+                console.log(newAccessToken);
                 setAccess(newAccessToken);
             } else {
                 console.log("fail refresh");
@@ -144,8 +145,8 @@ const useFetch = (): [
                     //     alert(errorResponse.message);
                     // }
                     if (errorResponse.status === 403) {
-                        if (url === '/signUp') {
-                            navigate('/');
+                        if (url === "/signUp") {
+                            navigate("/");
                         } else {
                             navigate(-1);
                         }
