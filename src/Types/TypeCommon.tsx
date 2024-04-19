@@ -38,6 +38,7 @@ export interface commentInterface {
     childrenComment?: Array<commentInterface>;
     dateUpdated: Date;
     parentAuthor?: string;
+    parentComment?: string;
     writer: {
         id: number;
         name: string;

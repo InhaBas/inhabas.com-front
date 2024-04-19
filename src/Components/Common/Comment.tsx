@@ -71,16 +71,29 @@ const Comment = (props: commentPropsInterface) => {
     }, [reload]);
 
     // 댓글 데이터를 트리 구조로 변환하는 함수
-    const convertToCommentTree = (comments: commentInterface[] | [], parentAuthor?: string): commentInterface[] => {
+    const convertToCommentTree = (
+        comments: (commentInterface | any)[],
+        parentAuthor: string = "",
+        parentComment: string = ""
+    ): commentInterface[] => {
         const commentTree: commentInterface[] = [];
 
-        Object.values(comments).forEach((comment) => {
-            comment.parentAuthor = comment.writer.name || "";
+        Object.values(comments).forEach((comment: commentInterface) => {
+            const updatedComment: commentInterface = {
+                ...comment,
+                parentAuthor: parentAuthor,
+                parentComment: parentComment,
+            };
+
             if (comment.childrenComment && comment.childrenComment.length > 0) {
-                const convertedChildren = convertToCommentTree(comment.childrenComment);
-                comment.childrenComment = convertedChildren;
+                const convertedChildren = convertToCommentTree(
+                    comment.childrenComment,
+                    comment.writer.name || "",
+                    comment.content || ""
+                );
+                updatedComment.childrenComment = convertedChildren;
             }
-            commentTree.push(comment);
+            commentTree.push(updatedComment);
         });
 
         return commentTree;
@@ -91,116 +104,158 @@ const Comment = (props: commentPropsInterface) => {
         return comments.map((comment: commentInterface) => (
             <Div
                 width="100%"
-                $margin="30px 0"
-                $borderT={`1px solid ${theme.color.border}`}
+                $margin="15px 0"
+                $borderT={!depth ? `1px solid ${theme.color.border}` : "none"}
                 key={`${comment.id}_${depth}_${comment.writer.id}`}
             >
-                <Div width="100%" $border="1px solid" $margin="30px 0" $padding="20px" $borderColor="grey1">
-                    <Div width="100%" $padding="0 0 15px 0">
-                        <FlexDiv width="100%" $justifycontent="start" $padding="0 0 20px 0">
-                            <FlexDiv width="50px" height="50px" radius={100} overflow="hidden" $margin="0 10px 0 0">
-                                <Img src={comment?.writer.pictureUrl} $objectFit="cover" />
-                            </FlexDiv>
-                            <Div>
-                                <P fontWeight={700}>{comment?.writer.name}</P>
-                                <FlexDiv $justifycontent="start" $margin="5px 0 ">
-                                    <Div>
-                                        <P fontSize="xs" color="grey4">
-                                            {comment?.writer.major} |
-                                        </P>
-                                    </Div>
-                                    <FlexDiv width="13px" height="13px" $margin="0 5px">
-                                        <Img src="/images/clock_grey.svg"></Img>
+                <Div width="100%" $border="1px solid" $margin="15px 0" $padding="20px" $borderColor="grey1">
+                    <Div width="100%">
+                        <FlexDiv width="100%" $padding="0 0 20px 0">
+                            <FlexDiv width="100%" $justifycontent="space-between">
+                                <FlexDiv>
+                                    <FlexDiv
+                                        width="30px"
+                                        height="30px"
+                                        radius={100}
+                                        overflow="hidden"
+                                        $margin="0 5px 0 0"
+                                    >
+                                        <Img src={comment?.writer.pictureUrl} $objectFit="cover" />
                                     </FlexDiv>
-                                    <Div>
-                                        <P fontSize="xs" color="grey4">
-                                            {formatDateMinute({
-                                                date: String(comment?.dateUpdated) || "",
-                                            })}
-                                        </P>
-                                    </Div>
-                                </FlexDiv>
-                            </Div>
-                        </FlexDiv>
-                        {depth !== 0 && (
-                            <Div>
-                                <P $whiteSpace="wrap" fontWeight={300} $lineHeight={1.5} color="blue">
-                                    @{comment?.parentAuthor}
-                                </P>
-                            </Div>
-                        )}
-                        {updating === "nothing" && (
-                            <Div $margin="0 0 20px 0">
-                                <P $whiteSpace="wrap" fontWeight={300} $lineHeight={1.5}>
-                                    {comment?.content}
-                                </P>
-                            </Div>
-                        )}
-                        {updating === "update" && (
-                            <Div $margin="20px 0" width="100%">
-                                <TextArea
-                                    width="100%"
-                                    $padding="20px"
-                                    $borderRadius={30}
-                                    height="150px"
-                                    $borderColor="border"
-                                    placeholder="댓글을 남겨보세요!"
-                                    defaultValue={comment?.content}
-                                    onChange={(e: any) => setCommentInput(() => e.target.value)}
-                                />
-                            </Div>
-                        )}
-                        <FlexDiv width="100%" $justifycontent="space-between">
-                            <FlexDiv $pointer onClick={() => handleCommentButtonClick(comment?.id)}>
-                                <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
-                                    <Img src="/images/comment_purple.svg"></Img>
+                                    <FlexDiv height="30px">
+                                        <FlexDiv>
+                                            <Div>
+                                                <P fontSize="sm" fontWeight={700}>
+                                                    {comment?.writer.name}
+                                                </P>
+                                            </Div>
+                                            <Div>
+                                                <FlexDiv>
+                                                    <Div>
+                                                        <P fontSize="xs" color="grey4">
+                                                            ({comment?.writer.major}) |
+                                                        </P>
+                                                    </Div>
+                                                    <FlexDiv width="13px" height="13px" $margin="0 5px">
+                                                        <Img src="/images/clock_grey.svg"></Img>
+                                                    </FlexDiv>
+                                                    <Div>
+                                                        <P fontSize="xs" color="grey4">
+                                                            {formatDateMinute({
+                                                                date: String(comment?.dateUpdated) || "",
+                                                            })}
+                                                        </P>
+                                                    </Div>
+                                                </FlexDiv>
+                                            </Div>
+                                        </FlexDiv>
+                                    </FlexDiv>
                                 </FlexDiv>
                                 <Div>
-                                    <P color="bgColor" fontSize="sm">
-                                        답글쓰기
-                                    </P>
+                                    <FlexDiv width="100%" $justifycontent="space-between">
+                                        <FlexDiv $pointer onClick={() => handleCommentButtonClick(comment?.id)}>
+                                            <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
+                                                <Img src="/images/comment_purple.svg"></Img>
+                                            </FlexDiv>
+                                            <Div>
+                                                <P color="bgColor" fontSize="xs">
+                                                    답글쓰기
+                                                </P>
+                                            </Div>
+                                        </FlexDiv>
+                                        <FlexDiv>
+                                            {updating === "nothing" && (
+                                                <FlexDiv
+                                                    $margin="0 0 0 15px"
+                                                    $pointer
+                                                    onClick={() => setUpdating("update")}
+                                                >
+                                                    <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
+                                                        <Img src="/images/pencil_purple.svg"></Img>
+                                                    </FlexDiv>
+                                                    <Div>
+                                                        <P color="bgColor" fontSize="xs">
+                                                            수정
+                                                        </P>
+                                                    </Div>
+                                                </FlexDiv>
+                                            )}
+                                            {updating === "update" && (
+                                                <FlexDiv
+                                                    $margin="0 0 0 15px"
+                                                    $pointer
+                                                    onClick={() => updateComment(comment?.id)}
+                                                >
+                                                    <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
+                                                        <Img src="/images/pencil_purple.svg"></Img>
+                                                    </FlexDiv>
+                                                    <Div>
+                                                        <P color="bgColor" fontSize="xs">
+                                                            등록
+                                                        </P>
+                                                    </Div>
+                                                </FlexDiv>
+                                            )}
+                                            <FlexDiv
+                                                $margin="0 0 0 15px"
+                                                $pointer
+                                                onClick={() => deleteComment(comment?.id)}
+                                            >
+                                                <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
+                                                    <Img src="/images/trash_purple.svg"></Img>
+                                                </FlexDiv>
+                                                <Div>
+                                                    <P color="bgColor" fontSize="xs">
+                                                        삭제
+                                                    </P>
+                                                </Div>
+                                            </FlexDiv>
+                                        </FlexDiv>
+                                    </FlexDiv>
                                 </Div>
-                            </FlexDiv>
-                            <FlexDiv>
-                                {updating === "nothing" && (
-                                    <FlexDiv $margin="0 0 0 20px" $pointer onClick={() => setUpdating("update")}>
-                                        <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
-                                            <Img src="/images/pencil_purple.svg"></Img>
-                                        </FlexDiv>
-                                        <Div>
-                                            <P color="bgColor" fontSize="sm">
-                                                수정
-                                            </P>
-                                        </Div>
-                                    </FlexDiv>
-                                )}
-                                {updating === "update" && (
-                                    <FlexDiv $margin="0 0 0 20px" $pointer onClick={() => updateComment(comment?.id)}>
-                                        <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
-                                            <Img src="/images/pencil_purple.svg"></Img>
-                                        </FlexDiv>
-                                        <Div>
-                                            <P color="bgColor" fontSize="sm">
-                                                등록
-                                            </P>
-                                        </Div>
-                                    </FlexDiv>
-                                )}
-                                <FlexDiv $margin="0 0 0 20px" $pointer onClick={() => deleteComment(comment?.id)}>
-                                    <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
-                                        <Img src="/images/trash_purple.svg"></Img>
-                                    </FlexDiv>
-                                    <Div>
-                                        <P color="bgColor" fontSize="sm">
-                                            삭제
-                                        </P>
-                                    </Div>
-                                </FlexDiv>
                             </FlexDiv>
                         </FlexDiv>
                     </Div>
+                    {depth !== 0 && (
+                        <FlexDiv width="100%" $justifycontent="start">
+                            <Div $margin="0 10px 0 0">
+                                <P fontSize="sm" fontWeight={300} $lineHeight={1.5} color="blue">
+                                    @{comment?.parentAuthor}
+                                </P>
+                            </Div>
+                            <Div width="90%" overflow="hidden" $whiteSpace="nowrap">
+                                <P fontSize="sm" fontWeight={300} $lineHeight={1.5} color="grey2">
+                                    {comment?.parentComment}
+                                </P>
+                            </Div>
+                        </FlexDiv>
+                    )}
+                    {updating === "nothing" && (
+                        <Div>
+                            <P $whiteSpace="wrap" fontSize="sm" fontWeight={300} $lineHeight={1.5}>
+                                {comment?.content}
+                            </P>
+                        </Div>
+                    )}
+                    {updating === "update" && (
+                        <Div $margin="15px 0" width="100%">
+                            <TextArea
+                                width="100%"
+                                $padding="20px"
+                                $borderRadius={30}
+                                fontSize="sm"
+                                height="150px"
+                                $borderColor="border"
+                                placeholder="댓글을 남겨보세요!"
+                                defaultValue={comment?.content}
+                                onChange={(e: any) => setCommentInput(() => e.target.value)}
+                            />
+                        </Div>
+                    )}
                     {showCommentInputId === comment?.id && isCommentInputVisible && (
-                        <CommentInput boardId={props.boardId} menuId={props.menuId} parentId={comment?.id} />
+                        <Div width="100%" $padding="20px 0 0 0">
+                            <CommentInput boardId={props.boardId} menuId={props.menuId} parentId={comment?.id} />
+                        </Div>
                     )}
                 </Div>
                 {/* 대댓글 렌더링 */}
