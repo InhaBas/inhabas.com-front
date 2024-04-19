@@ -33,6 +33,8 @@ const Comment = (props: commentPropsInterface) => {
     const [showCommentInputId, setShowCommentInputId] = useState<number | null>(null);
     const [isCommentInputVisible, setCommentInputVisible] = useState(false);
     const access = useRecoilValue(tokenAccess);
+    // 수정 중인 댓글의 ID를 추적하는 상태
+    const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
 
     let decoded;
     if (access !== "default") {
@@ -50,6 +52,13 @@ const Comment = (props: commentPropsInterface) => {
         if (window.confirm("댓글을 정말로 삭제하시겠습니까?")) {
             fetchCommentDeleteData(`/comment/${id}`, "DELETE", "token");
         }
+    };
+
+    // 수정 버튼 클릭 시 해당 댓글을 수정 상태로 변경하는 함수
+    const handleEditButtonClick = (id: number) => {
+        // 수정 중인 댓글 ID를 설정하여 해당 댓글이 TextArea로 렌더링되도록 함
+        setEditingCommentId(id);
+        setUpdating("update");
     };
 
     const checkCommentInput = () => {
@@ -185,7 +194,7 @@ const Comment = (props: commentPropsInterface) => {
                                                         <FlexDiv
                                                             $margin="0 0 0 15px"
                                                             $pointer
-                                                            onClick={() => setUpdating("update")}
+                                                            onClick={() => handleEditButtonClick(comment?.id)}
                                                         >
                                                             <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
                                                                 <Img src="/images/pencil_purple.svg"></Img>
@@ -251,7 +260,7 @@ const Comment = (props: commentPropsInterface) => {
                             </Div>
                         </FlexDiv>
                     )}
-                    {updating === "nothing" && (
+                    {updating === "nothing" && editingCommentId !== comment?.id && (
                         <Div>
                             <P $whiteSpace="wrap" fontSize="sm" fontWeight={300} $lineHeight={1.5}>
                                 {comment?.content}
