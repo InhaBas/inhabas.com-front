@@ -1,20 +1,28 @@
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
+
+import { theme } from "../../styles/theme";
+
+import { jwtDecode } from "jwt-decode";
+import { GetRoleAuthorization } from "../../Functions/authFunctions";
 import { DateFunction } from "../../Functions/dateFunction";
+
 import useFetch from "../../Hooks/useFetch";
-import { commentInfo } from "../../Recoil/backState";
+import { commentInfo, tokenAccess } from "../../Recoil/backState";
 import { refetch } from "../../Recoil/frontState";
-import { commentInterface, commentPropsInterface } from "../../Types/TypeCommon";
+
+import { commentInterface, commentPropsInterface, tokenInterface } from "../../Types/TypeCommon";
+
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import { TextArea } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
-import { theme } from "../../styles/theme";
 import CommentInput from "./CommentInput";
 
 const Comment = (props: commentPropsInterface) => {
     const { boardId, menuId } = props;
     const { formatDateMinute } = DateFunction();
+    const { isAuthorizedOverVice } = GetRoleAuthorization();
     const [commentData, fetchCommentData] = useFetch();
     const [commentDeleteData, fetchCommentDeleteData] = useFetch();
     const [comment, setComment] = useRecoilState(commentInfo);
@@ -24,6 +32,13 @@ const Comment = (props: commentPropsInterface) => {
     const [reload, setReload] = useRecoilState(refetch);
     const [showCommentInputId, setShowCommentInputId] = useState<number | null>(null);
     const [isCommentInputVisible, setCommentInputVisible] = useState(false);
+    const access = useRecoilValue(tokenAccess);
+
+    let decoded;
+    if (access !== "default") {
+        decoded = jwtDecode(access) as tokenInterface;
+    }
+    const userId = decoded?.memberId;
 
     const handleCommentButtonClick = (id: number) => {
         // 댓글 입력 상태 토글
@@ -164,52 +179,58 @@ const Comment = (props: commentPropsInterface) => {
                                             </Div>
                                         </FlexDiv>
                                         <FlexDiv>
-                                            {updating === "nothing" && (
+                                            {userId === comment.writer.id && (
+                                                <FlexDiv>
+                                                    {updating === "nothing" && (
+                                                        <FlexDiv
+                                                            $margin="0 0 0 15px"
+                                                            $pointer
+                                                            onClick={() => setUpdating("update")}
+                                                        >
+                                                            <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
+                                                                <Img src="/images/pencil_purple.svg"></Img>
+                                                            </FlexDiv>
+                                                            <Div>
+                                                                <P color="bgColor" fontSize="xs">
+                                                                    수정
+                                                                </P>
+                                                            </Div>
+                                                        </FlexDiv>
+                                                    )}
+                                                    {updating === "update" && (
+                                                        <FlexDiv
+                                                            $margin="0 0 0 15px"
+                                                            $pointer
+                                                            onClick={() => updateComment(comment?.id)}
+                                                        >
+                                                            <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
+                                                                <Img src="/images/pencil_purple.svg"></Img>
+                                                            </FlexDiv>
+                                                            <Div>
+                                                                <P color="bgColor" fontSize="xs">
+                                                                    등록
+                                                                </P>
+                                                            </Div>
+                                                        </FlexDiv>
+                                                    )}
+                                                </FlexDiv>
+                                            )}
+                                            {(userId === comment.writer.id || isAuthorizedOverVice) && (
                                                 <FlexDiv
                                                     $margin="0 0 0 15px"
                                                     $pointer
-                                                    onClick={() => setUpdating("update")}
+                                                    onClick={() => deleteComment(comment?.id)}
                                                 >
                                                     <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
-                                                        <Img src="/images/pencil_purple.svg"></Img>
+                                                        <Img src="/images/trash_purple.svg"></Img>
                                                     </FlexDiv>
                                                     <Div>
                                                         <P color="bgColor" fontSize="xs">
-                                                            수정
+                                                            삭제
                                                         </P>
                                                     </Div>
                                                 </FlexDiv>
                                             )}
-                                            {updating === "update" && (
-                                                <FlexDiv
-                                                    $margin="0 0 0 15px"
-                                                    $pointer
-                                                    onClick={() => updateComment(comment?.id)}
-                                                >
-                                                    <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
-                                                        <Img src="/images/pencil_purple.svg"></Img>
-                                                    </FlexDiv>
-                                                    <Div>
-                                                        <P color="bgColor" fontSize="xs">
-                                                            등록
-                                                        </P>
-                                                    </Div>
-                                                </FlexDiv>
-                                            )}
-                                            <FlexDiv
-                                                $margin="0 0 0 15px"
-                                                $pointer
-                                                onClick={() => deleteComment(comment?.id)}
-                                            >
-                                                <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
-                                                    <Img src="/images/trash_purple.svg"></Img>
-                                                </FlexDiv>
-                                                <Div>
-                                                    <P color="bgColor" fontSize="xs">
-                                                        삭제
-                                                    </P>
-                                                </Div>
-                                            </FlexDiv>
                                         </FlexDiv>
                                     </FlexDiv>
                                 </Div>
@@ -261,7 +282,6 @@ const Comment = (props: commentPropsInterface) => {
                 {/* 대댓글 렌더링 */}
                 {comment.childrenComment && (
                     <Div width="100%" $padding="0 0 0 20px">
-                        {/* <Div width="100%" $padding={depth >= 4 ? "0" : "0 0 0 20px"}> */}
                         {renderCommentsRecursively(comment.childrenComment, depth + 1)}
                     </Div>
                 )}
