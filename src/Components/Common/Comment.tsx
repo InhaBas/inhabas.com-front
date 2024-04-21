@@ -44,8 +44,16 @@ const Comment = (props: commentPropsInterface) => {
 
     const handleCommentButtonClick = (id: number) => {
         // 댓글 입력 상태 토글
-        setCommentInputVisible(!isCommentInputVisible);
-        setShowCommentInputId(id);
+        if (isCommentInputVisible && showCommentInputId === id) {
+            // 현재 CommentInput이 보이는 상태이고, 같은 댓글을 클릭한 경우
+            // CommentInput을 감추고 상태를 초기화합니다.
+            setCommentInputVisible(false);
+            setShowCommentInputId(null);
+        } else {
+            // 댓글 입력 상태 토글
+            setCommentInputVisible(true);
+            setShowCommentInputId(id);
+        }
     };
 
     const deleteComment = (id: number) => {
@@ -59,6 +67,11 @@ const Comment = (props: commentPropsInterface) => {
         // 수정 중인 댓글 ID를 설정하여 해당 댓글이 TextArea로 렌더링되도록 함
         setEditingCommentId(id);
         setUpdating("update");
+        // 수정 중인 댓글의 내용을 commentInput 상태에 설정하여 TextArea에 표시
+        const editingComment = comment.find((c) => c.id === id);
+        if (editingComment) {
+            setCommentInput(editingComment.content);
+        }
     };
 
     const checkCommentInput = () => {
@@ -267,7 +280,7 @@ const Comment = (props: commentPropsInterface) => {
                             </P>
                         </Div>
                     )}
-                    {updating === "update" && (
+                    {updating === "update" && editingCommentId === comment?.id && (
                         <Div $margin="15px 0" width="100%">
                             <TextArea
                                 width="100%"
@@ -277,8 +290,8 @@ const Comment = (props: commentPropsInterface) => {
                                 height="150px"
                                 $borderColor="border"
                                 placeholder="댓글을 남겨보세요!"
-                                defaultValue={comment?.content}
-                                onChange={(e: any) => setCommentInput(() => e.target.value)}
+                                value={commentInput}
+                                onChange={(e: any) => setCommentInput(e.target.value)}
                             />
                         </Div>
                     )}
