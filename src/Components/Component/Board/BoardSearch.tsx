@@ -39,6 +39,10 @@ const BoardSearch = () => {
         fetchUrl = "/scholarship/usage";
     } else if (url === "opensource") {
         fetchUrl = "/board/storage";
+    } else if (url === "contest") {
+        fetchUrl = "/contest/contest";
+    } else if (url === "activity") {
+        fetchUrl = "/contest/activity";
     } else {
         fetchUrl = `/board/${url}`;
     }
@@ -46,12 +50,12 @@ const BoardSearch = () => {
     const searchEvent = () => {
         // 토큰 없이 fetch
         if (inputRef.current !== null && inputRef.current.value !== null) {
-            if (['usage', 'sponsor'].includes(url)) {
+            if (['usage', 'sponsor', 'contest', 'activity'].includes(url)) {
                 fetchBoardListData(`${fetchUrl}?search=${inputRef.current.value}&page=0&size=15`, "GET");
             } else {
                 fetchBoardListData(`${fetchUrl}?search=${inputRef.current.value}&page=0&size=15`, "GET", "token");
             }
-        } 
+        }
     };
 
     useEffect(() => {
@@ -65,7 +69,6 @@ const BoardSearch = () => {
                 isPinned: item.isPinned,
             }));
             const pinnedContents = boardListData.pinnedData?.map((item: boardListInterface, idx: number) => ({
-                // number: idx + 1,
                 id: item.id,
                 title: item.title,
                 writerName: item.writerName,

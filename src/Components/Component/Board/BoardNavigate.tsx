@@ -27,6 +27,8 @@ const BoardNavigate = () => {
     useEffect(() => {
         if (url === "alpha" || url === "beta") {
             fetchMenuData("/project/count", "GET", "token");
+        } else if (url === "contest" || url === "activity") {
+            fetchMenuData("/contest/count", "GET", "token");
         } else {
             fetchMenuData("/board/count", "GET", "token");
         }

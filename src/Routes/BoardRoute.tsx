@@ -7,6 +7,8 @@ import BoardList from "../Components/Page/Board/BoardList";
 import { GetRoleAuthorization } from "../Functions/authFunctions";
 import { userRole } from "../Recoil/backState";
 import { failRefreshing } from "../Recoil/frontState";
+import ContestDetail from "../Components/Page/IBAS/Contest/ContestDetail";
+import ContestCreate from "../Components/Page/IBAS/Contest/ContestCreate";
 
 const BoardRoute = () => {
     const navigate = useNavigate();
@@ -90,6 +92,16 @@ const BoardRoute = () => {
             <Route path="usage" element={<BoardList />} />
             <Route path="usage/detail/:id" element={<BoardDetail />} />
             <Route path="usage/create" element={<BoardCreate />} />
+            
+            <Route path="contest" element={<BoardList />} />
+            <Route path="contest/detail/:id" element={<ContestDetail />} />
+            <Route path="contest/create" element={<ContestCreate />} />
+            <Route path="contest/update/:id" element={<ContestCreate />} />
+            
+            <Route path="activity" element={<BoardList />} />
+            <Route path="activity/detail/:id" element={<ContestDetail />} />
+            <Route path="activity/create" element={<ContestCreate />} />
+            <Route path="activity/update/:id" element={<ContestCreate />} />
         </Routes>
     );
 };
