@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import useFetch from "../../../Hooks/useFetch";
 
-import { boardListDataInfo, boardListPinnedDataInfo, tokenAccess, totalPageInfo } from "../../../Recoil/backState";
+import { boardListDataInfo, boardListPinnedDataInfo, tokenAccess, totalPageInfo, contestListDataInfo } from "../../../Recoil/backState";
 
 import { boardListInterface } from "../../../Types/TypeBoard";
 
@@ -22,6 +22,7 @@ import NavigateTable from "../../Common/NavigateTable";
 import Pagination from "../../Common/Pagination";
 import BoardNavigate from "../../Component/Board/BoardNavigate";
 import BoardSearch from "../../Component/Board/BoardSearch";
+import Contest from "../IBAS/Contest/Contest";
 
 const StickyDiv = styled(Div)`
     position: sticky;
@@ -42,6 +43,7 @@ const BoardList = () => {
     const [boardPinnedList, setBoardPinnedList] = useRecoilState(boardListPinnedDataInfo);
     const [boardListData, fetchBoardListData] = useFetch();
     const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
+    const [contestListData, setContestListData] = useRecoilState(contestListDataInfo);
     const [isLoading, setIsLoading] = useState(true);
     const { isAuthorizedOverSecretary, isAuthorizedOverDeactivate, isSecretary, isAuthorizedOverBasic } =
         GetRoleAuthorization();
@@ -57,6 +59,10 @@ const BoardList = () => {
         fetchUrl = "/scholarship/usage";
     } else if (url === "opensource") {
         fetchUrl = "/board/storage";
+    } else if (url === "contest") {
+        fetchUrl = "/contest/contest";
+    } else if (url === "activity") {
+        fetchUrl = "/contest/activity";
     } else {
         fetchUrl = `/board/${url}`;
     }
@@ -84,33 +90,41 @@ const BoardList = () => {
         setIsLoading(true);
         if (["opensource", "usage", "sponsor"].includes(url)) {
             fetchBoardListData(`${fetchUrl}`, "GET");
+        } else if (["contest", "activity"].includes(url)) {
+            console.log('패치')
+            fetchBoardListData(`${fetchUrl}`, "GET", "token");
         } else {
             fetchBoardListData(`${fetchUrl}`, "GET", "token");
         }
     }, [url, access])
 
     useEffect(() => {
-        if (boardListData) {
-            const contents = boardListData.data.map((item: boardListInterface, idx: number) => ({
-                number: boardListData.pageInfo.pageNumber * boardListData.pageInfo.pageSize + idx + 1,
-                id: item.id,
-                title: item.title,
-                writerName: item.writerName,
-                dateCreated: formatDateDay({ date: item.dateCreated }),
-                isPinned: item.isPinned,
-            }));
-            const pinnedContents = boardListData.pinnedData?.map((item: boardListInterface, idx: number) => ({
-                // number: idx + 1,
-                id: item.id,
-                title: item.title,
-                writerName: item.writerName,
-                dateCreated: formatDateDay({ date: item.dateCreated }),
-                isPinned: item.isPinned,
-            }));
-            setBoardPinnedList(pinnedContents);
-            setBoardList(contents);
-            setTotalPage(boardListData.pageInfo.totalPages);
+        if (["contest", "activity"].includes(url)) {
             setIsLoading(false);
+            // console.log(boardListData)
+            // setContestListData();
+        } else {
+            if (boardListData) {
+                const contents = boardListData.data.map((item: boardListInterface, idx: number) => ({
+                    number: boardListData.pageInfo.pageNumber * boardListData.pageInfo.pageSize + idx + 1,
+                    id: item.id,
+                    title: item.title,
+                    writerName: item.writerName,
+                    dateCreated: formatDateDay({ date: item.dateCreated }),
+                    isPinned: item.isPinned,
+                }));
+                const pinnedContents = boardListData.pinnedData?.map((item: boardListInterface, idx: number) => ({
+                    id: item.id,
+                    title: item.title,
+                    writerName: item.writerName,
+                    dateCreated: formatDateDay({ date: item.dateCreated }),
+                    isPinned: item.isPinned,
+                }));
+                setBoardPinnedList(pinnedContents);
+                setBoardList(contents);
+                setTotalPage(boardListData.pageInfo.totalPages);
+                setIsLoading(false);
+            }
         }
     }, [boardListData]);
 
@@ -134,13 +148,15 @@ const BoardList = () => {
                     </StickyDiv>
                     <Div $padding="0 15px">
                         <Suspense fallback={<Img src="/images/loading.svg" />}>
-                            <NavigateTable
-                                width={widthList}
-                                header={headerInfo}
-                                contents={boardList}
-                                pinnedContents={boardPinnedList}
-                                url="detail"
-                            />
+                            { ["contest", "activity"].includes(url) ? <Contest /> :
+                                <NavigateTable
+                                    width={widthList}
+                                    header={headerInfo}
+                                    contents={boardList}
+                                    pinnedContents={boardPinnedList}
+                                    url="detail"
+                                />
+                            }
                         </Suspense>
                         {checkWritingAuthorization() && (
                             <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">
@@ -151,7 +167,7 @@ const BoardList = () => {
                                     $padding="12px 15px"
                                     $borderRadius={30}
                                     $HBackgroundColor="bgColorHo"
-                                    onClick={() => navigate(`/board/${url}/create`)}
+                                    onClick={() => {console.log('클릭');navigate(`/board/${url}/create`);}}
                                 >
                                     <FlexDiv height="15px">
                                         <Div width="12px" height="12px" $margin="0 10px 0 0">
