@@ -5,7 +5,6 @@ import { H2 } from "../../../../styles/assets/H";
 import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
 
-import Comment from "../../../Common/Comment";
 import CommentInput from "../../../Common/CommentInput";
 
 const ActivityDetail = () => {
@@ -101,7 +100,7 @@ const ActivityDetail = () => {
                         </Button>
                     </FlexDiv>
                 </Div>
-                <Comment></Comment>
+                {/* <Comment></Comment> */}
                 <CommentInput></CommentInput>
             </DetailContainer>
         </FlexDiv>
