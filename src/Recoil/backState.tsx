@@ -53,8 +53,7 @@ export const __totalPageInfo = atom({
 
 export const tokenAccess = atom({
     key: "tokenAccess",
-    default: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTA5MTMyNjAyMjgyMTE4MzU0OTIiLCJtZW1iZXJJZCI6NjIsInByb3ZpZGVyIjoiR09PR0xFIiwiZW1haWwiOiIxMjE4MDU0M0BpbmhhLmVkdSIsImF1dGhvcml0aWVzIjpbIlJPTEVfRVhFQ1VUSVZFUyJdLCJpYXQiOjE3MTM4MzE2NTcsImV4cCI6MTcxMzgzMzQ1N30.1dIunl2jSPCPgtwGpOzDVBP_h8rt7B-02d3gFtON73Tg5_wNCRbFXWunb_XNA4SNH35YVfzMIJBHSkW0J-ekTQ",
-    // default: "default",
+    default: "default",
 });
 
 export const userEmail = atom({
