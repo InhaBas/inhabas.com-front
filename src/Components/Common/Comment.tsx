@@ -1,90 +1,326 @@
-import { Div, FlexDiv } from "../../styles/assets/Div"
-import Img from "../../styles/assets/Img"
-import P from "../../styles/assets/P"
-import { theme } from "../../styles/theme"
+import { useEffect, useState } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
 
-const Comment = () => {
-    return (
-        <>
-            <Div width="100%" $margin="30px 0" $borderT={`1px solid ${theme.color.border}`}>
-                <Div width="100%" $border="1px solid" $margin="30px 0" $padding="20px" $borderColor="grey1">
-                    <FlexDiv width="100%" $justifycontent="start">
-                        <FlexDiv
-                            width="50px"
-                            height="50px"
-                            $border="3px solid"
-                            $borderColor="grey2"
-                            radius={100}
-                            overflow="hidden"
-                            $margin="0 10px 0 0"
-                        >
-                            <Img src="/images/profile-default.png" $objectFit="cover"></Img>
-                        </FlexDiv>
-                        <Div>
-                            <P fontWeight={700}>윤예진</P>
-                            <FlexDiv $justifycontent="start" $margin="5px 0 ">
-                                <Div>
-                                    <P fontSize="xs" color="grey2">
-                                        글로벌금융학과 19학번 |{" "}
-                                    </P>
-                                </Div>
-                                <FlexDiv width="13px" height="13px" $margin="0 5px">
-                                    <Img src="/images/clock_grey.svg"></Img>
+import { theme } from "../../styles/theme";
+
+import { jwtDecode } from "jwt-decode";
+import { GetRoleAuthorization } from "../../Functions/authFunctions";
+import { DateFunction } from "../../Functions/dateFunction";
+
+import useFetch from "../../Hooks/useFetch";
+import { commentInfo, tokenAccess } from "../../Recoil/backState";
+import { refetch } from "../../Recoil/frontState";
+
+import { commentInterface, commentPropsInterface, tokenInterface } from "../../Types/TypeCommon";
+
+import { Div, FlexDiv } from "../../styles/assets/Div";
+import Img from "../../styles/assets/Img";
+import { TextArea } from "../../styles/assets/Input";
+import P from "../../styles/assets/P";
+import CommentInput from "./CommentInput";
+
+const Comment = (props: commentPropsInterface) => {
+    const { boardId, menuId } = props;
+    const { formatDateMinute } = DateFunction();
+    const { isAuthorizedOverVice } = GetRoleAuthorization();
+    const [commentData, fetchCommentData] = useFetch();
+    const [commentDeleteData, fetchCommentDeleteData] = useFetch();
+    const [comment, setComment] = useRecoilState(commentInfo);
+    const [updating, setUpdating] = useState("nothing");
+    const [commentInput, setCommentInput] = useState("");
+    const [putComment, fetchPutComment] = useFetch();
+    const [reload, setReload] = useRecoilState(refetch);
+    const [showCommentInputId, setShowCommentInputId] = useState<number | null>(null);
+    const [isCommentInputVisible, setCommentInputVisible] = useState(false);
+    const access = useRecoilValue(tokenAccess);
+    // 수정 중인 댓글의 ID를 추적하는 상태
+    const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+
+    let decoded;
+    if (access !== "default") {
+        decoded = jwtDecode(access) as tokenInterface;
+    }
+    const userId = decoded?.memberId;
+
+    const handleCommentButtonClick = (id: number) => {
+        // 댓글 입력 상태 토글
+        if (isCommentInputVisible && showCommentInputId === id) {
+            // 현재 CommentInput이 보이는 상태이고, 같은 댓글을 클릭한 경우
+            // CommentInput을 감추고 상태를 초기화합니다.
+            setCommentInputVisible(false);
+            setShowCommentInputId(null);
+        } else {
+            // 댓글 입력 상태 토글
+            setCommentInputVisible(true);
+            setShowCommentInputId(id);
+        }
+    };
+
+    const deleteComment = (id: number) => {
+        if (window.confirm("댓글을 정말로 삭제하시겠습니까?")) {
+            fetchCommentDeleteData(`/comment/${id}`, "DELETE", "token");
+        }
+    };
+
+    // 수정 버튼 클릭 시 해당 댓글을 수정 상태로 변경하는 함수
+    const handleEditButtonClick = (id: number) => {
+        // 수정 중인 댓글 ID를 설정하여 해당 댓글이 TextArea로 렌더링되도록 함
+        setEditingCommentId(id);
+        setUpdating("update");
+        // 수정 중인 댓글의 내용을 commentInput 상태에 설정하여 TextArea에 표시
+        const editingComment = comment.find((c) => c.id === id);
+        if (editingComment) {
+            setCommentInput(editingComment.content);
+        }
+    };
+
+    const checkCommentInput = () => {
+        if (commentInput === "") {
+            alert("댓글을 입력해주세요");
+            return false;
+        }
+
+        return true;
+    };
+
+    const updateComment = (id: number) => {
+        if (checkCommentInput() === false) {
+            return;
+        }
+        const inputData = {
+            content: commentInput,
+        };
+
+        fetchPutComment(`/comment/${id}`, "PUT", "token", inputData);
+    };
+
+    useEffect(() => {
+        fetchCommentData(`/board/${menuId}/${boardId}/comments`, "GET", "token");
+        setUpdating("nothing");
+    }, [commentDeleteData, putComment]);
+
+    useEffect(() => {
+        if (reload) {
+            fetchCommentData(`/board/${menuId}/${boardId}/comments`, "GET", "token");
+            setUpdating("nothing");
+            setReload(false);
+        }
+    }, [reload]);
+
+    // 댓글 데이터를 트리 구조로 변환하는 함수
+    const convertToCommentTree = (
+        comments: (commentInterface | any)[],
+        parentAuthor: string = "",
+        parentComment: string = ""
+    ): commentInterface[] => {
+        const commentTree: commentInterface[] = [];
+
+        Object.values(comments).forEach((comment: commentInterface) => {
+            const updatedComment: commentInterface = {
+                ...comment,
+                parentAuthor: parentAuthor,
+                parentComment: parentComment,
+            };
+
+            if (comment.childrenComment && comment.childrenComment.length > 0) {
+                const convertedChildren = convertToCommentTree(
+                    comment.childrenComment,
+                    comment.writer.name || "",
+                    comment.content || ""
+                );
+                updatedComment.childrenComment = convertedChildren;
+            }
+            commentTree.push(updatedComment);
+        });
+
+        return commentTree;
+    };
+
+    // 대댓글에 대한 댓글 렌더링 부분 재귀적으로 수정
+    const renderCommentsRecursively = (comments: commentInterface[], depth: number) => {
+        return comments.map((comment: commentInterface) => (
+            <Div
+                width="100%"
+                $margin="15px 0"
+                $borderT={!depth ? `1px solid ${theme.color.border}` : "none"}
+                key={`${comment.id}_${depth}_${comment.writer.id}`}
+            >
+                <Div width="100%" $border="1px solid" $margin="15px 0" $padding="20px" $borderColor="grey1">
+                    <Div width="100%">
+                        <FlexDiv width="100%" $padding="0 0 20px 0">
+                            <FlexDiv width="100%" $justifycontent="space-between">
+                                <FlexDiv>
+                                    <FlexDiv
+                                        width="30px"
+                                        height="30px"
+                                        radius={100}
+                                        overflow="hidden"
+                                        $margin="0 5px 0 0"
+                                    >
+                                        <Img src={comment?.writer.pictureUrl} $objectFit="cover" />
+                                    </FlexDiv>
+                                    <FlexDiv height="30px">
+                                        <FlexDiv>
+                                            <Div>
+                                                <P fontSize="sm" fontWeight={700}>
+                                                    {comment?.writer.name}
+                                                </P>
+                                            </Div>
+                                            <Div>
+                                                <FlexDiv>
+                                                    <Div>
+                                                        <P fontSize="xs" color="grey4">
+                                                            ({comment?.writer.major}) |
+                                                        </P>
+                                                    </Div>
+                                                    <FlexDiv width="13px" height="13px" $margin="0 5px">
+                                                        <Img src="/images/clock_grey.svg"></Img>
+                                                    </FlexDiv>
+                                                    <Div>
+                                                        <P fontSize="xs" color="grey4">
+                                                            {formatDateMinute({
+                                                                date: String(comment?.dateUpdated) || "",
+                                                            })}
+                                                        </P>
+                                                    </Div>
+                                                </FlexDiv>
+                                            </Div>
+                                        </FlexDiv>
+                                    </FlexDiv>
                                 </FlexDiv>
                                 <Div>
-                                    <P fontSize="xs" color="grey2">
-                                        2022-11-09 23:54
-                                    </P>
+                                    <FlexDiv width="100%" $justifycontent="space-between">
+                                        <FlexDiv $pointer onClick={() => handleCommentButtonClick(comment?.id)}>
+                                            <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
+                                                <Img src="/images/comment_purple.svg"></Img>
+                                            </FlexDiv>
+                                            <Div>
+                                                <P color="bgColor" fontSize="xs">
+                                                    답글쓰기
+                                                </P>
+                                            </Div>
+                                        </FlexDiv>
+                                        <FlexDiv>
+                                            {userId === comment.writer.id && (
+                                                <FlexDiv>
+                                                    {updating === "nothing" && (
+                                                        <FlexDiv
+                                                            $margin="0 0 0 15px"
+                                                            $pointer
+                                                            onClick={() => handleEditButtonClick(comment?.id)}
+                                                        >
+                                                            <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
+                                                                <Img src="/images/pencil_purple.svg"></Img>
+                                                            </FlexDiv>
+                                                            <Div>
+                                                                <P color="bgColor" fontSize="xs">
+                                                                    수정
+                                                                </P>
+                                                            </Div>
+                                                        </FlexDiv>
+                                                    )}
+                                                    {updating === "update" && (
+                                                        <FlexDiv
+                                                            $margin="0 0 0 15px"
+                                                            $pointer
+                                                            onClick={() => updateComment(comment?.id)}
+                                                        >
+                                                            <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
+                                                                <Img src="/images/pencil_purple.svg"></Img>
+                                                            </FlexDiv>
+                                                            <Div>
+                                                                <P color="bgColor" fontSize="xs">
+                                                                    등록
+                                                                </P>
+                                                            </Div>
+                                                        </FlexDiv>
+                                                    )}
+                                                </FlexDiv>
+                                            )}
+                                            {(userId === comment.writer.id || isAuthorizedOverVice) && (
+                                                <FlexDiv
+                                                    $margin="0 0 0 15px"
+                                                    $pointer
+                                                    onClick={() => deleteComment(comment?.id)}
+                                                >
+                                                    <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
+                                                        <Img src="/images/trash_purple.svg"></Img>
+                                                    </FlexDiv>
+                                                    <Div>
+                                                        <P color="bgColor" fontSize="xs">
+                                                            삭제
+                                                        </P>
+                                                    </Div>
+                                                </FlexDiv>
+                                            )}
+                                        </FlexDiv>
+                                    </FlexDiv>
                                 </Div>
                             </FlexDiv>
-                        </Div>
-                    </FlexDiv>
-                    <Div $margin="20px 0">
-                        <P $whiteSpace="wrap" fontWeight={300} $lineHeight={1.5}>
-                            freestar Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sem elit,
-                            pellentesque quis tincidunt vitae, imperdiet quis magna. Sed pretium, ipsum eu mattis
-                        </P>
+                        </FlexDiv>
                     </Div>
-                    <FlexDiv width="100%" $justifycontent="space-between">
-                        <FlexDiv>
-                            <FlexDiv>
-                                <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
-                                    <Img src="/images/comment_purple.svg"></Img>
-                                </FlexDiv>
-                                <Div>
-                                    <P color="bgColor" fontSize="sm">
-                                        답글쓰기
-                                    </P>
-                                </Div>
-                            </FlexDiv>
+                    {depth !== 0 && (
+                        <FlexDiv width="100%" $justifycontent="start">
+                            <Div $margin="0 10px 0 0">
+                                <P fontSize="sm" fontWeight={300} $lineHeight={1.5} color="blue">
+                                    @{comment?.parentAuthor}
+                                </P>
+                            </Div>
+                            <Div width="90%" overflow="hidden" $whiteSpace="nowrap">
+                                <P fontSize="sm" fontWeight={300} $lineHeight={1.5} color="grey2">
+                                    {comment?.parentComment}
+                                </P>
+                            </Div>
                         </FlexDiv>
-                        <FlexDiv>
-                            <FlexDiv $margin="0 0 0 20px">
-                                <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
-                                    <Img src="/images/pencil_purple.svg"></Img>
-                                </FlexDiv>
-                                <Div>
-                                    <P color="bgColor" fontSize="sm">
-                                        수정
-                                    </P>
-                                </Div>
-                            </FlexDiv>
-                            <FlexDiv $margin="0 0 0 20px">
-                                <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
-                                    <Img src="/images/trash_purple.svg"></Img>
-                                </FlexDiv>
-                                <Div>
-                                    <P color="bgColor" fontSize="sm">
-                                        삭제
-                                    </P>
-                                </Div>
-                            </FlexDiv>
-                        </FlexDiv>
-                    </FlexDiv>
+                    )}
+                    {updating === "nothing" && editingCommentId !== comment?.id && (
+                        <Div>
+                            <P $whiteSpace="wrap" fontSize="sm" fontWeight={300} $lineHeight={1.5}>
+                                {comment?.content}
+                            </P>
+                        </Div>
+                    )}
+                    {updating === "update" && editingCommentId === comment?.id && (
+                        <Div $margin="15px 0" width="100%">
+                            <TextArea
+                                width="100%"
+                                $padding="20px"
+                                $borderRadius={30}
+                                fontSize="sm"
+                                height="150px"
+                                $borderColor="border"
+                                placeholder="댓글을 남겨보세요!"
+                                value={commentInput}
+                                onChange={(e: any) => setCommentInput(e.target.value)}
+                            />
+                        </Div>
+                    )}
+                    {showCommentInputId === comment?.id && isCommentInputVisible && (
+                        <Div width="100%" $padding="20px 0 0 0">
+                            <CommentInput boardId={props.boardId} menuId={props.menuId} parentId={comment?.id} />
+                        </Div>
+                    )}
                 </Div>
+                {/* 대댓글 렌더링 */}
+                {comment.childrenComment && (
+                    <Div width="100%" $padding="0 0 0 20px">
+                        {renderCommentsRecursively(comment.childrenComment, depth + 1)}
+                    </Div>
+                )}
             </Div>
-        </>
-    )
-}
+        ));
+    };
 
-export default Comment
+    useEffect(() => {
+        if (commentData) {
+            const convertedComments = convertToCommentTree(commentData);
+            setComment(convertedComments);
+        }
+    }, [commentData]);
+
+    useEffect(() => console.log(comment), [comment]);
+
+    return <>{comment && renderCommentsRecursively(Object.values(comment), 0)}</>;
+};
+
+export default Comment;

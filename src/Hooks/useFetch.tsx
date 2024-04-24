@@ -40,7 +40,9 @@ const useFetch = (): [
 
                 const result = await res.json();
                 const newAccessToken = result.accessToken;
+                console.log(newAccessToken);
                 setAccess(newAccessToken);
+                console.log(access);
             } else {
                 console.log("fail refresh");
                 setIsNotLogin(true);
@@ -67,8 +69,10 @@ const useFetch = (): [
 
             let headers = {
                 Authorization: `Bearer ${access}`,
+
                 // "Content-Type": media ? "multipart/form-data" : "application/json",
                 // "Content-Type": "application/json",
+
 
                 ...(media ? {} : { "Content-Type": "application/json" }),
             };
@@ -113,15 +117,19 @@ const useFetch = (): [
                         headers: headers,
                     });
                 } else {
+
                     res = await fetch(`${process.env.REACT_APP_API_URL}${url}`, {
                         method: method,
                         headers: headers,
                     });
+
                 }
 
                 if (res.ok) {
                     if (res.status === 204 || res.headers.get("content-length") === "0" || res.body === null) {
+
                         setData(new Date().toLocaleString());
+
                     } else {
                         result = await res.json();
                         console.log({ ...result });
@@ -144,8 +152,8 @@ const useFetch = (): [
                     //     alert(errorResponse.message);
                     // }
                     if (errorResponse.status === 403) {
-                        if (url === '/signUp') {
-                            navigate('/');
+                        if (url === "/signUp") {
+                            navigate("/");
                         } else {
                             navigate(-1);
                         }
