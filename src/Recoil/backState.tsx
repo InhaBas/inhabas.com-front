@@ -213,9 +213,9 @@ export const boardDetailData = atom<boardDetailInterface | null>({
     default: null,
 });
 
-export const contestListDataInfo = atom({
+export const contestListDataInfo = atom<any[]>({
     key: "contestListDataInfo",
-    default: null,
+    default: [],
 });
 
 //lectureRoom

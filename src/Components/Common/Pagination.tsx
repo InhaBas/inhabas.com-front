@@ -15,7 +15,6 @@ const Pagination = (props: paginationPropsInterface) => {
     const [rightHovered, setRightHovered] = useState(false);
     const [allLeftHovered, setAllLeftHovered] = useState(false);
     const [allRightHovered, setAllRightHovered] = useState(false);
-    const [data, fetchData] = useFetch();
 
     const makePageNum = () => {
         const startPage = Math.max(1, currentPage - 2); // 현재 페이지를 중앙에 위치시키기 위한 조정
@@ -57,7 +56,11 @@ const Pagination = (props: paginationPropsInterface) => {
 
     useEffect(() => {
         let paginationFetchUrl = fetchUrl;
-        paginationFetchUrl += `?page=${currentPage - 1}`;
+        if (!paginationFetchUrl.includes('?')) {
+            paginationFetchUrl += `?page=${currentPage - 1}`;
+        } else {
+            paginationFetchUrl += `&page=${currentPage - 1}`;
+        }
         if (size !== undefined) {
             paginationFetchUrl += `&size=${size}`;
         } else {
