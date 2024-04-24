@@ -214,9 +214,10 @@ export const boardDetailData = atom<boardDetailInterface | null>({
 });
 
 
-export const contestListDataInfo = atom({
+export const contestListDataInfo = atom<any[]>({
     key: "contestListDataInfo",
-    default: null,
+    default: [],
+});
 
 // comment
 export const commentInfo = atom<commentInterface[] | []>({

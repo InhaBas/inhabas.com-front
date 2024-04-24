@@ -60,9 +60,9 @@ const BoardList = () => {
     } else if (url === "opensource") {
         fetchUrl = "/board/storage";
     } else if (url === "contest") {
-        fetchUrl = "/contest/contest";
+        fetchUrl = "/contest/contest?size=2&orderBy=DATE_CONTEST_END";
     } else if (url === "activity") {
-        fetchUrl = "/contest/activity";
+        fetchUrl = "/contest/activity?size=2&orderBy=DATE_CONTEST_END";
     } else {
         fetchUrl = `/board/${url}`;
     }
@@ -75,7 +75,7 @@ const BoardList = () => {
         } else if (["free", "question", "suggest", "support"].includes(url) && isAuthorizedOverDeactivate) {
             return true;
             // 활동 회원
-        } else if (["opensource"].includes(url) && isAuthorizedOverBasic) {
+        } else if (["opensource", "contest", "activity"].includes(url) && isAuthorizedOverBasic) {
             return true;
             // 총무
         } else if (["executive"].includes(url) && isSecretary) {
@@ -91,8 +91,8 @@ const BoardList = () => {
         if (["opensource", "usage", "sponsor"].includes(url)) {
             fetchBoardListData(`${fetchUrl}`, "GET");
         } else if (["contest", "activity"].includes(url)) {
-            console.log('패치')
-            fetchBoardListData(`${fetchUrl}`, "GET", "token");
+            fetchBoardListData(`${fetchUrl}`, "GET");
+            // fetchBoardListData(`${fetchUrl}?page=0&size=2&orderBy=DATE_CONTEST_END`, "GET");
         } else {
             fetchBoardListData(`${fetchUrl}`, "GET", "token");
         }
@@ -100,9 +100,11 @@ const BoardList = () => {
 
     useEffect(() => {
         if (["contest", "activity"].includes(url)) {
-            setIsLoading(false);
-            // console.log(boardListData)
-            // setContestListData();
+            if (boardListData) {
+                setIsLoading(false);
+                setContestListData(boardListData?.data)
+                setTotalPage(boardListData.pageInfo.totalPages)
+            }
         } else {
             if (boardListData) {
                 const contents = boardListData.data.map((item: boardListInterface, idx: number) => ({
@@ -128,7 +130,10 @@ const BoardList = () => {
         }
     }, [boardListData]);
 
-    useEffect(() => setBoardList([]), [url]);
+    useEffect(() => {
+        setBoardList([])
+        setContestListData([])
+    }, [url])
 
     return (
         <>
@@ -148,7 +153,7 @@ const BoardList = () => {
                     </StickyDiv>
                     <Div $padding="0 15px">
                         <Suspense fallback={<Img src="/images/loading.svg" />}>
-                            { ["contest", "activity"].includes(url) ? <Contest /> :
+                            { ["contest", "activity"].includes(url) ? (<Contest />) :
                                 <NavigateTable
                                     width={widthList}
                                     header={headerInfo}
@@ -182,11 +187,20 @@ const BoardList = () => {
                                 </Button>
                             </FlexDiv>
                         )}
+                        {/* 게시판 */}
                         {boardList && boardList.length !== 0 && (
                             <Pagination
                                 totalPage={totalPage}
                                 fetchUrl={`${fetchUrl}`}
                                 token
+                                paginationFetch={fetchBoardListData}
+                            />
+                        )}
+                        {/* 공모전 */}
+                        {contestListData && contestListData.length !== 0 && (
+                            <Pagination
+                                totalPage={totalPage}
+                                fetchUrl={`${fetchUrl}`}
                                 paginationFetch={fetchBoardListData}
                             />
                         )}
