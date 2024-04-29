@@ -236,7 +236,6 @@ const ContestCreate = () => {
                                             <Radio
                                                 name="setHistoryType"
                                                 value={"빅데이터"}
-                                                ref={(el: never) => (inputRef.current[0] = el)}
                                                 onClick={() => {
                                                     setContestType(1);
                                                 }}

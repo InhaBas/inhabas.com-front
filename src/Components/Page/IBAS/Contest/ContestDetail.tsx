@@ -3,10 +3,17 @@ import P from "../../../../styles/assets/P";
 import Img from "../../../../styles/assets/Img";
 import { H2 } from "../../../../styles/assets/H";
 import Button from "../../../../styles/assets/Button";
-import A from "../../../../styles/assets/A";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useFetch from "../../../../Hooks/useFetch";
+import Comment from "../../../Common/Comment";
+import CommentInput from "../../../Common/CommentInput";
+import { jwtDecode } from "jwt-decode";
+import { useRecoilValue } from "recoil";
+import { tokenAccess } from "../../../../Recoil/backState";
+import { tokenInterface } from "../../../../Types/TypeCommon";
+import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
+
 
 interface ContestDetailType {
     id: number;
@@ -39,18 +46,46 @@ interface ContestDetailType {
 
 const ContestDetail = () => {
     const location = useLocation();
-    const contentId = location.pathname.split("/")[4];
+    const url = location.pathname.split("/")[2];
+    const boardId = location.pathname.split("/")[4];
     const [detailData, detailDataFetch] = useFetch();
     const [detail, setDetail] = useState<ContestDetailType|null>(null);
+    const menuId = url === 'contest' ? 18 : 19;
+    const access = useRecoilValue(tokenAccess);
+    const navigate = useNavigate();
+
+    const [deleteData, deleteDataFetch] = useFetch();
+
+    const { isAuthorizedOverVice } = GetRoleAuthorization();
+
+    let decoded;
+    if (access !== "default") {
+        decoded = jwtDecode(access) as tokenInterface;
+    }
+
+    const userId = decoded?.memberId;
+
+    const deleteDetail = () => {
+        if (window.confirm("정말 삭제 하시겠습니까?")) {
+            deleteDataFetch(`/contest/${url}/${boardId}`, "DELETE", "token");
+        }
+    };
 
     useEffect(() => {
-        detailDataFetch(`/contest/contest/${contentId}`, 'GET')
-    }, [])
+        detailDataFetch(`/contest/${url}/${boardId}`, 'GET')
+    }, [url])
 
     useEffect(() => {
         setDetail(detailData);
-        console.log(detailData)
     }, [detailData])
+
+    useEffect(() => {
+        if (deleteData) {
+            alert("게시글이 삭제 되었습니다");
+            navigate(`/board/${url}`);
+        }
+        return () => setDetail(null);
+    }, [deleteData]);
 
     return (
         <>
@@ -99,10 +134,11 @@ const ContestDetail = () => {
                     </Div>
                 </FlexDiv>
                 
-                {/* 공모전 주제 */}
+                {/* 주제 */}
                 <FlexDiv width="100%" $border="2px solid" $borderColor="border" $padding="20px">
                     <Div>
-                        <P fontSize="xl" fontWeight={800}>공모전 주제</P>
+                        {url === 'contest' && (<P fontSize="xl" fontWeight={800}>공모전 주제</P>)}
+                        {url === 'activity' && (<P fontSize="xl" fontWeight={800}>대외활동 주제</P>)}
                     </Div>
                 </FlexDiv>
                 <FlexDiv width="100%" $border="2px solid" $borderColor="border" $padding="50px">
@@ -113,37 +149,60 @@ const ContestDetail = () => {
 
                 {/* 사진들 */}
                 {detail?.images?.map((image) => (
-                    <Div width="100%" $margin="50px 0">
-                        <Img src={image.url} />
-                    </Div>
+                    <FlexDiv width="100%" $margin="50px 0">
+                        <Div width="60%">
+                            <Img src={image.url} />
+                        </Div>
+                    </FlexDiv>
                 ))}
 
                 <Div>
                     <P>{detail?.content}</P>
                 </Div>
 
-                <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">
-                    <Button
-                        display="flex"
-                        $backgroundColor="bgColor"
-                        $margin="0 10px 0 0"
-                        $padding="12px 15px"
-                        $borderRadius={30}
-                        $HBackgroundColor="bgColorHo"
-                        // onClick={() => navigate(`/board/${url}/create`)}
-                    >
-                        <FlexDiv height="15px">
-                            <Div width="12px" height="12px" $margin="0 10px 0 0">
-                                <Img src="/images/plus_white.svg" />
+                {(
+                // api에 writerId 포함되면 수정
+                // {(detail?.writerId === userId || isAuthorizedOverVice) && (
+                    <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
+                        <Button
+                            display="flex"
+                            $backgroundColor="bgColor"
+                            $margin="0 10px 0 0"
+                            $padding="12px 15px"
+                            $borderRadius={30}
+                            $HBackgroundColor="bgColorHo"
+                            onClick={() => navigate(`/board/${url}/update/${boardId}`)}
+                        >
+                            <Div width="12px" $margin="0 10px 0 0">
+                                <Img src="/images/pencil_white.svg" />
                             </Div>
-                        </FlexDiv>
-                        <Div $pointer height="15px">
-                            <A color="wh" fontSize="sm" $hoverColor="wh">
-                                게시글 수정
-                            </A>
-                        </Div>
-                    </Button>
-                </FlexDiv>
+                            <Div $pointer>
+                                <P color="wh" fontSize="sm">
+                                    게시글 수정
+                                </P>
+                            </Div>
+                        </Button>
+                        <Button
+                            display="flex"
+                            $backgroundColor="red"
+                            $padding="12px 15px"
+                            $borderRadius={30}
+                            $HBackgroundColor="red"
+                            onClick={() => deleteDetail()}
+                        >
+                            <Div width="12px" $margin="0 10px 0 0">
+                                <Img src="/images/trash_white.svg" />
+                            </Div>
+                            <Div $pointer>
+                                <P color="wh" fontSize="sm">
+                                    게시글 삭제
+                                </P>
+                            </Div>
+                        </Button>
+                    </FlexDiv>
+                )}
+                <Comment boardId={boardId} menuId={menuId} />
+                <CommentInput boardId={boardId} menuId={menuId} />
             </Div>
         </>
     )

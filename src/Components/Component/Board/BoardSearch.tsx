@@ -54,7 +54,7 @@ const BoardSearch = () => {
             if (['usage', 'sponsor'].includes(url)) {
                 fetchBoardListData(`${fetchUrl}?search=${inputRef.current.value}&page=0&size=15`, "GET");
             } else if (['contest', 'activity'].includes(url)) {
-                fetchBoardListData(`${fetchUrl}?search=${inputRef.current.value}&page=0&size=2&orderBy=DATE_CONTEST_END`, "GET");
+                fetchBoardListData(`${fetchUrl}?search=${inputRef.current.value}&page=0&size=4&orderBy=DATE_CONTEST_END`, "GET");
             }
             else {
                 fetchBoardListData(`${fetchUrl}?search=${inputRef.current.value}&page=0&size=15`, "GET", "token");
