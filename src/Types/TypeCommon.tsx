@@ -70,3 +70,8 @@ export interface tokenInterface {
     iat: number;
     exp: number;
 }
+
+// carousel
+export interface carouselInterface {
+    images: string[];
+}

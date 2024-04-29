@@ -8,3 +8,25 @@
 .toastui-editor-contents h6 {
     margin-bottom: 24px !important;
 }
+
+/* carousel 설정 */
+.slick-dots {
+    display: flex !important;
+    bottom: -80px;
+    position: static;
+    width: 100%;
+    overflow: auto;
+
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    ::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera*/
+    }
+
+    margin-top: 20px;
+}
+
+.slick-dots li {
+    width: 100px;
+    height: 100px;
+}

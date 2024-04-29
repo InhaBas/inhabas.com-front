@@ -85,3 +85,14 @@ export const failRefreshing = atom({
     key: "failRefreshing",
     default: false,
 });
+
+// carousel
+export const carouselOpen = atom({
+    key: "carouselOpenState",
+    default: false,
+});
+
+export const carouselInitialState = atom({
+    key: "carouselInitialState",
+    default: 0,
+});

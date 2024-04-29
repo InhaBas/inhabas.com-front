@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 
@@ -10,7 +9,6 @@ import { theme } from "./styles/theme";
 import { tokenAccess } from "./Recoil/backState";
 
 import Bottom from "./Components/Common/Bottom";
-import Carousel from "./Components/Common/Carousel";
 import { Modal } from "./Components/Common/Modal/Modal";
 import NotFound from "./Components/Page/Error/NotFound";
 import Login from "./Components/Page/Member/Login";
@@ -32,11 +30,10 @@ const App = () => {
         <ThemeProvider theme={theme}>
             <GlobalStyle />
             <Modal />
-            <Div width="100%">
+            <Div width="100%" height="100vh">
                 <ScrollToTop />
                 <Routes>
                     {/* HeaderNav가 필요 없는 page 일 경우 여기에 Route 정의  */}
-                    <Route path="slide" element={<Carousel />} />
                     <Route path="login" element={<Login />} />
                     <Route path="login/process" element={<LoginProcess />} />
                     <Route path="signup" element={<Signup />} />
