@@ -7,6 +7,9 @@ import styled from "styled-components";
 import { theme } from "../../../styles/theme";
 
 import { boardDetailData, tokenAccess } from "../../../Recoil/backState";
+import { carouselInitialState, carouselOpen } from "../../../Recoil/frontState";
+
+import { tokenInterface } from "../../../Types/TypeCommon";
 
 import useFetch from "../../../Hooks/useFetch";
 
@@ -14,15 +17,16 @@ import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin
 import "@toast-ui/editor/dist/toastui-editor.css";
 
 import { GetRoleAuthorization } from "../../../Functions/authFunctions";
-
 import { DateFunction } from "../../../Functions/dateFunction";
-import { tokenInterface } from "../../../Types/TypeCommon";
+
 import A from "../../../styles/assets/A";
 import Button from "../../../styles/assets/Button";
 import { DetailContainer, Div, FlexDiv } from "../../../styles/assets/Div";
 import { H2 } from "../../../styles/assets/H";
 import Img from "../../../styles/assets/Img";
 import P from "../../../styles/assets/P";
+
+import Carousel from "../../Common/Carousel";
 import Comment from "../../Common/Comment";
 import CommentInput from "../../Common/CommentInput";
 import Loading from "../../Common/Loading";
@@ -47,6 +51,8 @@ const BoardDetail = () => {
     const [deleteData, deleteDataFetch] = useFetch();
     const [isLoading, setIsLoading] = useState(true);
     const access = useRecoilValue(tokenAccess);
+    const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
+    const [carouselInitial, setCarouselInitial] = useRecoilState(carouselInitialState);
 
     const pathNameInfo = location.pathname.substring(1).split("/");
 
@@ -160,6 +166,15 @@ const BoardDetail = () => {
         window.open(url);
     };
 
+    // Carousel을 렌더링할지 여부를 결정하는 함수
+    const handleCarousel = (idx: number) => {
+        setCarouselInitial(idx);
+
+        setIsCarouselOpen(true);
+    };
+
+    useEffect(() => console.log(carouselInitial), [carouselInitial]);
+
     const deleteDetail = () => {
         if (window.confirm("정말 삭제 하시겠습니까?")) {
             setIsLoading(true);
@@ -181,7 +196,10 @@ const BoardDetail = () => {
             setDetail(detailData);
             setIsLoading(false);
         }
-        return () => setDetail(null);
+        return () => {
+            setDetail(null);
+            setIsCarouselOpen(false);
+        };
     }, [detailData]);
 
     useEffect(() => {
@@ -197,8 +215,10 @@ const BoardDetail = () => {
         <>
             {isLoading ? (
                 <Loading />
+            ) : isCarouselOpen ? (
+                <Carousel images={detail?.images?.map((image) => image.url) || []} />
             ) : (
-                <FlexDiv width="100%">
+                <FlexDiv width="100%" height="100vh">
                     <DetailContainer $alignitems="start">
                         <Div width="100%" $margin="0 0 30px 0">
                             <FlexDiv $margin="50px 0 30px 0">
@@ -238,7 +258,7 @@ const BoardDetail = () => {
                                             width="100px"
                                             $margin="0 10px 0 0"
                                             $pointer
-                                            onClick={() => openWindow(image.url)}
+                                            onClick={() => handleCarousel(index)}
                                         >
                                             <Img $objectFit="fill" $HFilter="opacity(50%);" src={image.url} />
                                         </Div>
