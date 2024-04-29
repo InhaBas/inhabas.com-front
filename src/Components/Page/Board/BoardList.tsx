@@ -60,9 +60,9 @@ const BoardList = () => {
     } else if (url === "opensource") {
         fetchUrl = "/board/storage";
     } else if (url === "contest") {
-        fetchUrl = "/contest/contest?size=2&orderBy=DATE_CONTEST_END";
+        fetchUrl = "/contest/contest?size=4&orderBy=DATE_CONTEST_END";
     } else if (url === "activity") {
-        fetchUrl = "/contest/activity?size=2&orderBy=DATE_CONTEST_END";
+        fetchUrl = "/contest/activity?size=4&orderBy=DATE_CONTEST_END";
     } else {
         fetchUrl = `/board/${url}`;
     }
