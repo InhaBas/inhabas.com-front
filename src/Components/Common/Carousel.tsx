@@ -139,7 +139,6 @@ const Carousel: React.FC<carouselInterface> = ({ images }) => {
                         <Img $objectFit="contain" src={images[0]} />
                     </FlexDiv>
                 ) : (
-                    // 초기값 설정 x
                     <StyledSlider {...settings} ref={sliderRef}>
                         {images.map((image: string, index: number) => (
                             <Div
