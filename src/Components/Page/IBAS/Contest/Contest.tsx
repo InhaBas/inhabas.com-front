@@ -1,6 +1,7 @@
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 
 import ContestInfo from "../../../Component/Contest/ContestInfo";
+import Dropdown from "../../../Common/Dropdown";
 
 import { useRecoilValue } from "recoil";
 import { contestListDataInfo } from "../../../../Recoil/backState";
@@ -10,7 +11,16 @@ const Contest = () => {
 
     return (
         <>
-            <Div width="100%">
+            <Div width="100%" $position="relative">
+                <Div $position="absolute" $top="-45px" $right="0px" width="100px">
+                    <Dropdown
+                        label="전체보기"
+                        options={["전체보기", "진행중"]}
+                        // value={["", ...Object?.values(bankYears)?.sort((a, b) => b-a)?.map((bankYear) => String(bankYear))]}
+                        onChange={() => console.log('a')}
+                        purple
+                    />
+                </Div>
                 <Div width="100%" height="100%">
                     {infos && infos?.length === 4 && (
                         <>

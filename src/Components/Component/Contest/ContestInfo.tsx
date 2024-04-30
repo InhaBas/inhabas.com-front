@@ -19,6 +19,7 @@ const ContestInfo = ({ info }: {info: any}) => {
         title: info?.title,
         topic: info?.topic,
         id: info?.id,
+        dday: info?.dday
     }
 
     return (
@@ -47,11 +48,36 @@ const ContestInfo = ({ info }: {info: any}) => {
                                         <P color="TextPrimary" fontSize="xl" fontWeight={800}>{data?.endDay}</P>
                                     </Div>
                                 </FlexDiv>
-                                <FlexDiv width="100%" $margin="5px 0 0 0">
-                                    <Div $border="2px solid" $borderColor="red" $padding="3px" radius={5}>
-                                        <P color="red" fontWeight={700}>마감</P>
-                                    </Div>
-                                </FlexDiv>
+                                {/* 마감 */}
+                                {(data?.dday < 0) &&
+                                    (
+                                        <FlexDiv width="100%" $margin="5px 0 0 0">
+                                            <Div $border="2px solid" $borderColor="red" $padding="3px" radius={5}>
+                                                <P color="red" fontWeight={700}>마감</P>
+                                            </Div>
+                                        </FlexDiv>
+                                    )
+                                }
+                                {/* 진행중 */}
+                                {(data?.dday > 0) &&
+                                    (
+                                        <FlexDiv width="100%" $margin="5px 0 0 0">
+                                            <Div $border="2px solid" $borderColor="blue" $padding="3px" radius={5}>
+                                                <P color="blue" fontWeight={700}>모집중</P>
+                                            </Div>
+                                        </FlexDiv>
+                                    )
+                                }
+                                {/* 마감임박 */}
+                                {(data?.dday === 0) &&
+                                    (
+                                        <FlexDiv width="100%" $margin="5px 0 0 0">
+                                            <Div $border="2px solid" $borderColor="red" $padding="3px" radius={5}>
+                                                <P color="red" fontWeight={700}>오늘마감</P>
+                                            </Div>
+                                        </FlexDiv>
+                                    )
+                                }
                             </Div>
                             {/* 공모전 정보 */}
                             <Div width="70%" height="100%">
