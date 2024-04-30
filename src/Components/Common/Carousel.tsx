@@ -62,7 +62,7 @@ const Carousel: React.FC<carouselInterface> = ({ images }) => {
     const sliderRef = useRef<any>(null);
     const setIsCarouselOpen = useSetRecoilState(carouselOpen);
     const carouselInitial = useRecoilValue(carouselInitialState);
-    const [currentSlide, setCurrentSlide] = useState(0);
+    const [currentSlide, setCurrentSlide] = useState(carouselInitial);
     const moveBack = () => setIsCarouselOpen(false);
 
     const settings = {
@@ -139,7 +139,7 @@ const Carousel: React.FC<carouselInterface> = ({ images }) => {
                         <Img $objectFit="contain" src={images[0]} />
                     </FlexDiv>
                 ) : (
-                    <StyledSlider {...settings} initialSlide={currentSlide} ref={sliderRef}>
+                    <StyledSlider {...settings} ref={sliderRef}>
                         {images.map((image: string, index: number) => (
                             <Div
                                 key={`image${index}`}
