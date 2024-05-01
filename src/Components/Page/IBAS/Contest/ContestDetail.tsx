@@ -21,6 +21,7 @@ interface ContestDetailType {
     title: string;
     content: string;
     writerName: string;
+    writerId: number;
     association: string;
     topic: string;
     thumbnail: {
@@ -77,6 +78,9 @@ const ContestDetail = () => {
 
     useEffect(() => {
         setDetail(detailData);
+        console.log(detail?.writerId)
+        console.log(userId)
+        console.log(detail?.writerId === userId)
     }, [detailData])
 
     useEffect(() => {
@@ -156,14 +160,14 @@ const ContestDetail = () => {
                     </FlexDiv>
                 ))}
 
-                <Div>
+                <Div $margin="0 0 20px 0">
                     <P>{detail?.content}</P>
                 </Div>
 
+                {/* // api에 writerId 포함되면 수정 */}
+                {/* {(detail?.writerId === userId || isAuthorizedOverVice) && ( */}
                 {(
-                // api에 writerId 포함되면 수정
-                // {(detail?.writerId === userId || isAuthorizedOverVice) && (
-                    <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
+                    <FlexDiv $margin="50px 0 20px 0" width="100%" $justifycontent="end">
                         <Button
                             display="flex"
                             $backgroundColor="bgColor"

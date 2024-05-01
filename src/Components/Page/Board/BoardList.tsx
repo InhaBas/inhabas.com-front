@@ -92,7 +92,6 @@ const BoardList = () => {
             fetchBoardListData(`${fetchUrl}`, "GET");
         } else if (["contest", "activity"].includes(url)) {
             fetchBoardListData(`${fetchUrl}`, "GET");
-            // fetchBoardListData(`${fetchUrl}?page=0&size=2&orderBy=DATE_CONTEST_END`, "GET");
         } else {
             fetchBoardListData(`${fetchUrl}`, "GET", "token");
         }
