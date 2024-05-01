@@ -136,7 +136,7 @@ const HeaderTitle = () => {
         const id = titleInfo(pathNameInfo[0], pathNameInfo[1]);
         // 이전 titleId와 새로운 titleId가 다를 때에만 fetchTitleData 호출
 
-        if (Object.keys(nav).length === 0 && pathNameInfo[0] !== "staff") {
+        if (pathNameInfo[0] !== "staff") {
             fetchTitleData(`/menu/${id}`, "GET");
         }
     }, [pathNameInfo[0], pathNameInfo[1]]); // pathNameInfo와 titleId가 변경될 때마다 useEffect가 실행되도록 함
