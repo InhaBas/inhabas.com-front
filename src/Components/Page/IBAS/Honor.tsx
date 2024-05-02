@@ -4,6 +4,10 @@ import styled from "styled-components";
 
 import Slider from "react-slick";
 
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
+import useFetch from "../../../Hooks/useFetch";
+import { honorDataInfo } from "../../../Recoil/backState";
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import { H1 } from "../../../styles/assets/H";
 import Img from "../../../styles/assets/Img";
@@ -22,14 +26,50 @@ const StyledSlider = styled(Slider)`
 
 const Honor = () => {
     const settings = {
-        className: "center",
+        // className: "center",
         centerMode: true,
-        centerPadding: "60px",
+        // centerPadding: "60px",
         slidesToShow: 3,
         slidesToScroll: 1,
-        speed: 800,
-        cssEase: "linear",
+        draggable: true,
+        infinite: true,
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 2,
+                    infinite: true,
+                },
+            },
+            {
+                breakpoint: 1440,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 3,
+                    infinite: true,
+                },
+            },
+        ],
     };
+
+    const [honorData, fetchHonorData] = useFetch();
+    const [honor, setHonor] = useRecoilState(honorDataInfo);
+
+    useEffect(() => {
+        fetchHonorData("/members/hof", "GET", "token");
+    }, []);
+
+    useEffect(() => {
+        if (honorData) {
+            setHonor(honorData);
+        }
+    }, [honorData]);
+
+    useEffect(() => {
+        console.log(typeof honor);
+        // console.log(honor?.length);
+    }, [honor]);
 
     return (
         <>
@@ -37,7 +77,7 @@ const Honor = () => {
             <Div $position="relative" width="100%" height="100vh">
                 <Div width="100%" height="100vh">
                     <HonorImg src="/images/board-name-img.jpg" $filter=" brightness(30%)" />
-                    <FlexDiv $zIndex={2} $position="absolute" width="100%" $top="5%">
+                    <FlexDiv $zIndex={2} $position="absolute" width="100%" $top="15%">
                         <Div overflow="auto">
                             <FlexDiv width="100%" direction="column">
                                 <Div>
@@ -59,21 +99,27 @@ const Honor = () => {
                                     </P>
                                 </Div>
                             </FlexDiv>
-                            <FlexDiv width="100%" $margin="30px 0 0 0 ">
-                                <StyledSlider {...settings}>
-                                    <HonorSlide num={1} />
-                                    <HonorSlide num={2} />
-                                    <HonorSlide num={3} />
-                                    <HonorSlide num={4} />
-                                    {/* <HonorSlide num={5} />
-                                    <HonorSlide num={6} />
-                                    <HonorSlide num={7} />
-                                    <HonorSlide num={8} />
-                                    <HonorSlide num={9} />
-                                    <HonorSlide num={10} />
-                                    <HonorSlide num={11} />
-                                    <HonorSlide num={12} /> */}
-                                </StyledSlider>
+                            <FlexDiv width="100%" $margin="80px 0 0 0">
+                                {honor && Object.values(honor).length == 0 ? (
+                                    <FlexDiv width="100%" height="50vh">
+                                        <Div>
+                                            <P color="wh" fontSize="xl">
+                                                아직 정보 공개에 동의하신 선배님이 없습니다.
+                                            </P>
+                                        </Div>
+                                    </FlexDiv>
+                                ) : honor && Object.values(honor).length <= 3 ? (
+                                    Object.values(honor).map((cont, index) => (
+                                        <HonorSlide key={index} honors={cont} small={true} />
+                                    ))
+                                ) : (
+                                    <StyledSlider {...settings}>
+                                        {honor &&
+                                            Object.values(honor).map((cont, index) => (
+                                                <HonorSlide key={index} honors={cont} />
+                                            ))}
+                                    </StyledSlider>
+                                )}
                             </FlexDiv>
                         </Div>
                     </FlexDiv>

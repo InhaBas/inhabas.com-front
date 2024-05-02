@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { historyInterface, staffInterface } from "../Types/IBAS/TypeIBAS";
+import { historyInterface, honorDataInterface, staffInterface } from "../Types/IBAS/TypeIBAS";
 import { answersInterface, majorInterface, questionnariesInterface, signUpInterface } from "../Types/IBAS/TypeMember";
 import {
     applicationAnswersInterface,
@@ -213,7 +213,6 @@ export const boardDetailData = atom<boardDetailInterface | null>({
     default: null,
 });
 
-
 export const contestListDataInfo = atom<any[]>({
     key: "contestListDataInfo",
     default: [],
@@ -259,5 +258,11 @@ export const bankListDataInfo = atom({
 
 export const bankDetailDataInfo = atom<supportDetailInterface | null>({
     key: "bankDetailDataInfo",
+    default: null,
+});
+
+// honor
+export const honorDataInfo = atom<honorDataInterface | null>({
+    key: "honorDataInfo",
     default: null,
 });

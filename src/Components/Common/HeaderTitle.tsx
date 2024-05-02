@@ -5,10 +5,10 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 
 import { headerNavInfo, headerTitleInfo, tokenAccess } from "../../Recoil/backState";
-import { menuInfo, failRefreshing } from "../../Recoil/frontState";
+import { menuInfo } from "../../Recoil/frontState";
 
-import useFetch from "../../Hooks/useFetch";
 import { useNavigate } from "react-router-dom";
+import useFetch from "../../Hooks/useFetch";
 
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import { H1 } from "../../styles/assets/H";
@@ -35,16 +35,8 @@ const HeaderTitle = () => {
     const nav = useRecoilValue(headerNavInfo);
     const accessToken = useRecoilValue(tokenAccess);
     const navigate = useNavigate();
-    const [isNotLogin, setIsNotLogin] = useRecoilState(failRefreshing);
-    
-    let titleId = 0;
 
-    useEffect(() => {
-        if (isNotLogin && !['opensource', 'sponsor', 'usage', 'contest', 'activity']?.includes(pathNameInfo[1])) {
-            alert('로그인을 해주세요');
-            navigate('/');
-        }
-    }, [location])
+    let titleId = 0;
 
     const titleInfo = (pathName1: string, pathName2: string) => {
         // case 분기 -> pathNameInfo[1] 번째 비교해서 또 분기
