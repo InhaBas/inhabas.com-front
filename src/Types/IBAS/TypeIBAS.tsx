@@ -22,7 +22,7 @@ export interface historyInterface {
 export interface scholarshipHistoryInterface {
     year: number | null;
     data: {
-        id: number,
+        id: number;
         title: string;
         dateHistory: string;
     }[];
@@ -35,4 +35,17 @@ export interface scholarshipDetailListInterface {
         id: string;
     }[];
     mainUrl: string;
+}
+
+// honor
+export interface honorDataInterface {
+    name: string;
+    memberId: number;
+    studentId: string;
+    generation: number;
+    major: string;
+    picture: string;
+    intro: string;
+    email: string;
+    phoneNumber: string;
 }
