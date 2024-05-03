@@ -166,6 +166,7 @@ const HeaderNav = () => {
                 "board/contest",
                 "board/activity",
                 "introduce",
+                "scholarship",
             ]?.includes(url)
         ) {
             alert("로그인을 해주세요");
