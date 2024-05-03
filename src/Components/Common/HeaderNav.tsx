@@ -156,6 +156,21 @@ const HeaderNav = () => {
             alert("사용할 수 없는 기능입니다.");
             return;
         }
+        console.log(isNotLogin);
+        if (
+            isNotLogin &&
+            ![
+                "board/opensource",
+                "board/sponsor",
+                "board/usage",
+                "board/contest",
+                "board/activity",
+                "introduce",
+            ]?.includes(url)
+        ) {
+            alert("로그인을 해주세요");
+            return;
+        }
         navigate(`/${url}`);
         setTitle({ ...title, name: givenName, description: givenDescription });
     };
@@ -218,6 +233,7 @@ const HeaderNav = () => {
                     }));
                 }
             });
+
             setNav(newData);
         }
     }, [data]);
@@ -237,17 +253,6 @@ const HeaderNav = () => {
         };
     }, []);
 
-    useEffect(() => {
-        if (
-            (isNotLogin && ["honor"]?.includes(pathNameInfo[0])) ||
-            (isNotLogin &&
-                pathNameInfo[1] &&
-                !["opensource", "sponsor", "usage", "contest", "activity"]?.includes(pathNameInfo[1]))
-        ) {
-            navigate("/");
-            alert("로그인을 해주세요");
-        }
-    }, [location.pathname]);
     return (
         <>
             <FixedDiv
