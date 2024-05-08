@@ -151,7 +151,7 @@ const HeaderNav = () => {
     };
 
     const menuClickEvent = (url: string, givenName: string, givenDescription: string) => {
-        if (['lecture', 'honor', 'activity'].includes(url)) {
+        if (['lecture', 'honor'].includes(url)) {
             alert('사용할 수 없는 기능입니다.')
             return
         }
