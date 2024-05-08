@@ -19,7 +19,7 @@ import {
 
 import { menuInterface } from "../../Types/TypeCommon";
 
-import { menuId } from "../../Recoil/frontState";
+import { failRefreshing, menuId } from "../../Recoil/frontState";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
@@ -54,7 +54,8 @@ const HeaderNav = () => {
     const [scrollPosition, setScrollPosition] = useState(0);
     const setCurrentMenuId = useSetRecoilState(menuId);
     const pathNameInfo = location.pathname.substring(1).split("/");
-    
+    const [isNotLogin, setIsNotLogin] = useRecoilState(failRefreshing);
+
     let titleId = 0;
 
     const titleInfo = (pathName1: string, pathName2: string) => {
@@ -151,9 +152,27 @@ const HeaderNav = () => {
     };
 
     const menuClickEvent = (url: string, givenName: string, givenDescription: string) => {
-        if (['lecture', 'honor'].includes(url)) {
-            alert('사용할 수 없는 기능입니다.')
-            return
+
+        if (["lecture", "activity"].includes(url)) {
+            alert("사용할 수 없는 기능입니다.");
+            return;
+        }
+        console.log(isNotLogin);
+        if (
+            isNotLogin &&
+            ![
+                "board/opensource",
+                "board/sponsor",
+                "board/usage",
+                "board/contest",
+                "board/activity",
+                "introduce",
+                "scholarship",
+            ]?.includes(url)
+        ) {
+            alert("로그인을 해주세요");
+            return;
+
         }
         navigate(`/${url}`);
         setTitle({ ...title, name: givenName, description: givenDescription });
@@ -175,7 +194,6 @@ const HeaderNav = () => {
 
     useEffect(() => {
         const id = titleInfo(pathNameInfo[0], pathNameInfo[1]);
-        console.log(id, 'id')
         setCurrentMenuId(id);
         fetchData("/menus", "GET");
     }, []);
@@ -218,6 +236,7 @@ const HeaderNav = () => {
                     }));
                 }
             });
+
             setNav(newData);
         }
     }, [data]);
@@ -320,7 +339,7 @@ const HeaderNav = () => {
                                                                                     menuClickEvent(
                                                                                         element.url,
                                                                                         element.name,
-                                                                                        element.description,
+                                                                                        element.description
                                                                                     )
                                                                                 }
                                                                             >
@@ -358,7 +377,7 @@ const HeaderNav = () => {
                                                                                     menuClickEvent(
                                                                                         element.url,
                                                                                         element.name,
-                                                                                        element.description,
+                                                                                        element.description
                                                                                     )
                                                                                 }
                                                                             >
@@ -428,7 +447,13 @@ const HeaderNav = () => {
                                     width="35px"
                                     height="35px"
                                     $border="2px solid"
-                                    $borderColor={isAuthorizedOverBasic ? "success" : (isAuthorizedOverDeactivate ? "yellow" : "red")}
+                                    $borderColor={
+                                        isAuthorizedOverBasic
+                                            ? "success"
+                                            : isAuthorizedOverDeactivate
+                                            ? "yellow"
+                                            : "red"
+                                    }
                                     radius={100}
                                     overflow="hidden"
                                 >
