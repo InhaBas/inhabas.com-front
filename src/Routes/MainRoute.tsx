@@ -17,7 +17,9 @@ const MainRoute = () => {
         <Routes>
             <Route path="activity" element={<Activity />} />
             <Route path="activity/detail" element={<ActivityDetail />} />
+            <Route path="activity/detail/:id" element={<ActivityDetail />} />
             <Route path="activity/create" element={<ActivityCreate />} />
+            <Route path="activity/update/:id" element={<ActivityCreate />} />
             {isAccessible('OverBasic') && (
                 <>
                     <Route path="bank" element={<Bank />} />

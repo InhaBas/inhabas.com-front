@@ -152,6 +152,7 @@ const HeaderNav = () => {
     };
 
     const menuClickEvent = (url: string, givenName: string, givenDescription: string) => {
+
         if (["lecture", "activity"].includes(url)) {
             alert("사용할 수 없는 기능입니다.");
             return;
@@ -171,6 +172,7 @@ const HeaderNav = () => {
         ) {
             alert("로그인을 해주세요");
             return;
+
         }
         navigate(`/${url}`);
         setTitle({ ...title, name: givenName, description: givenDescription });
