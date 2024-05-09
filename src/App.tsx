@@ -44,6 +44,7 @@ const App = () => {
                 "activity/detail",
                 "introduce",
                 "scholarship",
+                "login",
             ]?.includes(url)
         ) {
             console.log("App");
