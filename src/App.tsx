@@ -28,21 +28,23 @@ const App = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const isNotLogin = useRecoilValue(failRefreshing);
-
+    const url = location.pathname.split("/").slice(1, 3).join("/");
     useEffect(() => {
+        console.log(url);
         if (
             isNotLogin &&
             location.pathname.substring(1) &&
             ![
-                "/board/opensource",
-                "/board/sponsor",
-                "/board/usage",
-                "/board/contest",
-                "/board/activity",
-                "/activity",
-                "/introduce",
-                "/scholarship",
-            ]?.includes(location.pathname)
+                "board/opensource",
+                "board/sponsor",
+                "board/usage",
+                "board/contest",
+                "board/activity",
+                "activity",
+                "activity/detail",
+                "introduce",
+                "scholarship",
+            ]?.includes(url)
         ) {
             console.log("App");
             alert("로그인을 해주세요");
