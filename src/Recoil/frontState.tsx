@@ -96,3 +96,9 @@ export const carouselInitialState = atom({
     key: "carouselInitialState",
     default: 0,
 });
+
+// contest
+export const contestOrder  = atom({
+    key: "contestOrder",
+    default: "&orderBy=ALL",
+})

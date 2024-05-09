@@ -3,21 +3,23 @@ import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import ContestInfo from "../../../Component/Contest/ContestInfo";
 import Dropdown from "../../../Common/Dropdown";
 
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 import { contestListDataInfo } from "../../../../Recoil/backState";
+import { contestOrder } from "../../../../Recoil/frontState";
 
 const Contest = () => {
     const infos = useRecoilValue(contestListDataInfo)
+    const [order, setOrder] = useRecoilState(contestOrder);
 
     return (
         <>
             <Div width="100%" $position="relative">
-                <Div $position="absolute" $top="-45px" $right="0px" width="100px">
+                <Div $position="absolute" $top="-50px" $right="0px" width="100px">
                     <Dropdown
-                        label="전체보기"
+                        label={order === '&orderBy=ALL' ? '전체보기' : '진행중'}
                         options={["전체보기", "진행중"]}
-                        // value={["", ...Object?.values(bankYears)?.sort((a, b) => b-a)?.map((bankYear) => String(bankYear))]}
-                        onChange={() => console.log('a')}
+                        value={["&orderBy=ALL", "&orderBy=DUE_DATE"]}
+                        onChange={(v) => setOrder(v)}
                         purple
                     />
                 </Div>
