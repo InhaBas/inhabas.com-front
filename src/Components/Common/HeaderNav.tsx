@@ -168,9 +168,9 @@ const HeaderNav = () => {
                 "scholarship",
             ]?.includes(url)
         ) {
-            console.log("1122");
             alert("로그인을 해주세요");
             return;
+
         } else {
             navigate(`/${url}`);
             setTitle({ ...title, name: givenName, description: givenDescription });
