@@ -152,12 +152,10 @@ const HeaderNav = () => {
     };
 
     const menuClickEvent = (url: string, givenName: string, givenDescription: string) => {
-        if (["lecture", "activity"].includes(url)) {
+        if (["lecture"].includes(url)) {
             alert("사용할 수 없는 기능입니다.");
             return;
-        }
-        console.log(isNotLogin);
-        if (
+        } else if (
             isNotLogin &&
             ![
                 "board/opensource",
@@ -165,15 +163,18 @@ const HeaderNav = () => {
                 "board/usage",
                 "board/contest",
                 "board/activity",
+                "activity",
                 "introduce",
                 "scholarship",
             ]?.includes(url)
         ) {
+            console.log("1122");
             alert("로그인을 해주세요");
             return;
+        } else {
+            navigate(`/${url}`);
+            setTitle({ ...title, name: givenName, description: givenDescription });
         }
-        navigate(`/${url}`);
-        setTitle({ ...title, name: givenName, description: givenDescription });
     };
 
     const logoutClickEvent = () => {
