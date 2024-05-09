@@ -134,12 +134,14 @@ const Activity = () => {
                     ))}
                     {detail?.slice(3, 6).length === 2 ? (<Div width="25%"/>) : ''}
                 </FlexDiv>
-                <Pagination
-                    totalPage={totalPage}
-                    fetchUrl='/club/activities'
-                    paginationFetch={fetchActivityListData}
-                    size={6}
-                />
+                <Div width="100%" $margin="50px 0 0 0">
+                    <Pagination
+                        totalPage={totalPage}
+                        fetchUrl='/club/activities'
+                        paginationFetch={fetchActivityListData}
+                        size={6}
+                    />
+                </Div>
                 <FlexDiv $margin="50px 0" width="75%" $justifycontent="end">
                     <Button
                         display="flex"
