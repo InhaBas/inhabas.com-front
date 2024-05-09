@@ -30,14 +30,21 @@ const App = () => {
     const isNotLogin = useRecoilValue(failRefreshing);
 
     useEffect(() => {
-        // 페이지 경로에 따라 로그인 상태를 검사하고 알림을 표시합니다.
-
         if (
-            (isNotLogin && ["/honor"]?.includes(location.pathname)) ||
-            (isNotLogin &&
-                location.pathname.substring(1) &&
-                !["opensource", "sponsor", "usage", "contest", "activity"]?.includes(location.pathname))
+            isNotLogin &&
+            location.pathname.substring(1) &&
+            ![
+                "/board/opensource",
+                "/board/sponsor",
+                "/board/usage",
+                "/board/contest",
+                "/board/activity",
+                "/activity",
+                "/introduce",
+                "/scholarship",
+            ]?.includes(location.pathname)
         ) {
+            console.log("App");
             alert("로그인을 해주세요");
             navigate("/");
         }
