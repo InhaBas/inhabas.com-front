@@ -3,6 +3,8 @@ import P from "../../../../styles/assets/P";
 import Img from "../../../../styles/assets/Img";
 import { H2 } from "../../../../styles/assets/H";
 import Button from "../../../../styles/assets/Button";
+import { theme } from "../../../../styles/theme";
+
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import useFetch from "../../../../Hooks/useFetch";
@@ -94,7 +96,8 @@ const ContestDetail = () => {
     return (
         <>
             {/* 컨테이너 */}
-            <Div width="73%" $margin="50px 0 100px 0" direction="column">
+            <Div width="800px" $margin="50px 0 100px 0" direction="column">
+            {/* <Div width="73%" $margin="50px 0 100px 0" direction="column"> */}
                 {/* 작성 info */}
                 <FlexDiv $margin="50px 0 30px 0">
                     <FlexDiv width="12px" $margin="0 5px 0 0">
@@ -123,29 +126,30 @@ const ContestDetail = () => {
                 </Div>
 
                 {/* 주최기관, 개최기간 */}
-                <FlexDiv $padding="30px 0" width="100%" $justifycontent="flex-start">
-                    <Div $margin="0 5px 0 0" width="12px">
+                <FlexDiv $padding="20px 0 40px 0" width="100%" $justifycontent="flex-start">
+                    <FlexDiv $margin="0 5px 0 0" width="12px">
                         <Img src="/images/building_grey.svg" />
-                    </Div>
-                    <Div $margin="0 5px 0 0">
+                    </FlexDiv>
+                    <FlexDiv $margin="0 5px 0 0">
                         <P color="grey4" fontSize="sm"> {detail?.association} |</P>
-                    </Div>
-                    <Div $margin="0 5px 0 0" width="12px">
+                    </FlexDiv>
+                    <FlexDiv $margin="0 5px 0 0" width="12px">
                         <Img src="/images/calendar_grey.svg" />
-                    </Div>
-                    <Div>
+                    </FlexDiv>
+                    <FlexDiv>
                         <P color="grey4" fontSize="sm">{detail?.dateContestStart.split('T')[0]} ~ {detail?.dateContestEnd.split('T')[0]}</P>
-                    </Div>
+                    </FlexDiv>
                 </FlexDiv>
                 
                 {/* 주제 */}
-                <FlexDiv width="100%" $border="2px solid" $borderColor="border" $padding="20px">
+                <FlexDiv width="100%" $borderT={`2px solid ${theme.color.border}`} $padding="20px">
+                {/* <FlexDiv width="100%" $border="2px solid" $borderColor="border" $padding="20px"> */}
                     <Div>
                         {url === 'contest' && (<P fontSize="xl" fontWeight={800}>공모전 주제</P>)}
                         {url === 'activity' && (<P fontSize="xl" fontWeight={800}>대외활동 주제</P>)}
                     </Div>
                 </FlexDiv>
-                <FlexDiv width="100%" $border="2px solid" $borderColor="border" $padding="50px">
+                <FlexDiv width="100%" $borderT={`2px solid ${theme.color.border}`} $borderB={`2px solid ${theme.color.border}`} $padding="50px">
                     <Div>
                         <P fontSize="xl">{detail?.topic}</P>
                     </Div>
