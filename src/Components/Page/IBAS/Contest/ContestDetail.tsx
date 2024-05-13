@@ -1,21 +1,44 @@
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import useFetch from "../../../../Hooks/useFetch";
+import { jwtDecode } from "jwt-decode";
+import { tokenInterface } from "../../../../Types/TypeCommon";
+import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
+
+import Comment from "../../../Common/Comment";
+import CommentInput from "../../../Common/CommentInput";
+import Carousel from "../../../Common/Carousel";
+
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import P from "../../../../styles/assets/P";
 import Img from "../../../../styles/assets/Img";
 import { H2 } from "../../../../styles/assets/H";
 import Button from "../../../../styles/assets/Button";
 import { theme } from "../../../../styles/theme";
+import styled from "styled-components";
 
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import useFetch from "../../../../Hooks/useFetch";
-import Comment from "../../../Common/Comment";
-import CommentInput from "../../../Common/CommentInput";
-import { jwtDecode } from "jwt-decode";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 import { tokenAccess } from "../../../../Recoil/backState";
-import { tokenInterface } from "../../../../Types/TypeCommon";
-import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
+import { carouselOpen, carouselInitialState } from "../../../../Recoil/frontState";
 
+const HorizonScrollDiv = styled(Div)`
+    white-space: nowrap;
+    overflow-x: scroll;
+
+    &::-webkit-scrollbar {
+        display: block;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: ${theme.color.grey1}; /* 스크롤바 썸의 색상을 지정하세요 */
+        border-radius: 4px; /* 스크롤바 썸의 모서리를 지정하세요 */
+    }
+
+    /* 스크롤바 호버 스타일 추가 */
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: ${props => props.theme.color.grey}; /* 스크롤바 썸의 호버 색상을 지정하세요 */
+    }
+`;
 
 interface ContestDetailType {
     id: number;
@@ -57,6 +80,10 @@ const ContestDetail = () => {
     const access = useRecoilValue(tokenAccess);
     const navigate = useNavigate();
 
+    const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
+    const [carouselInitial, setCarouselInitial] = useRecoilState(carouselInitialState);
+
+
     const [deleteData, deleteDataFetch] = useFetch();
 
     const { isAuthorizedOverVice } = GetRoleAuthorization();
@@ -72,6 +99,12 @@ const ContestDetail = () => {
         if (window.confirm("정말 삭제 하시겠습니까?")) {
             deleteDataFetch(`/contest/${url}/${boardId}`, "DELETE", "token");
         }
+    };
+
+    const handleCarousel = (idx: number) => {
+        setCarouselInitial(idx);
+
+        setIsCarouselOpen(true);
     };
 
     useEffect(() => {
@@ -95,123 +128,143 @@ const ContestDetail = () => {
 
     return (
         <>
-            {/* 컨테이너 */}
-            <Div width="800px" $margin="50px 0 100px 0" direction="column">
-            {/* <Div width="73%" $margin="50px 0 100px 0" direction="column"> */}
-                {/* 작성 info */}
-                <FlexDiv $margin="50px 0 30px 0">
-                    <FlexDiv width="12px" $margin="0 5px 0 0">
-                        <Img src="/images/user_grey.svg" />
+            {isCarouselOpen ? (
+                <Carousel images={detail?.images?.map((image) => image.url) || []} />
+            ) : (
+                <Div width="800px" $margin="50px 0 100px 0" direction="column">
+                    {/* 작성 info */}
+                    <FlexDiv $margin="50px 0 30px 0">
+                        <FlexDiv width="12px" $margin="0 5px 0 0">
+                            <Img src="/images/user_grey.svg" />
+                        </FlexDiv>
+                        <Div>
+                            <P color="grey4" fontSize="sm">
+                                By {detail?.writerName} |
+                            </P>
+                        </Div>
+                        <FlexDiv width="12px" $margin="0 5px ">
+                            <Img src="/images/calendar_grey.svg" />
+                        </FlexDiv>
+                        <FlexDiv>
+                            <P color="grey4" fontSize="sm">
+                                {detail?.dateCreated.split('T')[0]} {detail?.dateCreated.split('T')[1]}
+                            </P>
+                        </FlexDiv>
                     </FlexDiv>
-                    <Div>
-                        <P color="grey4" fontSize="sm">
-                            By {detail?.writerName} |
-                        </P>
-                    </Div>
-                    <FlexDiv width="12px" $margin="0 5px ">
-                        <Img src="/images/calendar_grey.svg" />
-                    </FlexDiv>
-                    <FlexDiv>
-                        <P color="grey4" fontSize="sm">
-                            {detail?.dateCreated.split('T')[0]} {detail?.dateCreated.split('T')[1]}
-                        </P>
-                    </FlexDiv>
-                </FlexDiv>
 
-                {/* 게시글 title */}
-                <Div>
-                    <H2 fontSize="xxl" fontWeight={800}>
-                        {detail?.title}
-                    </H2>
-                </Div>
-
-                {/* 주최기관, 개최기간 */}
-                <FlexDiv $padding="20px 0 40px 0" width="100%" $justifycontent="flex-start">
-                    <FlexDiv $margin="0 5px 0 0" width="12px">
-                        <Img src="/images/building_grey.svg" />
-                    </FlexDiv>
-                    <FlexDiv $margin="0 5px 0 0">
-                        <P color="grey4" fontSize="sm"> {detail?.association} |</P>
-                    </FlexDiv>
-                    <FlexDiv $margin="0 5px 0 0" width="12px">
-                        <Img src="/images/calendar_grey.svg" />
-                    </FlexDiv>
-                    <FlexDiv>
-                        <P color="grey4" fontSize="sm">{detail?.dateContestStart.split('T')[0]} ~ {detail?.dateContestEnd.split('T')[0]}</P>
-                    </FlexDiv>
-                </FlexDiv>
-                
-                {/* 주제 */}
-                <FlexDiv width="100%" $borderT={`2px solid ${theme.color.border}`} $padding="20px">
-                {/* <FlexDiv width="100%" $border="2px solid" $borderColor="border" $padding="20px"> */}
+                    {/* 게시글 title */}
                     <Div>
-                        {url === 'contest' && (<P fontSize="xl" fontWeight={800}>공모전 주제</P>)}
-                        {url === 'activity' && (<P fontSize="xl" fontWeight={800}>대외활동 주제</P>)}
+                        <H2 fontSize="xxl" fontWeight={800}>
+                            {detail?.title}
+                        </H2>
                     </Div>
-                </FlexDiv>
-                <FlexDiv width="100%" $borderT={`2px solid ${theme.color.border}`} $borderB={`2px solid ${theme.color.border}`} $padding="50px">
-                    <Div>
-                        <P fontSize="xl">{detail?.topic}</P>
-                    </Div>
-                </FlexDiv>
 
-                {/* 사진들 */}
-                {detail?.images?.map((image) => (
-                    <FlexDiv width="100%" $margin="50px 0">
-                        <Div width="60%">
-                            <Img src={image.url} />
+                    {/* 주최기관, 개최기간 */}
+                    <FlexDiv $padding="20px 0 40px 0" width="100%" $justifycontent="flex-start">
+                        <FlexDiv $margin="0 5px 0 0" width="12px">
+                            <Img src="/images/building_grey.svg" />
+                        </FlexDiv>
+                        <FlexDiv $margin="0 5px 0 0">
+                            <P color="grey4" fontSize="sm"> {detail?.association} |</P>
+                        </FlexDiv>
+                        <FlexDiv $margin="0 5px 0 0" width="12px">
+                            <Img src="/images/calendar_grey.svg" />
+                        </FlexDiv>
+                        <FlexDiv>
+                            <P color="grey4" fontSize="sm">{detail?.dateContestStart.split('T')[0]} ~ {detail?.dateContestEnd.split('T')[0]}</P>
+                        </FlexDiv>
+                    </FlexDiv>
+                    
+                    {/* 주제 */}
+                    <FlexDiv width="100%" $borderT={`2px solid ${theme.color.border}`} $padding="20px">
+                    {/* <FlexDiv width="100%" $border="2px solid" $borderColor="border" $padding="20px"> */}
+                        <Div>
+                            {url === 'contest' && (<P fontSize="xl" fontWeight={800}>공모전 주제</P>)}
+                            {url === 'activity' && (<P fontSize="xl" fontWeight={800}>대외활동 주제</P>)}
                         </Div>
                     </FlexDiv>
-                ))}
-
-                <Div $margin="0 0 20px 0">
-                    <P>{detail?.content}</P>
-                </Div>
-
-                {/* // api에 writerId 포함되면 수정 */}
-                {/* {(detail?.writerId === userId || isAuthorizedOverVice) && ( */}
-                {(
-                    <FlexDiv $margin="50px 0 20px 0" width="100%" $justifycontent="end">
-                        <Button
-                            display="flex"
-                            $backgroundColor="bgColor"
-                            $margin="0 10px 0 0"
-                            $padding="12px 15px"
-                            $borderRadius={30}
-                            $HBackgroundColor="bgColorHo"
-                            onClick={() => navigate(`/board/${url}/update/${boardId}`)}
-                        >
-                            <Div width="12px" $margin="0 10px 0 0">
-                                <Img src="/images/pencil_white.svg" />
-                            </Div>
-                            <Div $pointer>
-                                <P color="wh" fontSize="sm">
-                                    게시글 수정
-                                </P>
-                            </Div>
-                        </Button>
-                        <Button
-                            display="flex"
-                            $backgroundColor="red"
-                            $padding="12px 15px"
-                            $borderRadius={30}
-                            $HBackgroundColor="red"
-                            onClick={() => deleteDetail()}
-                        >
-                            <Div width="12px" $margin="0 10px 0 0">
-                                <Img src="/images/trash_white.svg" />
-                            </Div>
-                            <Div $pointer>
-                                <P color="wh" fontSize="sm">
-                                    게시글 삭제
-                                </P>
-                            </Div>
-                        </Button>
+                    <FlexDiv width="100%" $borderT={`2px solid ${theme.color.border}`} $borderB={`2px solid ${theme.color.border}`} $padding="50px">
+                        <Div>
+                            <P fontSize="xl">{detail?.topic}</P>
+                        </Div>
                     </FlexDiv>
-                )}
-                <Comment boardId={boardId} menuId={menuId} />
-                <CommentInput boardId={boardId} menuId={menuId} />
-            </Div>
+
+                    {/* 사진들 */}
+                    {detail?.images?.map((image) => (
+                        <FlexDiv width="100%" $margin="50px 0">
+                            <Div width="60%">
+                                <Img src={image.url} />
+                            </Div>
+                        </FlexDiv>
+                    ))}
+
+                    <Div $margin="0 0 20px 0">
+                        <P>{detail?.content}</P>
+                    </Div>
+
+                    {detail && detail.images && detail.images.length > 0 && (
+                        <HorizonScrollDiv $margin="30px 0" width="100%">
+                            {detail.images.map((image, index) => (
+                                <Div
+                                    key={`image${index}`}
+                                    display="inline-block"
+                                    height="100px"
+                                    width="100px"
+                                    $margin="0 10px 0 0"
+                                    $pointer
+                                    onClick={() => handleCarousel(index)}
+                                >
+                                    <Img $objectFit="fill" $HFilter="opacity(50%);" src={image.url} />
+                                </Div>
+                            ))}
+                        </HorizonScrollDiv>
+                    )}
+
+                    {/* // api에 writerId 포함되면 수정 */}
+                    {/* {(detail?.writerId === userId || isAuthorizedOverVice) && ( */}
+                    {(
+                        <FlexDiv $margin="50px 0 20px 0" width="100%" $justifycontent="end">
+                            <Button
+                                display="flex"
+                                $backgroundColor="bgColor"
+                                $margin="0 10px 0 0"
+                                $padding="12px 15px"
+                                $borderRadius={30}
+                                $HBackgroundColor="bgColorHo"
+                                onClick={() => navigate(`/board/${url}/update/${boardId}`)}
+                            >
+                                <Div width="12px" $margin="0 10px 0 0">
+                                    <Img src="/images/pencil_white.svg" />
+                                </Div>
+                                <Div $pointer>
+                                    <P color="wh" fontSize="sm">
+                                        게시글 수정
+                                    </P>
+                                </Div>
+                            </Button>
+                            <Button
+                                display="flex"
+                                $backgroundColor="red"
+                                $padding="12px 15px"
+                                $borderRadius={30}
+                                $HBackgroundColor="red"
+                                onClick={() => deleteDetail()}
+                            >
+                                <Div width="12px" $margin="0 10px 0 0">
+                                    <Img src="/images/trash_white.svg" />
+                                </Div>
+                                <Div $pointer>
+                                    <P color="wh" fontSize="sm">
+                                        게시글 삭제
+                                    </P>
+                                </Div>
+                            </Button>
+                        </FlexDiv>
+                    )}
+                    <Comment boardId={boardId} menuId={menuId} />
+                    <CommentInput boardId={boardId} menuId={menuId} />
+                </Div>
+            )}
         </>
     )
 
