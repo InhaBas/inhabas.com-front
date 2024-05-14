@@ -101,10 +101,12 @@ const ActivityDetail = () => {
                             </Div>
 
                             <FlexDiv>
-                                {detail?.images?.slice(0, 3)?.map(({ url }) => (
-                                    <Div width="200px" height="200px" $pointer>
-                                        <Img src={url} $HFilter="brightness(80%)" />
-                                    </Div>
+                                {detail?.images?.slice(0, 3)?.map(({ url }, idx) => (
+                                    <Button onClick={() => handleCarousel(idx)}>
+                                        <Div width="200px" height="200px" $pointer>
+                                            <Img src={url} $HFilter="brightness(80%)" />
+                                        </Div>
+                                    </Button>
                                 ))}
                                 {detail && detail.images.length > 3 ? (
                                     <Div $pointer $position="relative" $HFilter="brightness(2)" onClick={() => handleCarousel(0)}>
