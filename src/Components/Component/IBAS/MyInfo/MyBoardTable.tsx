@@ -54,7 +54,9 @@ const MyBoardTable = () => {
     return (
         <>
             {isLoading ? (
-                <Loading />
+                <FlexDiv width="100%" height="100vh">
+                    <Loading />
+                </FlexDiv>
             ) : (
                 <>
                     <Div width="100%" $borderB={`1px solid ${theme.color.grey1}`}>

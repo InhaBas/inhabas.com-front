@@ -18,6 +18,7 @@ import Img from "../../styles/assets/Img";
 import { TextArea } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
 import CommentInput from "./CommentInput";
+import Loading from "./Loading";
 
 const Comment = (props: commentPropsInterface) => {
     const { boardId, menuId } = props;
@@ -34,7 +35,8 @@ const Comment = (props: commentPropsInterface) => {
     const [isCommentInputVisible, setCommentInputVisible] = useState(false);
     const access = useRecoilValue(tokenAccess);
     // 수정 중인 댓글의 ID를 추적하는 상태
-    const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+    const [editingCommentIds, setEditingCommentIds] = useState<number[]>([]);
+    const [isLoading, setIsLoading] = useState<null | boolean>(null);
 
     let decoded;
     if (access !== "default") {
@@ -56,23 +58,25 @@ const Comment = (props: commentPropsInterface) => {
         }
     };
 
-    const deleteComment = (id: number) => {
-        if (window.confirm("댓글을 정말로 삭제하시겠습니까?")) {
-            fetchCommentDeleteData(`/comment/${id}`, "DELETE", "token");
-        }
-    };
-
-    // 수정 버튼 클릭 시 해당 댓글을 수정 상태로 변경하는 함수
     const handleEditButtonClick = (id: number) => {
-        // 수정 중인 댓글 ID를 설정하여 해당 댓글이 TextArea로 렌더링되도록 함
-        setEditingCommentId(id);
-        setUpdating("update");
+        // 이미 수정 중인 댓글이면 해당 댓글의 수정 상태를 해제하고 반환
+        if (editingCommentIds.includes(id)) {
+            setEditingCommentIds(editingCommentIds.filter((editingId) => editingId !== id));
+            return;
+        }
+
+        // 수정 중인 댓글이 아닌 경우에만 해당 댓글의 수정 상태를 추가
+        setEditingCommentIds([...editingCommentIds, id]);
+
         // 수정 중인 댓글의 내용을 commentInput 상태에 설정하여 TextArea에 표시
         const editingComment = comment.find((c) => c.id === id);
         if (editingComment) {
             setCommentInput(editingComment.content);
         }
     };
+
+    // 수정 상태인지 확인하는 함수
+    const isEditing = (id: number) => editingCommentIds.includes(id);
 
     const checkCommentInput = () => {
         if (commentInput === "") {
@@ -92,11 +96,20 @@ const Comment = (props: commentPropsInterface) => {
         };
 
         fetchPutComment(`/comment/${id}`, "PUT", "token", inputData);
+        setIsLoading(true);
+    };
+
+    const deleteComment = (id: number) => {
+        if (window.confirm("댓글을 정말로 삭제하시겠습니까?")) {
+            fetchCommentDeleteData(`/comment/${id}`, "DELETE", "token");
+            setIsLoading(true);
+        }
     };
 
     useEffect(() => {
         fetchCommentData(`/board/${menuId}/${boardId}/comments`, "GET", "token");
         setUpdating("nothing");
+        setEditingCommentIds([]);
     }, [commentDeleteData, putComment]);
 
     useEffect(() => {
@@ -203,7 +216,7 @@ const Comment = (props: commentPropsInterface) => {
                                         <FlexDiv>
                                             {userId === comment.writer.id && (
                                                 <FlexDiv>
-                                                    {updating === "nothing" && (
+                                                    {updating === "nothing" && !isEditing(comment.id) ? (
                                                         <FlexDiv
                                                             $margin="0 0 0 15px"
                                                             $pointer
@@ -218,8 +231,7 @@ const Comment = (props: commentPropsInterface) => {
                                                                 </P>
                                                             </Div>
                                                         </FlexDiv>
-                                                    )}
-                                                    {updating === "update" && (
+                                                    ) : (
                                                         <FlexDiv
                                                             $margin="0 0 0 15px"
                                                             $pointer
@@ -273,14 +285,12 @@ const Comment = (props: commentPropsInterface) => {
                             </Div>
                         </FlexDiv>
                     )}
-                    {updating === "nothing" && editingCommentId !== comment?.id && (
-                        <Div>
-                            <P $whiteSpace="wrap" fontSize="sm" fontWeight={300} $lineHeight={1.5}>
-                                {comment?.content}
-                            </P>
-                        </Div>
-                    )}
-                    {updating === "update" && editingCommentId === comment?.id && (
+
+                    {isLoading && editingCommentIds.includes(comment.id) ? (
+                        <FlexDiv width="100%" height="100px">
+                            <Loading />
+                        </FlexDiv>
+                    ) : isEditing(comment.id) ? (
                         <Div $margin="15px 0" width="100%">
                             <TextArea
                                 width="100%"
@@ -294,7 +304,14 @@ const Comment = (props: commentPropsInterface) => {
                                 onChange={(e: any) => setCommentInput(e.target.value)}
                             />
                         </Div>
+                    ) : (
+                        <Div>
+                            <P $whiteSpace="wrap" fontSize="sm" fontWeight={300} $lineHeight={1.5}>
+                                {comment?.content}
+                            </P>
+                        </Div>
                     )}
+
                     {showCommentInputId === comment?.id && isCommentInputVisible && (
                         <Div width="100%" $padding="20px 0 0 0">
                             <CommentInput boardId={props.boardId} menuId={props.menuId} parentId={comment?.id} />
@@ -315,10 +332,14 @@ const Comment = (props: commentPropsInterface) => {
         if (commentData) {
             const convertedComments = convertToCommentTree(commentData);
             setComment(convertedComments);
+            console.log(2);
         }
     }, [commentData]);
 
-    useEffect(() => console.log(comment), [comment]);
+    useEffect(() => {
+        setIsLoading(false);
+        console.log(1);
+    }, [comment]);
 
     return <>{comment && renderCommentsRecursively(Object.values(comment), 0)}</>;
 };

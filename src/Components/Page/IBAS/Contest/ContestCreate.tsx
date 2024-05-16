@@ -11,22 +11,22 @@ import DragNDrop from "../../../Common/DragNDrop";
 import Loading from "../../../Common/Loading";
 import TextEditor from "../../../Common/TextEditor";
 
-import { theme } from "../../../../styles/theme";
 import Button from "../../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
-import { Date, TextInput, Radio, Label } from "../../../../styles/assets/Input";
+import { Date, Label, Radio, TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
+import { theme } from "../../../../styles/theme";
 
 interface contestDetailInterface {
-    contestFieldId: number|null;
+    contestFieldId: number | null;
     title: string;
     topic: string;
     association: string;
     dateContestStart: string;
     dateContestEnd: string;
     content: string;
-    thumbnail: [        
+    thumbnail: [
         {
             id: string;
             name: string;
@@ -57,7 +57,7 @@ const ContestCreate = () => {
     const setSelectedFile = useSetRecoilState(selectedFile);
     const currentMenuId = useRecoilValue(menuId);
     const setReload = useSetRecoilState(refetch);
-    const [contestType, setContestType] = useState<number|null>(null);
+    const [contestType, setContestType] = useState<number | null>(null);
 
     useEffect(() => {
         if (paramID) {
@@ -106,16 +106,16 @@ const ContestCreate = () => {
         if (check) {
             setIsLoading(true); // 로딩 상태 설정
             const inputData = {
-                contestFieldId: contestType === 1 ? '1' : contestType === 2 ? '2' : null,
+                contestFieldId: contestType === 1 ? "1" : contestType === 2 ? "2" : null,
                 title: inputRef.current[0].value,
                 topic: inputRef.current[1].value,
                 association: inputRef.current[2].value,
-                dateContestStart: inputRef.current[3].value + 'T00:00:00',
-                dateContestEnd: inputRef.current[4].value + 'T00:00:00',
+                dateContestStart: inputRef.current[3].value + "T00:00:00",
+                dateContestEnd: inputRef.current[4].value + "T00:00:00",
                 content: inputRef.current[5].getInstance().getMarkdown(),
                 files: fileId,
             };
-            console.log(inputData)
+            console.log(inputData);
             if (update === "create") {
                 postFetchData(`${fetchUrl}`, "POST", "token", inputData);
             } else if (update === "update") {
@@ -133,7 +133,7 @@ const ContestCreate = () => {
     }, [postData]);
 
     useEffect(() => {
-        console.log(update)
+        console.log(update);
         if (update == "update") {
             getFetchData(`${fetchUrl}/${paramID}`, "GET", "token");
         }
@@ -144,16 +144,16 @@ const ContestCreate = () => {
             setDetail(getData);
             setContestType(getData.contestFieldId);
             setIsLoading(false);
-            
+
             // DragNDrop update 설정
             const files = [
-                ...getData.images.map((item: contestDetailInterface|null) => item),
-                ...getData.otherFiles.map((item: contestDetailInterface|null) => item),
+                ...getData.images.map((item: contestDetailInterface | null) => item),
+                ...getData.otherFiles.map((item: contestDetailInterface | null) => item),
             ];
             setSelectedFile(files);
             const fileIds = [
-                ...getData.images.map((item: contestDetailInterface|null) => item?.id),
-                ...getData.otherFiles.map((item: contestDetailInterface|null) => item?.id),
+                ...getData.images.map((item: contestDetailInterface | null) => item?.id),
+                ...getData.otherFiles.map((item: contestDetailInterface | null) => item?.id),
             ];
             setFileList(fileIds);
             // DragNDrop reload true일 때만 불러온 파일들 렌더링 할 있음
@@ -165,14 +165,15 @@ const ContestCreate = () => {
             setFileList([]);
         };
     }, [getData]);
-    
+
     return (
         <FlexDiv width="100%">
             {isLoading ? (
-                <Loading />
+                <FlexDiv width="100%" height="100vh">
+                    <Loading />
+                </FlexDiv>
             ) : (
                 <Container $alignitems="start">
-
                     <Div width="100%" $margin="0 0 30px 0">
                         <FlexDiv
                             $padding="15px 20px"
@@ -343,7 +344,7 @@ const ContestCreate = () => {
                                         fontSize="xl"
                                         $borderRadius={5}
                                         ref={(el: never) => (inputRef.current[3] = el)}
-                                        defaultValue={detail?.dateContestStart?.split('T')[0]}
+                                        defaultValue={detail?.dateContestStart?.split("T")[0]}
                                     />
                                 </Div>
                             </Div>
@@ -368,7 +369,7 @@ const ContestCreate = () => {
                                         fontSize="xl"
                                         $borderRadius={5}
                                         ref={(el: never) => (inputRef.current[4] = el)}
-                                        defaultValue={detail?.dateContestEnd?.split('T')[0]}
+                                        defaultValue={detail?.dateContestEnd?.split("T")[0]}
                                     />
                                 </Div>
                             </Div>
@@ -385,14 +386,16 @@ const ContestCreate = () => {
                                     <P fontWeight={600}>공모전 포스터 및 첨부파일</P>
                                 </Div>
                                 <Div $margin="0 0 0 5px">
-                                    <P fontSize="xs" color="red" fontWeight={500}>※ 첨부파일에 사진 파일이 없을 시 정상적으로 게시글이 등록되지 않습니다.</P>
+                                    <P fontSize="xs" color="red" fontWeight={500}>
+                                        ※ 첨부파일에 사진 파일이 없을 시 정상적으로 게시글이 등록되지 않습니다.
+                                    </P>
                                 </Div>
                             </FlexDiv>
                             <Div width="100%" $padding="20px">
                                 <DragNDrop fileFetch menuId={currentMenuId} />
                             </Div>
                         </Div>
-                        
+
                         <Div width="100%" $border="1px solid" $borderColor="border" $margin="20px 0" radius={6}>
                             <FlexDiv
                                 width="100%"
