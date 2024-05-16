@@ -214,7 +214,9 @@ const BoardDetail = () => {
     return (
         <>
             {isLoading ? (
-                <Loading />
+                <FlexDiv width="100%" height="100vh">
+                    <Loading />
+                </FlexDiv>
             ) : isCarouselOpen ? (
                 <Carousel images={detail?.images?.map((image) => image.url) || []} />
             ) : (

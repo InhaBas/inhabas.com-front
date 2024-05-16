@@ -112,7 +112,9 @@ const BankSupportDetail = () => {
     return (
         <>
             {isLoading ? (
-                <Loading />
+                <FlexDiv width="100%" height="100vh">
+                    <Loading />
+                </FlexDiv>
             ) : (
                 <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
                     <Container>

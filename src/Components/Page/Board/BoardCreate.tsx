@@ -152,11 +152,13 @@ const BoardCreate = () => {
             setFileList([]);
         };
     }, [getData]);
-    
+
     return (
         <FlexDiv width="100%">
             {isLoading ? (
-                <Loading />
+                <FlexDiv width="100%" height="100vh">
+                    <Loading />
+                </FlexDiv>
             ) : (
                 <Container $alignitems="start">
                     <Div width="100%" $margin="0 0 30px 0">

@@ -5,7 +5,13 @@ import styled from "styled-components";
 
 import useFetch from "../../../Hooks/useFetch";
 
-import { boardListDataInfo, boardListPinnedDataInfo, tokenAccess, totalPageInfo, contestListDataInfo } from "../../../Recoil/backState";
+import {
+    boardListDataInfo,
+    boardListPinnedDataInfo,
+    contestListDataInfo,
+    tokenAccess,
+    totalPageInfo,
+} from "../../../Recoil/backState";
 
 import { boardListInterface } from "../../../Types/TypeBoard";
 
@@ -95,14 +101,14 @@ const BoardList = () => {
         } else {
             fetchBoardListData(`${fetchUrl}`, "GET", "token");
         }
-    }, [url, access])
+    }, [url, access]);
 
     useEffect(() => {
         if (["contest", "activity"].includes(url)) {
             if (boardListData) {
                 setIsLoading(false);
-                setContestListData(boardListData?.data)
-                setTotalPage(boardListData.pageInfo.totalPages)
+                setContestListData(boardListData?.data);
+                setTotalPage(boardListData.pageInfo.totalPages);
             }
         } else {
             if (boardListData) {
@@ -130,14 +136,16 @@ const BoardList = () => {
     }, [boardListData]);
 
     useEffect(() => {
-        setBoardList([])
-        setContestListData([])
-    }, [url])
+        setBoardList([]);
+        setContestListData([]);
+    }, [url]);
 
     return (
         <>
             {isLoading ? (
-                <Loading />
+                <FlexDiv width="100%" height="100vh">
+                    <Loading />
+                </FlexDiv>
             ) : (
                 <Container $alignitems="start">
                     <StickyDiv $padding="0 15px">
@@ -152,7 +160,9 @@ const BoardList = () => {
                     </StickyDiv>
                     <Div $padding="0 15px">
                         <Suspense fallback={<Img src="/images/loading.svg" />}>
-                            { ["contest", "activity"].includes(url) ? (<Contest />) :
+                            {["contest", "activity"].includes(url) ? (
+                                <Contest />
+                            ) : (
                                 <NavigateTable
                                     width={widthList}
                                     header={headerInfo}
@@ -160,7 +170,7 @@ const BoardList = () => {
                                     pinnedContents={boardPinnedList}
                                     url="detail"
                                 />
-                            }
+                            )}
                         </Suspense>
                         {checkWritingAuthorization() && (
                             <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">
@@ -171,7 +181,10 @@ const BoardList = () => {
                                     $padding="12px 15px"
                                     $borderRadius={30}
                                     $HBackgroundColor="bgColorHo"
-                                    onClick={() => {console.log('클릭');navigate(`/board/${url}/create`);}}
+                                    onClick={() => {
+                                        console.log("클릭");
+                                        navigate(`/board/${url}/create`);
+                                    }}
                                 >
                                     <FlexDiv height="15px">
                                         <Div width="12px" height="12px" $margin="0 10px 0 0">

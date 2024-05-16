@@ -1,23 +1,22 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import styled from "styled-components";
-import { theme } from "../../../../styles/theme";
 import Button from "../../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import { TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
+import { theme } from "../../../../styles/theme";
 
 import DragNDrop from "../../../Common/DragNDrop";
-import TextEditor from "../../../Common/TextEditor";
 import Loading from "../../../Common/Loading";
+import TextEditor from "../../../Common/TextEditor";
 
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import useFetch from "../../../../Hooks/useFetch";
-import { useSetRecoilState, useRecoilState, useRecoilValue } from "recoil";
 
-import { selectedFile, menuId, refetch } from "../../../../Recoil/frontState";
 import { fileIdList } from "../../../../Recoil/backState";
-
+import { menuId, refetch, selectedFile } from "../../../../Recoil/frontState";
 
 const TitleTextInput = styled(TextInput)`
     border-radius: 5px;
@@ -36,11 +35,11 @@ export interface activityDetailInterface {
     dateCreated: string;
     dateUpdated: string;
     images: {
-            id: string;
-            name: string;
-            url: string;
-            size: number;
-            type: string;
+        id: string;
+        name: string;
+        url: string;
+        size: number;
+        type: string;
     }[];
 }
 
@@ -63,19 +62,19 @@ const ActivityCreate = () => {
 
     const sendInput = () => {
         if (inputRef.current[0].value === "") {
-            alert('제목을 입력해주세요');
-            return
+            alert("제목을 입력해주세요");
+            return;
         }
         if (inputRef.current[1].getInstance().getMarkdown().trim() === "") {
-            alert('네용을 입력해주세요');
-            return
+            alert("내용을 입력해주세요");
+            return;
         }
 
         const inputData = {
             title: inputRef.current[0].value,
             content: inputRef.current[1].getInstance().getMarkdown(),
             files: fileId,
-        }
+        };
 
         const formdata = new FormData();
 
@@ -83,14 +82,14 @@ const ActivityCreate = () => {
             formdata.append("files", files[i]);
         }
 
-        console.log(inputData)
-        if (update === 'update') {
-            console.log(inputData)
+        console.log(inputData);
+        if (update === "update") {
+            console.log(inputData);
             postFetchData(`/club/activity/${paramID}`, "POST", "token", inputData);
         } else {
             postFetchData(`/club/activity`, "POST", "token", inputData);
         }
-    }
+    };
 
     useEffect(() => {
         if (paramID) {
@@ -108,7 +107,7 @@ const ActivityCreate = () => {
 
     useEffect(() => {
         if (postData) {
-            if (update === 'update') {
+            if (update === "update") {
                 alert("글이 정상적으로 수정되었습니다");
             } else {
                 alert("글이 정상적으로 등록되었습니다");
@@ -120,18 +119,18 @@ const ActivityCreate = () => {
     useEffect(() => {
         if (getData) {
             setDetail(getData);
-            console.log(detail)
+            console.log(detail);
             setIsLoading(false);
-            
+
             // DragNDrop update 설정
             const files = [
-                ...getData.images.map((item: activityDetailInterface|null) => item),
-                ...getData.otherFiles.map((item: activityDetailInterface|null) => item),
+                ...getData.images.map((item: activityDetailInterface | null) => item),
+                ...getData.otherFiles.map((item: activityDetailInterface | null) => item),
             ];
             setSelectedFile(files);
             const fileIds = [
-                ...getData.images.map((item: activityDetailInterface|null) => item?.id),
-                ...getData.otherFiles.map((item: activityDetailInterface|null) => item?.id),
+                ...getData.images.map((item: activityDetailInterface | null) => item?.id),
+                ...getData.otherFiles.map((item: activityDetailInterface | null) => item?.id),
             ];
             setFileList(fileIds);
             setReload(true);
@@ -143,20 +142,22 @@ const ActivityCreate = () => {
         };
     }, [getData]);
 
-
     return (
         <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
             {isLoading ? (
-                <Loading />
+                <FlexDiv width="100%" height="100vh">
+                    <Loading />
+                </FlexDiv>
             ) : (
                 <Container>
                     <Div width="100%">
                         <Div $border="1px solid" $borderColor="border" radius={5} width="100%">
                             <Div $borderB={`1px solid ${theme.color.border}`} $padding="20px" width="100%">
-                                {update === "update" ? 
-                                    (<P fontWeight={600}>게시글 수정</P>) :
-                                    (<P fontWeight={600}>게시글 작성</P>)
-                                }
+                                {update === "update" ? (
+                                    <P fontWeight={600}>게시글 수정</P>
+                                ) : (
+                                    <P fontWeight={600}>게시글 작성</P>
+                                )}
                             </Div>
                             <Div width="100%" $padding="20px">
                                 <Div width="100%">
@@ -172,7 +173,7 @@ const ActivityCreate = () => {
                                 <DragNDrop fileFetch menuId={currentMenuId} />
                             </Div>
                             <Div width="100%" $padding="20px">
-                                <TextEditor 
+                                <TextEditor
                                     ref={(el: never) => (inputRef.current[1] = el)}
                                     initialContent={detail?.content}
                                 />
@@ -188,10 +189,7 @@ const ActivityCreate = () => {
                                 width="400px"
                                 onClick={sendInput}
                             >
-                                {update === "update" ? 
-                                    (<P color="wh">수정하기</P>) :
-                                    (<P color="wh">작성하기</P>)
-                                }
+                                {update === "update" ? <P color="wh">수정하기</P> : <P color="wh">작성하기</P>}
                             </Button>
                         </FlexDiv>
                     </Div>

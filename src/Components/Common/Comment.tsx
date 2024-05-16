@@ -18,6 +18,7 @@ import Img from "../../styles/assets/Img";
 import { TextArea } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
 import CommentInput from "./CommentInput";
+import Loading from "./Loading";
 
 const Comment = (props: commentPropsInterface) => {
     const { boardId, menuId } = props;
@@ -35,6 +36,7 @@ const Comment = (props: commentPropsInterface) => {
     const access = useRecoilValue(tokenAccess);
     // 수정 중인 댓글의 ID를 추적하는 상태
     const [editingCommentIds, setEditingCommentIds] = useState<number[]>([]);
+    const [isLoading, setIsLoading] = useState<null | boolean>(null);
 
     let decoded;
     if (access !== "default") {
@@ -53,12 +55,6 @@ const Comment = (props: commentPropsInterface) => {
             // 댓글 입력 상태 토글
             setCommentInputVisible(true);
             setShowCommentInputId(id);
-        }
-    };
-
-    const deleteComment = (id: number) => {
-        if (window.confirm("댓글을 정말로 삭제하시겠습니까?")) {
-            fetchCommentDeleteData(`/comment/${id}`, "DELETE", "token");
         }
     };
 
@@ -100,6 +96,14 @@ const Comment = (props: commentPropsInterface) => {
         };
 
         fetchPutComment(`/comment/${id}`, "PUT", "token", inputData);
+        setIsLoading(true);
+    };
+
+    const deleteComment = (id: number) => {
+        if (window.confirm("댓글을 정말로 삭제하시겠습니까?")) {
+            fetchCommentDeleteData(`/comment/${id}`, "DELETE", "token");
+            setIsLoading(true);
+        }
     };
 
     useEffect(() => {
@@ -281,13 +285,12 @@ const Comment = (props: commentPropsInterface) => {
                             </Div>
                         </FlexDiv>
                     )}
-                    {updating === "nothing" && !isEditing(comment.id) ? (
-                        <Div>
-                            <P $whiteSpace="wrap" fontSize="sm" fontWeight={300} $lineHeight={1.5}>
-                                {comment?.content}
-                            </P>
-                        </Div>
-                    ) : (
+
+                    {isLoading && editingCommentIds.includes(comment.id) ? (
+                        <FlexDiv width="100%" height="100px">
+                            <Loading />
+                        </FlexDiv>
+                    ) : isEditing(comment.id) ? (
                         <Div $margin="15px 0" width="100%">
                             <TextArea
                                 width="100%"
@@ -300,6 +303,12 @@ const Comment = (props: commentPropsInterface) => {
                                 value={commentInput}
                                 onChange={(e: any) => setCommentInput(e.target.value)}
                             />
+                        </Div>
+                    ) : (
+                        <Div>
+                            <P $whiteSpace="wrap" fontSize="sm" fontWeight={300} $lineHeight={1.5}>
+                                {comment?.content}
+                            </P>
                         </Div>
                     )}
 
@@ -323,10 +332,14 @@ const Comment = (props: commentPropsInterface) => {
         if (commentData) {
             const convertedComments = convertToCommentTree(commentData);
             setComment(convertedComments);
+            console.log(2);
         }
     }, [commentData]);
 
-    useEffect(() => console.log(comment), [comment]);
+    useEffect(() => {
+        setIsLoading(false);
+        console.log(1);
+    }, [comment]);
 
     return <>{comment && renderCommentsRecursively(Object.values(comment), 0)}</>;
 };
