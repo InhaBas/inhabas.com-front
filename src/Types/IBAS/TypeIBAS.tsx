@@ -49,3 +49,37 @@ export interface honorDataInterface {
     email: string;
     phoneNumber: string;
 }
+
+// activity
+
+export interface ActivityInterface {
+    id: number;
+    title: string;
+    writerName: string;
+    dateCreated: string;
+    dateUpdated: string;
+    thumbnail: {
+        id: string;
+        name: string;
+        url: string;
+        size: number;
+        type: string;
+    } | null;
+}
+
+export interface ActivityDetailInterface {
+    id: string;
+    title: string;
+    content: string;
+    writerId: string;
+    writerName: string;
+    dateCreated: string;
+    dateUpdated: string;
+    images: {
+            id: string;
+            name: string;
+            url: string;
+            size: number;
+            type: string;
+    }[];
+}

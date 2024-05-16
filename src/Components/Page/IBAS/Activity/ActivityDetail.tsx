@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 import Button from "../../../../styles/assets/Button";
 import { DetailContainer, Div, FlexDiv } from "../../../../styles/assets/Div";
@@ -13,21 +14,33 @@ import Carousel from "../../../Common/Carousel";
 
 import useFetch from "../../../../Hooks/useFetch";
 
-import { activityDetailInterface } from "./ActivityCreate";
+import { ActivityDetailInterface } from "../../../../Types/IBAS/TypeIBAS";
 
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { tokenAccess } from "../../../../Recoil/backState";
 import { carouselOpen, carouselInitialState } from "../../../../Recoil/frontState";
+
+import { tokenInterface } from "../../../../Types/TypeCommon";
+import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
 
 const ActivityDetail = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const boardId = location.pathname.split("/")[3];
-    const [detail, setDetail] = useState<activityDetailInterface|null>(null);
+    const [detail, setDetail] = useState<ActivityDetailInterface|null>(null);
     const [detailData, detailDataFetch] = useFetch();
     const menuId = 2;
     const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
     const [carouselInitial, setCarouselInitial] = useRecoilState(carouselInitialState);
     const [deleteData, deleteDataFetch] = useFetch();
+    const access = useRecoilValue(tokenAccess);
+    const { isAuthorizedOverSecretary } = GetRoleAuthorization();
+
+    let decoded;
+    if (access !== "default") {
+        decoded = jwtDecode(access) as tokenInterface;
+    }
+    const userId = decoded?.memberId;
 
     const handleCarousel = (idx: number) => {
         setCarouselInitial(idx);
@@ -123,43 +136,47 @@ const ActivityDetail = () => {
                                 }
                             </FlexDiv>
 
-                            <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
-                                <Button
-                                    display="flex"
-                                    $backgroundColor="bgColor"
-                                    $HBackgroundColor="bgColorHo"
-                                    $margin="0 10px 0 0"
-                                    $padding="12px 15px"
-                                    $borderRadius={30}
-                                    onClick={() => navigate(`/activity/update/${boardId}`)}
-                                >
-                                    <Div width="12px" $margin="0 10px 0 0">
-                                        <Img src="/images/pencil_white.svg" />
-                                    </Div>
-                                    <Div $pointer>
-                                        <P color="wh" fontSize="sm">
-                                            게시글 수정
-                                        </P>
-                                    </Div>
-                                </Button>
-                                <Button
-                                    display="flex"
-                                    $backgroundColor="red"
-                                    $HBackgroundColor="red"
-                                    $padding="12px 15px"
-                                    $borderRadius={30}
-                                    onClick={deleteDetail}
-                                >
-                                    <Div width="12px" $margin="0 10px 0 0">
-                                        <Img src="/images/trash_white.svg" />
-                                    </Div>
-                                    <Div $pointer>
-                                        <P color="wh" fontSize="sm">
-                                            게시글 삭제
-                                        </P>
-                                    </Div>
-                                </Button>
-                            </FlexDiv>
+                            {(detail?.writerId === userId || isAuthorizedOverSecretary) &&
+                                (
+                                    <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
+                                        <Button
+                                            display="flex"
+                                            $backgroundColor="bgColor"
+                                            $HBackgroundColor="bgColorHo"
+                                            $margin="0 10px 0 0"
+                                            $padding="12px 15px"
+                                            $borderRadius={30}
+                                            onClick={() => navigate(`/activity/update/${boardId}`)}
+                                        >
+                                            <Div width="12px" $margin="0 10px 0 0">
+                                                <Img src="/images/pencil_white.svg" />
+                                            </Div>
+                                            <Div $pointer>
+                                                <P color="wh" fontSize="sm">
+                                                    게시글 수정
+                                                </P>
+                                            </Div>
+                                        </Button>
+                                        <Button
+                                            display="flex"
+                                            $backgroundColor="red"
+                                            $HBackgroundColor="red"
+                                            $padding="12px 15px"
+                                            $borderRadius={30}
+                                            onClick={deleteDetail}
+                                        >
+                                            <Div width="12px" $margin="0 10px 0 0">
+                                                <Img src="/images/trash_white.svg" />
+                                            </Div>
+                                            <Div $pointer>
+                                                <P color="wh" fontSize="sm">
+                                                    게시글 삭제
+                                                </P>
+                                            </Div>
+                                        </Button>
+                                    </FlexDiv>
+                                )
+                            }
                         </Div>
                         <Comment boardId={boardId} menuId={menuId} />
                         <CommentInput boardId={boardId} menuId={menuId} />
