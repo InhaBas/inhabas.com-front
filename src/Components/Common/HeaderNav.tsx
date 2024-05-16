@@ -166,11 +166,11 @@ const HeaderNav = () => {
                 "activity",
                 "introduce",
                 "scholarship",
+                "login",
             ]?.includes(url)
         ) {
             alert("로그인을 해주세요");
             return;
-
         } else {
             navigate(`/${url}`);
             setTitle({ ...title, name: givenName, description: givenDescription });

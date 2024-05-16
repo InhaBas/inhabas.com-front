@@ -35,6 +35,20 @@ import TextViewer from "../../Common/TextViewer";
 const HorizonScrollDiv = styled(Div)`
     white-space: nowrap;
     overflow-x: scroll;
+
+    &::-webkit-scrollbar {
+        display: block;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: ${theme.color.grey1}; /* 스크롤바 썸의 색상을 지정하세요 */
+        border-radius: 4px; /* 스크롤바 썸의 모서리를 지정하세요 */
+    }
+
+    /* 스크롤바 호버 스타일 추가 */
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: ${props => props.theme.color.grey}; /* 스크롤바 썸의 호버 색상을 지정하세요 */
+    }
 `;
 
 const BoardDetail = () => {
@@ -220,7 +234,7 @@ const BoardDetail = () => {
             ) : isCarouselOpen ? (
                 <Carousel images={detail?.images?.map((image) => image.url) || []} />
             ) : (
-                <FlexDiv width="100%" height="100vh">
+                <FlexDiv width="100%" $minHeight="100vh">
                     <DetailContainer $alignitems="start">
                         <Div width="100%" $margin="0 0 30px 0">
                             <FlexDiv $margin="50px 0 30px 0">
@@ -251,7 +265,7 @@ const BoardDetail = () => {
                             </Div>
 
                             {detail && detail.images && detail.images.length > 0 && (
-                                <HorizonScrollDiv $margin="30px 0">
+                                <HorizonScrollDiv $margin="30px 0" width="100%">
                                     {detail.images.map((image, index) => (
                                         <Div
                                             key={`image${index}`}

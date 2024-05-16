@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import styled from "styled-components";
 import Button from "../../../../styles/assets/Button";
@@ -12,11 +13,14 @@ import DragNDrop from "../../../Common/DragNDrop";
 import Loading from "../../../Common/Loading";
 import TextEditor from "../../../Common/TextEditor";
 
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { ActivityDetailInterface } from "../../../../Types/IBAS/TypeIBAS";
+
 import useFetch from "../../../../Hooks/useFetch";
 
 import { fileIdList } from "../../../../Recoil/backState";
+
 import { menuId, refetch, selectedFile } from "../../../../Recoil/frontState";
+
 
 const TitleTextInput = styled(TextInput)`
     border-radius: 5px;
@@ -26,22 +30,6 @@ const TitleTextInput = styled(TextInput)`
         color: ${(props) => props.theme.color.grey1};
     }
 `;
-
-export interface activityDetailInterface {
-    id: string;
-    title: string;
-    content: string;
-    writerName: string;
-    dateCreated: string;
-    dateUpdated: string;
-    images: {
-        id: string;
-        name: string;
-        url: string;
-        size: number;
-        type: string;
-    }[];
-}
 
 const ActivityCreate = () => {
     const navigate = useNavigate();
@@ -54,7 +42,7 @@ const ActivityCreate = () => {
     const setSelectedFile = useSetRecoilState(selectedFile);
     const [fileId, setFileList] = useRecoilState(fileIdList);
     const [files, setFiles] = useRecoilState(selectedFile);
-    const [detail, setDetail] = useState<activityDetailInterface | null>(null);
+    const [detail, setDetail] = useState<ActivityDetailInterface | null>(null);
     const currentMenuId = useRecoilValue(menuId);
     const setReload = useSetRecoilState(refetch);
 
@@ -82,9 +70,7 @@ const ActivityCreate = () => {
             formdata.append("files", files[i]);
         }
 
-        console.log(inputData);
-        if (update === "update") {
-            console.log(inputData);
+        if (update === 'update') {
             postFetchData(`/club/activity/${paramID}`, "POST", "token", inputData);
         } else {
             postFetchData(`/club/activity`, "POST", "token", inputData);
@@ -119,18 +105,18 @@ const ActivityCreate = () => {
     useEffect(() => {
         if (getData) {
             setDetail(getData);
-            console.log(detail);
             setIsLoading(false);
 
             // DragNDrop update 설정
             const files = [
-                ...getData.images.map((item: activityDetailInterface | null) => item),
-                ...getData.otherFiles.map((item: activityDetailInterface | null) => item),
+
+                ...getData.images.map((item: ActivityDetailInterface|null) => item),
+                ...getData.otherFiles.map((item: ActivityDetailInterface|null) => item),
             ];
             setSelectedFile(files);
             const fileIds = [
-                ...getData.images.map((item: activityDetailInterface | null) => item?.id),
-                ...getData.otherFiles.map((item: activityDetailInterface | null) => item?.id),
+                ...getData.images.map((item: ActivityDetailInterface|null) => item?.id),
+                ...getData.otherFiles.map((item: ActivityDetailInterface|null) => item?.id),
             ];
             setFileList(fileIds);
             setReload(true);

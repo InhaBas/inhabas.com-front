@@ -29,6 +29,7 @@ import Pagination from "../../Common/Pagination";
 import BoardNavigate from "../../Component/Board/BoardNavigate";
 import BoardSearch from "../../Component/Board/BoardSearch";
 import Contest from "../IBAS/Contest/Contest";
+import { contestOrder } from "../../../Recoil/frontState";
 
 const StickyDiv = styled(Div)`
     position: sticky;
@@ -50,6 +51,7 @@ const BoardList = () => {
     const [boardListData, fetchBoardListData] = useFetch();
     const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
     const [contestListData, setContestListData] = useRecoilState(contestListDataInfo);
+    const contestOrderBy = useRecoilValue(contestOrder)
     const [isLoading, setIsLoading] = useState(true);
     const { isAuthorizedOverSecretary, isAuthorizedOverDeactivate, isSecretary, isAuthorizedOverBasic } =
         GetRoleAuthorization();
@@ -66,9 +68,9 @@ const BoardList = () => {
     } else if (url === "opensource") {
         fetchUrl = "/board/storage";
     } else if (url === "contest") {
-        fetchUrl = "/contest/contest?size=4&orderBy=DATE_CONTEST_END";
+        fetchUrl = "/contest/contest?size=4";
     } else if (url === "activity") {
-        fetchUrl = "/contest/activity?size=4&orderBy=DATE_CONTEST_END";
+        fetchUrl = "/contest/activity?size=4";
     } else {
         fetchUrl = `/board/${url}`;
     }
@@ -97,11 +99,12 @@ const BoardList = () => {
         if (["opensource", "usage", "sponsor"].includes(url)) {
             fetchBoardListData(`${fetchUrl}`, "GET");
         } else if (["contest", "activity"].includes(url)) {
-            fetchBoardListData(`${fetchUrl}`, "GET");
+            fetchBoardListData(`${fetchUrl}${contestOrderBy}`, "GET");
         } else {
             fetchBoardListData(`${fetchUrl}`, "GET", "token");
         }
-    }, [url, access]);
+    }, [url, access, contestOrderBy])
+
 
     useEffect(() => {
         if (["contest", "activity"].includes(url)) {
