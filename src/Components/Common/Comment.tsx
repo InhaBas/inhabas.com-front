@@ -66,7 +66,7 @@ const Comment = (props: commentPropsInterface) => {
         }
 
         // 수정 중인 댓글이 아닌 경우에만 해당 댓글의 수정 상태를 추가
-        setEditingCommentIds([...editingCommentIds, id]);
+        setEditingCommentIds([id]);
 
         // 수정 중인 댓글의 내용을 commentInput 상태에 설정하여 TextArea에 표시
         const editingComment = comment.find((c) => c.id === id);
