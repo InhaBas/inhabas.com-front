@@ -59,10 +59,6 @@ const ContestInfo = ({ info }: {info: any}) => {
                     {/* 진행 상태 */}
                     <Div width="100%" $margin="0 0 20px 0" $padding="5px 0">
                         <FlexDiv width="39%">
-                            {/* dday null 해결 후 삭제 */}
-                            <Div $border="2px solid" $borderColor="red" $padding="3px" radius={5}>
-                                <P color="red" fontWeight={700}>마감</P>
-                            </Div>
                             {(data?.dday < 0) &&
                                 (
                                     <Div $border="2px solid" $borderColor="red" $padding="3px" radius={5}>
