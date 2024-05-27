@@ -14,7 +14,7 @@ const Contest = () => {
     return (
         <>
             <Div width="100%" $position="relative">
-                <Div $position="absolute" $top="-50px" $right="0px" width="100px">
+                <Div $position="absolute" $top="-50px" $right="10px" width="100px">
                     <Dropdown
                         label={order === '&orderBy=ALL' ? '전체보기' : '진행중'}
                         options={["전체보기", "진행중"]}
@@ -77,6 +77,11 @@ const Contest = () => {
                                 <ContestInfo info={infos[0]} />
                             </FlexDiv>
                         </Div>
+                    )}
+                    {infos && infos?.length === 0 && (
+                        <FlexDiv width="720px">
+                            게시글이 존재하지 않습니다
+                        </FlexDiv>
                     )}
                 </Div>
             </Div>

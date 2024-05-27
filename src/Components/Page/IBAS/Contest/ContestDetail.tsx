@@ -177,7 +177,6 @@ const ContestDetail = () => {
                     
                     {/* 주제 */}
                     <FlexDiv width="100%" $borderT={`2px solid ${theme.color.border}`} $padding="20px">
-                    {/* <FlexDiv width="100%" $border="2px solid" $borderColor="border" $padding="20px"> */}
                         <Div>
                             {url === 'contest' && (<P fontSize="xl" fontWeight={800}>공모전 주제</P>)}
                             {url === 'activity' && (<P fontSize="xl" fontWeight={800}>대외활동 주제</P>)}
