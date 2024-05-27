@@ -215,8 +215,9 @@ const BoardList = () => {
                         {contestListData && contestListData.length !== 0 && (
                             <Pagination
                                 totalPage={totalPage}
-                                fetchUrl={`${fetchUrl}`}
+                                fetchUrl={`/contest/${url}?${contestOrderBy}`}
                                 paginationFetch={fetchBoardListData}
+                                size={4}
                             />
                         )}
                     </Div>
