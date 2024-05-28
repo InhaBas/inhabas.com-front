@@ -74,11 +74,13 @@ const BoardNavigate = () => {
                                                 {item.menuName}
                                             </P>
                                         </Div>
+                                        {item.menuName !== '건의사항' && (
                                         <Div>
                                             <P color="grey" fontSize="sm" fontWeight={400}>
                                                 ({item.count})
                                             </P>
                                         </Div>
+                                        )}
                                     </FlexDiv>
                                 </Div>
                             );
