@@ -1,25 +1,25 @@
+import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import useFetch from "../../../../Hooks/useFetch";
-import { jwtDecode } from "jwt-decode";
-import { tokenInterface } from "../../../../Types/TypeCommon";
 import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
+import useFetch from "../../../../Hooks/useFetch";
+import { tokenInterface } from "../../../../Types/TypeCommon";
 
-import Comment from "../../../Common/Comment";
-import CommentInput from "../../../Common/CommentInput";
 import Carousel from "../../../Common/Carousel";
+import CommentInput from "../../../Common/CommentInput";
+import CommentList from "../../../Common/CommentList";
 
-import { Div, FlexDiv } from "../../../../styles/assets/Div";
-import P from "../../../../styles/assets/P";
-import Img from "../../../../styles/assets/Img";
-import { H2 } from "../../../../styles/assets/H";
-import Button from "../../../../styles/assets/Button";
-import { theme } from "../../../../styles/theme";
 import styled from "styled-components";
+import Button from "../../../../styles/assets/Button";
+import { Div, FlexDiv } from "../../../../styles/assets/Div";
+import { H2 } from "../../../../styles/assets/H";
+import Img from "../../../../styles/assets/Img";
+import P from "../../../../styles/assets/P";
+import { theme } from "../../../../styles/theme";
 
-import { useRecoilValue, useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { tokenAccess } from "../../../../Recoil/backState";
-import { carouselOpen, carouselInitialState } from "../../../../Recoil/frontState";
+import { carouselInitialState, carouselOpen } from "../../../../Recoil/frontState";
 
 const HorizonScrollDiv = styled(Div)`
     white-space: nowrap;
@@ -36,7 +36,7 @@ const HorizonScrollDiv = styled(Div)`
 
     /* 스크롤바 호버 스타일 추가 */
     &::-webkit-scrollbar-thumb:hover {
-        background-color: ${props => props.theme.color.grey}; /* 스크롤바 썸의 호버 색상을 지정하세요 */
+        background-color: ${(props) => props.theme.color.grey}; /* 스크롤바 썸의 호버 색상을 지정하세요 */
     }
 `;
 
@@ -75,14 +75,13 @@ const ContestDetail = () => {
     const url = location.pathname.split("/")[2];
     const boardId = location.pathname.split("/")[4];
     const [detailData, detailDataFetch] = useFetch();
-    const [detail, setDetail] = useState<ContestDetailType|null>(null);
-    const menuId = url === 'contest' ? 18 : 19;
+    const [detail, setDetail] = useState<ContestDetailType | null>(null);
+    const menuId = url === "contest" ? 18 : 19;
     const access = useRecoilValue(tokenAccess);
     const navigate = useNavigate();
 
     const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
     const [carouselInitial, setCarouselInitial] = useRecoilState(carouselInitialState);
-
 
     const [deleteData, deleteDataFetch] = useFetch();
 
@@ -108,15 +107,15 @@ const ContestDetail = () => {
     };
 
     useEffect(() => {
-        detailDataFetch(`/contest/${url}/${boardId}`, 'GET')
-    }, [url])
+        detailDataFetch(`/contest/${url}/${boardId}`, "GET");
+    }, [url]);
 
     useEffect(() => {
         setDetail(detailData);
-        console.log(detail?.writerId)
-        console.log(userId)
-        console.log(detail?.writerId === userId)
-    }, [detailData])
+        console.log(detail?.writerId);
+        console.log(userId);
+        console.log(detail?.writerId === userId);
+    }, [detailData]);
 
     useEffect(() => {
         if (deleteData) {
@@ -147,7 +146,7 @@ const ContestDetail = () => {
                         </FlexDiv>
                         <FlexDiv>
                             <P color="grey4" fontSize="sm">
-                                {detail?.dateCreated.split('T')[0]} {detail?.dateCreated.split('T')[1]}
+                                {detail?.dateCreated.split("T")[0]} {detail?.dateCreated.split("T")[1]}
                             </P>
                         </FlexDiv>
                     </FlexDiv>
@@ -165,24 +164,42 @@ const ContestDetail = () => {
                             <Img src="/images/building_grey.svg" />
                         </FlexDiv>
                         <FlexDiv $margin="0 5px 0 0">
-                            <P color="grey4" fontSize="sm"> {detail?.association} |</P>
+                            <P color="grey4" fontSize="sm">
+                                {" "}
+                                {detail?.association} |
+                            </P>
                         </FlexDiv>
                         <FlexDiv $margin="0 5px 0 0" width="12px">
                             <Img src="/images/calendar_grey.svg" />
                         </FlexDiv>
                         <FlexDiv>
-                            <P color="grey4" fontSize="sm">{detail?.dateContestStart.split('T')[0]} ~ {detail?.dateContestEnd.split('T')[0]}</P>
+                            <P color="grey4" fontSize="sm">
+                                {detail?.dateContestStart.split("T")[0]} ~ {detail?.dateContestEnd.split("T")[0]}
+                            </P>
                         </FlexDiv>
                     </FlexDiv>
-                    
+
                     {/* 주제 */}
                     <FlexDiv width="100%" $borderT={`2px solid ${theme.color.border}`} $padding="20px">
                         <Div>
-                            {url === 'contest' && (<P fontSize="xl" fontWeight={800}>공모전 주제</P>)}
-                            {url === 'activity' && (<P fontSize="xl" fontWeight={800}>대외활동 주제</P>)}
+                            {url === "contest" && (
+                                <P fontSize="xl" fontWeight={800}>
+                                    공모전 주제
+                                </P>
+                            )}
+                            {url === "activity" && (
+                                <P fontSize="xl" fontWeight={800}>
+                                    대외활동 주제
+                                </P>
+                            )}
                         </Div>
                     </FlexDiv>
-                    <FlexDiv width="100%" $borderT={`2px solid ${theme.color.border}`} $borderB={`2px solid ${theme.color.border}`} $padding="50px">
+                    <FlexDiv
+                        width="100%"
+                        $borderT={`2px solid ${theme.color.border}`}
+                        $borderB={`2px solid ${theme.color.border}`}
+                        $padding="50px"
+                    >
                         <Div>
                             <P fontSize="xl">{detail?.topic}</P>
                         </Div>
@@ -221,7 +238,7 @@ const ContestDetail = () => {
 
                     {/* // api에 writerId 포함되면 수정 */}
                     {/* {(detail?.writerId === userId || isAuthorizedOverVice) && ( */}
-                    {(
+                    {
                         <FlexDiv $margin="50px 0 20px 0" width="100%" $justifycontent="end">
                             <Button
                                 display="flex"
@@ -259,14 +276,13 @@ const ContestDetail = () => {
                                 </Div>
                             </Button>
                         </FlexDiv>
-                    )}
-                    <Comment boardId={boardId} menuId={menuId} />
+                    }
+                    <CommentList boardId={boardId} menuId={menuId} />
                     <CommentInput boardId={boardId} menuId={menuId} />
                 </Div>
             )}
         </>
-    )
-
-}
+    );
+};
 
 export default ContestDetail;
