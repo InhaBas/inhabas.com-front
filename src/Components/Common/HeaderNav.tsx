@@ -276,7 +276,9 @@ const HeaderNav = () => {
                         <FlexDiv>
                             <FlexDiv>
                                 {nav &&
-                                    Object.values(nav).map((item: any, idx: number) => {
+                                    // 아래는 모임 탭 제거 전 코드
+                                    // Object.values(nav).map((item: any, idx: number) => {
+                                    Object.values(nav).filter((item: any) => {return item.groupName !== '모임'}).map((item: any, idx: number) => {
                                         return (
                                             <Div $position="relative" key={idx}>
                                                 <FlexDiv
