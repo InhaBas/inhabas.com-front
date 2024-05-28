@@ -11,7 +11,7 @@ import useFetch from "../../Hooks/useFetch";
 import { commentInfo, tokenAccess } from "../../Recoil/backState";
 import { refetch } from "../../Recoil/frontState";
 
-import { commentInterface, commentPropsInterface, tokenInterface } from "../../Types/TypeCommon";
+import { commentListInterface, commentPropsInterface, tokenInterface } from "../../Types/TypeCommon";
 
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
@@ -20,7 +20,7 @@ import P from "../../styles/assets/P";
 import CommentInput from "./CommentInput";
 import Loading from "./Loading";
 
-const Comment = (props: commentPropsInterface) => {
+const CommentList = (props: commentPropsInterface) => {
     const { boardId, menuId } = props;
     const { formatDateMinute } = DateFunction();
     const { isAuthorizedOverVice } = GetRoleAuthorization();
@@ -35,7 +35,7 @@ const Comment = (props: commentPropsInterface) => {
     const [isCommentInputVisible, setCommentInputVisible] = useState(false);
     const access = useRecoilValue(tokenAccess);
     // 수정 중인 댓글의 ID를 추적하는 상태
-    const [editingCommentIds, setEditingCommentIds] = useState<number[]>([]);
+    const [editingCommentId, setEditingCommentId] = useState<number>();
     const [isLoading, setIsLoading] = useState<null | boolean>(null);
 
     let decoded;
@@ -58,25 +58,32 @@ const Comment = (props: commentPropsInterface) => {
         }
     };
 
+    const findCommentById = (id: number, comments: commentListInterface[]): commentListInterface | undefined => {
+        for (let c of comments) {
+            if (c.id === id) return c;
+            if (c.childrenComment) {
+                const found = findCommentById(id, c.childrenComment);
+                if (found) return found;
+            }
+        }
+        return undefined;
+    };
+
     const handleEditButtonClick = (id: number) => {
-        // 이미 수정 중인 댓글이면 해당 댓글의 수정 상태를 해제하고 반환
-        if (editingCommentIds.includes(id)) {
-            setEditingCommentIds(editingCommentIds.filter((editingId) => editingId !== id));
+        setCommentInput("");
+        if (editingCommentId === id) {
+            setEditingCommentId(-1);
             return;
         }
-
-        // 수정 중인 댓글이 아닌 경우에만 해당 댓글의 수정 상태를 추가
-        setEditingCommentIds([id]);
-
-        // 수정 중인 댓글의 내용을 commentInput 상태에 설정하여 TextArea에 표시
-        const editingComment = comment.find((c) => c.id === id);
+        setEditingCommentId(id);
+        const editingComment = findCommentById(id, comment);
         if (editingComment) {
             setCommentInput(editingComment.content);
         }
     };
 
     // 수정 상태인지 확인하는 함수
-    const isEditing = (id: number) => editingCommentIds.includes(id);
+    const isEditing = (id: number) => editingCommentId === id;
 
     const checkCommentInput = () => {
         if (commentInput === "") {
@@ -97,6 +104,7 @@ const Comment = (props: commentPropsInterface) => {
 
         fetchPutComment(`/comment/${id}`, "PUT", "token", inputData);
         setIsLoading(true);
+        setCommentInput("");
     };
 
     const deleteComment = (id: number) => {
@@ -109,7 +117,7 @@ const Comment = (props: commentPropsInterface) => {
     useEffect(() => {
         fetchCommentData(`/board/${menuId}/${boardId}/comments`, "GET", "token");
         setUpdating("nothing");
-        setEditingCommentIds([]);
+        setEditingCommentId(-1);
     }, [commentDeleteData, putComment]);
 
     useEffect(() => {
@@ -122,14 +130,14 @@ const Comment = (props: commentPropsInterface) => {
 
     // 댓글 데이터를 트리 구조로 변환하는 함수
     const convertToCommentTree = (
-        comments: (commentInterface | any)[],
+        comments: (commentListInterface | any)[],
         parentAuthor: string = "",
         parentComment: string = ""
-    ): commentInterface[] => {
-        const commentTree: commentInterface[] = [];
+    ): commentListInterface[] => {
+        const commentTree: commentListInterface[] = [];
 
-        Object.values(comments).forEach((comment: commentInterface) => {
-            const updatedComment: commentInterface = {
+        Object.values(comments).forEach((comment: commentListInterface) => {
+            const updatedComment: commentListInterface = {
                 ...comment,
                 parentAuthor: parentAuthor,
                 parentComment: parentComment,
@@ -149,9 +157,8 @@ const Comment = (props: commentPropsInterface) => {
         return commentTree;
     };
 
-    // 대댓글에 대한 댓글 렌더링 부분 재귀적으로 수정
-    const renderCommentsRecursively = (comments: commentInterface[], depth: number) => {
-        return comments.map((comment: commentInterface) => (
+    const renderCommentsRecursively = (comments: commentListInterface[], depth: number) => {
+        return comments.map((comment: commentListInterface) => (
             <Div
                 width="100%"
                 $margin="15px 0"
@@ -286,7 +293,7 @@ const Comment = (props: commentPropsInterface) => {
                         </FlexDiv>
                     )}
 
-                    {isLoading && editingCommentIds.includes(comment.id) ? (
+                    {isLoading && editingCommentId === comment.id ? (
                         <FlexDiv width="100%" height="100px">
                             <Loading />
                         </FlexDiv>
@@ -300,7 +307,7 @@ const Comment = (props: commentPropsInterface) => {
                                 height="150px"
                                 $borderColor="border"
                                 placeholder="댓글을 남겨보세요!"
-                                value={commentInput}
+                                defaultValue={commentInput}
                                 onChange={(e: any) => setCommentInput(e.target.value)}
                             />
                         </Div>
@@ -344,4 +351,4 @@ const Comment = (props: commentPropsInterface) => {
     return <>{comment && renderCommentsRecursively(Object.values(comment), 0)}</>;
 };
 
-export default Comment;
+export default CommentList;

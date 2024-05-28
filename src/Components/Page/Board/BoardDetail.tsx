@@ -27,8 +27,8 @@ import Img from "../../../styles/assets/Img";
 import P from "../../../styles/assets/P";
 
 import Carousel from "../../Common/Carousel";
-import Comment from "../../Common/Comment";
 import CommentInput from "../../Common/CommentInput";
+import CommentList from "../../Common/CommentList";
 import Loading from "../../Common/Loading";
 import TextViewer from "../../Common/TextViewer";
 
@@ -47,7 +47,7 @@ const HorizonScrollDiv = styled(Div)`
 
     /* 스크롤바 호버 스타일 추가 */
     &::-webkit-scrollbar-thumb:hover {
-        background-color: ${props => props.theme.color.grey}; /* 스크롤바 썸의 호버 색상을 지정하세요 */
+        background-color: ${(props) => props.theme.color.grey}; /* 스크롤바 썸의 호버 색상을 지정하세요 */
     }
 `;
 
@@ -360,7 +360,7 @@ const BoardDetail = () => {
                                 </FlexDiv>
                             )}
                         </Div>
-                        <Comment boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />
+                        <CommentList boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />
                         <CommentInput boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />
                     </DetailContainer>
                 </FlexDiv>
