@@ -32,10 +32,10 @@ export interface paginationPropsInterface {
 }
 
 // comment
-export interface commentInterface {
+export interface commentListInterface {
     id: number;
     content: string;
-    childrenComment?: Array<commentInterface>;
+    childrenComment?: Array<commentListInterface>;
     dateUpdated: Date;
     parentAuthor?: string;
     parentComment?: string;
