@@ -73,7 +73,6 @@ const BankSupportTable = () => {
                                                             ? "blue"
                                                             : "bk"
                                                     }
-                                                    style={{ fontStyle: item === "승인 대기" ? "italic" : "normal" }}
                                                 >
                                                     {item}
                                                 </P>
