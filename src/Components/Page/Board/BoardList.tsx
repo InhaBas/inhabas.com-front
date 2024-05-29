@@ -23,13 +23,13 @@ import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
 
 import { GetRoleAuthorization } from "../../../Functions/authFunctions";
+import { contestOrder } from "../../../Recoil/frontState";
 import Loading from "../../Common/Loading";
 import NavigateTable from "../../Common/NavigateTable";
 import Pagination from "../../Common/Pagination";
 import BoardNavigate from "../../Component/Board/BoardNavigate";
 import BoardSearch from "../../Component/Board/BoardSearch";
 import Contest from "../IBAS/Contest/Contest";
-import { contestOrder } from "../../../Recoil/frontState";
 
 const StickyDiv = styled(Div)`
     position: sticky;
@@ -51,9 +51,9 @@ const BoardList = () => {
     const [boardListData, fetchBoardListData] = useFetch();
     const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
     const [contestListData, setContestListData] = useRecoilState(contestListDataInfo);
-    const contestOrderBy = useRecoilValue(contestOrder)
+    const contestOrderBy = useRecoilValue(contestOrder);
     const [isLoading, setIsLoading] = useState(true);
-    const { isAuthorizedOverSecretary, isAuthorizedOverDeactivate, isSecretary, isAuthorizedOverBasic } =
+    const { isAuthorizedOverSecretary, isAuthorizedOverDeactivate, isAuthorizedOverBasic, isAuthorizedOverExecutives } =
         GetRoleAuthorization();
 
     let fetchUrl: string;
@@ -76,19 +76,21 @@ const BoardList = () => {
     }
 
     const checkWritingAuthorization = () => {
+        // 총무
+        if (["sponsor", "usage"].includes(url) && isAuthorizedOverSecretary) {
+            return true;
+        }
+        // 비활동 회원
+        else if (["free", "question", "suggest"].includes(url) && isAuthorizedOverDeactivate) {
+            return true;
+        }
+        // 활동 회원
+        else if (["opensource"].includes(url) && isAuthorizedOverBasic) {
+            return true;
+        }
         // 회장단
-        if (["notice", "sponsor", "usage"].includes(url) && isAuthorizedOverSecretary) {
+        else if (["notice"].includes(url) && isAuthorizedOverExecutives) {
             return true;
-            // 비활동 회원
-        } else if (["free", "question", "suggest", "support"].includes(url) && isAuthorizedOverDeactivate) {
-            return true;
-            // 활동 회원
-        } else if (["opensource", "contest", "activity"].includes(url) && isAuthorizedOverBasic) {
-            return true;
-            // 총무
-        } else if (["executive"].includes(url) && isSecretary) {
-            return true;
-            // url이 잘못된 경우
         }
         return false;
     };
@@ -103,8 +105,7 @@ const BoardList = () => {
         } else {
             fetchBoardListData(`${fetchUrl}`, "GET", "token");
         }
-    }, [url, access, contestOrderBy])
-
+    }, [url, access, contestOrderBy]);
 
     useEffect(() => {
         if (["contest", "activity"].includes(url)) {
