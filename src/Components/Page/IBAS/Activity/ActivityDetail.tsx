@@ -34,7 +34,7 @@ const ActivityDetail = () => {
     const [carouselInitial, setCarouselInitial] = useRecoilState(carouselInitialState);
     const [deleteData, deleteDataFetch] = useFetch();
     const access = useRecoilValue(tokenAccess);
-    const { isAuthorizedOverSecretary } = GetRoleAuthorization();
+    const { isAuthorizedOverSecretary, isAuthorizedOverDeactivate } = GetRoleAuthorization();
 
     let decoded;
     if (access !== "default") {
@@ -183,7 +183,11 @@ const ActivityDetail = () => {
                             )}
                         </Div>
                         <CommentList boardId={boardId} menuId={menuId} />
-                        <CommentInput boardId={boardId} menuId={menuId} />
+                        {
+                            isAuthorizedOverDeactivate && (
+                                <CommentInput boardId={boardId} menuId={menuId} />
+                            )
+                        }
                     </DetailContainer>
                 </FlexDiv>
             )}
