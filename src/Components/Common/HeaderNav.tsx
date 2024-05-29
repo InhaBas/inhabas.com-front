@@ -139,7 +139,7 @@ const HeaderNav = () => {
 
     const menuUrl = [
         ["introduce", "activity", "honor"],
-        ["board/notice", "board/free", "board/question", "board/suggest", "board/opensource", "board/executive"],
+        ["board/notice", "board/free", "board/question", "board/opensource", "board/suggest", "board/executive"],
         ["lecture", "lecture", "lecture", "lecture"],
         ["bank/support", "bank"],
         ["board/alpha", "board/beta"],
