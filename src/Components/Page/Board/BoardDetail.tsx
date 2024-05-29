@@ -234,7 +234,7 @@ const BoardDetail = () => {
             ) : isCarouselOpen ? (
                 <Carousel images={detail?.images?.map((image) => image.url) || []} />
             ) : (
-                <FlexDiv width="100%" $minHeight="100vh">
+                <FlexDiv width="100%">
                     <DetailContainer $alignitems="start">
                         <Div width="100%" $margin="0 0 30px 0">
                             <FlexDiv $margin="50px 0 30px 0">
