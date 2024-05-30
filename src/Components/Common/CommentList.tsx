@@ -23,7 +23,7 @@ import Loading from "./Loading";
 const CommentList = (props: commentPropsInterface) => {
     const { boardId, menuId, token } = props;
     const { formatDateMinute } = DateFunction();
-    const { isAuthorizedOverVice } = GetRoleAuthorization();
+    const { isAuthorizedOverVice, isAuthorizedOverDeactivate } = GetRoleAuthorization();
     const [commentData, fetchCommentData] = useFetch();
     const [commentDeleteData, fetchCommentDeleteData] = useFetch();
     const [comment, setComment] = useRecoilState(commentInfo);
@@ -217,71 +217,73 @@ const CommentList = (props: commentPropsInterface) => {
                                     </FlexDiv>
                                 </FlexDiv>
                                 <Div>
-                                    <FlexDiv width="100%" $justifycontent="space-between">
-                                        <FlexDiv $pointer onClick={() => handleCommentButtonClick(comment?.id)}>
-                                            <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
-                                                <Img src="/images/comment_purple.svg"></Img>
+                                    {isAuthorizedOverDeactivate && (
+                                        <FlexDiv width="100%" $justifycontent="space-between">
+                                            <FlexDiv $pointer onClick={() => handleCommentButtonClick(comment?.id)}>
+                                                <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
+                                                    <Img src="/images/comment_purple.svg"></Img>
+                                                </FlexDiv>
+                                                <Div>
+                                                    <P color="bgColor" fontSize="xs">
+                                                        답글쓰기
+                                                    </P>
+                                                </Div>
                                             </FlexDiv>
-                                            <Div>
-                                                <P color="bgColor" fontSize="xs">
-                                                    답글쓰기
-                                                </P>
-                                            </Div>
-                                        </FlexDiv>
-                                        <FlexDiv>
-                                            {userId === comment.writer.id && (
-                                                <FlexDiv>
-                                                    {updating === "nothing" && !isEditing(comment.id) ? (
-                                                        <FlexDiv
-                                                            $margin="0 0 0 15px"
-                                                            $pointer
-                                                            onClick={() => handleEditButtonClick(comment?.id)}
-                                                        >
-                                                            <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
-                                                                <Img src="/images/pencil_purple.svg"></Img>
+                                            <FlexDiv>
+                                                {userId === comment.writer.id && (
+                                                    <FlexDiv>
+                                                        {updating === "nothing" && !isEditing(comment.id) ? (
+                                                            <FlexDiv
+                                                                $margin="0 0 0 15px"
+                                                                $pointer
+                                                                onClick={() => handleEditButtonClick(comment?.id)}
+                                                            >
+                                                                <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
+                                                                    <Img src="/images/pencil_purple.svg"></Img>
+                                                                </FlexDiv>
+                                                                <Div>
+                                                                    <P color="bgColor" fontSize="xs">
+                                                                        수정
+                                                                    </P>
+                                                                </Div>
                                                             </FlexDiv>
-                                                            <Div>
-                                                                <P color="bgColor" fontSize="xs">
-                                                                    수정
-                                                                </P>
-                                                            </Div>
-                                                        </FlexDiv>
-                                                    ) : (
-                                                        <FlexDiv
-                                                            $margin="0 0 0 15px"
-                                                            $pointer
-                                                            onClick={() => updateComment(comment?.id)}
-                                                        >
-                                                            <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
-                                                                <Img src="/images/pencil_purple.svg"></Img>
+                                                        ) : (
+                                                            <FlexDiv
+                                                                $margin="0 0 0 15px"
+                                                                $pointer
+                                                                onClick={() => updateComment(comment?.id)}
+                                                            >
+                                                                <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
+                                                                    <Img src="/images/pencil_purple.svg"></Img>
+                                                                </FlexDiv>
+                                                                <Div>
+                                                                    <P color="bgColor" fontSize="xs">
+                                                                        등록
+                                                                    </P>
+                                                                </Div>
                                                             </FlexDiv>
-                                                            <Div>
-                                                                <P color="bgColor" fontSize="xs">
-                                                                    등록
-                                                                </P>
-                                                            </Div>
-                                                        </FlexDiv>
-                                                    )}
-                                                </FlexDiv>
-                                            )}
-                                            {(userId === comment.writer.id || isAuthorizedOverVice) && (
-                                                <FlexDiv
-                                                    $margin="0 0 0 15px"
-                                                    $pointer
-                                                    onClick={() => deleteComment(comment?.id)}
-                                                >
-                                                    <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
-                                                        <Img src="/images/trash_purple.svg"></Img>
+                                                        )}
                                                     </FlexDiv>
-                                                    <Div>
-                                                        <P color="bgColor" fontSize="xs">
-                                                            삭제
-                                                        </P>
-                                                    </Div>
-                                                </FlexDiv>
-                                            )}
+                                                )}
+                                                {(userId === comment.writer.id || isAuthorizedOverVice) && (
+                                                    <FlexDiv
+                                                        $margin="0 0 0 15px"
+                                                        $pointer
+                                                        onClick={() => deleteComment(comment?.id)}
+                                                    >
+                                                        <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
+                                                            <Img src="/images/trash_purple.svg"></Img>
+                                                        </FlexDiv>
+                                                        <Div>
+                                                            <P color="bgColor" fontSize="xs">
+                                                                삭제
+                                                            </P>
+                                                        </Div>
+                                                    </FlexDiv>
+                                                )}
+                                            </FlexDiv>
                                         </FlexDiv>
-                                    </FlexDiv>
+                                    )}
                                 </Div>
                             </FlexDiv>
                         </FlexDiv>
