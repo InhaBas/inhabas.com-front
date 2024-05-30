@@ -7,6 +7,8 @@ import { DetailContainer, Div, FlexDiv } from "../../../../styles/assets/Div";
 import { H2 } from "../../../../styles/assets/H";
 import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
+import A from "../../../../styles/assets/A";
+import { theme } from "../../../../styles/theme";
 
 import Carousel from "../../../Common/Carousel";
 import CommentInput from "../../../Common/CommentInput";
@@ -34,7 +36,11 @@ const ActivityDetail = () => {
     const [carouselInitial, setCarouselInitial] = useRecoilState(carouselInitialState);
     const [deleteData, deleteDataFetch] = useFetch();
     const access = useRecoilValue(tokenAccess);
-    const { isAuthorizedOverSecretary } = GetRoleAuthorization();
+    const { isAuthorizedOverSecretary, isAuthorizedOverDeactivate } = GetRoleAuthorization();
+
+    const openWindow = (url: string) => {
+        window.open(url);
+    };
 
     let decoded;
     if (access !== "default") {
@@ -142,8 +148,47 @@ const ActivityDetail = () => {
                                 )}
                             </FlexDiv>
 
-                            {(detail?.writerId === userId || isAuthorizedOverSecretary) && (
-                                <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
+                            <FlexDiv width="100%" $margin="50px 0 0 0">
+                                {detail && detail.otherFiles && detail.otherFiles.length > 0 && (
+                                    <FlexDiv width="80%" $padding="0 30px" $border="2px solid" $borderColor="border">
+                                        {detail.otherFiles.map((image, index) => (
+                                            <FlexDiv
+                                                width="100%"
+                                                $justifycontent="start"
+                                                key={`otherFiles${index}`}
+                                                $borderB={
+                                                    detail.otherFiles && index === detail.otherFiles.length - 1
+                                                        ? "0"
+                                                        : `1px solid ${theme.color.border}`
+                                                }
+                                                $padding="20px 0"
+                                            >
+                                                <FlexDiv>
+                                                    <Div width="16px" height="16px" $margin="0 10px 0 0">
+                                                        <Img src="/images/download_grey.svg" />
+                                                    </Div>
+                                                </FlexDiv>
+                                                <FlexDiv $pointer>
+                                                    <Div onClick={() => openWindow(image.url)}>
+                                                        <A
+                                                            color="textColor"
+                                                            fontSize="sm"
+                                                            fontWeight={700}
+                                                            $hoverColor="bgColorHo"
+                                                        >
+                                                            {image.name}
+                                                        </A>
+                                                    </Div>
+                                                </FlexDiv>
+                                            </FlexDiv>
+                                        ))}
+                                    </FlexDiv>
+                                )}
+                            </FlexDiv>
+
+
+                            <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
+                                {detail?.writerId === userId && (
                                     <Button
                                         display="flex"
                                         $backgroundColor="bgColor"
@@ -162,6 +207,8 @@ const ActivityDetail = () => {
                                             </P>
                                         </Div>
                                     </Button>
+                                )}
+                                {(isAuthorizedOverSecretary || detail?.writerId === userId) && (
                                     <Button
                                         display="flex"
                                         $backgroundColor="red"
@@ -179,11 +226,16 @@ const ActivityDetail = () => {
                                             </P>
                                         </Div>
                                     </Button>
-                                </FlexDiv>
-                            )}
+                                )}
+                            </FlexDiv>
                         </Div>
+
                         <CommentList boardId={boardId} menuId={menuId} />
-                        <CommentInput boardId={boardId} menuId={menuId} />
+                        {
+                            isAuthorizedOverDeactivate && (
+                                <CommentInput boardId={boardId} menuId={menuId} />
+                            )
+                        }
                     </DetailContainer>
                 </FlexDiv>
             )}

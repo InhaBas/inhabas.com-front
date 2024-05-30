@@ -53,6 +53,19 @@ const ActivityCreate = () => {
             alert("제목을 입력해주세요");
             return;
         }
+        
+        let isAnyImg = false;
+        for (let i = 0; i < files.length; i++) {
+            if (["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(files[i].type)) {
+                isAnyImg = true;
+            }
+        }
+
+        if (!isAnyImg) {
+            alert('1개 이상의 이미지 파일을 포함해주세요');
+            return;
+        }
+
         if (inputRef.current[1].getInstance().getMarkdown().trim() === "") {
             alert("내용을 입력해주세요");
             return;
@@ -109,7 +122,6 @@ const ActivityCreate = () => {
 
             // DragNDrop update 설정
             const files = [
-
                 ...getData.images.map((item: ActivityDetailInterface|null) => item),
                 ...getData.otherFiles.map((item: ActivityDetailInterface|null) => item),
             ];

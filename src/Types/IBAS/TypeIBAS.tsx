@@ -82,4 +82,11 @@ export interface ActivityDetailInterface {
             size: number;
             type: string;
     }[];
+    otherFiles: {
+            id: string;
+            name: string;
+            url: string;
+            size: number;
+            type: string;
+    }[];
 }
