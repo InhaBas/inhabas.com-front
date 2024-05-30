@@ -230,7 +230,7 @@ const ActivityDetail = () => {
                             </FlexDiv>
                         </Div>
 
-                        <CommentList boardId={boardId} menuId={menuId} />
+                        <CommentList boardId={boardId} menuId={menuId} token={false} />
                         {
                             isAuthorizedOverDeactivate && (
                                 <CommentInput boardId={boardId} menuId={menuId} />
