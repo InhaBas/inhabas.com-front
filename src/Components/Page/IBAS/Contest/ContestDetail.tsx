@@ -85,7 +85,7 @@ const ContestDetail = () => {
 
     const [deleteData, deleteDataFetch] = useFetch();
 
-    const { isAuthorizedOverVice } = GetRoleAuthorization();
+    const { isAuthorizedOverVice, isAuthorizedOverDeactivate } = GetRoleAuthorization();
 
     let decoded;
     if (access !== "default") {
@@ -102,7 +102,6 @@ const ContestDetail = () => {
 
     const handleCarousel = (idx: number) => {
         setCarouselInitial(idx);
-
         setIsCarouselOpen(true);
     };
 
@@ -112,9 +111,6 @@ const ContestDetail = () => {
 
     useEffect(() => {
         setDetail(detailData);
-        console.log(detail?.writerId);
-        console.log(userId);
-        console.log(detail?.writerId === userId);
     }, [detailData]);
 
     useEffect(() => {
@@ -237,9 +233,9 @@ const ContestDetail = () => {
                     )}
 
                     {/* // api에 writerId 포함되면 수정 */}
-                    {/* {(detail?.writerId === userId || isAuthorizedOverVice) && ( */}
-                    {
-                        <FlexDiv $margin="50px 0 20px 0" width="100%" $justifycontent="end">
+
+                    <FlexDiv $margin="50px 0 20px 0" width="100%" $justifycontent="end">
+                        {detail?.writerId === userId && (
                             <Button
                                 display="flex"
                                 $backgroundColor="bgColor"
@@ -258,6 +254,8 @@ const ContestDetail = () => {
                                     </P>
                                 </Div>
                             </Button>
+                        )}
+                        {(detail?.writerId === userId || isAuthorizedOverVice) && (
                             <Button
                                 display="flex"
                                 $backgroundColor="red"
@@ -275,10 +273,14 @@ const ContestDetail = () => {
                                     </P>
                                 </Div>
                             </Button>
-                        </FlexDiv>
-                    }
+                        )}
+                    </FlexDiv>
                     <CommentList boardId={boardId} menuId={menuId} />
-                    <CommentInput boardId={boardId} menuId={menuId} />
+                    {isAuthorizedOverDeactivate && (
+                        <>
+                            <CommentInput boardId={boardId} menuId={menuId} />
+                        </>
+                    )}
                 </Div>
             )}
         </>
