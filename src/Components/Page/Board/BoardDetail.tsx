@@ -319,46 +319,47 @@ const BoardDetail = () => {
                                     </FlexDiv>
                                 )}
                             </FlexDiv>
-                            {detail?.writerId === userId}
-                            {(detail?.writerId === userId || isAuthorizedOverVice) && (
-                                <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
-                                    <Button
-                                        display="flex"
-                                        $backgroundColor="bgColor"
-                                        $margin="0 10px 0 0"
-                                        $padding="12px 15px"
-                                        $borderRadius={30}
-                                        $HBackgroundColor="bgColorHo"
-                                        onClick={() => navigate(`/board/${url}/update/${boardId}`)}
-                                    >
-                                        <Div width="12px" $margin="0 10px 0 0">
-                                            <Img src="/images/pencil_white.svg" />
-                                        </Div>
-                                        <Div $pointer>
-                                            <P color="wh" fontSize="sm">
-                                                게시글 수정
-                                            </P>
-                                        </Div>
-                                    </Button>
-                                    <Button
-                                        display="flex"
-                                        $backgroundColor="red"
-                                        $padding="12px 15px"
-                                        $borderRadius={30}
-                                        $HBackgroundColor="red"
-                                        onClick={() => deleteDetail()}
-                                    >
-                                        <Div width="12px" $margin="0 10px 0 0">
-                                            <Img src="/images/trash_white.svg" />
-                                        </Div>
-                                        <Div $pointer>
-                                            <P color="wh" fontSize="sm">
-                                                게시글 삭제
-                                            </P>
-                                        </Div>
-                                    </Button>
-                                </FlexDiv>
+                            <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
+                            {detail?.writerId === userId && (
+                                <Button
+                                    display="flex"
+                                    $backgroundColor="bgColor"
+                                    $margin="0 10px 0 0"
+                                    $padding="12px 15px"
+                                    $borderRadius={30}
+                                    $HBackgroundColor="bgColorHo"
+                                    onClick={() => navigate(`/board/${url}/update/${boardId}`)}
+                                >
+                                    <Div width="12px" $margin="0 10px 0 0">
+                                        <Img src="/images/pencil_white.svg" />
+                                    </Div>
+                                    <Div $pointer>
+                                        <P color="wh" fontSize="sm">
+                                            게시글 수정
+                                        </P>
+                                    </Div>
+                                </Button>
                             )}
+                            {(detail?.writerId === userId || isAuthorizedOverVice) && (
+                                <Button
+                                    display="flex"
+                                    $backgroundColor="red"
+                                    $padding="12px 15px"
+                                    $borderRadius={30}
+                                    $HBackgroundColor="red"
+                                    onClick={() => deleteDetail()}
+                                >
+                                    <Div width="12px" $margin="0 10px 0 0">
+                                        <Img src="/images/trash_white.svg" />
+                                    </Div>
+                                    <Div $pointer>
+                                        <P color="wh" fontSize="sm">
+                                            게시글 삭제
+                                        </P>
+                                    </Div>
+                                </Button>
+                            )}
+                            </FlexDiv>
                         </Div>
                         <CommentList boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />
                         <CommentInput boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />
