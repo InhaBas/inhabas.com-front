@@ -36,7 +36,7 @@ const ActivityDetail = () => {
     const [carouselInitial, setCarouselInitial] = useRecoilState(carouselInitialState);
     const [deleteData, deleteDataFetch] = useFetch();
     const access = useRecoilValue(tokenAccess);
-    const { isAuthorizedOverSecretary, isAuthorizedOverDeactivate } = GetRoleAuthorization();
+    const { isAuthorizedOverVice, isAuthorizedOverDeactivate } = GetRoleAuthorization();
 
     const openWindow = (url: string) => {
         window.open(url);
@@ -208,7 +208,7 @@ const ActivityDetail = () => {
                                         </Div>
                                     </Button>
                                 )}
-                                {(isAuthorizedOverSecretary || detail?.writerId === userId) && (
+                                {(isAuthorizedOverVice || detail?.writerId === userId) && (
                                     <Button
                                         display="flex"
                                         $backgroundColor="red"
