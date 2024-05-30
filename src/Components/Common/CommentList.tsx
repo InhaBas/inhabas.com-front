@@ -21,7 +21,7 @@ import CommentInput from "./CommentInput";
 import Loading from "./Loading";
 
 const CommentList = (props: commentPropsInterface) => {
-    const { boardId, menuId } = props;
+    const { boardId, menuId, token } = props;
     const { formatDateMinute } = DateFunction();
     const { isAuthorizedOverVice } = GetRoleAuthorization();
     const [commentData, fetchCommentData] = useFetch();
@@ -115,14 +115,22 @@ const CommentList = (props: commentPropsInterface) => {
     };
 
     useEffect(() => {
-        fetchCommentData(`/board/${menuId}/${boardId}/comments`, "GET", "token");
+        if (token === false) {
+            fetchCommentData(`/board/${menuId}/${boardId}/comments`, "GET");
+        } else {
+            fetchCommentData(`/board/${menuId}/${boardId}/comments`, "GET", "token");
+        }
         setUpdating("nothing");
         setEditingCommentId(-1);
     }, [commentDeleteData, putComment]);
 
     useEffect(() => {
         if (reload) {
-            fetchCommentData(`/board/${menuId}/${boardId}/comments`, "GET", "token");
+            if (token === false) {
+                fetchCommentData(`/board/${menuId}/${boardId}/comments`, "GET");
+            } else {
+                fetchCommentData(`/board/${menuId}/${boardId}/comments`, "GET", "token");
+            }
             setUpdating("nothing");
             setReload(false);
         }

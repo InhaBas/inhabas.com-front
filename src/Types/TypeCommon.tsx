@@ -52,6 +52,7 @@ export interface commentPropsInterface {
     menuId?: number;
     boardType?: string;
     parentId?: number;
+    token?: boolean;
 }
 
 // modal
