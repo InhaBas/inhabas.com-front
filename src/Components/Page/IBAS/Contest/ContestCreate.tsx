@@ -54,7 +54,7 @@ const ContestCreate = () => {
     const [fileId, setFileList] = useRecoilState(fileIdList);
     const [update, setUpdate] = useState("create");
     const [detail, setDetail] = useState<contestDetailInterface | null>(null);
-    const setSelectedFile = useSetRecoilState(selectedFile);
+    const [files, setSelectedFile] = useRecoilState(selectedFile);
     const currentMenuId = useRecoilValue(menuId);
     const setReload = useSetRecoilState(refetch);
     const [contestType, setContestType] = useState<number | null>(null);
@@ -98,7 +98,19 @@ const ContestCreate = () => {
             check = false;
         }
 
-        if (check && inputRef.current[5].value === "") {
+        let isAnyImg = false;
+        for (let i = 0; i < files.length; i++) {
+            if (["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(files[i].type)) {
+                isAnyImg = true;
+            }
+        }
+        
+        if (check && !isAnyImg) {
+            alert("이미지를 1개 이상 업로드해주세요.")
+            check = false;
+        }
+        
+        if (check && inputRef.current[5].getInstance().getMarkdown() === "") {
             alert("내용을 입력해주세요");
             check = false;
         }
