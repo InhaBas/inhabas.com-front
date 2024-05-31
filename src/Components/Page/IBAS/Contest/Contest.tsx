@@ -1,14 +1,14 @@
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 
-import ContestInfo from "../../../Component/Contest/ContestInfo";
 import Dropdown from "../../../Common/Dropdown";
+import ContestInfo from "../../../Component/Contest/ContestInfo";
 
-import { useRecoilValue, useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { contestListDataInfo } from "../../../../Recoil/backState";
 import { contestOrder } from "../../../../Recoil/frontState";
 
 const Contest = () => {
-    const infos = useRecoilValue(contestListDataInfo)
+    const infos = useRecoilValue(contestListDataInfo);
     const [order, setOrder] = useRecoilState(contestOrder);
 
     return (
@@ -16,8 +16,8 @@ const Contest = () => {
             <Div width="100%" $position="relative">
                 <Div $position="absolute" $top="-50px" $right="10px" width="100px">
                     <Dropdown
-                        label={order === '&orderBy=ALL' ? '전체보기' : '진행중'}
-                        options={["전체보기", "진행중"]}
+                        label={order === "&orderBy=ALL" ? "전체보기" : "진행중"}
+                        options={["전체보기", "모집중"]}
                         value={["&orderBy=ALL", "&orderBy=DUE_DATE"]}
                         onChange={(v) => setOrder(v)}
                         purple
@@ -78,15 +78,11 @@ const Contest = () => {
                             </FlexDiv>
                         </Div>
                     )}
-                    {infos && infos?.length === 0 && (
-                        <FlexDiv width="720px">
-                            게시글이 존재하지 않습니다
-                        </FlexDiv>
-                    )}
+                    {infos && infos?.length === 0 && <FlexDiv width="720px">게시글이 존재하지 않습니다</FlexDiv>}
                 </Div>
             </Div>
         </>
-    )
-}
+    );
+};
 
 export default Contest;
