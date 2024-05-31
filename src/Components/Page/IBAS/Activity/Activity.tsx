@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import useFetch from "../../../../Hooks/useFetch";
 
 import Button from "../../../../styles/assets/Button";
@@ -25,58 +26,71 @@ const Activity = () => {
     const { isAuthorizedOverSecretary } = GetRoleAuthorization();
 
     useEffect(() => {
-        fetchActivityListData('/club/activities?page=0&size=6', 'GET', 'token')
-    }, [])
+        fetchActivityListData("/club/activities?page=0&size=6", "GET", "token");
+    }, []);
 
     useEffect(() => {
         if (activityListData) {
-            setDetail(activityListData.data)
-            setTotalPage(activityListData.pageInfo.totalPages)
+            setDetail(activityListData.data);
+            setTotalPage(activityListData.pageInfo.totalPages);
         }
-    }, [activityListData])
+    }, [activityListData]);
 
     const moveCreate = () => navigate("/activity/create");
 
     return (
         <>
             <FlexDiv width="100%">
-                <FlexDiv width="75%" $justifycontent="space-between" $margin="50px 0 0 0">
-                    {detail?.slice(0, 3)?.map(({thumbnail, title, dateCreated, writerName, id}) => (
-                        <Div width="25%">
+                {/* <FlexDiv width="75%" $justifycontent="center" $margin="100px 0 0 0">
+                    {detail?.slice(0, 3)?.map(({ thumbnail, title, dateCreated, writerName, id }) => (
+                        <Div width="25%" $margin="0 50px 0 0">
                             <ActivityCard
-                            imgSrc = {thumbnail?.url}
-                            title = {title}
-                            dateCreated = {dateCreated}
-                            writerName = {writerName}
-                            id = {id}
+                                imgSrc={thumbnail?.url}
+                                title={title}
+                                dateCreated={dateCreated}
+                                writerName={writerName}
+                                id={id}
                             />
                         </Div>
                     ))}
-                    {detail?.slice(0, 3).length === 2 ? (<Div width="25%"/>) : ''}
+                    {detail?.slice(0, 3).length === 2 ? <Div width="25%" $margin="0 50px 0 0" /> : ""}
                 </FlexDiv>
-                <FlexDiv width="75%" $justifycontent="space-between" $margin="50px 0 0 0">
-                    {detail?.slice(3, 6)?.map(({thumbnail, title, dateCreated, writerName, id}) => (
-                        <Div width="25%">
+                <FlexDiv width="75%" $justifycontent="center" $margin="50px 0 0 0">
+                    {detail?.slice(3, 6)?.map(({ thumbnail, title, dateCreated, writerName, id }) => (
+                        <Div width="25%" $margin="0 50px 50px 0">
                             <ActivityCard
-                            imgSrc = {thumbnail?.url}
-                            title = {title}
-                            dateCreated = {dateCreated}
-                            writerName = {writerName}
-                            id = {id}
+                                imgSrc={thumbnail?.url}
+                                title={title}
+                                dateCreated={dateCreated}
+                                writerName={writerName}
+                                id={id}
                             />
                         </Div>
                     ))}
-                    {detail?.slice(3, 6).length === 2 ? (<Div width="25%"/>) : ''}
+                    {detail?.slice(3, 6).length === 2 ? <Div width="25%" $margin="0 50px 50px 0" /> : ""}
+                </FlexDiv> */}
+                <FlexDiv width="75%" $justifycontent="center" $alignitems="start" $margin="50px 0 0 0">
+                    {detail?.map(({ thumbnail, title, dateCreated, writerName, id }) => (
+                        <Div width="360px" $margin="0 25px 50px 25px">
+                            <ActivityCard
+                                imgSrc={thumbnail?.url}
+                                title={title}
+                                dateCreated={dateCreated}
+                                writerName={writerName}
+                                id={id}
+                            />
+                        </Div>
+                    ))}
                 </FlexDiv>
-                <Div width="100%" $margin="50px 0 0 0">
+                <Div width="100%" $margin="0 0 50px 0">
                     <Pagination
                         totalPage={totalPage}
-                        fetchUrl='/club/activities'
+                        fetchUrl="/club/activities"
                         paginationFetch={fetchActivityListData}
                         size={6}
                     />
                 </Div>
-                { isAuthorizedOverSecretary && (
+                {isAuthorizedOverSecretary && (
                     <FlexDiv $margin="50px 0" width="75%" $justifycontent="end">
                         <Button
                             display="flex"

@@ -21,7 +21,6 @@ const ArticleImg = styled(Img)`
 `;
 
 const ActivityCard = ({ imgSrc, title, dateCreated, writerName, id }: any) => {
-
     const navigate = useNavigate();
 
     const moveDetail = () => navigate(`/activity/detail/${id}`);
@@ -52,14 +51,14 @@ const ActivityCard = ({ imgSrc, title, dateCreated, writerName, id }: any) => {
                         </FlexDiv>
                         <Div>
                             <P color="wh" fontSize="sm">
-                                {dateCreated?.split('T')[0]} {dateCreated?.split('T')[1]}
+                                {dateCreated?.split("T")[0]}
                             </P>
                         </Div>
                     </FlexDiv>
                 </Div>
             </Article>
         </>
-    )
-}
+    );
+};
 
 export default ActivityCard;
