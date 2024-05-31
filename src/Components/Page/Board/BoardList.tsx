@@ -51,7 +51,7 @@ const BoardList = () => {
     const [boardListData, fetchBoardListData] = useFetch();
     const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
     const [contestListData, setContestListData] = useRecoilState(contestListDataInfo);
-    const contestOrderBy = useRecoilValue(contestOrder);
+    const [contestOrderBy, setContestOrderBy] = useRecoilState(contestOrder);
     const [isLoading, setIsLoading] = useState(true);
     const { isAuthorizedOverSecretary, isAuthorizedOverDeactivate, isAuthorizedOverBasic, isAuthorizedOverExecutives } =
         GetRoleAuthorization();
@@ -143,6 +143,10 @@ const BoardList = () => {
         setBoardList([]);
         setContestListData([]);
     }, [url]);
+
+    useEffect(() => {
+        setContestOrderBy("&orderBy=ALL");
+    }, [url])
 
     return (
         <>
