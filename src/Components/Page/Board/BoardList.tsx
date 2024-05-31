@@ -85,7 +85,7 @@ const BoardList = () => {
             return true;
         }
         // 활동 회원
-        else if (["opensource"].includes(url) && isAuthorizedOverBasic) {
+        else if (["opensource", "contest"].includes(url) && isAuthorizedOverBasic) {
             return true;
         }
         // 회장단
