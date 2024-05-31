@@ -333,7 +333,7 @@ const ContestCreate = () => {
                                 $borderB={`1px solid ${theme.color.border}`}
                             >
                                 <Div>
-                                    <P fontWeight={600}>공모전 시작일</P>
+                                    <P fontWeight={600}>공모전 모집 시작일</P>
                                 </Div>
                             </FlexDiv>
                             <Div width="100%" $padding="20px">
@@ -358,7 +358,7 @@ const ContestCreate = () => {
                                 $borderB={`1px solid ${theme.color.border}`}
                             >
                                 <Div>
-                                    <P fontWeight={600}>공모전 마감일</P>
+                                    <P fontWeight={600}>공모전 모집 마감일</P>
                                 </Div>
                             </FlexDiv>
                             <Div width="100%" $padding="20px">
