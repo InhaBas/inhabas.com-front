@@ -56,7 +56,7 @@ const BoardDetail = () => {
     const navigate = useNavigate();
     const url = location.pathname.split("/")[2];
     const boardId = location.pathname.split("/")[4];
-    const { isAuthorizedOverVice } = GetRoleAuthorization();
+    const { isAuthorizedOverExecutives } = GetRoleAuthorization();
 
     const { formatDateMinute } = DateFunction();
 
@@ -340,7 +340,7 @@ const BoardDetail = () => {
                                     </Div>
                                 </Button>
                             )}
-                            {(detail?.writerId === userId || isAuthorizedOverVice) && (
+                            {(detail?.writerId === userId || isAuthorizedOverExecutives) && (
                                 <Button
                                     display="flex"
                                     $backgroundColor="red"

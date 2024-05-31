@@ -85,7 +85,7 @@ const ContestDetail = () => {
 
     const [deleteData, deleteDataFetch] = useFetch();
 
-    const { isAuthorizedOverVice, isAuthorizedOverDeactivate } = GetRoleAuthorization();
+    const { isAuthorizedOverExecutives, isAuthorizedOverDeactivate } = GetRoleAuthorization();
 
     let decoded;
     if (access !== "default") {
@@ -255,7 +255,7 @@ const ContestDetail = () => {
                                 </Div>
                             </Button>
                         )}
-                        {(detail?.writerId === userId || isAuthorizedOverVice) && (
+                        {(detail?.writerId === userId || isAuthorizedOverExecutives) && (
                             <Button
                                 display="flex"
                                 $backgroundColor="red"
