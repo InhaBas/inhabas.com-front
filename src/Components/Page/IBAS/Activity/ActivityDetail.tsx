@@ -1,5 +1,5 @@
 import { jwtDecode } from "jwt-decode";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import A from "../../../../styles/assets/A";
@@ -39,10 +39,27 @@ const ActivityDetail = () => {
     const access = useRecoilValue(tokenAccess);
     const { isAuthorizedOverVice, isAuthorizedOverDeactivate } = GetRoleAuthorization();
     const [isLoading, setIsLoading] = useState(true);
+    const [isDownloding, setIsDownloading] = useState(true);
 
-    const openWindow = (url: string) => {
-        window.open(url);
-    };
+    const onClickFileLink = useCallback((srcUrl: string, name: string) => {
+        fetch(srcUrl, { method: "GET" })
+            .then((res) => res.blob())
+            .then((blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = name;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout((_) => {
+                    window.URL.revokeObjectURL(url);
+                }, 1000);
+                a.remove();
+            })
+            .catch((err) => {
+                console.error("err", err);
+            });
+    }, []);
 
     let decoded;
     if (access !== "default") {
@@ -159,7 +176,7 @@ const ActivityDetail = () => {
                             <FlexDiv width="100%" $margin="50px 0 0 0">
                                 {detail && detail.otherFiles && detail.otherFiles.length > 0 && (
                                     <FlexDiv width="80%" $padding="0 30px" $border="2px solid" $borderColor="border">
-                                        {detail.otherFiles.map((image, index) => (
+                                        {detail.otherFiles.map((file, index) => (
                                             <FlexDiv
                                                 width="100%"
                                                 $justifycontent="start"
@@ -177,14 +194,14 @@ const ActivityDetail = () => {
                                                     </Div>
                                                 </FlexDiv>
                                                 <FlexDiv $pointer>
-                                                    <Div onClick={() => openWindow(image.url)}>
+                                                    <Div onClick={() => onClickFileLink(file.url, file.name)}>
                                                         <A
                                                             color="textColor"
                                                             fontSize="sm"
                                                             fontWeight={700}
                                                             $hoverColor="bgColorHo"
                                                         >
-                                                            {image.name}
+                                                            {file.name}
                                                         </A>
                                                     </Div>
                                                 </FlexDiv>
