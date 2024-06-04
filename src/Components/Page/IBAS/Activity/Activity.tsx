@@ -40,10 +40,10 @@ const Activity = () => {
 
     return (
         <>
-            <FlexDiv width="100%">
-                {/* <FlexDiv width="75%" $justifycontent="center" $margin="100px 0 0 0">
+            <FlexDiv width="100%" $justifycontent="space-around" direction="column">
+                <FlexDiv width="70%" $maxWidth="1500px" $justifycontent="center" $margin="50px 0 0 0">
                     {detail?.slice(0, 3)?.map(({ thumbnail, title, dateCreated, writerName, id }) => (
-                        <Div width="25%" $margin="0 50px 0 0">
+                        <FlexDiv width="360px" $margin="50px 25px">
                             <ActivityCard
                                 imgSrc={thumbnail?.url}
                                 title={title}
@@ -51,13 +51,24 @@ const Activity = () => {
                                 writerName={writerName}
                                 id={id}
                             />
-                        </Div>
+                        </FlexDiv>
                     ))}
-                    {detail?.slice(0, 3).length === 2 ? <Div width="25%" $margin="0 50px 0 0" /> : ""}
+                    {detail?.slice(0, 3).length === 2 ? (
+                        <Div width="360px" height="360px" $margin="50px 25px" />
+                    ) : detail?.slice(0, 3).length === 1 ? (
+                        <>
+                            <Div width="360px" height="360px" $margin="50px 25px" />
+
+                            <Div width="360px" height="360px" $margin="50px 25px" />
+                        </>
+                    ) : (
+                        ""
+                    )}
                 </FlexDiv>
-                <FlexDiv width="75%" $justifycontent="center" $margin="50px 0 0 0">
+
+                <FlexDiv width="70%" $maxWidth="1500px" $justifycontent="center" $margin="50px 0 0 0">
                     {detail?.slice(3, 6)?.map(({ thumbnail, title, dateCreated, writerName, id }) => (
-                        <Div width="25%" $margin="0 50px 50px 0">
+                        <FlexDiv width="360px" $margin="0 25px 50px 25px">
                             <ActivityCard
                                 imgSrc={thumbnail?.url}
                                 title={title}
@@ -65,11 +76,28 @@ const Activity = () => {
                                 writerName={writerName}
                                 id={id}
                             />
-                        </Div>
+                        </FlexDiv>
                     ))}
-                    {detail?.slice(3, 6).length === 2 ? <Div width="25%" $margin="0 50px 50px 0" /> : ""}
-                </FlexDiv> */}
-                <FlexDiv width="75%" $justifycontent="center" $alignitems="start" $margin="50px 0 0 0">
+                    {detail?.slice(3, 6).length === 2 ? (
+                        <Div width="360px" height="360px" $margin="0 25px 50px 25px" />
+                    ) : detail?.slice(3, 6).length === 1 ? (
+                        <>
+                            <Div width="360px" height="360px" $margin="0 25px 50px 25px" />
+
+                            <Div width="360px" height="360px" $margin="0 25px 50px 25px" />
+                        </>
+                    ) : (
+                        ""
+                    )}
+                </FlexDiv>
+
+                {/* <FlexDiv
+                    width="75%"
+                    $maxWidth="1500px"
+                    $justifycontent="flex-start"
+                    $alignitems="start"
+                    $margin="50px 0 0 0"
+                >
                     {detail?.map(({ thumbnail, title, dateCreated, writerName, id }) => (
                         <Div width="360px" $margin="0 25px 50px 25px">
                             <ActivityCard
@@ -81,8 +109,8 @@ const Activity = () => {
                             />
                         </Div>
                     ))}
-                </FlexDiv>
-                <Div width="100%" $margin="0 0 50px 0">
+                </FlexDiv> */}
+                <Div width="70%" $margin="0 0 50px 0">
                     <Pagination
                         totalPage={totalPage}
                         fetchUrl="/club/activities"
@@ -91,7 +119,7 @@ const Activity = () => {
                     />
                 </Div>
                 {isAuthorizedOverSecretary && (
-                    <FlexDiv $margin="50px 0" width="75%" $justifycontent="end">
+                    <FlexDiv $margin="50px 0" width="70%" $justifycontent="end">
                         <Button
                             display="flex"
                             $backgroundColor="bgColor"
