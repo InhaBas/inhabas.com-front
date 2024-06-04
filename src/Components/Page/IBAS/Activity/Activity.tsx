@@ -9,7 +9,6 @@ import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
 
 import Pagination from "../../../Common/Pagination";
-import ActivityCard from "../../../Component/IBAS/Activity/ActivityCard";
 
 import { useRecoilState } from "recoil";
 import { totalPageInfo } from "../../../../Recoil/backState";
@@ -17,6 +16,7 @@ import { totalPageInfo } from "../../../../Recoil/backState";
 import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
 
 import { ActivityInterface } from "../../../../Types/IBAS/TypeIBAS";
+import ActivityCard from "../../../Component/IBAS/Activity/ActivityCard";
 
 const Activity = () => {
     const navigate = useNavigate();
@@ -41,9 +41,9 @@ const Activity = () => {
     return (
         <>
             <FlexDiv width="100%" $justifycontent="space-around" direction="column">
-                <FlexDiv width="70%" $maxWidth="1500px" $justifycontent="center" $margin="50px 0 0 0">
+                {/* <FlexDiv width="70%" $maxWidth="1500px" $justifycontent="center" $margin="50px 0 0 0">
                     {detail?.slice(0, 3)?.map(({ thumbnail, title, dateCreated, writerName, id }) => (
-                        <FlexDiv width="360px" $margin="50px 25px">
+                        <FlexDiv $margin="50px 25px">
                             <ActivityCard
                                 imgSrc={thumbnail?.url}
                                 title={title}
@@ -68,7 +68,7 @@ const Activity = () => {
 
                 <FlexDiv width="70%" $maxWidth="1500px" $justifycontent="center" $margin="50px 0 0 0">
                     {detail?.slice(3, 6)?.map(({ thumbnail, title, dateCreated, writerName, id }) => (
-                        <FlexDiv width="360px" $margin="0 25px 50px 25px">
+                        <FlexDiv $margin="0 25px 50px 25px">
                             <ActivityCard
                                 imgSrc={thumbnail?.url}
                                 title={title}
@@ -89,12 +89,12 @@ const Activity = () => {
                     ) : (
                         ""
                     )}
-                </FlexDiv>
+                </FlexDiv> */}
 
-                {/* <FlexDiv
-                    width="75%"
+                <FlexDiv
+                    width="70%"
                     $maxWidth="1500px"
-                    $justifycontent="flex-start"
+                    $justifycontent="center"
                     $alignitems="start"
                     $margin="50px 0 0 0"
                 >
@@ -109,7 +109,18 @@ const Activity = () => {
                             />
                         </Div>
                     ))}
-                </FlexDiv> */}
+                    {detail?.length === 2 || detail?.length === 5 ? (
+                        <Div width="360px" height="360px" $margin="0 25px 50px 25px" />
+                    ) : detail?.length === 1 || detail?.length === 4 ? (
+                        <>
+                            <Div width="360px" height="360px" $margin="0 25px 50px 25px" />
+
+                            <Div width="360px" height="360px" $margin="0 25px 50px 25px" />
+                        </>
+                    ) : (
+                        ""
+                    )}
+                </FlexDiv>
                 <Div width="70%" $margin="0 0 50px 0">
                     <Pagination
                         totalPage={totalPage}
