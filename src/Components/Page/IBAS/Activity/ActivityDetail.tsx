@@ -2,12 +2,12 @@ import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
 import { DetailContainer, Div, FlexDiv } from "../../../../styles/assets/Div";
 import { H2 } from "../../../../styles/assets/H";
 import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
-import A from "../../../../styles/assets/A";
 import { theme } from "../../../../styles/theme";
 
 import Carousel from "../../../Common/Carousel";
@@ -24,6 +24,7 @@ import { carouselInitialState, carouselOpen } from "../../../../Recoil/frontStat
 
 import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
 import { tokenInterface } from "../../../../Types/TypeCommon";
+import Loading from "../../../Common/Loading";
 
 const ActivityDetail = () => {
     const navigate = useNavigate();
@@ -37,6 +38,7 @@ const ActivityDetail = () => {
     const [deleteData, deleteDataFetch] = useFetch();
     const access = useRecoilValue(tokenAccess);
     const { isAuthorizedOverVice, isAuthorizedOverDeactivate } = GetRoleAuthorization();
+    const [isLoading, setIsLoading] = useState(true);
 
     const openWindow = (url: string) => {
         window.open(url);
@@ -56,11 +58,13 @@ const ActivityDetail = () => {
 
     useEffect(() => {
         detailDataFetch(`/club/activity/${boardId}`, "GET");
+        setIsLoading(true);
     }, []);
 
     useEffect(() => {
         if (detailData) {
             setDetail(detailData);
+            setIsLoading(false);
         }
         return () => {
             setDetail(null);
@@ -84,7 +88,11 @@ const ActivityDetail = () => {
 
     return (
         <>
-            {isCarouselOpen ? (
+            {isLoading ? (
+                <FlexDiv width="100%" height="100vh">
+                    <Loading />
+                </FlexDiv>
+            ) : isCarouselOpen ? (
                 <Carousel images={detail?.images?.map((image) => image.url) || []} />
             ) : (
                 <FlexDiv width="100%">
@@ -186,7 +194,6 @@ const ActivityDetail = () => {
                                 )}
                             </FlexDiv>
 
-
                             <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
                                 {detail?.writerId === userId && (
                                     <Button
@@ -231,11 +238,7 @@ const ActivityDetail = () => {
                         </Div>
 
                         <CommentList boardId={boardId} menuId={menuId} token={false} />
-                        {
-                            isAuthorizedOverDeactivate && (
-                                <CommentInput boardId={boardId} menuId={menuId} />
-                            )
-                        }
+                        {isAuthorizedOverDeactivate && <CommentInput boardId={boardId} menuId={menuId} />}
                     </DetailContainer>
                 </FlexDiv>
             )}
