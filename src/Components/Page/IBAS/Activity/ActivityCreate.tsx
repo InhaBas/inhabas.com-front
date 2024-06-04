@@ -21,7 +21,6 @@ import { fileIdList } from "../../../../Recoil/backState";
 
 import { menuId, refetch, selectedFile } from "../../../../Recoil/frontState";
 
-
 const TitleTextInput = styled(TextInput)`
     border-radius: 5px;
     font-size: 25px;
@@ -53,7 +52,7 @@ const ActivityCreate = () => {
             alert("제목을 입력해주세요");
             return;
         }
-        
+
         let isAnyImg = false;
         for (let i = 0; i < files.length; i++) {
             if (["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(files[i].type)) {
@@ -62,7 +61,7 @@ const ActivityCreate = () => {
         }
 
         if (!isAnyImg) {
-            alert('1개 이상의 이미지 파일을 포함해주세요');
+            alert("1개 이상의 이미지 파일을 포함해주세요");
             return;
         }
 
@@ -83,7 +82,7 @@ const ActivityCreate = () => {
             formdata.append("files", files[i]);
         }
 
-        if (update === 'update') {
+        if (update === "update") {
             postFetchData(`/club/activity/${paramID}`, "POST", "token", inputData);
         } else {
             postFetchData(`/club/activity`, "POST", "token", inputData);
@@ -122,13 +121,13 @@ const ActivityCreate = () => {
 
             // DragNDrop update 설정
             const files = [
-                ...getData.images.map((item: ActivityDetailInterface|null) => item),
-                ...getData.otherFiles.map((item: ActivityDetailInterface|null) => item),
+                ...getData.images.map((item: ActivityDetailInterface | null) => item),
+                ...getData.otherFiles.map((item: ActivityDetailInterface | null) => item),
             ];
             setSelectedFile(files);
             const fileIds = [
-                ...getData.images.map((item: ActivityDetailInterface|null) => item?.id),
-                ...getData.otherFiles.map((item: ActivityDetailInterface|null) => item?.id),
+                ...getData.images.map((item: ActivityDetailInterface | null) => item?.id),
+                ...getData.otherFiles.map((item: ActivityDetailInterface | null) => item?.id),
             ];
             setFileList(fileIds);
             setReload(true);
@@ -158,7 +157,7 @@ const ActivityCreate = () => {
                                 )}
                             </Div>
                             <Div width="100%" $padding="20px">
-                                <Div width="100%">
+                                <Div width="100%" $margin="0 0 30px 0">
                                     <TitleTextInput
                                         width="100%"
                                         height="70px"
