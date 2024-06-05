@@ -1,6 +1,12 @@
 import { jwtDecode } from "jwt-decode";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { theme } from "../../../../styles/theme";
+
+import { tokenAccess } from "../../../../Recoil/backState";
+import { carouselInitialState, carouselOpen } from "../../../../Recoil/frontState";
+
 import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
 import useFetch from "../../../../Hooks/useFetch";
 import { tokenInterface } from "../../../../Types/TypeCommon";
@@ -10,16 +16,12 @@ import CommentInput from "../../../Common/CommentInput";
 import CommentList from "../../../Common/CommentList";
 
 import styled from "styled-components";
+import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import { H2 } from "../../../../styles/assets/H";
 import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
-import { theme } from "../../../../styles/theme";
-
-import { useRecoilState, useRecoilValue } from "recoil";
-import { tokenAccess } from "../../../../Recoil/backState";
-import { carouselInitialState, carouselOpen } from "../../../../Recoil/frontState";
 
 const HorizonScrollDiv = styled(Div)`
     white-space: nowrap;
@@ -104,6 +106,26 @@ const ContestDetail = () => {
         setCarouselInitial(idx);
         setIsCarouselOpen(true);
     };
+
+    const onClickFileLink = useCallback((srcUrl: string, name: string) => {
+        fetch(srcUrl, { method: "GET" })
+            .then((res) => res.blob())
+            .then((blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = name;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    window.URL.revokeObjectURL(url);
+                }, 1000);
+                a.remove();
+            })
+            .catch((err) => {
+                console.error("err", err);
+            });
+    }, []);
 
     useEffect(() => {
         detailDataFetch(`/contest/${url}/${boardId}`, "GET");
@@ -231,6 +253,44 @@ const ContestDetail = () => {
                             ))}
                         </HorizonScrollDiv>
                     )}
+
+                    <FlexDiv width="100%">
+                        {detail && detail.otherFiles && detail.otherFiles.length > 0 && (
+                            <FlexDiv width="80%" $padding="0 30px" $border="2px solid" $borderColor="border">
+                                {detail.otherFiles.map((file, index) => (
+                                    <FlexDiv
+                                        width="100%"
+                                        $justifycontent="start"
+                                        key={`otherFiles${index}`}
+                                        $borderB={
+                                            detail.otherFiles && index === detail.otherFiles.length - 1
+                                                ? "0"
+                                                : `1px solid ${theme.color.border}`
+                                        }
+                                        $padding="20px 0"
+                                    >
+                                        <FlexDiv>
+                                            <Div width="16px" height="16px" $margin="0 10px 0 0">
+                                                <Img src="/images/download_grey.svg" />
+                                            </Div>
+                                        </FlexDiv>
+                                        <FlexDiv $pointer>
+                                            <Div onClick={() => onClickFileLink(file.url, file.name)}>
+                                                <A
+                                                    color="textColor"
+                                                    fontSize="sm"
+                                                    fontWeight={700}
+                                                    $hoverColor="bgColorHo"
+                                                >
+                                                    {file.name}
+                                                </A>
+                                            </Div>
+                                        </FlexDiv>
+                                    </FlexDiv>
+                                ))}
+                            </FlexDiv>
+                        )}
+                    </FlexDiv>
 
                     {/* // api에 writerId 포함되면 수정 */}
 
