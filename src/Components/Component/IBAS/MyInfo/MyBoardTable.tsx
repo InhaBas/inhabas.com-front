@@ -54,7 +54,7 @@ const MyBoardTable = () => {
     return (
         <>
             {isLoading ? (
-                <FlexDiv width="100%" height="100vh">
+                <FlexDiv width="100%" height="30vh">
                     <Loading />
                 </FlexDiv>
             ) : (
