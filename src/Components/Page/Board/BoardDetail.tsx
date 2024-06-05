@@ -1,5 +1,5 @@
 import { jwtDecode } from "jwt-decode";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
@@ -187,6 +187,26 @@ const BoardDetail = () => {
         setIsCarouselOpen(true);
     };
 
+    const onClickFileLink = useCallback((srcUrl: string, name: string) => {
+        fetch(srcUrl, { method: "GET" })
+            .then((res) => res.blob())
+            .then((blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = name;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    window.URL.revokeObjectURL(url);
+                }, 1000);
+                a.remove();
+            })
+            .catch((err) => {
+                console.error("err", err);
+            });
+    }, []);
+
     useEffect(() => console.log(carouselInitial), [carouselInitial]);
 
     const deleteDetail = () => {
@@ -285,7 +305,7 @@ const BoardDetail = () => {
                             <FlexDiv width="100%">
                                 {detail && detail.otherFiles && detail.otherFiles.length > 0 && (
                                     <FlexDiv width="80%" $padding="0 30px" $border="2px solid" $borderColor="border">
-                                        {detail.otherFiles.map((image, index) => (
+                                        {detail.otherFiles.map((file, index) => (
                                             <FlexDiv
                                                 width="100%"
                                                 $justifycontent="start"
@@ -303,14 +323,14 @@ const BoardDetail = () => {
                                                     </Div>
                                                 </FlexDiv>
                                                 <FlexDiv $pointer>
-                                                    <Div onClick={() => openWindow(image.url)}>
+                                                    <Div onClick={() => onClickFileLink(file.url, file.name)}>
                                                         <A
                                                             color="textColor"
                                                             fontSize="sm"
                                                             fontWeight={700}
                                                             $hoverColor="bgColorHo"
                                                         >
-                                                            {image.name}
+                                                            {file.name}
                                                         </A>
                                                     </Div>
                                                 </FlexDiv>
@@ -320,45 +340,45 @@ const BoardDetail = () => {
                                 )}
                             </FlexDiv>
                             <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
-                            {detail?.writerId === userId && (
-                                <Button
-                                    display="flex"
-                                    $backgroundColor="bgColor"
-                                    $margin="0 10px 0 0"
-                                    $padding="12px 15px"
-                                    $borderRadius={30}
-                                    $HBackgroundColor="bgColorHo"
-                                    onClick={() => navigate(`/board/${url}/update/${boardId}`)}
-                                >
-                                    <Div width="12px" $margin="0 10px 0 0">
-                                        <Img src="/images/pencil_white.svg" />
-                                    </Div>
-                                    <Div $pointer>
-                                        <P color="wh" fontSize="sm">
-                                            게시글 수정
-                                        </P>
-                                    </Div>
-                                </Button>
-                            )}
-                            {(detail?.writerId === userId || isAuthorizedOverVice) && (
-                                <Button
-                                    display="flex"
-                                    $backgroundColor="red"
-                                    $padding="12px 15px"
-                                    $borderRadius={30}
-                                    $HBackgroundColor="red"
-                                    onClick={() => deleteDetail()}
-                                >
-                                    <Div width="12px" $margin="0 10px 0 0">
-                                        <Img src="/images/trash_white.svg" />
-                                    </Div>
-                                    <Div $pointer>
-                                        <P color="wh" fontSize="sm">
-                                            게시글 삭제
-                                        </P>
-                                    </Div>
-                                </Button>
-                            )}
+                                {detail?.writerId === userId && (
+                                    <Button
+                                        display="flex"
+                                        $backgroundColor="bgColor"
+                                        $margin="0 10px 0 0"
+                                        $padding="12px 15px"
+                                        $borderRadius={30}
+                                        $HBackgroundColor="bgColorHo"
+                                        onClick={() => navigate(`/board/${url}/update/${boardId}`)}
+                                    >
+                                        <Div width="12px" $margin="0 10px 0 0">
+                                            <Img src="/images/pencil_white.svg" />
+                                        </Div>
+                                        <Div $pointer>
+                                            <P color="wh" fontSize="sm">
+                                                게시글 수정
+                                            </P>
+                                        </Div>
+                                    </Button>
+                                )}
+                                {(detail?.writerId === userId || isAuthorizedOverVice) && (
+                                    <Button
+                                        display="flex"
+                                        $backgroundColor="red"
+                                        $padding="12px 15px"
+                                        $borderRadius={30}
+                                        $HBackgroundColor="red"
+                                        onClick={() => deleteDetail()}
+                                    >
+                                        <Div width="12px" $margin="0 10px 0 0">
+                                            <Img src="/images/trash_white.svg" />
+                                        </Div>
+                                        <Div $pointer>
+                                            <P color="wh" fontSize="sm">
+                                                게시글 삭제
+                                            </P>
+                                        </Div>
+                                    </Button>
+                                )}
                             </FlexDiv>
                         </Div>
                         <CommentList boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />

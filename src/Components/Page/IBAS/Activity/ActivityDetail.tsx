@@ -39,7 +39,6 @@ const ActivityDetail = () => {
     const access = useRecoilValue(tokenAccess);
     const { isAuthorizedOverVice, isAuthorizedOverDeactivate } = GetRoleAuthorization();
     const [isLoading, setIsLoading] = useState(true);
-    const [isDownloding, setIsDownloading] = useState(true);
 
     const onClickFileLink = useCallback((srcUrl: string, name: string) => {
         fetch(srcUrl, { method: "GET" })
@@ -51,7 +50,7 @@ const ActivityDetail = () => {
                 a.download = name;
                 document.body.appendChild(a);
                 a.click();
-                setTimeout((_) => {
+                setTimeout(() => {
                     window.URL.revokeObjectURL(url);
                 }, 1000);
                 a.remove();
