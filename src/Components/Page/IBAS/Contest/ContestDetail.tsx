@@ -22,6 +22,7 @@ import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import { H2 } from "../../../../styles/assets/H";
 import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
+import Loading from "../../../Common/Loading";
 
 const HorizonScrollDiv = styled(Div)`
     white-space: nowrap;
@@ -80,6 +81,7 @@ const ContestDetail = () => {
     const [detail, setDetail] = useState<ContestDetailType | null>(null);
     const menuId = url === "contest" ? 18 : 19;
     const access = useRecoilValue(tokenAccess);
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
 
     const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
@@ -99,6 +101,7 @@ const ContestDetail = () => {
     const deleteDetail = () => {
         if (window.confirm("정말 삭제 하시겠습니까?")) {
             deleteDataFetch(`/contest/${url}/${boardId}`, "DELETE", "token");
+            setIsLoading(true);
         }
     };
 
@@ -128,16 +131,27 @@ const ContestDetail = () => {
     }, []);
 
     useEffect(() => {
+        setIsLoading(true);
+        console.log(22);
         detailDataFetch(`/contest/${url}/${boardId}`, "GET");
     }, [url]);
 
     useEffect(() => {
-        setDetail(detailData);
+        if (detailData) {
+            setDetail(detailData);
+            console.log(33);
+            setIsLoading(false);
+        }
+        return () => {
+            setDetail(null);
+            setIsCarouselOpen(false);
+        };
     }, [detailData]);
 
     useEffect(() => {
         if (deleteData) {
             alert("게시글이 삭제 되었습니다");
+            setIsLoading(false);
             navigate(`/board/${url}`);
         }
         return () => setDetail(null);
@@ -145,7 +159,11 @@ const ContestDetail = () => {
 
     return (
         <>
-            {isCarouselOpen ? (
+            {isLoading ? (
+                <FlexDiv width="100%" height="100vh">
+                    <Loading />
+                </FlexDiv>
+            ) : isCarouselOpen ? (
                 <Carousel images={detail?.images?.map((image) => image.url) || []} />
             ) : (
                 <Div width="800px" $margin="50px 0 100px 0" direction="column">

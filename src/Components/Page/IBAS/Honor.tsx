@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import Slider from "react-slick";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import useFetch from "../../../Hooks/useFetch";
 import { honorDataInfo } from "../../../Recoil/backState";
@@ -14,6 +14,7 @@ import Img from "../../../styles/assets/Img";
 import P from "../../../styles/assets/P";
 import HeaderNav from "../../Common/HeaderNav";
 import HonorSlide from "../../Common/HonorSlide";
+import Loading from "../../Common/Loading";
 
 const HonorImg = styled(Img)`
     object-fit: fill;
@@ -55,21 +56,19 @@ const Honor = () => {
 
     const [honorData, fetchHonorData] = useFetch();
     const [honor, setHonor] = useRecoilState(honorDataInfo);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         fetchHonorData("/members/hof", "GET", "token");
+        setIsLoading(true);
     }, []);
 
     useEffect(() => {
         if (honorData) {
             setHonor(honorData);
+            setIsLoading(false);
         }
     }, [honorData]);
-
-    useEffect(() => {
-        console.log(typeof honor);
-        // console.log(honor?.length);
-    }, [honor]);
 
     return (
         <>
@@ -100,26 +99,32 @@ const Honor = () => {
                                 </Div>
                             </FlexDiv>
                             <FlexDiv width="100%" $margin="80px 0 0 0">
-                                {honor && Object.values(honor).length == 0 ? (
-                                    <FlexDiv width="100%" height="50vh">
-                                        <Div>
-                                            <P color="wh" fontSize="xl">
-                                                아직 정보 공개에 동의하신 선배님이 없습니다.
-                                            </P>
-                                        </Div>
-                                    </FlexDiv>
-                                ) : honor && Object.values(honor).length <= 3 ? (
-                                    Object.values(honor).map((cont, index) => (
-                                        <HonorSlide key={index} honors={cont} small={true} />
-                                    ))
-                                ) : (
-                                    <StyledSlider {...settings}>
-                                        {honor &&
-                                            Object.values(honor).map((cont, index) => (
-                                                <HonorSlide key={index} honors={cont} />
-                                            ))}
-                                    </StyledSlider>
-                                )}
+                                <>
+                                    {isLoading ? (
+                                        <FlexDiv width="100%" height="50vh">
+                                            <Loading />
+                                        </FlexDiv>
+                                    ) : honor && Object.values(honor).length == 0 ? (
+                                        <FlexDiv width="100%" height="50vh">
+                                            <Div>
+                                                <P color="wh" fontSize="xl">
+                                                    아직 정보 공개에 동의하신 선배님이 없습니다.
+                                                </P>
+                                            </Div>
+                                        </FlexDiv>
+                                    ) : honor && Object.values(honor).length <= 3 ? (
+                                        Object.values(honor).map((cont, index) => (
+                                            <HonorSlide key={index} honors={cont} small={true} />
+                                        ))
+                                    ) : (
+                                        <StyledSlider {...settings}>
+                                            {honor &&
+                                                Object.values(honor).map((cont, index) => (
+                                                    <HonorSlide key={index} honors={cont} />
+                                                ))}
+                                        </StyledSlider>
+                                    )}
+                                </>
                             </FlexDiv>
                         </Div>
                     </FlexDiv>

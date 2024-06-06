@@ -39,7 +39,7 @@ const BankSupport = () => {
 
     useEffect(() => {
         fetchBankListData(`/budget/applications?status=${statusValue}&page=0&size=10`, "GET", "token");
-        setIsLoading(false);
+        setIsLoading(true);
     }, [access, statusValue]);
 
     useEffect(() => {
@@ -64,8 +64,12 @@ const BankSupport = () => {
 
             setBankList(contents);
             setTotalPage(bankListData.pageInfo.totalPages);
-            // setIsLoading(false);
+            setIsLoading(false);
         }
+        return () => {
+            setBankList([]);
+            setTotalPage(0);
+        };
     }, [bankListData]);
 
     return (

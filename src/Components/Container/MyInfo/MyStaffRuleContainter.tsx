@@ -14,6 +14,7 @@ import { Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
 import { TextInput } from "../../../styles/assets/Input";
 import P from "../../../styles/assets/P";
+import Loading from "../../Common/Loading";
 import TextEditor from "../../Common/TextEditor";
 
 const MyStaffRuleContainer = () => {
@@ -26,6 +27,7 @@ const MyStaffRuleContainer = () => {
     const [policy, setPolicy] = useRecoilState(totalPolicyInfo);
     const [putPolicyData, fetchPutPolicyData] = useFetch();
     const [alertMessage, setAlertMessage] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const changeRule = (idx: number) => {
         let inputData = {
@@ -40,14 +42,17 @@ const MyStaffRuleContainer = () => {
     // 정책 api 불러오기
     // api 바뀌면 다시 조정
     useEffect(() => {
+        setIsLoading(true);
         policyFetchData1("/policy/1", "GET");
         setAlertMessage(false);
     }, [putPolicyData]);
     useEffect(() => {
+        setIsLoading(true);
         policyFetchData2("/policy/2", "GET");
         setAlertMessage(false);
     }, [putPolicyData]);
     useEffect(() => {
+        setIsLoading(true);
         policyFetchData3("/policy/3", "GET");
         setAlertMessage(false);
     }, [putPolicyData]);
@@ -63,6 +68,7 @@ const MyStaffRuleContainer = () => {
                     editorRef.current[idx].getInstance().setMarkdown(item?.content);
                 }
             });
+            setIsLoading(false);
         }
     }, [policy]);
 
@@ -74,7 +80,12 @@ const MyStaffRuleContainer = () => {
 
     return (
         <>
-            {policy &&
+            {isLoading ? (
+                <FlexDiv width="100%" height="30vh">
+                    <Loading />
+                </FlexDiv>
+            ) : (
+                policy &&
                 policy.map((item: policyInterface, idx: number) => (
                     <Div
                         width="100%"
@@ -134,7 +145,8 @@ const MyStaffRuleContainer = () => {
                             </FlexDiv>
                         </Div>
                     </Div>
-                ))}
+                ))
+            )}
         </>
     );
 };

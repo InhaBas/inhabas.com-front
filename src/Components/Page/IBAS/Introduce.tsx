@@ -20,6 +20,7 @@ import Img from "../../../styles/assets/Img";
 import P from "../../../styles/assets/P";
 
 import HeaderNav from "../../Common/HeaderNav";
+import Loading from "../../Common/Loading";
 
 const IntroduceSection = styled(Div)`
     min-height: 100vh;
@@ -140,6 +141,7 @@ const Introduce = () => {
     const [staffInfoData, setStaffInfoData] = useFetch();
     const [staff, setStaff] = useRecoilState(staffInfo);
     const [reload, setReload] = useRecoilState(refetch);
+    const [isLoading, setIsLoading] = useState(true);
 
     const careerEvent = (clicked: number) => {
         setPage(clicked);
@@ -163,6 +165,7 @@ const Introduce = () => {
 
     // 연혁 get fetch ( 처음 페이지 렌더링 시 )
     useEffect(() => {
+        setIsLoading(true);
         setHistoryInfoData("/club/histories", "GET");
     }, []);
 
@@ -196,6 +199,7 @@ const Introduce = () => {
             });
 
             setHistory(content);
+            setIsLoading(false);
         }
     }, [historyInfoData]);
 
@@ -314,102 +318,108 @@ const Introduce = () => {
                 </Div>
             </IntroduceSection>
             <IntroduceSection width="100%" height="100vh">
-                <Div $position="relative" width="100%" height="100vh">
-                    <IntroImg src="/images/history.jpg" />
-                    <Div $zIndex={2} $position="absolute" $top="5%" $left="5%">
-                        <Div width="100%">
-                            <P color="wh" $letterSpacing="5px" fontSize="extraBig" fontWeight={800}>
-                                HISTORY
-                            </P>
-                        </Div>
-                        {isAuthorizedOverExecutives && (
-                            <Div
-                                $margin="10px"
-                                $padding="3px"
-                                $pointer
-                                $borderB={`1.5px solid ${theme.color.wh}`}
-                                onClick={() => openModal("Post")}
-                            >
-                                <P color="wh" fontSize="lg">
-                                    동아리 연혁 추가하기
+                {isLoading ? (
+                    <FlexDiv width="100%" height="100vh">
+                        <Loading />
+                    </FlexDiv>
+                ) : (
+                    <Div $position="relative" width="100%" height="100vh">
+                        <IntroImg src="/images/history.jpg" />
+                        <Div $zIndex={2} $position="absolute" $top="5%" $left="5%">
+                            <Div width="100%">
+                                <P color="wh" $letterSpacing="5px" fontSize="extraBig" fontWeight={800}>
+                                    HISTORY
                                 </P>
                             </Div>
-                        )}
-                    </Div>
-                    <Div
-                        width="80%"
-                        height="70vh"
-                        $zIndex={2}
-                        $position="absolute"
-                        $top="30%"
-                        $left="10%"
-                        overflow="auto"
-                    >
-                        {history &&
-                            history.length !== 0 &&
-                            Object.values(history).map((element: historyInterface) => (
-                                <FlexDiv width="100%" $alignitems="start">
-                                    <Div $padding="50px" width="200px">
-                                        <P color="grey1" fontSize="xxl">
-                                            {element.year}
-                                        </P>
-                                    </Div>
-                                    <Div width="80%">
-                                        <Ul>
-                                            <Li>
-                                                <FlexDiv>
-                                                    <P color="wh" fontSize="xxl">
-                                                        {element.title}
-                                                    </P>
-                                                </FlexDiv>
-                                                <Div
-                                                    $padding="20px 0"
-                                                    $margin={element.content === null ? "0 0 50px 0" : "0"}
-                                                >
-                                                    <P color="wh">{element.dateHistory}</P>
-                                                </Div>
-                                                <Div $margin="0 0 50px 0">
-                                                    <P color="wh" fontSize="xl" fontWeight={400}>
-                                                        {element.content}
-                                                    </P>
-                                                </Div>
-                                                {isAuthorizedOverExecutives && (
-                                                    <>
-                                                        <FlexDiv
-                                                            width="100%"
-                                                            $justifycontent="end"
-                                                            $margin="0 0 10px 0"
-                                                        >
-                                                            <Div
-                                                                width="15px"
-                                                                $pointer
-                                                                onClick={() => openModal("Put", element.id)}
+                            {isAuthorizedOverExecutives && (
+                                <Div
+                                    $margin="10px"
+                                    $padding="3px"
+                                    $pointer
+                                    $borderB={`1.5px solid ${theme.color.wh}`}
+                                    onClick={() => openModal("Post")}
+                                >
+                                    <P color="wh" fontSize="lg">
+                                        동아리 연혁 추가하기
+                                    </P>
+                                </Div>
+                            )}
+                        </Div>
+                        <Div
+                            width="80%"
+                            height="70vh"
+                            $zIndex={2}
+                            $position="absolute"
+                            $top="30%"
+                            $left="10%"
+                            overflow="auto"
+                        >
+                            {history &&
+                                history.length !== 0 &&
+                                Object.values(history).map((element: historyInterface) => (
+                                    <FlexDiv width="100%" $alignitems="start">
+                                        <Div $padding="50px" width="200px">
+                                            <P color="grey1" fontSize="xxl">
+                                                {element.year}
+                                            </P>
+                                        </Div>
+                                        <Div width="80%">
+                                            <Ul>
+                                                <Li>
+                                                    <FlexDiv>
+                                                        <P color="wh" fontSize="xxl">
+                                                            {element.title}
+                                                        </P>
+                                                    </FlexDiv>
+                                                    <Div
+                                                        $padding="20px 0"
+                                                        $margin={element.content === null ? "0 0 50px 0" : "0"}
+                                                    >
+                                                        <P color="wh">{element.dateHistory}</P>
+                                                    </Div>
+                                                    <Div $margin="0 0 50px 0">
+                                                        <P color="wh" fontSize="xl" fontWeight={400}>
+                                                            {element.content}
+                                                        </P>
+                                                    </Div>
+                                                    {isAuthorizedOverExecutives && (
+                                                        <>
+                                                            <FlexDiv
+                                                                width="100%"
+                                                                $justifycontent="end"
+                                                                $margin="0 0 10px 0"
                                                             >
-                                                                <Img src="/images/pencil_white.svg" />
-                                                            </Div>
-                                                        </FlexDiv>
-                                                        <FlexDiv
-                                                            width="100%"
-                                                            $justifycontent="end"
-                                                            $margin="0 0 10px 0"
-                                                        >
-                                                            <Div
-                                                                width="15px"
-                                                                $pointer
-                                                                onClick={() => deleteHistory(element.id)}
+                                                                <Div
+                                                                    width="15px"
+                                                                    $pointer
+                                                                    onClick={() => openModal("Put", element.id)}
+                                                                >
+                                                                    <Img src="/images/pencil_white.svg" />
+                                                                </Div>
+                                                            </FlexDiv>
+                                                            <FlexDiv
+                                                                width="100%"
+                                                                $justifycontent="end"
+                                                                $margin="0 0 10px 0"
                                                             >
-                                                                <Img src="/images/trash_white.svg" />
-                                                            </Div>
-                                                        </FlexDiv>
-                                                    </>
-                                                )}
-                                            </Li>
-                                        </Ul>
-                                    </Div>
-                                </FlexDiv>
-                            ))}
+                                                                <Div
+                                                                    width="15px"
+                                                                    $pointer
+                                                                    onClick={() => deleteHistory(element.id)}
+                                                                >
+                                                                    <Img src="/images/trash_white.svg" />
+                                                                </Div>
+                                                            </FlexDiv>
+                                                        </>
+                                                    )}
+                                                </Li>
+                                            </Ul>
+                                        </Div>
+                                    </FlexDiv>
+                                ))}
+                        </Div>
                     </Div>
-                </Div>
+                )}
             </IntroduceSection>
             <FlexDiv width="100%" height="100vh" $backgroundColor="bk">
                 <Div $position="relative" width="40%" height="100vh">
