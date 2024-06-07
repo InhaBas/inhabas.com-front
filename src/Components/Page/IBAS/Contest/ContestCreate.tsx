@@ -104,12 +104,12 @@ const ContestCreate = () => {
                 isAnyImg = true;
             }
         }
-        
+
         if (check && !isAnyImg) {
-            alert("이미지를 1개 이상 업로드해주세요.")
+            alert("이미지를 1개 이상 업로드해주세요.");
             check = false;
         }
-        
+
         if (check && inputRef.current[5].getInstance().getMarkdown() === "") {
             alert("내용을 입력해주세요");
             check = false;
@@ -123,7 +123,7 @@ const ContestCreate = () => {
                 topic: inputRef.current[1].value,
                 association: inputRef.current[2].value,
                 dateContestStart: inputRef.current[3].value + "T00:00:00",
-                dateContestEnd: inputRef.current[4].value + "T00:00:00",
+                dateContestEnd: inputRef.current[4].value + "T23:59:59",
                 content: inputRef.current[5].getInstance().getMarkdown(),
                 files: fileId,
             };
