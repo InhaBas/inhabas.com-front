@@ -230,7 +230,7 @@ const CommentList = (props: commentPropsInterface) => {
                                                 </Div>
                                             </FlexDiv>
                                             <FlexDiv>
-                                                {userId === comment.writer.id && (
+                                                {userId === comment.writer.id && comment.content !== '삭제된 댓글입니다.' && (
                                                     <FlexDiv>
                                                         {updating === "nothing" && !isEditing(comment.id) ? (
                                                             <FlexDiv
@@ -265,7 +265,7 @@ const CommentList = (props: commentPropsInterface) => {
                                                         )}
                                                     </FlexDiv>
                                                 )}
-                                                {(userId === comment.writer.id || isAuthorizedOverVice) && (
+                                                {(userId === comment.writer.id || isAuthorizedOverVice) && comment.content !== '삭제된 댓글입니다.' && (
                                                     <FlexDiv
                                                         $margin="0 0 0 15px"
                                                         $pointer
