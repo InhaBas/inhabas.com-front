@@ -7,14 +7,21 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { contestListDataInfo } from "../../../../Recoil/backState";
 import { contestOrder } from "../../../../Recoil/frontState";
 
+import Button from "../../../../styles/assets/Button";
+import Img from "../../../../styles/assets/Img";
+import A from "../../../../styles/assets/A";
+import { useNavigate } from "react-router-dom";
+
 const Contest = () => {
     const infos = useRecoilValue(contestListDataInfo);
     const [order, setOrder] = useRecoilState(contestOrder);
 
+    const navigate = useNavigate();
+
     return (
         <>
             <Div width="100%" $position="relative">
-                <Div $position="absolute" $top="-50px" $right="10px" width="100px">
+                <Div $position="absolute" $top="-50px" $right="-35px">
                     <Dropdown
                         label={order === "&orderBy=ALL" ? "전체보기" : "진행중"}
                         options={["전체보기", "모집중"]}
@@ -80,6 +87,35 @@ const Contest = () => {
                     )}
                     {infos && infos?.length === 0 && <FlexDiv width="720px">게시글이 존재하지 않습니다</FlexDiv>}
                 </Div>
+                {(
+                    <FlexDiv $position="relative" width="100%" $justifycontent="end" $margin="40px 0 10px 0">
+                        <Div $position="absolute" $right="-45px">
+                            <Button
+                                display="flex"
+                                $backgroundColor="bgColor"
+                                $margin="0 10px 0 0"
+                                $padding="12px 15px"
+                                $borderRadius={30}
+                                $HBackgroundColor="bgColorHo"
+                                onClick={() => {
+                                    console.log("클릭");
+                                    navigate(`/board/contest/create`);
+                                }}
+                            >
+                                <FlexDiv height="15px">
+                                    <Div width="12px" height="12px" $margin="0 10px 0 0">
+                                        <Img src="/images/plus_white.svg" />
+                                    </Div>
+                                </FlexDiv>
+                                <Div $pointer height="15px">
+                                    <A color="wh" fontSize="sm" $hoverColor="wh">
+                                        게시글 작성
+                                    </A>
+                                </Div>
+                            </Button>
+                        </Div>
+                    </FlexDiv>
+                )}
             </Div>
         </>
     );
