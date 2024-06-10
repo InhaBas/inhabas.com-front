@@ -217,7 +217,7 @@ const CommentList = (props: commentPropsInterface) => {
                                     </FlexDiv>
                                 </FlexDiv>
                                 <Div>
-                                    {isAuthorizedOverDeactivate && (
+                                    {isAuthorizedOverDeactivate && comment.content !== '삭제된 댓글입니다.' && (
                                         <FlexDiv width="100%" $justifycontent="space-between">
                                             <FlexDiv $pointer onClick={() => handleCommentButtonClick(comment?.id)}>
                                                 <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
@@ -230,7 +230,7 @@ const CommentList = (props: commentPropsInterface) => {
                                                 </Div>
                                             </FlexDiv>
                                             <FlexDiv>
-                                                {userId === comment.writer.id && comment.content !== '삭제된 댓글입니다.' && (
+                                                {userId === comment.writer.id && (
                                                     <FlexDiv>
                                                         {updating === "nothing" && !isEditing(comment.id) ? (
                                                             <FlexDiv
@@ -265,7 +265,7 @@ const CommentList = (props: commentPropsInterface) => {
                                                         )}
                                                     </FlexDiv>
                                                 )}
-                                                {(userId === comment.writer.id || isAuthorizedOverVice) && comment.content !== '삭제된 댓글입니다.' && (
+                                                {(userId === comment.writer.id || isAuthorizedOverVice) && (
                                                     <FlexDiv
                                                         $margin="0 0 0 15px"
                                                         $pointer
