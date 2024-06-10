@@ -180,7 +180,8 @@ const BoardList = () => {
                                 />
                             )}
                         </Suspense>
-                        {checkWritingAuthorization() && (
+                        {/* 공모전 게시판의 게시글 작성은 Contest 컴포넌트에서 따로 작성 */}
+                        {checkWritingAuthorization() && contestListData.length === 0 && (
                             <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">
                                 <Button
                                     display="flex"
