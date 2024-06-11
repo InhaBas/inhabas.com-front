@@ -76,20 +76,27 @@ const MyNewUserTable = () => {
     // pass/fail Fetch
     const passFail = async () => {
         if (passFailValue !== "") {
-            let passFailSend = {
-                memberIdList: check,
-                state: passFailValue,
-            };
-            await fetchPassFailData("/members/unapproved", "PUT", "token", passFailSend);
+            setIsLoading(true);
+            try {
+                let passFailSend = {
+                    memberIdList: check,
+                    state: passFailValue,
+                };
+                await fetchPassFailData("/members/unapproved", "PUT", "token", passFailSend);
 
-            let fetchUrl = "/members/unapproved?page=0";
-            if (path === "/staff/member/newStudents") {
-                fetchUrl += "&size=15";
-            } else if (path === "/staff/member") {
-                fetchUrl += "&size=10";
+                let fetchUrl = "/members/unapproved?page=0";
+                if (path === "/staff/member/newStudents") {
+                    fetchUrl += "&size=15";
+                } else if (path === "/staff/member") {
+                    fetchUrl += "&size=10";
+                }
+
+                await fetchNewUserData(fetchUrl, "GET", "token");
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            } finally {
+                setIsLoading(false); // 요청이 끝난 후 loading을 false로 설정
             }
-
-            await fetchNewUserData(fetchUrl, "GET", "token");
         }
     };
 
@@ -179,8 +186,9 @@ const MyNewUserTable = () => {
                                 $borderRadius={3}
                                 $padding="6px 12px"
                                 height="40px"
+                                onClick={() => passFail()}
                             >
-                                <FlexDiv $margin="0 5px 0 0" onClick={() => passFail()}>
+                                <FlexDiv $margin="0 5px 0 0">
                                     <FlexDiv width="15px" $margin="0 10px 0 0">
                                         <Img src="/images/check_white.svg" />
                                     </FlexDiv>
