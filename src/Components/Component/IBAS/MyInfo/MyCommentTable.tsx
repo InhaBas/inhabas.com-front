@@ -1,108 +1,146 @@
-import { theme } from "../../../../styles/theme";
+import { useEffect, useState } from "react";
 
+import { theme } from "../../../../styles/theme";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import P from "../../../../styles/assets/P";
+import A from "../../../../styles/assets/A";
+import useFetch from "../../../../Hooks/useFetch";
+
+import Pagination from "../../../Common/Pagination";
+import Loading from "../../../Common/Loading";
+
+import { useRecoilState } from "recoil";
+import { myCommentsInfo } from "../../../../Recoil/backState";
+
+import { myCommentInterface } from "../../../../Types/TypeCommon";
 
 const MyCommentTable = () => {
-    const widthList = [300, 500, 0, 200];
+    const headerInfo = ["게시판 유형", "댓글 내용", "작성일"];
+    const widthList = [15, 65, 15];
 
-    const headerInfo = ["게시판 유형", "제목", "", "작성일"];
-    const contents = [
-        {
-            type: "회장단 게시판",
-            title: "AWS ec2요금",
-            originalId: "1",
-            writeDate: "2022-09-09",
-        },
-        {
-            type: "회장단 게시판",
-            title: "AWS ec2요금",
-            originalId: "2",
-            writeDate: "2022-09-09",
-        },
-        {
-            type: "회장단 게시판",
-            title: "AWS ec2요금",
-            originalId: "3",
-            writeDate: "2022-09-09",
-        },
-        {
-            type: "회장단 게시판",
-            title: "AWS ec2요금",
-            originalId: "4",
-            writeDate: "2022-09-09",
-        },
-        {
-            type: "회장단 게시판",
-            title: "AWS ec2요금",
-            originalId: "5",
-            writeDate: "2022-09-09",
-        },
-        {
-            type: "회장단 게시판",
-            title: "AWS ec2요금",
-            originalId: "6",
-            writeDate: "2022-09-09",
-        },
-    ];
+    const [commentList, setCommentList] = useRecoilState(myCommentsInfo);
+    const [commentListData, fetchCommentListData] = useFetch();
+    const [totalPage, setTotalPage] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        fetchCommentListData('/myInfo/comments?page=0&size=7', 'GET', 'token')
+        setIsLoading(true);
+    }, [])
+
+    useEffect(() => {
+        if (commentListData) {
+            const contents = commentListData.data.map((item: myCommentInterface, idx: number) => ({
+                id: item.id,
+                menuId: item.menuId,
+                menuType: item.menuType,
+                menuName: item.menuName,
+                content: item.content,
+                dateCreated: item.dateCreated.split('T')[0],
+            }))
+
+            setCommentList(contents);
+            setTotalPage(commentListData.pageInfo.totalPages);
+            setIsLoading(false);
+
+        }
+    }, [commentListData])
+
     return (
         <>
-            <Div width="100%" $borderB={`1px solid ${theme.color.grey1}`}>
-                <FlexDiv
-                    width="100%"
-                    height="45px"
-                    $borderT={`1px solid ${theme.color.grey1}`}
-                    $justifycontent="space-between"
-                    $backgroundColor="wh"
-                >
-                    {headerInfo.map((item: string, idx: number) => (
-                        <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
-                            <P fontWeight={700}>{item}</P>
+            {isLoading ? (
+                <FlexDiv width="100%" height="30vh">
+                    <Loading />
+                </FlexDiv>
+            ) : (
+                <>
+                    <Div width="100%" $borderB={`1px solid ${theme.color.grey1}`}>
+                        <FlexDiv
+                            width="100%"
+                            height="45px"
+                            $borderT={`1px solid ${theme.color.grey1}`}
+                            $justifycontent="space-between"
+                            $backgroundColor="wh"
+                        >
+                        {headerInfo.map((item: string, idx: number) => (
+                                <FlexDiv
+                                    key={`headerInfo${idx}`}
+                                    $minWidth={`${widthList[idx]}%`}
+                                    $padding="10px"
+                                    $justifycontent={idx === 1 ? "start" : "center"}
+                                >
+                                    <Div>
+                                        <P fontWeight={700}>{item}</P>
+                                    </Div>
+                                </FlexDiv>
+                            ))}
                         </FlexDiv>
-                    ))}
-                </FlexDiv>
-                {/* {contents.map((element: object, idx: number) => (
-                    <FlexDiv
-                        key={`contentItem${idx}`}
-                        width="100%"
-                        height="45px"
-                        $borderT={`1px solid ${theme.color.grey1}`}
-                        $justifycontent="space-between"
-                        $backgroundColor="wh"
-                    >
-                        {Object.values(element).map((item: any, idx: number) => (
+                        {commentList.length === 0 ? (
                             <FlexDiv
-                                key={`itemValue${idx}`}
-                                $minWidth={`${widthList[idx]}px`}
-                                $padding="10px"
-                                $pointer={idx === 2 ? true : false}
+                            width="100%"
+                            height="45px"
+                            $borderT={`1px solid ${theme.color.grey1}`}
+                            $padding="0 18px"
+                            $backgroundColor="wh"
                             >
-                                {idx === 2 ? (
-                                    <A color="bgColor" href="/bank/support/detail">
-                                        원문보기 ▶
-                                    </A>
-                                ) : (
-                                    <A>{item}</A>
-                                )}
+                                <Div>
+                                    <P>내가 작성한 댓글이 존재하지 않습니다</P>
+                                </Div>
                             </FlexDiv>
-                        ))}
-                    </FlexDiv>
-                ))} */}
+                        ) : (
+                            commentList.map((element: object, idx: number) => (
+                                <FlexDiv
+                                    key={`contentItem${idx}`}
+                                    width="100%"
+                                    height="45px"
+                                    $borderT={`1px solid ${theme.color.grey1}`}
+                                    $justifycontent="space-between"
+                                    $backgroundColor="wh"
+                                >
+                                    {Object.values(element).slice(3).map((item: any, idx: number) => (
+                                        <FlexDiv
+                                        key={`itemValue${idx}`}
+                                        width={`${widthList[idx]}%`}
+                                        $padding="10px"
+                                        $justifycontent={idx === 1 ? "space-between" : "center"}
+                                        >
+                                            {idx === 1 ? (
+                                                <FlexDiv width="100%" $justifycontent= "space-between">
+                                                    <Div width="90%">
+                                                        <P fontWeight={700}>
+                                                            {item}
+                                                        </P>
+                                                    </Div>
+                                                    <Div width="10%">
+                                                        <A color="bgColor" href={`/board/${(element as { menuType: string }).menuType.toLowerCase()}/detail/${(element as { id: number }).id}`}>
+                                                            원문보기 ▶
+                                                        </A>
+                                                    </Div>
+                                                </FlexDiv>
+                                            ) : (
+                                                <Div>
+                                                    <P>{item}</P>
+                                                </Div>
+                                            )}
+                                        </FlexDiv>
+                                    ))}
+                                </FlexDiv>
+                            ))
+                        )}
 
-                <FlexDiv
-                    width="100%"
-                    height="45px"
-                    $borderT={`1px solid ${theme.color.grey1}`}
-                    $padding="0 18px"
-                    $backgroundColor="wh"
-                >
-                    <Div>
-                        <P>내가 작성한 댓글이 존재하지 않습니다</P>
+                        {/* <Pagination /> */}
+                        {commentList && commentList.length !== 0 && (
+                            <Pagination
+                                totalPage={totalPage}
+                                fetchUrl={`/myInfo/comments`}
+                                token
+                                paginationFetch={fetchCommentListData}
+                                size={7}
+                            />
+                        )}
                     </Div>
-                </FlexDiv>
-
-                {/* <Pagination /> */}
-            </Div>
+                </>
+            )}
         </>
     );
 };

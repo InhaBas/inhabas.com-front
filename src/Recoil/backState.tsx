@@ -12,7 +12,7 @@ import {
 } from "../Types/IBAS/TypeMyinfo";
 import { supportDetailInterface } from "../Types/TypeBank";
 import { boardDetailInterface, boardMenuInterface } from "../Types/TypeBoard";
-import { chiefInterface, commentListInterface, menuInterface, policyInterface } from "../Types/TypeCommon";
+import { chiefInterface, commentListInterface, menuInterface, myCommentInterface, policyInterface } from "../Types/TypeCommon";
 
 //headerNav
 export const headerNavInfo = atom({
@@ -223,6 +223,11 @@ export const commentInfo = atom<commentListInterface[] | []>({
     key: "commentInfo",
     default: [],
 });
+
+export const myCommentsInfo = atom<myCommentInterface[] | []>({
+    key: "myCommentsInfo",
+    default: [],
+})
 
 //lectureRoom
 export const lectureRoomInfo = atom({

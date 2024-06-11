@@ -47,6 +47,15 @@ export interface commentListInterface {
     };
 }
 
+export interface myCommentInterface {
+    id: number;
+    menuId: number;
+    menuType: string;
+    menuName: string;
+    content: string;
+    dateCreated: string;
+}
+
 export interface commentPropsInterface {
     boardId?: string;
     menuId?: number;
