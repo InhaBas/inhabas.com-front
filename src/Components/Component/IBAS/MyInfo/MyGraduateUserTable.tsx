@@ -7,7 +7,7 @@ import { theme } from "../../../../styles/theme";
 import useFetch from "../../../../Hooks/useFetch";
 
 import { __totalPageInfo, graduateUserInfo, tokenAccess, totalGraduateUserInfo } from "../../../../Recoil/backState";
-import { __checkedList, refetch } from "../../../../Recoil/frontState";
+import { __checkedList } from "../../../../Recoil/frontState";
 
 import { userInterface } from "../../../../Types/IBAS/TypeMyinfo";
 
@@ -43,7 +43,7 @@ const MyGraduateUserTable = () => {
     const [CategoryValue, setCategoryValue] = useState("");
     const [roleChangeData, fetchRoleChangeData] = useFetch();
     const [typeChangeData, fetchTypeChangeData] = useFetch();
-    const [reload, setReload] = useRecoilState(refetch);
+    const [reload, setReload] = useState(false);
     const access = useRecoilValue(tokenAccess);
     const [searchValue, setSearchValue] = useState(""); // 검색어
     const [isLoading, setIsLoading] = useState(true);
