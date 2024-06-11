@@ -28,7 +28,7 @@ const ContestInfo = ({ info }: { info: any }) => {
             <Button width="100%" height="100%" onClick={() => navigate(`/board/${url}/detail/${data?.id}`)}>
                 <Div width="360px" height="600px" $border="1px solid" $borderColor="border">
                     {/* 사진 영역 */}
-                    <Div $minWidth="100%" width="100%" height="70%" $border="1px solid" $borderColor="border">
+                    <Div $minWidth="100%" width="100%" height="70%" $borderB={`1px solid ${theme.color.border}`}>
                         <Img src={data?.thumbnailUrl} width="100%" />
                     </Div>
                     {/* 내용 영역 */}
@@ -100,7 +100,11 @@ const ContestInfo = ({ info }: { info: any }) => {
                                 </P>
                             </Div>
                             <Div $margin="0 0 0 15px">
-                                <P fontSize="sm" color="grey" fontWeight={600}>{`${data?.dateStart}~${data?.dateEnd}`}</P>
+                                <P
+                                    fontSize="sm"
+                                    color="grey"
+                                    fontWeight={600}
+                                >{`${data?.dateStart}~${data?.dateEnd}`}</P>
                             </Div>
                         </FlexDiv>
                     </FlexDiv>
