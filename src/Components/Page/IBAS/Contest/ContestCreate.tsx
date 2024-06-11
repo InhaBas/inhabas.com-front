@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
+import { theme } from "../../../../styles/theme";
+
 import useFetch from "../../../../Hooks/useFetch";
 
 import { fileIdList } from "../../../../Recoil/backState";
@@ -16,7 +18,8 @@ import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
 import { Date, Label, Radio, TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
-import { theme } from "../../../../styles/theme";
+
+import { DateFunction } from "../../../../Functions/dateFunction";
 
 interface contestDetailInterface {
     contestFieldId: number | null;
@@ -58,6 +61,9 @@ const ContestCreate = () => {
     const currentMenuId = useRecoilValue(menuId);
     const setReload = useSetRecoilState(refetch);
     const [contestType, setContestType] = useState<number | null>(null);
+    const { formatDateT, formatDateDay } = DateFunction();
+
+    const today = formatDateT();
 
     useEffect(() => {
         if (paramID) {
@@ -95,6 +101,11 @@ const ContestCreate = () => {
         }
         if (check && inputRef.current[4].value === "") {
             alert("공모전 마감일을 입력해주세요.");
+            check = false;
+        }
+
+        if (check && inputRef.current[4].value < today) {
+            alert(`공모전 마감일은 ${formatDateDay({ date: today })} 이후의 날짜만 등록가능합니다.`);
             check = false;
         }
 
