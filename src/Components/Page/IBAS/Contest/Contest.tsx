@@ -12,9 +12,12 @@ import Img from "../../../../styles/assets/Img";
 import A from "../../../../styles/assets/A";
 import { useNavigate } from "react-router-dom";
 
+import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
+
 const Contest = () => {
     const infos = useRecoilValue(contestListDataInfo);
     const [order, setOrder] = useRecoilState(contestOrder);
+    const { isAuthorizedOverBasic } = GetRoleAuthorization();
 
     const navigate = useNavigate();
 
@@ -87,7 +90,7 @@ const Contest = () => {
                     )}
                     {infos && infos?.length === 0 && <FlexDiv width="720px">게시글이 존재하지 않습니다</FlexDiv>}
                 </Div>
-                {(
+                {isAuthorizedOverBasic && (
                     <FlexDiv $position="relative" width="100%" $justifycontent="end" $margin="40px 0 10px 0">
                         <Div $position="absolute" $right="-45px">
                             <Button
