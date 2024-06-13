@@ -217,7 +217,7 @@ const CommentList = (props: commentPropsInterface) => {
                                     </FlexDiv>
                                 </FlexDiv>
                                 <Div>
-                                    {isAuthorizedOverDeactivate && comment.content !== '삭제된 댓글입니다.' && (
+                                    {isAuthorizedOverDeactivate && !comment.isDeleted && (
                                         <FlexDiv width="100%" $justifycontent="space-between">
                                             <FlexDiv $pointer onClick={() => handleCommentButtonClick(comment?.id)}>
                                                 <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">

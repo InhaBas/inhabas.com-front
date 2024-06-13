@@ -35,6 +35,7 @@ export interface paginationPropsInterface {
 export interface commentListInterface {
     id: number;
     content: string;
+    isDeleted?: boolean;
     childrenComment?: Array<commentListInterface>;
     dateUpdated: Date;
     parentAuthor?: string;
