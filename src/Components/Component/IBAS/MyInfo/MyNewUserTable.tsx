@@ -7,7 +7,7 @@ import { theme } from "../../../../styles/theme";
 import useFetch from "../../../../Hooks/useFetch";
 
 import { newUserInfo, tokenAccess, totalNewUserInfo, totalPageInfo } from "../../../../Recoil/backState";
-import { checkedList } from "../../../../Recoil/frontState";
+import { checkedList, myAcceptUserState } from "../../../../Recoil/frontState";
 
 import { newUserInterface } from "../../../../Types/IBAS/TypeMyinfo";
 
@@ -39,6 +39,7 @@ const MyNewUserTable = () => {
     const access = useRecoilValue(tokenAccess);
     const [searchValue, setSearchValue] = useState(""); // 검색어
     const [isLoading, setIsLoading] = useState(true);
+    const setAcceptUser = useSetRecoilState(myAcceptUserState);
 
     const navigate = useNavigate();
     const path = useLocation().pathname;
@@ -76,20 +77,28 @@ const MyNewUserTable = () => {
     // pass/fail Fetch
     const passFail = async () => {
         if (passFailValue !== "") {
-            let passFailSend = {
-                memberIdList: check,
-                state: passFailValue,
-            };
-            await fetchPassFailData("/members/unapproved", "PUT", "token", passFailSend);
+            setIsLoading(true);
+            try {
+                let passFailSend = {
+                    memberIdList: check,
+                    state: passFailValue,
+                };
+                await fetchPassFailData("/members/unapproved", "PUT", "token", passFailSend);
 
-            let fetchUrl = "/members/unapproved?page=0";
-            if (path === "/staff/member/newStudents") {
-                fetchUrl += "&size=15";
-            } else if (path === "/staff/member") {
-                fetchUrl += "&size=10";
+                let fetchUrl = "/members/unapproved?page=0";
+                if (path === "/staff/member/newStudents") {
+                    fetchUrl += "&size=15";
+                } else if (path === "/staff/member") {
+                    fetchUrl += "&size=10";
+                }
+
+                await fetchNewUserData(fetchUrl, "GET", "token");
+                setAcceptUser(true);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            } finally {
+                setIsLoading(false); // 요청이 끝난 후 loading을 false로 설정
             }
-
-            await fetchNewUserData(fetchUrl, "GET", "token");
         }
     };
 
@@ -122,7 +131,6 @@ const MyNewUserTable = () => {
         } else if (path === "/staff/member") {
             fetchUrl += "&size=10";
         }
-
         fetchNewUserData(fetchUrl, "GET", "token");
     }, [passFailData, access]);
 
@@ -179,8 +187,9 @@ const MyNewUserTable = () => {
                                 $borderRadius={3}
                                 $padding="6px 12px"
                                 height="40px"
+                                onClick={() => passFail()}
                             >
-                                <FlexDiv $margin="0 5px 0 0" onClick={() => passFail()}>
+                                <FlexDiv $margin="0 5px 0 0">
                                     <FlexDiv width="15px" $margin="0 10px 0 0">
                                         <Img src="/images/check_white.svg" />
                                     </FlexDiv>

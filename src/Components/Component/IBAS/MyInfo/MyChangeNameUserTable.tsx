@@ -19,6 +19,7 @@ import Img from "../../../../styles/assets/Img";
 import { Checkbox } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
 import Dropdown from "../../../Common/Dropdown";
+import Loading from "../../../Common/Loading";
 import Pagination from "../../../Common/Pagination";
 
 const MyChangeNameUserTable = () => {
@@ -36,6 +37,7 @@ const MyChangeNameUserTable = () => {
     const [value, setValue] = useState("");
     const [nameChangeData, fetchNameChangeData] = useFetch();
     const access = useRecoilValue(tokenAccess);
+    const [isLoading, setIsLoading] = useState(true);
 
     // 단일 체크박스 클릭시 checkedList update
     const checkClickEvent = (e: React.ChangeEvent<HTMLInputElement>, memberId: number) => {
@@ -54,6 +56,7 @@ const MyChangeNameUserTable = () => {
     // change Name fetch
     const acceptName = async () => {
         if (value !== "") {
+            setIsLoading(true);
             const acceptSend = {
                 id: check,
                 status: value,
@@ -66,6 +69,7 @@ const MyChangeNameUserTable = () => {
 
     // 이름 변경 요청한 동아리원 현황 조회 fetch,
     useEffect(() => {
+        setIsLoading(true);
         fetchUser("/myInfo/requests", "GET", "token");
     }, [access, nameChangeData]);
 
@@ -86,136 +90,145 @@ const MyChangeNameUserTable = () => {
             setTotalPage(user.pageInfo.totalPages);
             setUserList(contents);
             setCheck(0);
+            setIsLoading(false);
         }
     }, [user, access]);
 
     return (
-        <Div width="100%">
-            {isAuthorizedOverVice && (
-                <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
-                    <Div $minWidth="100px" $margin="0 10px 0 0 ">
-                        <Dropdown
-                            label="승인 여부"
-                            options={["승인", "거절"]}
-                            value={["pass", "fail"]}
-                            onChange={handleValueChange}
-                        />
-                    </Div>
-
-                    <Button
-                        $backgroundColor="bgColor"
-                        $HBackgroundColor="bgColorHo"
-                        $borderRadius={3}
-                        $padding="6px 12px"
-                        height="40px"
-                        onClick={() => {
-                            acceptName();
-                        }}
-                    >
-                        <FlexDiv $margin="0 5px 0 0">
-                            <FlexDiv width="15px" $margin="0 10px 0 0">
-                                <Img src="/images/check_white.svg" />
-                            </FlexDiv>
-                            <FlexDiv>
-                                <P color="wh" fontSize="sm">
-                                    적용
-                                </P>
-                            </FlexDiv>
-                        </FlexDiv>
-                    </Button>
+        <>
+            {isLoading ? (
+                <FlexDiv width="100%" height="30vh">
+                    <Loading />
                 </FlexDiv>
-            )}
+            ) : (
+                <Div width="100%">
+                    {isAuthorizedOverVice && (
+                        <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
+                            <Div $minWidth="100px" $margin="0 10px 0 0 ">
+                                <Dropdown
+                                    label="승인 여부"
+                                    options={["승인", "거절"]}
+                                    value={["pass", "fail"]}
+                                    onChange={handleValueChange}
+                                />
+                            </Div>
 
-            <Div width="100%">
-                <FlexDiv
-                    width="100%"
-                    height="45px"
-                    $justifycontent="space-evenly"
-                    $backgroundColor="wh"
-                    $borderB={`1.5px solid ${theme.color.grey1}`}
-                >
-                    <FlexDiv $padding="10px" width="40px"></FlexDiv>
-                    {headerInfo.map((item: string, idx: number) => (
-                        <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
-                            <P $center fontWeight={700}>
-                                {item}
-                            </P>
+                            <Button
+                                $backgroundColor="bgColor"
+                                $HBackgroundColor="bgColorHo"
+                                $borderRadius={3}
+                                $padding="6px 12px"
+                                height="40px"
+                                onClick={() => {
+                                    acceptName();
+                                }}
+                            >
+                                <FlexDiv $margin="0 5px 0 0">
+                                    <FlexDiv width="15px" $margin="0 10px 0 0">
+                                        <Img src="/images/check_white.svg" />
+                                    </FlexDiv>
+                                    <FlexDiv>
+                                        <P color="wh" fontSize="sm">
+                                            적용
+                                        </P>
+                                    </FlexDiv>
+                                </FlexDiv>
+                            </Button>
                         </FlexDiv>
-                    ))}
-                </FlexDiv>
-                {userList && userList.length !== 0 ? (
-                    userList.map((element: changeNameUserInterface, idx: number) => (
+                    )}
+
+                    <Div width="100%">
                         <FlexDiv
-                            key={`contentItem${idx}`}
                             width="100%"
                             height="45px"
-                            $borderT={`1px solid ${theme.color.grey1}`}
                             $justifycontent="space-evenly"
                             $backgroundColor="wh"
+                            $borderB={`1.5px solid ${theme.color.grey1}`}
                         >
-                            {isAuthorizedOverVice && (
-                                <FlexDiv $padding="10px">
-                                    <Checkbox
-                                        checked={check === element.id ? true : false}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                            checkClickEvent(e, element.id)
-                                        }
-                                    />
+                            <FlexDiv $padding="10px" width="40px"></FlexDiv>
+                            {headerInfo.map((item: string, idx: number) => (
+                                <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
+                                    <P $center fontWeight={700}>
+                                        {item}
+                                    </P>
                                 </FlexDiv>
-                            )}
-
-                            {Object.entries(element).map(([key, value], idx: number) => {
-                                if (key !== "id") {
-                                    let color = "bk";
-                                    let fontStyle: React.CSSProperties = {};
-
-                                    if (key === "status") {
-                                        if (value === "거절") {
-                                            color = "#f56642";
-                                            fontStyle.fontStyle = "italic";
-                                        } else if (value === "승인") {
-                                            color = "#155724";
-                                            fontStyle.fontStyle = "italic";
-                                        }
-                                    }
-                                    return (
-                                        <FlexDiv
-                                            key={`itemValue${idx}`}
-                                            $minWidth={`${widthList[idx - 1]}px`}
-                                            $padding="10px"
-                                        >
-                                            <P
-                                                $center
-                                                style={{ color: color, ...fontStyle }}
-                                                fontWeight={idx === 1 ? 800 : 500}
-                                            >
-                                                {value}
-                                            </P>
-                                        </FlexDiv>
-                                    );
-                                }
-                            })}
+                            ))}
                         </FlexDiv>
-                    ))
-                ) : (
-                    <FlexDiv width="100%" $padding="10px">
-                        <Div>
-                            <P>이름 수정을 요청한 회원이 존재하지 않습니다.</P>
-                        </Div>
-                    </FlexDiv>
-                )}
-            </Div>
+                        {userList && userList.length !== 0 ? (
+                            userList.map((element: changeNameUserInterface, idx: number) => (
+                                <FlexDiv
+                                    key={`contentItem${idx}`}
+                                    width="100%"
+                                    height="45px"
+                                    $borderT={`1px solid ${theme.color.grey1}`}
+                                    $justifycontent="space-evenly"
+                                    $backgroundColor="wh"
+                                >
+                                    {isAuthorizedOverVice && (
+                                        <FlexDiv $padding="10px">
+                                            <Checkbox
+                                                checked={check === element.id ? true : false}
+                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                                    checkClickEvent(e, element.id)
+                                                }
+                                            />
+                                        </FlexDiv>
+                                    )}
 
-            {userList && userList.length !== 0 && (
-                <Pagination
-                    totalPage={totalPage}
-                    fetchUrl="/myInfo/requests"
-                    token
-                    paginationFetch={fetchUser}
-                    size={10}
-                />
+                                    {Object.entries(element).map(([key, value], idx: number) => {
+                                        if (key !== "id") {
+                                            let color = "bk";
+                                            let fontStyle: React.CSSProperties = {};
+
+                                            if (key === "status") {
+                                                if (value === "거절") {
+                                                    color = "#f56642";
+                                                    fontStyle.fontStyle = "italic";
+                                                } else if (value === "승인") {
+                                                    color = "#155724";
+                                                    fontStyle.fontStyle = "italic";
+                                                }
+                                            }
+                                            return (
+                                                <FlexDiv
+                                                    key={`itemValue${idx}`}
+                                                    $minWidth={`${widthList[idx - 1]}px`}
+                                                    $padding="10px"
+                                                >
+                                                    <P
+                                                        $center
+                                                        style={{ color: color, ...fontStyle }}
+                                                        fontWeight={idx === 1 ? 800 : 500}
+                                                    >
+                                                        {value}
+                                                    </P>
+                                                </FlexDiv>
+                                            );
+                                        }
+                                    })}
+                                </FlexDiv>
+                            ))
+                        ) : (
+                            <FlexDiv width="100%" $padding="10px">
+                                <Div>
+                                    <P>이름 수정을 요청한 회원이 존재하지 않습니다.</P>
+                                </Div>
+                            </FlexDiv>
+                        )}
+                    </Div>
+
+                    {userList && userList.length !== 0 && (
+                        <Pagination
+                            totalPage={totalPage}
+                            fetchUrl="/myInfo/requests"
+                            token
+                            paginationFetch={fetchUser}
+                            size={10}
+                        />
+                    )}
+                </Div>
             )}
-        </Div>
+        </>
     );
 };
 

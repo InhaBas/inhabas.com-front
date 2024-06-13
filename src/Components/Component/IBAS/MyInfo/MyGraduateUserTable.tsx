@@ -7,7 +7,7 @@ import { theme } from "../../../../styles/theme";
 import useFetch from "../../../../Hooks/useFetch";
 
 import { __totalPageInfo, graduateUserInfo, tokenAccess, totalGraduateUserInfo } from "../../../../Recoil/backState";
-import { __checkedList, refetch } from "../../../../Recoil/frontState";
+import { __checkedList, mySetGraduateState, mySetUndergraduateState } from "../../../../Recoil/frontState";
 
 import { userInterface } from "../../../../Types/IBAS/TypeMyinfo";
 
@@ -43,10 +43,12 @@ const MyGraduateUserTable = () => {
     const [CategoryValue, setCategoryValue] = useState("");
     const [roleChangeData, fetchRoleChangeData] = useFetch();
     const [typeChangeData, fetchTypeChangeData] = useFetch();
-    const [reload, setReload] = useRecoilState(refetch);
+    const [reload, setReload] = useState(false);
     const access = useRecoilValue(tokenAccess);
     const [searchValue, setSearchValue] = useState(""); // 검색어
     const [isLoading, setIsLoading] = useState(true);
+    const [graduate, setGraduate] = useRecoilState(mySetGraduateState);
+    const setUndergraduate = useSetRecoilState(mySetUndergraduateState);
 
     const path = useLocation().pathname;
 
@@ -108,6 +110,7 @@ const MyGraduateUserTable = () => {
             };
             fetchTypeChangeData("/members/approved/type", "PUT", "token", typeSend);
             setReload(true);
+            setUndergraduate(true);
         }
     };
 
@@ -143,7 +146,7 @@ const MyGraduateUserTable = () => {
 
         fetchUser(fetchUrl, "GET", "token");
         setReload(false);
-    }, [reload, access]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함
+    }, [reload, access, graduate]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함
 
     // fetch된 data로 졸업생 List 만들 data 가공
     useEffect(() => {
@@ -165,6 +168,7 @@ const MyGraduateUserTable = () => {
             setTotalPage(user.pageInfo.totalPages);
             setCheck([] as Number[]);
             setIsLoading(false);
+            setGraduate(false);
         }
     }, [user, access]);
 

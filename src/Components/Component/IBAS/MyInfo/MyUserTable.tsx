@@ -7,7 +7,12 @@ import { theme } from "../../../../styles/theme";
 import useFetch from "../../../../Hooks/useFetch";
 
 import { _totalPageInfo, tokenAccess, totalUserInfo, userInfo, userRole } from "../../../../Recoil/backState";
-import { _checkedList, refetch } from "../../../../Recoil/frontState";
+import {
+    _checkedList,
+    myAcceptUserState,
+    mySetGraduateState,
+    mySetUndergraduateState,
+} from "../../../../Recoil/frontState";
 
 import { userInterface } from "../../../../Types/IBAS/TypeMyinfo";
 
@@ -44,10 +49,13 @@ const MyUserTable = () => {
     const [CategoryValue, setCategoryValue] = useState("");
     const [roleChangeData, fetchRoleChangeData] = useFetch();
     const [typeChangeData, fetchTypeChangeData] = useFetch();
-    const [reload, setReload] = useRecoilState(refetch);
+    const [reload, setReload] = useState(false);
     const access = useRecoilValue(tokenAccess);
     const [searchValue, setSearchValue] = useState(""); // 검색어
     const [isLoading, setIsLoading] = useState(true);
+    const [acceptUser, setAcceptUser] = useRecoilState(myAcceptUserState);
+    const setGraduate = useSetRecoilState(mySetGraduateState);
+    const [undergraduate, setUndergraduate] = useRecoilState(mySetUndergraduateState);
 
     const path = useLocation().pathname;
 
@@ -109,6 +117,9 @@ const MyUserTable = () => {
             };
             fetchTypeChangeData("/members/approved/type", "PUT", "token", typeSend);
             setReload(true);
+            if (typeValue === "GRADUATED") {
+                setGraduate(true);
+            }
         }
     };
 
@@ -146,7 +157,7 @@ const MyUserTable = () => {
         fetchUser(fetchUrl, "GET", "token");
 
         setReload(false);
-    }, [reload, access]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함
+    }, [reload, access, acceptUser, undergraduate]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함
 
     // fetch된 data로 동아리원 List 만들 data 가공
     useEffect(() => {
@@ -168,6 +179,8 @@ const MyUserTable = () => {
             setTotalPage(user.pageInfo.totalPages);
             setCheck([] as Number[]);
             setIsLoading(false);
+            setAcceptUser(false); // 위치 다시 확인
+            setUndergraduate(false);
         }
     }, [user, access]);
 
