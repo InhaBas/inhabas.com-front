@@ -7,7 +7,7 @@ import { theme } from "../../../../styles/theme";
 import useFetch from "../../../../Hooks/useFetch";
 
 import { newUserInfo, tokenAccess, totalNewUserInfo, totalPageInfo } from "../../../../Recoil/backState";
-import { checkedList } from "../../../../Recoil/frontState";
+import { checkedList, myAcceptUserState } from "../../../../Recoil/frontState";
 
 import { newUserInterface } from "../../../../Types/IBAS/TypeMyinfo";
 
@@ -39,6 +39,7 @@ const MyNewUserTable = () => {
     const access = useRecoilValue(tokenAccess);
     const [searchValue, setSearchValue] = useState(""); // 검색어
     const [isLoading, setIsLoading] = useState(true);
+    const setAcceptUser = useSetRecoilState(myAcceptUserState);
 
     const navigate = useNavigate();
     const path = useLocation().pathname;
@@ -92,6 +93,7 @@ const MyNewUserTable = () => {
                 }
 
                 await fetchNewUserData(fetchUrl, "GET", "token");
+                setAcceptUser(true);
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
@@ -129,7 +131,6 @@ const MyNewUserTable = () => {
         } else if (path === "/staff/member") {
             fetchUrl += "&size=10";
         }
-
         fetchNewUserData(fetchUrl, "GET", "token");
     }, [passFailData, access]);
 

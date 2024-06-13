@@ -98,7 +98,23 @@ export const carouselInitialState = atom({
 });
 
 // contest
-export const contestOrder  = atom({
+export const contestOrder = atom({
     key: "contestOrder",
     default: "&orderBy=ALL",
-})
+});
+
+// myInfo
+export const myAcceptUserState = atom({
+    key: "myAcceptUserState",
+    default: false,
+});
+
+export const mySetGraduateState = atom({
+    key: "mySetGraduateState",
+    default: false,
+});
+
+export const mySetUndergraduateState = atom({
+    key: "mySetUndergraduateState",
+    default: false,
+});
