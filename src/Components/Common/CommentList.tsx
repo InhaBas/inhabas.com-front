@@ -122,6 +122,9 @@ const CommentList = (props: commentPropsInterface) => {
         }
         setUpdating("nothing");
         setEditingCommentId(-1);
+        return (
+            setComment([])
+        )
     }, [commentDeleteData, putComment]);
 
     useEffect(() => {
