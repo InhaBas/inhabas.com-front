@@ -66,7 +66,9 @@ const ModalHistory = () => {
 
     // 단일 연혁 가져오기
     useEffect(() => {
-        fetchHistoryInfoData(`/club/history/${modalData.content}`, "GET");
+        if (modalData.type === "historyPut") {
+            fetchHistoryInfoData(`/club/history/${modalData.content}`, "GET");
+        }
     }, []);
 
     // 단일 연혁 data가 있다면
