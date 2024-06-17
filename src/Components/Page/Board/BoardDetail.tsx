@@ -280,6 +280,24 @@ const BoardDetail = () => {
                                     {detail?.title}
                                 </H2>
                             </Div>
+                            <FlexDiv $margin="20px 0 30px 0">
+                                <FlexDiv width="12px" $margin="0 5px ">
+                                    <Img src="/images/calendar_grey.svg" />
+                                </FlexDiv>
+                                <Div>
+                                    <P color="grey4" fontSize="sm">
+                                        지급일 |
+                                    </P>
+                                </Div>
+                                <FlexDiv width="12px" $margin="0 5px ">
+                                    <Img src="/images/clock_grey.svg" />
+                                </FlexDiv>
+                                <Div>
+                                    <P color="grey4" fontSize="sm">
+                                        {formatDateMinute({ date: detail?.dateHistory || "" })}
+                                    </P>
+                                </Div>
+                            </FlexDiv>
                             <Div width="100%" $margin="50px 0">
                                 {detail?.content && <TextViewer contents={detail?.content} />}
                             </Div>
