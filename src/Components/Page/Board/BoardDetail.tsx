@@ -56,7 +56,7 @@ const BoardDetail = () => {
     const navigate = useNavigate();
     const url = location.pathname.split("/")[2];
     const boardId = location.pathname.split("/")[4];
-    const { isAuthorizedOverVice } = GetRoleAuthorization();
+    const { isAuthorizedOverVice, isAuthorizedOverDeactivate } = GetRoleAuthorization();
 
     const { formatDateMinute } = DateFunction();
 
@@ -381,8 +381,16 @@ const BoardDetail = () => {
                                 )}
                             </FlexDiv>
                         </Div>
-                        <CommentList boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />
-                        <CommentInput boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />
+                        {/* 공개자료실일 경우에 토큰 없이 댓글 패치 */}
+                        {pathNameInfo[1] === 'opensource' ? (
+                            <CommentList boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} token={false} />
+                        )
+                        : (
+                            <CommentList boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />
+                        )}
+                        {isAuthorizedOverDeactivate && (
+                            <CommentInput boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />
+                        )}
                     </DetailContainer>
                 </FlexDiv>
             )}
