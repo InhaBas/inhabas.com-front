@@ -223,8 +223,9 @@ const BoardCreate = () => {
                                             height="60px"
                                             fontSize="xl"
                                             $borderRadius={5}
+                                            placeholder="후원 날짜를 입력해주세요"
                                             ref={(el: never) => (inputRef.current[2] = el)}
-                                            defaultValue={detail?.dateHistory}
+                                            defaultValue={detail?.dateHistory?.split("T")[0]}
                                         />
                                     </Div>
                                 </Div>

@@ -88,10 +88,12 @@ const BoardRoute = () => {
             <Route path="sponsor" element={<BoardList />} />
             <Route path="sponsor/detail/:id" element={<BoardDetail />} />
             <Route path="sponsor/create" element={<BoardCreate />} />
+            <Route path="sponsor/update/:id" element={<BoardCreate />} />
 
             <Route path="usage" element={<BoardList />} />
             <Route path="usage/detail/:id" element={<BoardDetail />} />
             <Route path="usage/create" element={<BoardCreate />} />
+            <Route path="usage/update/:id" element={<BoardCreate />} />
             
             <Route path="contest" element={<BoardList />} />
             <Route path="contest/detail/:id" element={<ContestDetail />} />
