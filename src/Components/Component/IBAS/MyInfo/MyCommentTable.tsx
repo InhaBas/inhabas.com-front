@@ -37,8 +37,9 @@ const MyCommentTable = () => {
                 menuName: item.menuName,
                 content: item.content,
                 dateCreated: item.dateCreated.split('T')[0],
+                isDeleted: item.isDeleted,
             }))
-
+            console.log(commentListData)
             setCommentList(contents);
             setTotalPage(commentListData.pageInfo.totalPages);
             setIsLoading(false);
@@ -97,7 +98,7 @@ const MyCommentTable = () => {
                                     $justifycontent="space-between"
                                     $backgroundColor="wh"
                                 >
-                                    {Object.values(element).slice(3).map((item: any, idx: number) => (
+                                    {Object.values(element).slice(3,6).map((item: any, idx: number) => (
                                         <FlexDiv
                                         key={`itemValue${idx}`}
                                         width={`${widthList[idx]}%`}
@@ -108,7 +109,7 @@ const MyCommentTable = () => {
                                                 <FlexDiv width="100%" $justifycontent= "space-between">
                                                     <Div width="90%">
                                                         <P fontWeight={700}>
-                                                            {item}
+                                                        {(element as { isDeleted: boolean }).isDeleted ? `${item} (삭제)` : item}
                                                         </P>
                                                     </Div>
                                                     <Div width="10%">
