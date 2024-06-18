@@ -216,15 +216,15 @@ const ContestDetail = () => {
                     </FlexDiv>
 
                     {/* 주제 */}
-                    <FlexDiv width="100%" $borderT={`2px solid ${theme.color.border}`} $padding="20px">
+                    <FlexDiv width="100%" $borderT={`1px solid ${theme.color.border}`} $padding="15px">
                         <Div>
                             {url === "contest" && (
-                                <P fontSize="xl" fontWeight={800}>
+                                <P fontSize="lg" fontWeight={600}>
                                     공모전 주제
                                 </P>
                             )}
                             {url === "activity" && (
-                                <P fontSize="xl" fontWeight={800}>
+                                <P fontSize="lg" fontWeight={800}>
                                     대외활동 주제
                                 </P>
                             )}
@@ -232,12 +232,14 @@ const ContestDetail = () => {
                     </FlexDiv>
                     <FlexDiv
                         width="100%"
-                        $borderT={`2px solid ${theme.color.border}`}
-                        $borderB={`2px solid ${theme.color.border}`}
+                        $borderT={`1px solid ${theme.color.border}`}
+                        $borderB={`1px solid ${theme.color.border}`}
                         $padding="50px"
                     >
-                        <Div>
-                            <P fontSize="xl">{detail?.topic}</P>
+                        <Div width="100%">
+                            <P fontSize="lg" $whiteSpace="normal" $center>
+                                {detail?.topic}
+                            </P>
                         </Div>
                     </FlexDiv>
 
