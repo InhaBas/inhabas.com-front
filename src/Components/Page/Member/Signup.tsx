@@ -138,7 +138,7 @@ const Signup = () => {
         }
 
 
-        if ((check && ref.current[3].value.length < 13) || ref.current[3].value.slice(0, 3) !== "010") {
+        if (check && (ref.current[3].value.length < 13 || ref.current[3].value.slice(0, 3) !== "010")) {
             alert("핸드폰번호를 정확하게 입력해주세요");
             check = false;
         }
