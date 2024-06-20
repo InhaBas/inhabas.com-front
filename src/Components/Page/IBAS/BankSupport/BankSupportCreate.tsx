@@ -123,7 +123,7 @@ const BankSupportCreate = () => {
 
         // 파일 담기
         const inputData = {
-            dateUsed: (infos.dateUsed += "T00:00:00"),
+            dateUsed: infos.dateUsed.includes('T') ? infos.dateUsed : (infos.dateUsed += "T00:00:00"),
             title: infos.title,
             details: infos.details,
             outcome: Number(infos.outcome),
