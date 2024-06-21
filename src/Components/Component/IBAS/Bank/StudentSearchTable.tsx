@@ -1,15 +1,15 @@
-import { DO_NOT_USE_OR_YOU_WILL_BE_FIRED_EXPERIMENTAL_REACT_NODES, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useRecoilState } from "recoil";
 import { selectedStudentInfos } from "../../../../Recoil/frontState";
 
 import styled from "styled-components";
-import { theme } from "../../../../styles/theme";
-import { FlexDiv, Div } from "../../../../styles/assets/Div";
 import A from "../../../../styles/assets/A";
-import { TextInput } from "../../../../styles/assets/Input";
+import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
+import { TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
+import { theme } from "../../../../styles/theme";
 
 import useFetch from "../../../../Hooks/useFetch";
 
@@ -40,22 +40,24 @@ const StudentSearchTable = () => {
     const [studentInfos, setNotGraduatedStudents] = useState([]);
 
     useEffect(() => {
-        fetchStudentInfoList(`/members/notGraduated?page=${0}&size=${9999}`, 'GET', 'token')
-    }, [])
+        fetchStudentInfoList(`/members/notGraduated?page=${0}&size=${9999}`, "GET", "token");
+    }, []);
 
     useEffect(() => {
-        setNotGraduatedStudents(studentInfoList?.data)
-    }, [studentInfoList])
+        setNotGraduatedStudents(studentInfoList?.data);
+    }, [studentInfoList]);
 
     // 학생 선택 시 실행되는 함수
-    const chooseStudent = (studentInfo: any,) => {
+    const chooseStudent = (studentInfo: any) => {
         setSelectedStudent(studentInfo); // 선택된 학생 정보 업데이트
     };
 
-    const filteredResults = studentInfos?.filter((item: any) => item?.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filteredResults = studentInfos?.filter((item: any) =>
+        item?.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     // 학생 정보 테이블의 헤더
-    const headerInfo = ['학과', '이름', '학번'];
+    const headerInfo = ["학과", "이름", "학번"];
     // 각 열의 최소 너비
     const widthList = [150, 120, 120];
 
@@ -68,7 +70,7 @@ const StudentSearchTable = () => {
                         placeholder="회비를 사용한 부원을 검색 후 아래에서 클릭해주세요"
                         width="100%"
                         value={searchTerm}
-                        onChange={(e:any) => setSearchTerm(e.target.value)}
+                        onChange={(e: any) => setSearchTerm(e.target.value)}
                     />
                 </FlexDiv>
                 {studentInfos?.length === 0 ? (
@@ -97,25 +99,42 @@ const StudentSearchTable = () => {
                         </FlexDiv>
                         <Div width="100%" height="135px" overflow="auto">
                             {/* 검색 결과 테이블 내용 */}
-                            {filteredResults?.map((element: searchedMemberInterface, idx:number) => (
+                            {filteredResults?.map((element: searchedMemberInterface, idx: number) => (
                                 <TableHover
                                     key={`contentItem${idx}`}
                                     width="100%"
                                     height="45px"
                                     $borderT={`1px solid ${theme.color.grey1}`}
                                     $justifycontent="space-between"
-                                    $backgroundColor={"tableHo"}
+                                    $backgroundColor={
+                                        selectedStudent.studentId === element?.studentId ? "tableHo" : "wh"
+                                    }
                                     $pointer
                                     onClick={() => chooseStudent(element)}
                                 >
                                     {/* 테이블 셀 */}
-                                    <FlexDiv key={`itemValue0${idx}`} width={`${widthList[0]}px`} $padding="10px" height="100%">
+                                    <FlexDiv
+                                        key={`itemValue0${idx}`}
+                                        width={`${widthList[0]}px`}
+                                        $padding="10px"
+                                        height="100%"
+                                    >
                                         <A $center>{element?.major}</A>
                                     </FlexDiv>
-                                    <FlexDiv key={`itemValue1${idx}`} width={`${widthList[1]}px`} $padding="10px" height="100%">
+                                    <FlexDiv
+                                        key={`itemValue1${idx}`}
+                                        width={`${widthList[1]}px`}
+                                        $padding="10px"
+                                        height="100%"
+                                    >
                                         <A $center>{element?.name}</A>
                                     </FlexDiv>
-                                    <FlexDiv key={`itemValue2${idx}`} width={`${widthList[2]}px`} $padding="10px" height="100%">
+                                    <FlexDiv
+                                        key={`itemValue2${idx}`}
+                                        width={`${widthList[2]}px`}
+                                        $padding="10px"
+                                        height="100%"
+                                    >
                                         <A $center>{element?.studentId}</A>
                                     </FlexDiv>
                                 </TableHover>
