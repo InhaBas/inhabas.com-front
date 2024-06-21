@@ -1,32 +1,44 @@
 import { useEffect } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import { theme } from "../../../styles/theme";
 
 import useFetch from "../../../Hooks/useFetch";
 
 import { tokenAccess } from "../../../Recoil/backState";
-import { modalInfo, modalOpen } from "../../../Recoil/frontState";
+import { carouselInitialState, carouselOpen, modalInfo, modalOpen } from "../../../Recoil/frontState";
 
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import { H2 } from "../../../styles/assets/H";
 import Img from "../../../styles/assets/Img";
 import P from "../../../styles/assets/P";
+import Carousel from "../Carousel";
 
 const ModalBankHistoryDetail = () => {
     const setOpen = useSetRecoilState(modalOpen);
     const modalInfos = useRecoilValue(modalInfo);
     const accessToken = useRecoilValue(tokenAccess);
+    const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
+    const [carouselInitial, setCarouselInitial] = useRecoilState(carouselInitialState);
+
     const [data, fetchData] = useFetch();
 
     const closeModal = () => {
         setOpen(false);
+    };
+    // Carousel을 렌더링할지 여부를 결정하는 함수
+    const handleCarousel = (idx: number) => {
+        setCarouselInitial(idx);
+        setIsCarouselOpen(true);
     };
 
     useEffect(() => {
         if (modalInfos?.content) {
             fetchData(`/budget/history/${modalInfos.content}`, "GET", "token");
         }
+        return () => {
+            setIsCarouselOpen(false);
+        };
     }, [accessToken, modalInfos]);
 
     return !data ? (
@@ -35,7 +47,11 @@ const ModalBankHistoryDetail = () => {
                 <Img src="/images/loading.svg" />
             </FlexDiv>
         </FlexDiv>
+    ) : isCarouselOpen ? (
+        // <FlexDiv width="100%" height="100vh">
+        <Carousel images={data?.receipts?.map((image: any) => image.url) || []} />
     ) : (
+        // </FlexDiv>
         <FlexDiv
             width="35%"
             $backgroundColor="wh"
@@ -133,9 +149,9 @@ const ModalBankHistoryDetail = () => {
                     </FlexDiv>
 
                     <FlexDiv width="100%" height="60%" $padding="10px" $margin="20px 0">
-                        {data?.receipts.map(({ url, index }: { url: string; index: number }) => (
-                            <Div width="70%" $margin="20px 0" key={url} $pointer>
-                                <Img src={url} />
+                        {data?.receipts.map((elem: any, index: number) => (
+                            <Div width="70%" $margin="20px 0" key={elem} $pointer onClick={() => handleCarousel(index)}>
+                                <Img src={elem.url} />
                             </Div>
                         ))}
                     </FlexDiv>
