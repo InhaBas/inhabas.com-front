@@ -111,10 +111,13 @@ const Carousel: React.FC<carouselInterface> = ({ images }) => {
                 }
             }
         }
+        return () => {
+            setCurrentSlide(0);
+        };
     }, [images]);
 
     return (
-        <Div width="100%" $position="absolute" $top="0" $left="0" $zIndex={9999} $backgroundColor="wh">
+        <Div width="100%" height="100vh" $position="absolute" $top="0" $left="0" $zIndex={9999} $backgroundColor="wh">
             <Div $position="relative" width="100%">
                 <FlexDiv width="100%" $backgroundColor="bgColor" height="50px" $justifycontent="space-between">
                     <Div $margin="0 30px">
