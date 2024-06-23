@@ -146,20 +146,23 @@ const useFetch = (): [
                     console.log(errorResponse);
                     console.error("Network response was not ok. Error:", errorResponse.message, errorResponse.code);
                     
-                    if (access !== 'default') {
-                        alertInfos({ code: errorResponse.code, msg: errorResponse.message })
-                    }
                     if (
                         errorResponse.code === "A005" ||
                         errorResponse.code === "A006" ||
                         errorResponse.code === "A007"
                     ) {
                         await refreshAccessToken();
+                        return;
                     }
-                    if (errorResponse.status === 401 && access !== 'default') {
+
+                    alertInfos({ code: errorResponse.code, msg: errorResponse.message })
+
+                    // 401 처리
+                    if (errorResponse.status === 401) {
                         navigate(-1);
-                        // alert(errorResponse.message);  위에서 자체적으로 처리
                     }
+
+                    // 403 처리
                     if (errorResponse.status === 403) {
                         if (url === "/signUp") {
                             navigate("/");
@@ -167,6 +170,7 @@ const useFetch = (): [
                             navigate(-1);
                         }
                     }
+
                     // 404 처리
                     if (errorResponse.status === 404) {
                         navigate("/notfound");
