@@ -4,7 +4,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import useFetch from "../../../Hooks/useFetch";
 
-import { boardDetailData, fileIdList } from "../../../Recoil/backState";
+import { boardDetailData, fileIdList, tokenAccess } from "../../../Recoil/backState";
 import { menuId, refetch, selectedFile } from "../../../Recoil/frontState";
 
 import { boardDetailInterface } from "../../../Types/TypeBoard";
@@ -21,6 +21,10 @@ import { Date, TextInput } from "../../../styles/assets/Input";
 import P from "../../../styles/assets/P";
 import Loading from "../../Common/Loading";
 import TextEditor from "../../Common/TextEditor";
+
+import { tokenInterface } from "../../../Types/TypeCommon";
+
+import { jwtDecode } from "jwt-decode";
 
 const BoardCreate = () => {
     const location = useLocation();
@@ -41,6 +45,14 @@ const BoardCreate = () => {
     const currentMenuId = useRecoilValue(menuId);
     const [fileId, setFileList] = useRecoilState(fileIdList);
     const setReload = useSetRecoilState(refetch);
+
+
+    const access = useRecoilValue(tokenAccess);
+    let decoded;
+    if (access !== "default") {
+        decoded = jwtDecode(access) as tokenInterface;
+    }
+    const userId = decoded?.memberId;
 
     useEffect(() => {
         if (paramID) {
@@ -105,7 +117,6 @@ const BoardCreate = () => {
             }
 
             if (update === "create") {
-                // postFetchData(`${fetchUrl}`, "POST", "token", formdata, true);
                 postFetchData(`${fetchUrl}`, "POST", "token", inputData);
             } else if (update === "update") {
                 postFetchData(`${fetchUrl}/${paramID}`, "POST", "token", inputData);
@@ -152,6 +163,16 @@ const BoardCreate = () => {
             setFileList([]);
         };
     }, [getData]);
+
+    useEffect(() => {
+        if (update === 'update') {
+            if (detail?.writerId !== userId) {
+                alert('본인이 작성한 글만 수정 가능합니다.')
+                navigate(-1)
+            }
+        }
+    }, [detail])
+
 
     return (
         <FlexDiv width="100%">
