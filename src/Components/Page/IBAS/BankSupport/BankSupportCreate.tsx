@@ -179,12 +179,15 @@ const BankSupportCreate = () => {
                                 <P fontWeight={600}>지출일</P>
                             </Div>
                         </FlexDiv>
-                        <Div width="100%" $padding="20px">
+                        <Div width="100%" $padding="20px 20px 0 20px">
                             <Date
                                 width="100%"
                                 value={infos.dateUsed?.split("T")[0]}
                                 onChange={(e: any) => setInfos((prev) => ({ ...prev, dateUsed: e.target.value }))}
                             />
+                        </Div>
+                        <Div $padding="5px 20px">
+                            <P fontSize="xs" color="TextDanger">지출일은 현재보다 이전이어야 합니다.</P>
                         </Div>
                     </Div>
                     <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
