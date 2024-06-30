@@ -55,6 +55,7 @@ export interface myCommentInterface {
     menuName: string;
     content: string;
     dateCreated: string;
+    isDeleted: boolean;
 }
 
 export interface commentPropsInterface {

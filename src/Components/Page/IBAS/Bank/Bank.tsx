@@ -83,6 +83,7 @@ const Bank = () => {
                 내용: data?.title,
                 수입액: String(data?.income)?.replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                 지출액: String(data?.outcome)?.replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                writerId: data?.memberIdInCharge,
             }));
             setBankHistory(contents);
             setIsLoading(false);

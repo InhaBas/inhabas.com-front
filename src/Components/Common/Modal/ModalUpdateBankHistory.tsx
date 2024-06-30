@@ -17,6 +17,7 @@ import P from "../../../styles/assets/P";
 
 import StudentSearchTable from "../../Component/IBAS/Bank/StudentSearchTable";
 import DragNDrop from "../DragNDrop";
+import Loading from "../Loading";
 
 const ModalUpdateBankHistory = () => {
     const setOpen = useSetRecoilState(modalOpen);
@@ -32,18 +33,19 @@ const ModalUpdateBankHistory = () => {
     const setFileSelected = useSetRecoilState(selectedFile);
 
     const [updateHistory, fetchUpdateHistory] = useFetch();
-
-    const [historyType, setHistoryType] = useState("");
+    const [historyType, setHistoryType] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
 
     const [infos, setInfos] = useState({
-        dateUsed: "",
-        title: "",
-        details: "",
-        memberStudentIdReceived: "",
-        memberNameReceived: "",
-        income: "0",
-        outcome: "0",
-    });
+        "dateUsed": "",
+        "title": "",
+        "details": "",
+        "memberIdReceived": "",
+        "memberStudentIdReceived": "",
+        "memberNameReceived": "",
+        "income": '0',
+        "outcome": '0'
+    })
 
     useEffect(() => {
         setFileSelected([]);
@@ -51,31 +53,35 @@ const ModalUpdateBankHistory = () => {
     }, [accessToken]);
 
     useEffect(() => {
-        setSelectedInfos((prev) => ({
-            ...prev,
-            name: historyInfo?.memberNameReceived,
-            studentId: historyInfo?.memberStudentIdReceived,
-        }));
-        infos.dateUsed = historyInfo?.dateUsed;
-        infos.title = historyInfo?.title;
-        infos.details = historyInfo?.details;
-        infos.income = String(historyInfo?.income);
-        infos.outcome = String(historyInfo?.outcome);
-        if (historyInfo?.receipts) {
-            setFileSelected(historyInfo?.receipts);
+        if (historyInfo) {
+            setSelectedInfos(prev => ({
+                ...prev,
+                memberId: historyInfo?.memberIdReceived,
+                name: historyInfo?.memberNameReceived,
+                studentId: historyInfo?.memberStudentIdReceived
+            }));
+            infos.dateUsed = historyInfo?.dateUsed;
+            infos.title = historyInfo?.title;
+            infos.details = historyInfo?.details;
+            infos.income = String(historyInfo?.income);
+            infos.outcome = String(historyInfo?.outcome);
+            if (historyInfo?.receipts) {
+                setFileSelected(historyInfo?.receipts)
+            }
+            setFileIdList((prev) => [
+                ...prev,
+                ...(historyInfo?.receipts ? historyInfo.receipts.map((receipt: any) => receipt?.id ?? []) : [])
+            ]);
+    
+            if (historyInfo?.income === 0) {
+                setHistoryType('outcome')
+            } else if (historyInfo?.outcome === 0) {
+                setHistoryType('income')
+            }
+            setReload(true);
+            setIsLoading(false);
         }
-        setFileIdList((prev) => [
-            ...prev,
-            ...(historyInfo?.receipts ? historyInfo.receipts.map((receipt: any) => receipt?.id ?? []) : []),
-        ]);
-
-        if (historyInfo?.income === 0) {
-            setHistoryType("outcome");
-        } else if (historyInfo?.outcome === 0) {
-            setHistoryType("income");
-        }
-        setReload(true);
-    }, [historyInfo]);
+    }, [historyInfo])
 
     const closeModal = () => {
         setOpen(false);
@@ -83,57 +89,34 @@ const ModalUpdateBankHistory = () => {
 
     const resetInfos = () => {
         setInfos({
-            dateUsed: "",
-            title: "",
-            details: "",
-            memberStudentIdReceived: "",
-            memberNameReceived: "",
-            income: "",
-            outcome: "",
-        });
-    };
+        "dateUsed": "",
+        "title": "",
+        "details": "",
+        "memberIdReceived": "",
+        "memberStudentIdReceived": "",
+        "memberNameReceived": "",
+        "income": '',
+        "outcome": ''
+        })
+    }
 
     const checkIsCompletedContents = () => {
-        if (historyType === "income") {
-            if (infos.dateUsed === "") {
-                alert("사용일을 입력해주세요");
-                return false;
-            }
-            if (infos.title === "") {
-                alert("제목을 입력해주세요");
-                return false;
-            }
-            if (infos.income !== String(parseInt(infos.income))) {
-                alert("올바른 수입액을 입력해주세요");
-                return false;
-            }
-            if (parseInt(infos.income) <= 0) {
-                alert("1원 이상의 수입액을 입력해주세요");
-                return false;
-            }
+        const today = new Date();
+        if (historyType === 'income') {
+            if (infos.dateUsed === '') { alert('사용일을 입력해주세요'); return false}
+            if (new Date(infos.dateUsed).toDateString() >= today.toDateString()) { alert(`${today.getMonth()+1}월 ${today.getDate()}일 이전의 날짜를 입력해주세요`); return false}
+            if (infos.title === '') { alert('제목을 입력해주세요'); return false}
+            if (infos.income !== String(parseInt(infos.income))) { alert('올바른 수입액을 입력해주세요'); return false}
+            if (parseInt(infos.income) <= 0) { alert('1원 이상의 수입액을 입력해주세요'); return false}
         }
-
-        if (historyType === "outcome") {
-            if (infos.dateUsed === "") {
-                alert("사용일을 입력해주세요");
-                return false;
-            }
-            if (infos.title === "") {
-                alert("제목을 입력해주세요");
-                return false;
-            }
-            if (selectedInfos.name === "") {
-                alert("회비 사용 부원을 입력해주세요");
-                return false;
-            }
-            if (infos.outcome !== String(parseInt(infos.outcome))) {
-                alert("올바른 수입액을 입력해주세요");
-                return false;
-            }
-            if (parseInt(infos.outcome) <= 0) {
-                alert("1원 이상의 지출액을 입력해주세요");
-                return false;
-            }
+        
+        if (historyType === 'outcome') {
+            if (infos.dateUsed === '') { alert('사용일을 입력해주세요'); return false}
+            if (new Date(infos.dateUsed).toDateString() >= today.toDateString()) { alert(`${today.getMonth()+1}월 ${today.getDate()}일 이전의 날짜를 입력해주세요`); return false} 
+            if (infos.title === '') { alert('제목을 입력해주세요'); return false}
+            if (selectedInfos.name === '') { alert('회비 사용 부원을 입력해주세요'); return false}
+            if (infos.outcome !== String(parseInt(infos.outcome))) { alert('올바른 수입액을 입력해주세요'); return false}
+            if (parseInt(infos.outcome) <= 0) { alert('1원 이상의 지출액을 입력해주세요'); return false}
         }
 
         return true;
@@ -147,8 +130,9 @@ const ModalUpdateBankHistory = () => {
 
         // 데이터 전송 전 정보 채우기
         if (infos.details.length === 0) {
-            infos.details = infos.title;
-        }
+            infos.details = infos.title
+        } 
+        infos.memberIdReceived = selectedInfos.memberId;
         infos.memberStudentIdReceived = selectedInfos.studentId;
         infos.memberNameReceived = selectedInfos.name;
 
@@ -172,7 +156,7 @@ const ModalUpdateBankHistory = () => {
             closeModal();
             setReload(true);
             resetInfos();
-            setSelectedInfos({ name: "", major: "", studentId: "" });
+            setSelectedInfos({ name: "", major: '', studentId: '', memberId: '' })
             // 파일 리스트 초기화
             setFileIdList([]);
         }
@@ -313,8 +297,10 @@ const ModalUpdateBankHistory = () => {
                                 }}
                             />
                         </FlexDiv>
-                    </>
-                )}
+                        <Div width="90%" $margin="5px 0 0px 0">
+                            <P fontSize="xs">해당란을 입력하지 않을 시 제목과 내용이 같도록 처리합니다.</P>
+                        </Div>
+
 
                 {historyType === "outcome" && (
                     <>
@@ -344,15 +330,9 @@ const ModalUpdateBankHistory = () => {
                                 <FlexDiv>
                                     <P>학번:</P>
                                 </FlexDiv>
-                                <FlexDiv $margin="0 0 0 5px">
-                                    <P>{selectedInfos.studentId}</P>
+                                <FlexDiv width="100%">
+                                    <StudentSearchTable />
                                 </FlexDiv>
-                            </FlexDiv>
-                            {/* 학생 검색 테이블 */}
-                        </FlexDiv>
-                        <FlexDiv width="100%">
-                            <StudentSearchTable />
-                        </FlexDiv>
 
                         {/* 지출액 입력란 */}
                         <Div width="90%" $margin="20px 0 0 0">
@@ -379,20 +359,33 @@ const ModalUpdateBankHistory = () => {
                     </>
                 )}
 
-                <FlexDiv width="90%" direction="column">
-                    <FlexDiv width="100%" $justifycontent="flex-start" $margin="0 0 10px 0">
-                        <FlexDiv $margin="0 10px 0 0">
-                            <FlexDiv $margin="0 5px 0 0">
-                                <P>*</P>
+
+                        <FlexDiv width="90%" direction="column">
+                            <FlexDiv width="100%" $justifycontent="flex-start" $margin="0 0 10px 0">
+                                <FlexDiv $margin="0 10px 0 0">
+                                    <FlexDiv $margin="0 5px 0 0">
+                                        <P>*</P>
+                                    </FlexDiv>
+                                    <FlexDiv>
+                                        <P>증빙자료 첨부</P>
+                                    </FlexDiv>
+                                </FlexDiv>
+                                <FlexDiv>
+                                    <P fontSize="xs">해당란은 이미지만 첨부할 수 있습니다.</P>
+                                </FlexDiv>
                             </FlexDiv>
-                            <FlexDiv>
-                                <P>증빙자료 첨부</P>
+                            <FlexDiv width="100%">
+                                <DragNDrop fileFetch menuId={currentMenuId} onlyImg  />
                             </FlexDiv>
                         </FlexDiv>
-                        <FlexDiv>
-                            <P fontSize="xs">해당란은 이미지만 첨부할 수 있습니다.</P>
+
+                        <FlexDiv $position="relative" $zIndex={10000} $top="0" $left="0" $margin="20px 0 0 0" width="90%" $backgroundColor="bgColor" height="50px">
+                            <Button width="100%" height="100%" onClick={() => clickUpdateEvent()}>
+                                <P color="wh">제출</P>
+                            </Button>
                         </FlexDiv>
                     </FlexDiv>
+
                     <FlexDiv width="100%">
                         <DragNDrop fileFetch menuId={currentMenuId} onlyImg />
                     </FlexDiv>
@@ -411,9 +404,10 @@ const ModalUpdateBankHistory = () => {
                     <Button width="100%" height="100%" onClick={() => clickUpdateEvent()}>
                         <P color="wh">제출</P>
                     </Button>
+
                 </FlexDiv>
-            </FlexDiv>
-        </FlexDiv>
+            )}
+        </>
     );
 };
 

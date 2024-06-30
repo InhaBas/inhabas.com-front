@@ -11,7 +11,7 @@ import BankSupportCreate from "../Components/Page/IBAS/BankSupport/BankSupportCr
 import BankSupportDetail from "../Components/Page/IBAS/BankSupport/BankSupportDetail";
 
 const MainRoute = () => {
-    const { isAccessible } = GetRoleAuthorization();
+    const { isAccessible, isAuthorizedOverDeactivate } = GetRoleAuthorization();
     
     return (
         <Routes>
@@ -20,7 +20,7 @@ const MainRoute = () => {
             <Route path="activity/detail/:id" element={<ActivityDetail />} />
             <Route path="activity/create" element={<ActivityCreate />} />
             <Route path="activity/update/:id" element={<ActivityCreate />} />
-            {isAccessible('OverBasic') && (
+            {isAccessible('OverDeactivate') && (
                 <>
                     <Route path="bank" element={<Bank />} />
                     <Route path="bank/support" element={<BankSupport />} />

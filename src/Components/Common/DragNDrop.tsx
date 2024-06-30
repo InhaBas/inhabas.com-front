@@ -11,6 +11,8 @@ import { Div, FlexDiv, InputLabel } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import { Input } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
+import styled from "styled-components";
+import { theme } from "../../styles/theme";
 
 interface DragNDropProps {
     single?: boolean;
@@ -18,6 +20,28 @@ interface DragNDropProps {
     fileFetch?: boolean;
     menuId?: number;
 }
+
+const ScrollFlexDiv = styled(FlexDiv)`
+    display: flex;
+    align-items: ${(props) => props.$alignitems || "center"};
+    justify-content: ${(props) => props.$justifycontent || "center"};
+    flex-direction: ${(props) => props.direction || "row"};
+    flex-wrap: ${(props) => props.wrap || "wrap"};
+    
+    &::-webkit-scrollbar {
+        display: block;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: ${theme.color.grey1}; /* 스크롤바 썸의 색상을 지정하세요 */
+        border-radius: 4px; /* 스크롤바 썸의 모서리를 지정하세요 */
+    }
+
+    /* 스크롤바 호버 스타일 추가 */
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: ${(props) => props.theme.color.grey}; /* 스크롤바 썸의 호버 색상을 지정하세요 */
+    }
+`;
 
 const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => {
     const [previews, setPreviews] = useState<{ url: string; name: string; width: string; height: string }[]>([]);
@@ -280,7 +304,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
                 $border="2px dashed"
                 $borderColor="border"
                 width="100%"
-                $padding="20px"
+                $padding="20px 20px 3px 20px"
                 onDragOver={(e: React.DragEvent<HTMLDivElement>) => e.preventDefault()}
                 onDrop={handleDrop}
             >
@@ -294,7 +318,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
                         </FlexDiv>
                     </FlexDiv>
                 </InputLabel>
-                <FlexDiv width="100%" overflow="auto" $justifycontent="start" wrap="no-wrap">
+                <ScrollFlexDiv width="100%" overflow="auto" $justifycontent="start" wrap="no-wrap">
                     {previews.map((preview, index) => (
                         <Div
                             key={index}
@@ -302,7 +326,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
                             display="inline-block"
                             $border="2px solid"
                             $borderColor="grey1"
-                            $margin="0 15px 0 0"
+                            $margin="0 15px 15px 0"
                             onMouseEnter={() => {
                                 setHover(index);
                             }}
@@ -352,7 +376,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
                             </FlexDiv>
                         </Div>
                     ))}
-                </FlexDiv>
+                </ScrollFlexDiv>
             </Div>
         </>
     );

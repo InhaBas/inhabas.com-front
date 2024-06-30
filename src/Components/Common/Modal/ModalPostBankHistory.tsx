@@ -33,70 +33,47 @@ const ModalPostBankHistory = () => {
     const setReload = useSetRecoilState(refetch);
 
     const [infos, setInfos] = useState({
-        dateUsed: "",
-        title: "",
-        details: "",
-        memberStudentIdReceived: "",
-        memberNameReceived: "",
-        income: "0",
-        outcome: "0",
-    });
-    const [historyType, setHistoryType] = useState("income");
+        "dateUsed": "",
+        "title": "",
+        "details": "",
+        "memberIdReceived": "",
+        "memberStudentIdReceived": "",
+        "memberNameReceived": "",
+        "income": '0',
+        "outcome": '0'
+    })
+    const [historyType, setHistoryType] = useState('income');    
     const [postHistory, fetchPostHistory] = useFetch();
-
     const resetInfos = () => {
         setInfos({
-            dateUsed: "",
-            title: "",
-            details: "",
-            memberStudentIdReceived: "",
-            memberNameReceived: "",
-            income: "",
-            outcome: "",
-        });
-    };
+        "dateUsed": "",
+        "title": "",
+        "details": "",
+        "memberIdReceived": "",
+        "memberStudentIdReceived": "",
+        "memberNameReceived": "",
+        "income": '',
+        "outcome": ''
+        })
+    }
 
     const checkIsCompletedContents = () => {
-        if (historyType === "income") {
-            if (infos.dateUsed === "") {
-                alert("사용일을 입력해주세요");
-                return false;
-            }
-            if (infos.title === "") {
-                alert("제목을 입력해주세요");
-                return false;
-            }
-            if (infos.income !== String(parseInt(infos.income))) {
-                alert("올바른 수입액을 입력해주세요");
-                return false;
-            }
-            if (parseInt(infos.income) <= 0) {
-                alert("1원 이상의 수입액을 입력해주세요");
-                return false;
-            }
+        const today = new Date();
+        if (historyType === 'income') {
+            if (infos.dateUsed === '') { alert('사용일을 입력해주세요'); return false}
+            if (new Date(infos.dateUsed).toDateString() >= today.toDateString()) { alert(`${today.getMonth()+1}월 ${today.getDate()}일 이전의 날짜를 입력해주세요`); return false} 
+            if (infos.title === '') { alert('제목을 입력해주세요'); return false}
+            if (infos.income !== String(parseInt(infos.income))) { alert('올바른 수입액을 입력해주세요'); return false}
+            if (parseInt(infos.income) <= 0) { alert('1원 이상의 수입액을 입력해주세요'); return false}
         }
-
-        if (historyType === "outcome") {
-            if (infos.dateUsed === "") {
-                alert("사용일을 입력해주세요");
-                return false;
-            }
-            if (infos.title === "") {
-                alert("제목을 입력해주세요");
-                return false;
-            }
-            if (selectedInfos.name === "") {
-                alert("회비 사용 부원을 입력해주세요");
-                return false;
-            }
-            if (infos.outcome !== String(parseInt(infos.outcome))) {
-                alert("올바른 수입액을 입력해주세요");
-                return false;
-            }
-            if (parseInt(infos.outcome) <= 0) {
-                alert("1원 이상의 지출액을 입력해주세요");
-                return false;
-            }
+        
+        if (historyType === 'outcome') {
+            if (infos.dateUsed === '') { alert('사용일을 입력해주세요'); return false}
+            if (new Date(infos.dateUsed).toDateString() >= today.toDateString()) { alert(`${today.getMonth()+1}월 ${today.getDate()}일 이전의 날짜를 입력해주세요`); return false} 
+            if (infos.title === '') { alert('제목을 입력해주세요'); return false}
+            if (selectedInfos.name === '') { alert('회비 사용 부원을 입력해주세요'); return false}
+            if (infos.outcome !== String(parseInt(infos.outcome))) { alert('올바른 수입액을 입력해주세요'); return false}
+            if (parseInt(infos.outcome) <= 0) { alert('1원 이상의 지출액을 입력해주세요'); return false}
         }
 
         return true;
@@ -110,16 +87,18 @@ const ModalPostBankHistory = () => {
 
         // 데이터 전송 전 정보 채우기
         if (infos.details.length === 0) {
-            infos.details = infos.title;
-        }
+            infos.details = infos.title
+        } 
+        infos.memberIdReceived = selectedInfos.memberId;
         infos.memberStudentIdReceived = selectedInfos.studentId;
         infos.memberNameReceived = selectedInfos.name;
 
         // 파일 담기
         const inputData = {
-            dateUsed: (infos.dateUsed += "T00:00:00"),
+            dateUsed: infos.dateUsed.includes('T') ? infos.dateUsed : infos.dateUsed += 'T00:00:00',
             title: infos.title,
             details: infos.details,
+            memberIdReceived: infos.memberIdReceived === "" ? null : infos.memberIdReceived,
             memberStudentIdReceived: infos.memberStudentIdReceived === "" ? null : infos.memberStudentIdReceived,
             memberNameReceived: infos.memberNameReceived === "" ? null : infos.memberNameReceived,
             income: Number(infos.income),
@@ -136,7 +115,7 @@ const ModalPostBankHistory = () => {
             setReload(true);
             resetInfos();
             // 선택 학생 초기화
-            setSelectedInfos({ name: "", major: "", studentId: "" });
+            setSelectedInfos({ name: "", major: '', studentId: '', memberId: '' })
             // 파일 리스트 초기화
             setFiles([]);
         }
