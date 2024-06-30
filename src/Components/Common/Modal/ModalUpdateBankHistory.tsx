@@ -40,6 +40,7 @@ const ModalUpdateBankHistory = () => {
         "dateUsed": "",
         "title": "",
         "details": "",
+        "memberIdReceived": "",
         "memberStudentIdReceived": "",
         "memberNameReceived": "",
         "income": '0',
@@ -55,6 +56,7 @@ const ModalUpdateBankHistory = () => {
         if (historyInfo) {
             setSelectedInfos(prev => ({
                 ...prev,
+                memberId: historyInfo?.memberIdReceived,
                 name: historyInfo?.memberNameReceived,
                 studentId: historyInfo?.memberStudentIdReceived
             }));
@@ -90,6 +92,7 @@ const ModalUpdateBankHistory = () => {
         "dateUsed": "",
         "title": "",
         "details": "",
+        "memberIdReceived": "",
         "memberStudentIdReceived": "",
         "memberNameReceived": "",
         "income": '',
@@ -126,6 +129,7 @@ const ModalUpdateBankHistory = () => {
         if (infos.details.length === 0) {
             infos.details = infos.title
         } 
+        infos.memberIdReceived = selectedInfos.memberId;
         infos.memberStudentIdReceived = selectedInfos.studentId;
         infos.memberNameReceived = selectedInfos.name;
 
@@ -149,7 +153,7 @@ const ModalUpdateBankHistory = () => {
             closeModal();
             setReload(true);
             resetInfos();
-            setSelectedInfos({ name: "", major: '', studentId: '' })
+            setSelectedInfos({ name: "", major: '', studentId: '', memberId: '' })
             // 파일 리스트 초기화
             setFileIdList([])
         }
