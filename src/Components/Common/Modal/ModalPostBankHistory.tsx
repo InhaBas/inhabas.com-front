@@ -37,6 +37,7 @@ const ModalPostBankHistory = () => {
         "dateUsed": "",
         "title": "",
         "details": "",
+        "memberIdReceived": "",
         "memberStudentIdReceived": "",
         "memberNameReceived": "",
         "income": '0',
@@ -50,6 +51,7 @@ const ModalPostBankHistory = () => {
         "dateUsed": "",
         "title": "",
         "details": "",
+        "memberIdReceived": "",
         "memberStudentIdReceived": "",
         "memberNameReceived": "",
         "income": '',
@@ -86,6 +88,7 @@ const ModalPostBankHistory = () => {
         if (infos.details.length === 0) {
             infos.details = infos.title
         } 
+        infos.memberIdReceived = selectedInfos.memberId;
         infos.memberStudentIdReceived = selectedInfos.studentId;
         infos.memberNameReceived = selectedInfos.name;
 
@@ -94,6 +97,7 @@ const ModalPostBankHistory = () => {
             dateUsed: infos.dateUsed.includes('T') ? infos.dateUsed : infos.dateUsed += 'T00:00:00',
             title: infos.title,
             details: infos.details,
+            memberIdReceived: infos.memberIdReceived === "" ? null : infos.memberIdReceived,
             memberStudentIdReceived: infos.memberStudentIdReceived === "" ? null : infos.memberStudentIdReceived,
             memberNameReceived: infos.memberNameReceived === "" ? null : infos.memberNameReceived,
             income: Number(infos.income),
@@ -110,7 +114,7 @@ const ModalPostBankHistory = () => {
             setReload(true);
             resetInfos();
             // 선택 학생 초기화
-            setSelectedInfos({ name: "", major: '', studentId: '' })
+            setSelectedInfos({ name: "", major: '', studentId: '', memberId: '' })
             // 파일 리스트 초기화
             setFiles([])
         }
