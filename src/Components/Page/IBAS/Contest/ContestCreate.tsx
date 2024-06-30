@@ -16,7 +16,7 @@ import TextEditor from "../../../Common/TextEditor";
 import Button from "../../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
-import { Date, Label, Radio, TextInput } from "../../../../styles/assets/Input";
+import { DateInput, Label, Radio, TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
 
 import { DateFunction } from "../../../../Functions/dateFunction";
@@ -361,7 +361,7 @@ const ContestCreate = () => {
                             </FlexDiv>
                             <Div width="100%" $padding="20px">
                                 <Div width="100%">
-                                    <Date
+                                    <DateInput
                                         width="100%"
                                         height="60px"
                                         fontSize="xl"
@@ -386,7 +386,7 @@ const ContestCreate = () => {
                             </FlexDiv>
                             <Div width="100%" $padding="20px">
                                 <Div width="100%">
-                                    <Date
+                                    <DateInput
                                         width="100%"
                                         height="60px"
                                         fontSize="xl"

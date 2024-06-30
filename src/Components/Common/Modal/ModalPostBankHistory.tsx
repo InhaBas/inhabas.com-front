@@ -60,8 +60,10 @@ const ModalPostBankHistory = () => {
     }
 
     const checkIsCompletedContents = () => {
+        const today = new Date();
         if (historyType === 'income') {
             if (infos.dateUsed === '') { alert('사용일을 입력해주세요'); return false}
+            if (new Date(infos.dateUsed).toDateString() >= today.toDateString()) { alert(`${today.getMonth()+1}월 ${today.getDate()}일 이전의 날짜를 입력해주세요`); return false} 
             if (infos.title === '') { alert('제목을 입력해주세요'); return false}
             if (infos.income !== String(parseInt(infos.income))) { alert('올바른 수입액을 입력해주세요'); return false}
             if (parseInt(infos.income) <= 0) { alert('1원 이상의 수입액을 입력해주세요'); return false}
@@ -69,6 +71,7 @@ const ModalPostBankHistory = () => {
         
         if (historyType === 'outcome') {
             if (infos.dateUsed === '') { alert('사용일을 입력해주세요'); return false}
+            if (new Date(infos.dateUsed).toDateString() >= today.toDateString()) { alert(`${today.getMonth()+1}월 ${today.getDate()}일 이전의 날짜를 입력해주세요`); return false} 
             if (infos.title === '') { alert('제목을 입력해주세요'); return false}
             if (selectedInfos.name === '') { alert('회비 사용 부원을 입력해주세요'); return false}
             if (infos.outcome !== String(parseInt(infos.outcome))) { alert('올바른 수입액을 입력해주세요'); return false}

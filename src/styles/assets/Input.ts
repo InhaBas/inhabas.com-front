@@ -122,7 +122,7 @@ const SearchInput = styled(TextInput)`
     }
 `;
 
-const Date = styled.input.attrs({ type: "date" })<InputStyle>`
+const DateInput = styled.input.attrs({ type: "date" })<InputStyle>`
     width: ${(props) => props.width || "100%"};
     height: ${(props) => props.height || "40px"};
     margin: ${(props) => props.$margin || "0"};
@@ -184,4 +184,4 @@ const Select = styled.select<InputStyle>`
     }
 `;
 
-export { Checkbox, Date, DateTime, Input, Label, NumberInput, Radio, SearchInput, Select, TextArea, TextInput };
+export { Checkbox, DateInput, DateTime, Input, Label, NumberInput, Radio, SearchInput, Select, TextArea, TextInput };
