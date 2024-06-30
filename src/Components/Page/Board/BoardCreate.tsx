@@ -17,7 +17,7 @@ import Dropdown from "../../Common/Dropdown";
 import Button from "../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
-import { Date, TextInput } from "../../../styles/assets/Input";
+import { DateInput, TextInput } from "../../../styles/assets/Input";
 import P from "../../../styles/assets/P";
 import Loading from "../../Common/Loading";
 import TextEditor from "../../Common/TextEditor";
@@ -239,7 +239,7 @@ const BoardCreate = () => {
                             {(url === "sponsor" || url === "usage") && (
                                 <Div width="100%" $padding="20px">
                                     <Div width="100%">
-                                        <Date
+                                        <DateInput
                                             width="100%"
                                             height="60px"
                                             fontSize="xl"

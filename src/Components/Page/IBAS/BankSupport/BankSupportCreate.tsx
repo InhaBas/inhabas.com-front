@@ -11,7 +11,7 @@ import { menuId, refetch, selectedFile } from "../../../../Recoil/frontState";
 import { supportDetailInterface } from "../../../../Types/TypeBank";
 import Button from "../../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
-import { Date, TextInput } from "../../../../styles/assets/Input";
+import { DateInput, TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
 import DragNDrop from "../../../Common/DragNDrop";
 
@@ -180,7 +180,7 @@ const BankSupportCreate = () => {
                             </Div>
                         </FlexDiv>
                         <Div width="100%" $padding="20px 20px 0 20px">
-                            <Date
+                            <DateInput
                                 width="100%"
                                 value={infos.dateUsed?.split("T")[0]}
                                 onChange={(e: any) => setInfos((prev) => ({ ...prev, dateUsed: e.target.value }))}

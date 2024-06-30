@@ -10,7 +10,7 @@ import Button from "../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import { H2 } from "../../../styles/assets/H";
 import Img from "../../../styles/assets/Img";
-import { Date, TextArea, TextInput } from "../../../styles/assets/Input";
+import { DateInput, TextArea, TextInput } from "../../../styles/assets/Input";
 import P from "../../../styles/assets/P";
 
 const ModalHistory = () => {
@@ -108,7 +108,7 @@ const ModalHistory = () => {
             </FlexDiv>
             <FlexDiv $padding="25px" width="100%" height="350px" direction="column" $justifycontent="space-between">
                 <Div width="100%">
-                    <Date
+                    <DateInput
                         ref={(el: HTMLInputElement) => (inputRef.current[0] = el)}
                         width="100%"
                         defaultValue={history?.dateHistory}
