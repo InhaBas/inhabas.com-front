@@ -191,7 +191,7 @@ const ModalUpdateBankHistory = () => {
                         <Img src={"../images/x_white.svg"} />
                     </Div>
                 </FlexDiv>
-
+    
                 <Div width="90%" $margin="20px 0 30px 0">
                     {historyType === "income" ? (
                         <P fontSize="sm" fontWeight={700}>
@@ -203,7 +203,7 @@ const ModalUpdateBankHistory = () => {
                         </P>
                     )}
                 </Div>
-
+    
                 <Div width="90%">
                     <P fontSize="xs" fontWeight={700}>
                         사용일
@@ -220,13 +220,13 @@ const ModalUpdateBankHistory = () => {
                         type="date"
                         width="100%"
                         value={infos.dateUsed?.split("T")[0]}
-                        onChange={(e: any) => setInfos((prev) => ({ ...prev, dateUsed: e.target.value }))}
+                        onChange={(e:any) => setInfos((prev) => ({ ...prev, dateUsed: e.target.value }))}
                     />
                 </FlexDiv>
                 <Div width="90%" $margin="5px 0 20px 0">
                     <P fontSize="xs">영수증에 명시된 사용일을 적어주세요.</P>
                 </Div>
-
+    
                 <Div width="90%">
                     <P fontSize="xs" fontWeight={700}>
                         제목
@@ -244,10 +244,10 @@ const ModalUpdateBankHistory = () => {
                         placeholder="제목을 입력하세요"
                         width="100%"
                         value={infos.title}
-                        onChange={(e: any) => setInfos((prev) => ({ ...prev, title: e.target.value }))}
+                        onChange={(e:any) => setInfos((prev) => ({ ...prev, title: e.target.value }))}
                     />
                 </FlexDiv>
-
+    
                 <Div width="90%">
                     <P fontSize="xs" fontWeight={700}>
                         내용
@@ -265,13 +265,13 @@ const ModalUpdateBankHistory = () => {
                         placeholder="내용을 입력하세요"
                         width="100%"
                         value={infos.details}
-                        onChange={(e: any) => setInfos((prev) => ({ ...prev, details: e.target.value }))}
+                        onChange={(e:any) => setInfos((prev) => ({ ...prev, details: e.target.value }))}
                     />
                 </FlexDiv>
                 <Div width="90%" $margin="5px 0 20px 0">
                     <P fontSize="xs">해당란을 입력하지 않을 시 제목과 내용이 같도록 처리합니다.</P>
                 </Div>
-
+    
                 {historyType === "income" && (
                     <>
                         <Div width="90%">
@@ -292,19 +292,17 @@ const ModalUpdateBankHistory = () => {
                                 placeholder="수입액을 입력하세요"
                                 width="100%"
                                 value={infos.income === "0" ? "" : infos.income}
-                                onChange={(e: any) => {
-                                    setInfos((prev) => ({ ...prev, income: e.target.value }));
-                                }}
+                                onChange={(e:any) => setInfos((prev) => ({ ...prev, income: e.target.value }))}
                             />
                         </FlexDiv>
                         <Div width="90%" $margin="5px 0 0px 0">
                             <P fontSize="xs">해당란을 입력하지 않을 시 제목과 내용이 같도록 처리합니다.</P>
                         </Div>
-
-
+                    </>
+                )}
+    
                 {historyType === "outcome" && (
                     <>
-                        {/* 선택된 학생 정보 표시 */}
                         <FlexDiv width="90%">
                             <FlexDiv
                                 width="100%"
@@ -333,82 +331,60 @@ const ModalUpdateBankHistory = () => {
                                 <FlexDiv width="100%">
                                     <StudentSearchTable />
                                 </FlexDiv>
-
-                        {/* 지출액 입력란 */}
-                        <Div width="90%" $margin="20px 0 0 0">
-                            <P fontSize="xs" fontWeight={700}>
-                                지출액
-                            </P>
-                        </Div>
-                        <FlexDiv
-                            width="90%"
-                            $borderB={`1px solid ${theme.color.grey1}`}
-                            $justifycontent="flex-start"
-                            height="50px"
-                            $margin="0 0 20px 0"
-                        >
-                            <Input
-                                type="number"
-                                $padding="0"
-                                placeholder="지출액을 입력하세요"
-                                width="100%"
-                                value={infos.outcome === "0" ? "" : infos.outcome}
-                                onChange={(e: any) => setInfos((prev) => ({ ...prev, outcome: e.target.value }))}
-                            />
+                            </FlexDiv>
+    
+                            <Div width="90%" $margin="20px 0 0 0">
+                                <P fontSize="xs" fontWeight={700}>
+                                    지출액
+                                </P>
+                            </Div>
+                            <FlexDiv
+                                width="90%"
+                                $borderB={`1px solid ${theme.color.grey1}`}
+                                $justifycontent="flex-start"
+                                height="50px"
+                                $margin="0 0 20px 0"
+                            >
+                                <Input
+                                    type="number"
+                                    $padding="0"
+                                    placeholder="지출액을 입력하세요"
+                                    width="100%"
+                                    value={infos.outcome === "0" ? "" : infos.outcome}
+                                    onChange={(e:any) => setInfos((prev) => ({ ...prev, outcome: e.target.value }))}
+                                />
+                            </FlexDiv>
                         </FlexDiv>
                     </>
                 )}
-
-
-                        <FlexDiv width="90%" direction="column">
-                            <FlexDiv width="100%" $justifycontent="flex-start" $margin="0 0 10px 0">
-                                <FlexDiv $margin="0 10px 0 0">
-                                    <FlexDiv $margin="0 5px 0 0">
-                                        <P>*</P>
-                                    </FlexDiv>
-                                    <FlexDiv>
-                                        <P>증빙자료 첨부</P>
-                                    </FlexDiv>
-                                </FlexDiv>
-                                <FlexDiv>
-                                    <P fontSize="xs">해당란은 이미지만 첨부할 수 있습니다.</P>
-                                </FlexDiv>
+    
+                <FlexDiv width="90%" direction="column">
+                    <FlexDiv width="100%" $justifycontent="flex-start" $margin="0 0 10px 0">
+                        <FlexDiv $margin="0 10px 0 0">
+                            <FlexDiv $margin="0 5px 0 0">
+                                <P>*</P>
                             </FlexDiv>
-                            <FlexDiv width="100%">
-                                <DragNDrop fileFetch menuId={currentMenuId} onlyImg  />
+                            <FlexDiv>
+                                <P>증빙자료 첨부</P>
                             </FlexDiv>
                         </FlexDiv>
-
-                        <FlexDiv $position="relative" $zIndex={10000} $top="0" $left="0" $margin="20px 0 0 0" width="90%" $backgroundColor="bgColor" height="50px">
-                            <Button width="100%" height="100%" onClick={() => clickUpdateEvent()}>
-                                <P color="wh">제출</P>
-                            </Button>
+                        <FlexDiv>
+                            <P fontSize="xs">해당란은 이미지만 첨부할 수 있습니다.</P>
                         </FlexDiv>
                     </FlexDiv>
-
                     <FlexDiv width="100%">
                         <DragNDrop fileFetch menuId={currentMenuId} onlyImg />
                     </FlexDiv>
                 </FlexDiv>
-
-                <FlexDiv
-                    $position="relative"
-                    $zIndex={10000}
-                    $top="0"
-                    $left="0"
-                    $margin="20px 0 0 0"
-                    width="90%"
-                    $backgroundColor="bgColor"
-                    height="50px"
-                >
+    
+                <FlexDiv $position="relative" $zIndex={10000} $top="0" $left="0" $margin="20px 0 0 0" width="90%" $backgroundColor="bgColor" height="50px">
                     <Button width="100%" height="100%" onClick={() => clickUpdateEvent()}>
                         <P color="wh">제출</P>
                     </Button>
-
                 </FlexDiv>
-            )}
-        </>
-    );
+            </FlexDiv>
+        </FlexDiv>
+    );    
 };
 
 export default ModalUpdateBankHistory;
