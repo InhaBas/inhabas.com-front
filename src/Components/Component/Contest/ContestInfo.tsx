@@ -34,15 +34,16 @@ const ContestInfo = ({ info }: { info: any }) => {
                     {/* 내용 영역 */}
                     <FlexDiv height="30%" width="100%">
                         {/* 윗 내용 */}
-                        <Div height="45%" width="80%" $padding="30px 0">
+                        <Div height="45%" width="79%" $padding="30px 0">
                             {/* 월, 제목 */}
                             <FlexDiv width="100%" $justifycontent="flex-start">
                                 <Div>
-                                    <P color="textColor" fontSize="sm" fontWeight={600}>
+                                    <P color="textColor" fontSize="sm" fontWeight={600} >
                                         {data?.endMonth}월
                                     </P>
                                 </Div>
-                                <Div $margin="0 0 0 20px">
+                                {/* <Div $margin="0 0 0 20px"> */}
+                                <Div $margin="0 0 0 20px" $maxWidth="80%">
                                     <P fontSize="lg" fontWeight={700}>
                                         {data?.title}
                                     </P>
@@ -55,7 +56,7 @@ const ContestInfo = ({ info }: { info: any }) => {
                                         {data?.endDay}
                                     </P>
                                 </Div>
-                                <Div $margin="0 0 0 23px">
+                                <Div $margin="0 0 0 23px" $maxWidth="80%">
                                     <P color="grey">{data?.topic}</P>
                                 </Div>
                             </FlexDiv>
