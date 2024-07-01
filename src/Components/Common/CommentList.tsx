@@ -122,9 +122,7 @@ const CommentList = (props: commentPropsInterface) => {
         }
         setUpdating("nothing");
         setEditingCommentId(-1);
-        return (
-            setComment([])
-        )
+        return setComment([]);
     }, [commentDeleteData, putComment]);
 
     useEffect(() => {
@@ -352,13 +350,11 @@ const CommentList = (props: commentPropsInterface) => {
         if (commentData) {
             const convertedComments = convertToCommentTree(commentData);
             setComment(convertedComments);
-            console.log(2);
         }
     }, [commentData]);
 
     useEffect(() => {
         setIsLoading(false);
-        console.log(1);
     }, [comment]);
 
     return <>{comment && renderCommentsRecursively(Object.values(comment), 0)}</>;

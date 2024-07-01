@@ -7,10 +7,10 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { contestListDataInfo } from "../../../../Recoil/backState";
 import { contestOrder } from "../../../../Recoil/frontState";
 
+import { useNavigate } from "react-router-dom";
+import A from "../../../../styles/assets/A";
 import Button from "../../../../styles/assets/Button";
 import Img from "../../../../styles/assets/Img";
-import A from "../../../../styles/assets/A";
-import { useNavigate } from "react-router-dom";
 
 import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
 
@@ -101,7 +101,6 @@ const Contest = () => {
                                 $borderRadius={30}
                                 $HBackgroundColor="bgColorHo"
                                 onClick={() => {
-                                    console.log("클릭");
                                     navigate(`/board/contest/create`);
                                 }}
                             >

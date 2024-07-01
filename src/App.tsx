@@ -30,7 +30,6 @@ const App = () => {
     const isNotLogin = useRecoilValue(failRefreshing);
     const url = location.pathname.split("/").slice(1, 3).join("/");
     useEffect(() => {
-        console.log(url);
         if (
             isNotLogin &&
             location.pathname.substring(1) &&
@@ -47,7 +46,6 @@ const App = () => {
                 "login",
             ]?.includes(url)
         ) {
-            console.log("App");
             alert("로그인을 해주세요");
             navigate("/");
         }

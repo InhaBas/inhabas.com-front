@@ -138,7 +138,6 @@ const ContestCreate = () => {
                 content: inputRef.current[5].getInstance().getMarkdown(),
                 files: fileId,
             };
-            console.log(inputData);
             if (update === "create") {
                 postFetchData(`${fetchUrl}`, "POST", "token", inputData);
             } else if (update === "update") {
@@ -156,7 +155,6 @@ const ContestCreate = () => {
     }, [postData]);
 
     useEffect(() => {
-        console.log(update);
         if (update == "update") {
             getFetchData(`${fetchUrl}/${paramID}`, "GET", "token");
         }

@@ -5,9 +5,9 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { tokenAccess } from "../Recoil/backState";
 import { failRefreshing } from "../Recoil/frontState";
 
-const alertInfos = ({ code, msg } : {code?: number, msg: string}) => {
-    alert(`웹 팀에 문의해주세요. \n${code} : ${msg}`)
-}
+const alertInfos = ({ code, msg }: { code?: number; msg: string }) => {
+    alert(`웹 팀에 문의해주세요. \n${code} : ${msg}`);
+};
 
 const useFetch = (): [
     any,
@@ -26,9 +26,9 @@ const useFetch = (): [
     };
 
     const refreshAccessToken = async () => {
-        console.log("call refreshAccessToken");
+        // console.log("call refreshAccessToken");
         try {
-            console.log("try refresh");
+            // console.log("try refresh");
             const refreshToken = getCookie("ibas_refresh");
 
             let res = await fetch(`${process.env.REACT_APP_API_URL}/token/refresh`, {
@@ -40,15 +40,15 @@ const useFetch = (): [
             });
 
             if (res.ok) {
-                console.log("success refresh");
+                // console.log("success refresh");
 
                 const result = await res.json();
                 const newAccessToken = result.accessToken;
-                console.log(newAccessToken);
+                // console.log(newAccessToken);
                 setAccess(newAccessToken);
-                console.log(access);
+                // console.log(access);
             } else {
-                console.log("fail refresh");
+                // console.log("fail refresh");
                 setIsNotLogin(true);
 
                 try {
@@ -95,7 +95,7 @@ const useFetch = (): [
                             setData(new Date().toLocaleString());
                         } else {
                             result = await res.json();
-                            console.log({ ...result });
+                            // console.log({ ...result });
                             setData({ ...result });
                         }
                     } else {
@@ -103,7 +103,7 @@ const useFetch = (): [
                             // 에러 응답에서 오류 메시지 추출
                             const errorResponse = await res.json();
                             console.error("Network response was not ok. Error:", errorResponse.message);
-                            alertInfos({ code: errorResponse.code, msg: errorResponse.message })
+                            alertInfos({ code: errorResponse.code, msg: errorResponse.message });
                             // 404처리
                             if (errorResponse.status === 404) {
                                 navigate("/notfound");
@@ -124,12 +124,10 @@ const useFetch = (): [
                         headers: headers,
                     });
                 } else {
-
                     res = await fetch(`${process.env.REACT_APP_API_URL}${url}`, {
                         method: method,
                         headers: headers,
                     });
-
                 }
 
                 if (res.ok) {
@@ -137,15 +135,15 @@ const useFetch = (): [
                         setData(new Date().toLocaleString());
                     } else {
                         result = await res.json();
-                        console.log({ ...result });
+                        // console.log({ ...result });
                         setData({ ...result });
                     }
                 } else {
                     // Handle error response
                     const errorResponse = await res.json();
-                    console.log(errorResponse);
+                    // console.log(errorResponse);
                     console.error("Network response was not ok. Error:", errorResponse.message, errorResponse.code);
-                    
+
                     if (
                         errorResponse.code === "A005" ||
                         errorResponse.code === "A006" ||
@@ -155,7 +153,7 @@ const useFetch = (): [
                         return;
                     }
 
-                    alertInfos({ code: errorResponse.code, msg: errorResponse.message })
+                    alertInfos({ code: errorResponse.code, msg: errorResponse.message });
 
                     // 401 처리
                     if (errorResponse.status === 401) {
@@ -183,7 +181,7 @@ const useFetch = (): [
             } else if (token === undefined) {
                 await fetchWithoutToken();
             }
-            console.log(`${method} : ${url}`);
+            // console.log(`${method} : ${url}`);
         } catch (error) {
             console.error("Error in fetchData:", error);
         }

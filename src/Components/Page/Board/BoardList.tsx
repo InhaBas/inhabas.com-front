@@ -146,7 +146,7 @@ const BoardList = () => {
 
     useEffect(() => {
         setContestOrderBy("&orderBy=ALL");
-    }, [url])
+    }, [url]);
 
     return (
         <>
@@ -191,7 +191,6 @@ const BoardList = () => {
                                     $borderRadius={30}
                                     $HBackgroundColor="bgColorHo"
                                     onClick={() => {
-                                        console.log("클릭");
                                         navigate(`/board/${url}/create`);
                                     }}
                                 >
