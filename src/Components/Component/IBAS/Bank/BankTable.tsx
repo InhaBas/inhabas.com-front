@@ -115,7 +115,7 @@ const BankTable = () => {
                                     </P>
                                 </FlexDiv>
                             ))}
-                        <FlexDiv width="50px">
+                        <FlexDiv $minWidth="50px" $padding="10px">
                             <Div
                                 width="15px"
                                 onClick={(e: MouseEvent) => clickDetailEvent(e, "ss", element?.id)}
@@ -126,7 +126,7 @@ const BankTable = () => {
                         </FlexDiv>
                         {/* 권한 여부 체크 */}
 
-                        {role && isSecretary && element?.writerId === userId ? (
+                        {role && isSecretary && element?.writerId === userId && (
                             <FlexDiv $minWidth={"60px"} $padding="10px">
                                 <FlexDiv
                                     width="15px"
@@ -144,8 +144,6 @@ const BankTable = () => {
                                     <Img src="/images/trash_grey.svg" />
                                 </FlexDiv>
                             </FlexDiv>
-                        ) : (
-                            <FlexDiv $minWidth={"62px"} $padding="10px"></FlexDiv>
                         )}
                     </FlexDiv>
                 ))}
