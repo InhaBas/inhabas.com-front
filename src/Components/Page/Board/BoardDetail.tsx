@@ -298,7 +298,7 @@ const BoardDetail = () => {
                                     </Div>
                                 </FlexDiv>
                             )}
-                            <Div width="100%" $margin="50px 0">
+                            <Div width="100%" $margin="50px 0" wrap="break-word" $whiteSpace="pre-wrap">
                                 {detail?.content && <TextViewer contents={detail?.content} />}
                             </Div>
 

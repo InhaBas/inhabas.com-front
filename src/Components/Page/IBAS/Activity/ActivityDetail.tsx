@@ -25,6 +25,7 @@ import { carouselInitialState, carouselOpen } from "../../../../Recoil/frontStat
 import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
 import { tokenInterface } from "../../../../Types/TypeCommon";
 import Loading from "../../../Common/Loading";
+import TextViewer from "../../../Common/TextViewer";
 
 const ActivityDetail = () => {
     const navigate = useNavigate();
@@ -126,7 +127,7 @@ const ActivityDetail = () => {
                                 <FlexDiv width="12px" $margin="0 5px ">
                                     <Img src="/images/clock_grey.svg" />
                                 </FlexDiv>
-                                <Div>
+                                <Div wrap="break-word" $whiteSpace="pre-wrap">
                                     <P color="grey4" fontSize="sm">
                                         {detail?.dateCreated.split("T")[0]} {detail?.dateCreated.split("T")[1]}
                                     </P>
@@ -137,10 +138,9 @@ const ActivityDetail = () => {
                                     {detail?.title}
                                 </H2>
                             </Div>
-                            <Div $margin="50px 0 ">
-                                <P $whiteSpace="pre-wrap" $lineHeight={1.5}>
-                                    {detail?.content}
-                                </P>
+
+                            <Div width="100%" $margin="50px 0" overflow="">
+                                {detail?.content && <TextViewer contents={detail?.content} />}
                             </Div>
 
                             <FlexDiv>
