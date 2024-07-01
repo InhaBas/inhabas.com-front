@@ -207,8 +207,6 @@ const BoardDetail = () => {
             });
     }, []);
 
-    useEffect(() => console.log(carouselInitial), [carouselInitial]);
-
     const deleteDetail = () => {
         if (window.confirm("정말 삭제 하시겠습니까?")) {
             setIsLoading(true);
@@ -280,7 +278,7 @@ const BoardDetail = () => {
                                     {detail?.title}
                                 </H2>
                             </Div>
-                            {['sponsor', 'usage'].includes(url) && (
+                            {["sponsor", "usage"].includes(url) && (
                                 <FlexDiv $margin="20px 0 30px 0">
                                     <FlexDiv width="12px" $margin="0">
                                         <Img src="/images/calendar_grey.svg" />
@@ -295,7 +293,7 @@ const BoardDetail = () => {
                                     </FlexDiv>
                                     <Div>
                                         <P color="grey4" fontSize="sm">
-                                            {detail?.dateHistory?.split('T')[0] || "" }
+                                            {detail?.dateHistory?.split("T")[0] || ""}
                                         </P>
                                     </Div>
                                 </FlexDiv>
@@ -402,10 +400,13 @@ const BoardDetail = () => {
                             </FlexDiv>
                         </Div>
                         {/* 공개자료실일 경우에 토큰 없이 댓글 패치 */}
-                        {pathNameInfo[1] === 'opensource' ? (
-                            <CommentList boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} token={false} />
-                        )
-                        : (
+                        {pathNameInfo[1] === "opensource" ? (
+                            <CommentList
+                                boardId={boardId}
+                                menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])}
+                                token={false}
+                            />
+                        ) : (
                             <CommentList boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />
                         )}
                         {isAuthorizedOverDeactivate && (

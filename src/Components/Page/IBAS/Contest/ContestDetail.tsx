@@ -132,14 +132,12 @@ const ContestDetail = () => {
 
     useEffect(() => {
         setIsLoading(true);
-        console.log(22);
         detailDataFetch(`/contest/${url}/${boardId}`, "GET");
     }, [url]);
 
     useEffect(() => {
         if (detailData) {
             setDetail(detailData);
-            console.log(33);
             setIsLoading(false);
         }
         return () => {

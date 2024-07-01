@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
-import { theme } from "../../../../styles/theme";
+import useFetch from "../../../../Hooks/useFetch";
+import A from "../../../../styles/assets/A";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import P from "../../../../styles/assets/P";
-import A from "../../../../styles/assets/A";
-import useFetch from "../../../../Hooks/useFetch";
+import { theme } from "../../../../styles/theme";
 
-import Pagination from "../../../Common/Pagination";
 import Loading from "../../../Common/Loading";
+import Pagination from "../../../Common/Pagination";
 
 import { useRecoilState } from "recoil";
 import { myCommentsInfo } from "../../../../Recoil/backState";
@@ -24,9 +24,9 @@ const MyCommentTable = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        fetchCommentListData('/myInfo/comments?page=0&size=7', 'GET', 'token')
+        fetchCommentListData("/myInfo/comments?page=0&size=7", "GET", "token");
         setIsLoading(true);
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (commentListData) {
@@ -36,16 +36,14 @@ const MyCommentTable = () => {
                 menuType: item.menuType,
                 menuName: item.menuName,
                 content: item.content,
-                dateCreated: item.dateCreated.split('T')[0],
+                dateCreated: item.dateCreated.split("T")[0],
                 isDeleted: item.isDeleted,
-            }))
-            console.log(commentListData)
+            }));
             setCommentList(contents);
             setTotalPage(commentListData.pageInfo.totalPages);
             setIsLoading(false);
-
         }
-    }, [commentListData])
+    }, [commentListData]);
 
     return (
         <>
@@ -63,7 +61,7 @@ const MyCommentTable = () => {
                             $justifycontent="space-between"
                             $backgroundColor="wh"
                         >
-                        {headerInfo.map((item: string, idx: number) => (
+                            {headerInfo.map((item: string, idx: number) => (
                                 <FlexDiv
                                     key={`headerInfo${idx}`}
                                     $minWidth={`${widthList[idx]}%`}
@@ -78,11 +76,11 @@ const MyCommentTable = () => {
                         </FlexDiv>
                         {commentList.length === 0 ? (
                             <FlexDiv
-                            width="100%"
-                            height="45px"
-                            $borderT={`1px solid ${theme.color.grey1}`}
-                            $padding="0 18px"
-                            $backgroundColor="wh"
+                                width="100%"
+                                height="45px"
+                                $borderT={`1px solid ${theme.color.grey1}`}
+                                $padding="0 18px"
+                                $backgroundColor="wh"
                             >
                                 <Div>
                                     <P>내가 작성한 댓글이 존재하지 않습니다</P>
@@ -98,33 +96,44 @@ const MyCommentTable = () => {
                                     $justifycontent="space-between"
                                     $backgroundColor="wh"
                                 >
-                                    {Object.values(element).slice(3,6).map((item: any, idx: number) => (
-                                        <FlexDiv
-                                        key={`itemValue${idx}`}
-                                        width={`${widthList[idx]}%`}
-                                        $padding="10px"
-                                        $justifycontent={idx === 1 ? "space-between" : "center"}
-                                        >
-                                            {idx === 1 ? (
-                                                <FlexDiv width="100%" $justifycontent= "space-between">
-                                                    <Div width="90%">
-                                                        <P fontWeight={700}>
-                                                        {(element as { isDeleted: boolean }).isDeleted ? `${item} (삭제)` : item}
-                                                        </P>
+                                    {Object.values(element)
+                                        .slice(3, 6)
+                                        .map((item: any, idx: number) => (
+                                            <FlexDiv
+                                                key={`itemValue${idx}`}
+                                                width={`${widthList[idx]}%`}
+                                                $padding="10px"
+                                                $justifycontent={idx === 1 ? "space-between" : "center"}
+                                            >
+                                                {idx === 1 ? (
+                                                    <FlexDiv width="100%" $justifycontent="space-between">
+                                                        <Div width="90%">
+                                                            <P fontWeight={700}>
+                                                                {(element as { isDeleted: boolean }).isDeleted
+                                                                    ? `${item} (삭제)`
+                                                                    : item}
+                                                            </P>
+                                                        </Div>
+                                                        <Div width="10%">
+                                                            <A
+                                                                color="bgColor"
+                                                                href={`/board/${(
+                                                                    element as { menuType: string }
+                                                                ).menuType.toLowerCase()}/detail/${
+                                                                    (element as { id: number }).id
+                                                                }`}
+                                                            >
+                                                                원문보기 ▶
+                                                            </A>
+                                                        </Div>
+                                                    </FlexDiv>
+                                                ) : (
+                                                    <Div>
+                                                        <P>{item}</P>
                                                     </Div>
-                                                    <Div width="10%">
-                                                        <A color="bgColor" href={`/board/${(element as { menuType: string }).menuType.toLowerCase()}/detail/${(element as { id: number }).id}`}>
-                                                            원문보기 ▶
-                                                        </A>
-                                                    </Div>
-                                                </FlexDiv>
-                                            ) : (
-                                                <Div>
-                                                    <P>{item}</P>
-                                                </Div>
-                                            )}
-                                        </FlexDiv>
-                                    ))}
+                                                )}
+                                            </FlexDiv>
+                                        ))}
                                 </FlexDiv>
                             ))
                         )}
