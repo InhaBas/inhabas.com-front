@@ -23,6 +23,7 @@ import { H2 } from "../../../../styles/assets/H";
 import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
 import Loading from "../../../Common/Loading";
+import TextViewer from "../../../Common/TextViewer";
 
 const HorizonScrollDiv = styled(Div)`
     white-space: nowrap;
@@ -250,8 +251,8 @@ const ContestDetail = () => {
                         </FlexDiv>
                     ))}
 
-                    <Div $margin="0 0 20px 0">
-                        <P>{detail?.content}</P>
+                    <Div width="100%" $margin="0 0 20px 0" wrap="break-word" $whiteSpace="pre-wrap">
+                        {detail?.content && <TextViewer contents={detail?.content} />}
                     </Div>
 
                     {detail && detail.images && detail.images.length > 0 && (
