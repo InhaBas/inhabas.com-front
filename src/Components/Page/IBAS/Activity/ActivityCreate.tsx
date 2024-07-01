@@ -1,16 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+
 import styled from "styled-components";
+import { theme } from "../../../../styles/theme";
+
 import useFetch from "../../../../Hooks/useFetch";
+
 import { fileIdList } from "../../../../Recoil/backState";
 import { menuId, refetch, selectedFile } from "../../../../Recoil/frontState";
+
 import { ActivityDetailInterface } from "../../../../Types/IBAS/TypeIBAS";
+
 import Button from "../../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import { TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
-import { theme } from "../../../../styles/theme";
 import DragNDrop from "../../../Common/DragNDrop";
 import Loading from "../../../Common/Loading";
 import TextEditor from "../../../Common/TextEditor";
