@@ -5,6 +5,7 @@ import Img from "../../../styles/assets/Img";
 import P from "../../../styles/assets/P";
 
 import MyBoardTable from "../../Component/IBAS/MyInfo/MyBoardTable";
+import MyCommentTable from "../../Component/IBAS/MyInfo/MyCommentTable";
 
 const MyBoardContainer = () => {
     return (
@@ -30,7 +31,7 @@ const MyBoardContainer = () => {
                 </FlexDiv>
             </Div>
 
-            {/* <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
+            <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
                 <FlexDiv
                     width=" 100%"
                     $padding="20px"
@@ -49,7 +50,7 @@ const MyBoardContainer = () => {
                 <FlexDiv width="100%" $justifycontent="space-around" $padding="30px">
                     <MyCommentTable />
                 </FlexDiv>
-            </Div> */}
+            </Div>
         </>
     );
 };

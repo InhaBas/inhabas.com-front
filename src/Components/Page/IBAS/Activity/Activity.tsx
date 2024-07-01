@@ -1,88 +1,169 @@
-import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+
+import useFetch from "../../../../Hooks/useFetch";
+
+import { totalPageInfo } from "../../../../Recoil/backState";
+
+import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
+
+import { ActivityInterface } from "../../../../Types/IBAS/TypeIBAS";
 import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
 
-import { useNavigate } from "react-router-dom";
-
-const Article = styled.article`
-    position: relative;
-    width: 360px;
-    height: 360px;
-`;
-
-const ArticleImg = styled(Img)`
-    filter: brightness(60%);
-    cursor: pointer;
-    &:hover {
-        filter: brightness(70%);
-    }
-`;
+import Loading from "../../../Common/Loading";
+import Pagination from "../../../Common/Pagination";
+import ActivityCard from "../../../Component/IBAS/Activity/ActivityCard";
 
 const Activity = () => {
     const navigate = useNavigate();
+    const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
+    const [activityListData, fetchActivityListData] = useFetch();
+    const [detail, setDetail] = useState<ActivityInterface[] | null>(null);
+    const { isAuthorizedOverSecretary } = GetRoleAuthorization();
+    const [isLoading, setIsLoading] = useState(true);
 
-    const moveDetail = () => navigate("/activity/detail");
+    useEffect(() => {
+        setIsLoading(true);
+        fetchActivityListData("/club/activities?page=0&size=6", "GET", "token");
+    }, []);
+
+    useEffect(() => {
+        if (activityListData) {
+            setDetail(activityListData.data);
+            setTotalPage(activityListData.pageInfo.totalPages);
+            setIsLoading(false);
+        }
+        return () => {
+            setDetail(null);
+            setTotalPage(0);
+        };
+    }, [activityListData]);
+
     const moveCreate = () => navigate("/activity/create");
 
     return (
         <>
-            <Div width="100%" $padding="0 10%">
-                <FlexDiv width="100%" $justifycontent="start" $alignitems="start">
-                    <Article onClick={() => moveDetail()}>
-                        <Div width="360px" height="360px" overflow="hidden" radius={10}>
-                            <ArticleImg src="/images/data-an.png" />
-                        </Div>
-                        <Div $position="absolute" $bottom="20px" $left="10px" $padding="0 10px">
-                            <Div $margin="0 0 15px 0">
-                                <P color="wh" fontSize="xl" fontWeight={800}>
-                                    2022-2학기 IBAS 을왕리 MT
-                                </P>
-                            </Div>
-                            <FlexDiv>
-                                <FlexDiv width="12px" $margin="0 3px 0 0">
-                                    <Img src="/images/user_white.svg" />
-                                </FlexDiv>
-                                <Div>
-                                    <P color="wh" fontSize="sm">
-                                        윤예진
-                                    </P>
-                                </Div>
-                                <FlexDiv width="12px" $margin="0 5px ">
-                                    <Img src="/images/clock_white.svg" />
-                                </FlexDiv>
-                                <Div>
-                                    <P color="wh" fontSize="sm">
-                                        2022-04-03 17:02
-                                    </P>
-                                </Div>
-                            </FlexDiv>
-                        </Div>
-                    </Article>
+            {isLoading ? (
+                <FlexDiv width="100%" height="100vh">
+                    <Loading />
                 </FlexDiv>
-                <FlexDiv $margin="50px 0" width="100%" $justifycontent="end">
-                    <Button
-                        display="flex"
-                        $backgroundColor="bgColor"
-                        $margin="0 10px"
-                        $padding="12px 15px"
-                        $borderRadius={30}
-                        $HBackgroundColor="bgColorHo"
-                        onClick={() => moveCreate()}
+            ) : (
+                <FlexDiv width="100%" $justifycontent="space-around" direction="column">
+                    {/* <FlexDiv width="70%" $maxWidth="1500px" $justifycontent="center" $margin="50px 0 0 0">
+                    {detail?.slice(0, 3)?.map(({ thumbnail, title, dateCreated, writerName, id }) => (
+                        <FlexDiv $margin="50px 25px">
+                            <ActivityCard
+                                imgSrc={thumbnail?.url}
+                                title={title}
+                                dateCreated={dateCreated}
+                                writerName={writerName}
+                                id={id}
+                            />
+                        </FlexDiv>
+                    ))}
+                    {detail?.slice(0, 3).length === 2 ? (
+                        <Div width="360px" height="360px" $margin="50px 25px" />
+                    ) : detail?.slice(0, 3).length === 1 ? (
+                        <>
+                            <Div width="360px" height="360px" $margin="50px 25px" />
+
+                            <Div width="360px" height="360px" $margin="50px 25px" />
+                        </>
+                    ) : (
+                        ""
+                    )}
+                </FlexDiv>
+
+                <FlexDiv width="70%" $maxWidth="1500px" $justifycontent="center" $margin="50px 0 0 0">
+                    {detail?.slice(3, 6)?.map(({ thumbnail, title, dateCreated, writerName, id }) => (
+                        <FlexDiv $margin="0 25px 50px 25px">
+                            <ActivityCard
+                                imgSrc={thumbnail?.url}
+                                title={title}
+                                dateCreated={dateCreated}
+                                writerName={writerName}
+                                id={id}
+                            />
+                        </FlexDiv>
+                    ))}
+                    {detail?.slice(3, 6).length === 2 ? (
+                        <Div width="360px" height="360px" $margin="0 25px 50px 25px" />
+                    ) : detail?.slice(3, 6).length === 1 ? (
+                        <>
+                            <Div width="360px" height="360px" $margin="0 25px 50px 25px" />
+
+                            <Div width="360px" height="360px" $margin="0 25px 50px 25px" />
+                        </>
+                    ) : (
+                        ""
+                    )}
+                </FlexDiv> */}
+
+                    <FlexDiv
+                        width="70%"
+                        $maxWidth="1500px"
+                        $justifycontent="center"
+                        $alignitems="start"
+                        $margin="50px 0 0 0"
                     >
-                        <Div width="12px" $margin="0 10px 0 0">
-                            <Img src="/images/plus_white.svg" />
-                        </Div>
-                        <Div $pointer>
-                            <P color="wh" fontSize="sm">
-                                게시글 등록
-                            </P>
-                        </Div>
-                    </Button>
+                        {detail?.map(({ thumbnail, title, dateCreated, writerName, id }) => (
+                            <Div width="360px" $margin="0 25px 50px 25px">
+                                <ActivityCard
+                                    imgSrc={thumbnail?.url}
+                                    title={title}
+                                    dateCreated={dateCreated}
+                                    writerName={writerName}
+                                    id={id}
+                                />
+                            </Div>
+                        ))}
+                        {detail?.length === 2 || detail?.length === 5 ? (
+                            <Div width="360px" height="360px" $margin="0 25px 50px 25px" />
+                        ) : detail?.length === 1 || detail?.length === 4 ? (
+                            <>
+                                <Div width="360px" height="360px" $margin="0 25px 50px 25px" />
+
+                                <Div width="360px" height="360px" $margin="0 25px 50px 25px" />
+                            </>
+                        ) : (
+                            ""
+                        )}
+                    </FlexDiv>
+                    <Div width="70%" $margin="0 0 50px 0">
+                        <Pagination
+                            totalPage={totalPage}
+                            fetchUrl="/club/activities"
+                            paginationFetch={fetchActivityListData}
+                            size={6}
+                        />
+                    </Div>
+                    {isAuthorizedOverSecretary && (
+                        <FlexDiv $margin="50px 0" width="70%" $justifycontent="end">
+                            <Button
+                                display="flex"
+                                $backgroundColor="bgColor"
+                                $padding="12px 15px"
+                                $borderRadius={30}
+                                $HBackgroundColor="bgColorHo"
+                                onClick={() => moveCreate()}
+                            >
+                                <Div width="12px" $margin="0 10px 0 0">
+                                    <Img src="/images/plus_white.svg" />
+                                </Div>
+                                <Div $pointer>
+                                    <P color="wh" fontSize="sm">
+                                        게시글 등록
+                                    </P>
+                                </Div>
+                            </Button>
+                        </FlexDiv>
+                    )}
                 </FlexDiv>
-                {/* <Pagination /> */}
-            </Div>
+            )}
         </>
     );
 };

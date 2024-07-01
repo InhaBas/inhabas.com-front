@@ -4,7 +4,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import useFetch from "../../../Hooks/useFetch";
 
-import { boardDetailData, fileIdList } from "../../../Recoil/backState";
+import { boardDetailData, fileIdList, tokenAccess } from "../../../Recoil/backState";
 import { menuId, refetch, selectedFile } from "../../../Recoil/frontState";
 
 import { boardDetailInterface } from "../../../Types/TypeBoard";
@@ -17,10 +17,14 @@ import Dropdown from "../../Common/Dropdown";
 import Button from "../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
-import { Date, TextInput } from "../../../styles/assets/Input";
+import { DateInput, TextInput } from "../../../styles/assets/Input";
 import P from "../../../styles/assets/P";
 import Loading from "../../Common/Loading";
 import TextEditor from "../../Common/TextEditor";
+
+import { tokenInterface } from "../../../Types/TypeCommon";
+
+import { jwtDecode } from "jwt-decode";
 
 const BoardCreate = () => {
     const location = useLocation();
@@ -41,6 +45,14 @@ const BoardCreate = () => {
     const currentMenuId = useRecoilValue(menuId);
     const [fileId, setFileList] = useRecoilState(fileIdList);
     const setReload = useSetRecoilState(refetch);
+
+
+    const access = useRecoilValue(tokenAccess);
+    let decoded;
+    if (access !== "default") {
+        decoded = jwtDecode(access) as tokenInterface;
+    }
+    const userId = decoded?.memberId;
 
     useEffect(() => {
         if (paramID) {
@@ -105,7 +117,6 @@ const BoardCreate = () => {
             }
 
             if (update === "create") {
-                // postFetchData(`${fetchUrl}`, "POST", "token", formdata, true);
                 postFetchData(`${fetchUrl}`, "POST", "token", inputData);
             } else if (update === "update") {
                 postFetchData(`${fetchUrl}/${paramID}`, "POST", "token", inputData);
@@ -152,11 +163,23 @@ const BoardCreate = () => {
             setFileList([]);
         };
     }, [getData]);
-    
+
+    useEffect(() => {
+        if (update === 'update') {
+            if (detail?.writerId !== userId) {
+                alert('본인이 작성한 글만 수정 가능합니다.')
+                navigate(-1)
+            }
+        }
+    }, [detail])
+
+
     return (
         <FlexDiv width="100%">
             {isLoading ? (
-                <Loading />
+                <FlexDiv width="100%" height="100vh">
+                    <Loading />
+                </FlexDiv>
             ) : (
                 <Container $alignitems="start">
                     <Div width="100%" $margin="0 0 30px 0">
@@ -216,13 +239,14 @@ const BoardCreate = () => {
                             {(url === "sponsor" || url === "usage") && (
                                 <Div width="100%" $padding="20px">
                                     <Div width="100%">
-                                        <Date
+                                        <DateInput
                                             width="100%"
                                             height="60px"
                                             fontSize="xl"
                                             $borderRadius={5}
+                                            placeholder="후원 날짜를 입력해주세요"
                                             ref={(el: never) => (inputRef.current[2] = el)}
-                                            defaultValue={detail?.dateHistory}
+                                            defaultValue={detail?.dateHistory?.split("T")[0]}
                                         />
                                     </Div>
                                 </Div>

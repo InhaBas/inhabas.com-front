@@ -40,7 +40,6 @@ const CommentInput = (props: commentPropsInterface) => {
         if (checkCommentInput() === false) {
             return;
         }
-        console.log(parentId);
         const inputData = {
             parentCommentId: parentId !== undefined ? parentId : null,
             content: commentInput,

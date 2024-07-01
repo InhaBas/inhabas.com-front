@@ -1,5 +1,5 @@
 import { jwtDecode } from "jwt-decode";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
@@ -7,6 +7,9 @@ import styled from "styled-components";
 import { theme } from "../../../styles/theme";
 
 import { boardDetailData, tokenAccess } from "../../../Recoil/backState";
+import { carouselInitialState, carouselOpen } from "../../../Recoil/frontState";
+
+import { tokenInterface } from "../../../Types/TypeCommon";
 
 import useFetch from "../../../Hooks/useFetch";
 
@@ -14,23 +17,38 @@ import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin
 import "@toast-ui/editor/dist/toastui-editor.css";
 
 import { GetRoleAuthorization } from "../../../Functions/authFunctions";
-
 import { DateFunction } from "../../../Functions/dateFunction";
-import { tokenInterface } from "../../../Types/TypeCommon";
+
 import A from "../../../styles/assets/A";
 import Button from "../../../styles/assets/Button";
 import { DetailContainer, Div, FlexDiv } from "../../../styles/assets/Div";
 import { H2 } from "../../../styles/assets/H";
 import Img from "../../../styles/assets/Img";
 import P from "../../../styles/assets/P";
-import Comment from "../../Common/Comment";
+
+import Carousel from "../../Common/Carousel";
 import CommentInput from "../../Common/CommentInput";
+import CommentList from "../../Common/CommentList";
 import Loading from "../../Common/Loading";
 import TextViewer from "../../Common/TextViewer";
 
 const HorizonScrollDiv = styled(Div)`
     white-space: nowrap;
     overflow-x: scroll;
+
+    &::-webkit-scrollbar {
+        display: block;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: ${theme.color.grey1}; /* 스크롤바 썸의 색상을 지정하세요 */
+        border-radius: 4px; /* 스크롤바 썸의 모서리를 지정하세요 */
+    }
+
+    /* 스크롤바 호버 스타일 추가 */
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: ${(props) => props.theme.color.grey}; /* 스크롤바 썸의 호버 색상을 지정하세요 */
+    }
 `;
 
 const BoardDetail = () => {
@@ -38,7 +56,7 @@ const BoardDetail = () => {
     const navigate = useNavigate();
     const url = location.pathname.split("/")[2];
     const boardId = location.pathname.split("/")[4];
-    const { isAuthorizedOverVice } = GetRoleAuthorization();
+    const { isAuthorizedOverVice, isAuthorizedOverDeactivate } = GetRoleAuthorization();
 
     const { formatDateMinute } = DateFunction();
 
@@ -47,6 +65,8 @@ const BoardDetail = () => {
     const [deleteData, deleteDataFetch] = useFetch();
     const [isLoading, setIsLoading] = useState(true);
     const access = useRecoilValue(tokenAccess);
+    const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
+    const [carouselInitial, setCarouselInitial] = useRecoilState(carouselInitialState);
 
     const pathNameInfo = location.pathname.substring(1).split("/");
 
@@ -160,6 +180,33 @@ const BoardDetail = () => {
         window.open(url);
     };
 
+    // Carousel을 렌더링할지 여부를 결정하는 함수
+    const handleCarousel = (idx: number) => {
+        setCarouselInitial(idx);
+
+        setIsCarouselOpen(true);
+    };
+
+    const onClickFileLink = useCallback((srcUrl: string, name: string) => {
+        fetch(srcUrl, { method: "GET" })
+            .then((res) => res.blob())
+            .then((blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = name;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    window.URL.revokeObjectURL(url);
+                }, 1000);
+                a.remove();
+            })
+            .catch((err) => {
+                console.error("err", err);
+            });
+    }, []);
+
     const deleteDetail = () => {
         if (window.confirm("정말 삭제 하시겠습니까?")) {
             setIsLoading(true);
@@ -181,7 +228,10 @@ const BoardDetail = () => {
             setDetail(detailData);
             setIsLoading(false);
         }
-        return () => setDetail(null);
+        return () => {
+            setDetail(null);
+            setIsCarouselOpen(false);
+        };
     }, [detailData]);
 
     useEffect(() => {
@@ -196,7 +246,11 @@ const BoardDetail = () => {
     return (
         <>
             {isLoading ? (
-                <Loading />
+                <FlexDiv width="100%" height="100vh">
+                    <Loading />
+                </FlexDiv>
+            ) : isCarouselOpen ? (
+                <Carousel images={detail?.images?.map((image) => image.url) || []} />
             ) : (
                 <FlexDiv width="100%">
                     <DetailContainer $alignitems="start">
@@ -224,12 +278,32 @@ const BoardDetail = () => {
                                     {detail?.title}
                                 </H2>
                             </Div>
+                            {["sponsor", "usage"].includes(url) && (
+                                <FlexDiv $margin="20px 0 30px 0">
+                                    <FlexDiv width="12px" $margin="0">
+                                        <Img src="/images/calendar_grey.svg" />
+                                    </FlexDiv>
+                                    <Div $margin="0 0 0 5px">
+                                        <P color="grey4" fontSize="sm">
+                                            지급일 |
+                                        </P>
+                                    </Div>
+                                    <FlexDiv width="12px" $margin="0 5px ">
+                                        <Img src="/images/clock_grey.svg" />
+                                    </FlexDiv>
+                                    <Div>
+                                        <P color="grey4" fontSize="sm">
+                                            {detail?.dateHistory?.split("T")[0] || ""}
+                                        </P>
+                                    </Div>
+                                </FlexDiv>
+                            )}
                             <Div width="100%" $margin="50px 0">
                                 {detail?.content && <TextViewer contents={detail?.content} />}
                             </Div>
 
                             {detail && detail.images && detail.images.length > 0 && (
-                                <HorizonScrollDiv $margin="30px 0">
+                                <HorizonScrollDiv $margin="30px 0" width="100%">
                                     {detail.images.map((image, index) => (
                                         <Div
                                             key={`image${index}`}
@@ -238,7 +312,7 @@ const BoardDetail = () => {
                                             width="100px"
                                             $margin="0 10px 0 0"
                                             $pointer
-                                            onClick={() => openWindow(image.url)}
+                                            onClick={() => handleCarousel(index)}
                                         >
                                             <Img $objectFit="fill" $HFilter="opacity(50%);" src={image.url} />
                                         </Div>
@@ -249,7 +323,7 @@ const BoardDetail = () => {
                             <FlexDiv width="100%">
                                 {detail && detail.otherFiles && detail.otherFiles.length > 0 && (
                                     <FlexDiv width="80%" $padding="0 30px" $border="2px solid" $borderColor="border">
-                                        {detail.otherFiles.map((image, index) => (
+                                        {detail.otherFiles.map((file, index) => (
                                             <FlexDiv
                                                 width="100%"
                                                 $justifycontent="start"
@@ -267,14 +341,14 @@ const BoardDetail = () => {
                                                     </Div>
                                                 </FlexDiv>
                                                 <FlexDiv $pointer>
-                                                    <Div onClick={() => openWindow(image.url)}>
+                                                    <Div onClick={() => onClickFileLink(file.url, file.name)}>
                                                         <A
                                                             color="textColor"
                                                             fontSize="sm"
                                                             fontWeight={700}
                                                             $hoverColor="bgColorHo"
                                                         >
-                                                            {image.name}
+                                                            {file.name}
                                                         </A>
                                                     </Div>
                                                 </FlexDiv>
@@ -283,9 +357,8 @@ const BoardDetail = () => {
                                     </FlexDiv>
                                 )}
                             </FlexDiv>
-                            {detail?.writerId === userId}
-                            {(detail?.writerId === userId || isAuthorizedOverVice) && (
-                                <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
+                            <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
+                                {detail?.writerId === userId && (
                                     <Button
                                         display="flex"
                                         $backgroundColor="bgColor"
@@ -304,6 +377,8 @@ const BoardDetail = () => {
                                             </P>
                                         </Div>
                                     </Button>
+                                )}
+                                {(detail?.writerId === userId || isAuthorizedOverVice) && (
                                     <Button
                                         display="flex"
                                         $backgroundColor="red"
@@ -321,11 +396,22 @@ const BoardDetail = () => {
                                             </P>
                                         </Div>
                                     </Button>
-                                </FlexDiv>
-                            )}
+                                )}
+                            </FlexDiv>
                         </Div>
-                        <Comment boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />
-                        <CommentInput boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />
+                        {/* 공개자료실일 경우에 토큰 없이 댓글 패치 */}
+                        {pathNameInfo[1] === "opensource" ? (
+                            <CommentList
+                                boardId={boardId}
+                                menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])}
+                                token={false}
+                            />
+                        ) : (
+                            <CommentList boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />
+                        )}
+                        {isAuthorizedOverDeactivate && (
+                            <CommentInput boardId={boardId} menuId={titleInfo(pathNameInfo[0], pathNameInfo[1])} />
+                        )}
                     </DetailContainer>
                 </FlexDiv>
             )}

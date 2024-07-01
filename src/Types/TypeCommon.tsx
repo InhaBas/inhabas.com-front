@@ -32,12 +32,14 @@ export interface paginationPropsInterface {
 }
 
 // comment
-export interface commentInterface {
+export interface commentListInterface {
     id: number;
     content: string;
-    childrenComment?: Array<commentInterface>;
+    isDeleted?: boolean;
+    childrenComment?: Array<commentListInterface>;
     dateUpdated: Date;
     parentAuthor?: string;
+    parentComment?: string;
     writer: {
         id: number;
         name: string;
@@ -46,11 +48,22 @@ export interface commentInterface {
     };
 }
 
+export interface myCommentInterface {
+    id: number;
+    menuId: number;
+    menuType: string;
+    menuName: string;
+    content: string;
+    dateCreated: string;
+    isDeleted: boolean;
+}
+
 export interface commentPropsInterface {
     boardId?: string;
     menuId?: number;
     boardType?: string;
     parentId?: number;
+    token?: boolean;
 }
 
 // modal
@@ -68,4 +81,9 @@ export interface tokenInterface {
     authorities: [string];
     iat: number;
     exp: number;
+}
+
+// carousel
+export interface carouselInterface {
+    images: string[];
 }

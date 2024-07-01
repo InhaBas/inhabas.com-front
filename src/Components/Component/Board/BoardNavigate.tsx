@@ -12,10 +12,13 @@ import { Div, FlexDiv } from "../../../styles/assets/Div";
 import P from "../../../styles/assets/P";
 import { boardMenuInterface } from "../../../Types/TypeBoard";
 
+import { GetRoleAuthorization } from "../../../Functions/authFunctions";
+
 const BoardNavigate = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const url = location.pathname.split("/")[2];
+    const { isAuthorizedOverSecretary } = GetRoleAuthorization();
 
     const movePageEvent = (url: string) => {
         navigate(`${url}`);
@@ -27,6 +30,8 @@ const BoardNavigate = () => {
     useEffect(() => {
         if (url === "alpha" || url === "beta") {
             fetchMenuData("/project/count", "GET", "token");
+        } else if (url === "contest" || url === "activity") {
+            fetchMenuData("/contest/count", "GET", "token");
         } else {
             fetchMenuData("/board/count", "GET", "token");
         }
@@ -56,7 +61,15 @@ const BoardNavigate = () => {
 
                 <Div width="100%">
                     {menu &&
-                        menu.map((item: any, idx: number) => {
+                        menu.filter((item) => {
+                            if (item.menuName === '회장단 게시판') {
+                                if (isAuthorizedOverSecretary) {
+                                    return item
+                                }
+                            } else {
+                                return item
+                            }
+                        }).map((item: any, idx: number) => {
                             return (
                                 <Div key={idx} width="100%">
                                     <FlexDiv
@@ -72,11 +85,13 @@ const BoardNavigate = () => {
                                                 {item.menuName}
                                             </P>
                                         </Div>
+                                        {item.menuName !== '건의사항' && (
                                         <Div>
                                             <P color="grey" fontSize="sm" fontWeight={400}>
                                                 ({item.count})
                                             </P>
                                         </Div>
+                                        )}
                                     </FlexDiv>
                                 </Div>
                             );

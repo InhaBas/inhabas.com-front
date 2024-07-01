@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { historyInterface, staffInterface } from "../Types/IBAS/TypeIBAS";
+import { historyInterface, honorDataInterface, staffInterface } from "../Types/IBAS/TypeIBAS";
 import { answersInterface, majorInterface, questionnariesInterface, signUpInterface } from "../Types/IBAS/TypeMember";
 import {
     applicationAnswersInterface,
@@ -12,7 +12,7 @@ import {
 } from "../Types/IBAS/TypeMyinfo";
 import { supportDetailInterface } from "../Types/TypeBank";
 import { boardDetailInterface, boardMenuInterface } from "../Types/TypeBoard";
-import { chiefInterface, commentInterface, menuInterface, policyInterface } from "../Types/TypeCommon";
+import { chiefInterface, commentListInterface, menuInterface, myCommentInterface, policyInterface } from "../Types/TypeCommon";
 
 //headerNav
 export const headerNavInfo = atom({
@@ -213,11 +213,21 @@ export const boardDetailData = atom<boardDetailInterface | null>({
     default: null,
 });
 
+export const contestListDataInfo = atom<any[]>({
+    key: "contestListDataInfo",
+    default: [],
+});
+
 // comment
-export const commentInfo = atom<commentInterface[] | []>({
+export const commentInfo = atom<commentListInterface[] | []>({
     key: "commentInfo",
     default: [],
 });
+
+export const myCommentsInfo = atom<myCommentInterface[] | []>({
+    key: "myCommentsInfo",
+    default: [],
+})
 
 //lectureRoom
 export const lectureRoomInfo = atom({
@@ -253,5 +263,11 @@ export const bankListDataInfo = atom({
 
 export const bankDetailDataInfo = atom<supportDetailInterface | null>({
     key: "bankDetailDataInfo",
+    default: null,
+});
+
+// honor
+export const honorDataInfo = atom<honorDataInterface | null>({
+    key: "honorDataInfo",
     default: null,
 });

@@ -5,7 +5,13 @@ import styled from "styled-components";
 
 import useFetch from "../../../Hooks/useFetch";
 
-import { boardListDataInfo, boardListPinnedDataInfo, tokenAccess, totalPageInfo } from "../../../Recoil/backState";
+import {
+    boardListDataInfo,
+    boardListPinnedDataInfo,
+    contestListDataInfo,
+    tokenAccess,
+    totalPageInfo,
+} from "../../../Recoil/backState";
 
 import { boardListInterface } from "../../../Types/TypeBoard";
 
@@ -17,11 +23,13 @@ import { Container, Div, FlexDiv } from "../../../styles/assets/Div";
 import Img from "../../../styles/assets/Img";
 
 import { GetRoleAuthorization } from "../../../Functions/authFunctions";
+import { contestOrder } from "../../../Recoil/frontState";
 import Loading from "../../Common/Loading";
 import NavigateTable from "../../Common/NavigateTable";
 import Pagination from "../../Common/Pagination";
 import BoardNavigate from "../../Component/Board/BoardNavigate";
 import BoardSearch from "../../Component/Board/BoardSearch";
+import Contest from "../IBAS/Contest/Contest";
 
 const StickyDiv = styled(Div)`
     position: sticky;
@@ -42,8 +50,10 @@ const BoardList = () => {
     const [boardPinnedList, setBoardPinnedList] = useRecoilState(boardListPinnedDataInfo);
     const [boardListData, fetchBoardListData] = useFetch();
     const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
+    const [contestListData, setContestListData] = useRecoilState(contestListDataInfo);
+    const [contestOrderBy, setContestOrderBy] = useRecoilState(contestOrder);
     const [isLoading, setIsLoading] = useState(true);
-    const { isAuthorizedOverSecretary, isAuthorizedOverDeactivate, isSecretary, isAuthorizedOverBasic } =
+    const { isAuthorizedOverSecretary, isAuthorizedOverDeactivate, isAuthorizedOverBasic, isAuthorizedOverExecutives } =
         GetRoleAuthorization();
 
     let fetchUrl: string;
@@ -57,24 +67,30 @@ const BoardList = () => {
         fetchUrl = "/scholarship/usage";
     } else if (url === "opensource") {
         fetchUrl = "/board/storage";
+    } else if (url === "contest") {
+        fetchUrl = "/contest/contest?size=4";
+    } else if (url === "activity") {
+        fetchUrl = "/contest/activity?size=4";
     } else {
         fetchUrl = `/board/${url}`;
     }
 
     const checkWritingAuthorization = () => {
+        // 총무
+        if (["sponsor", "usage"].includes(url) && isAuthorizedOverSecretary) {
+            return true;
+        }
+        // 비활동 회원
+        else if (["free", "question", "suggest"].includes(url) && isAuthorizedOverDeactivate) {
+            return true;
+        }
+        // 활동 회원
+        else if (["opensource", "contest", "alpha", "beta"].includes(url) && isAuthorizedOverBasic) {
+            return true;
+        }
         // 회장단
-        if (["notice", "sponsor", "usage"].includes(url) && isAuthorizedOverSecretary) {
+        else if (["notice"].includes(url) && isAuthorizedOverExecutives) {
             return true;
-            // 비활동 회원
-        } else if (["free", "question", "suggest", "support"].includes(url) && isAuthorizedOverDeactivate) {
-            return true;
-            // 활동 회원
-        } else if (["opensource"].includes(url) && isAuthorizedOverBasic) {
-            return true;
-            // 총무
-        } else if (["executive"].includes(url) && isSecretary) {
-            return true;
-            // url이 잘못된 경우
         }
         return false;
     };
@@ -84,42 +100,60 @@ const BoardList = () => {
         setIsLoading(true);
         if (["opensource", "usage", "sponsor"].includes(url)) {
             fetchBoardListData(`${fetchUrl}`, "GET");
+        } else if (["contest", "activity"].includes(url)) {
+            fetchBoardListData(`${fetchUrl}${contestOrderBy}`, "GET");
         } else {
             fetchBoardListData(`${fetchUrl}`, "GET", "token");
         }
-    }, [url, access])
+    }, [url, access, contestOrderBy]);
 
     useEffect(() => {
-        if (boardListData) {
-            const contents = boardListData.data.map((item: boardListInterface, idx: number) => ({
-                number: boardListData.pageInfo.pageNumber * boardListData.pageInfo.pageSize + idx + 1,
-                id: item.id,
-                title: item.title,
-                writerName: item.writerName,
-                dateCreated: formatDateDay({ date: item.dateCreated }),
-                isPinned: item.isPinned,
-            }));
-            const pinnedContents = boardListData.pinnedData?.map((item: boardListInterface, idx: number) => ({
-                // number: idx + 1,
-                id: item.id,
-                title: item.title,
-                writerName: item.writerName,
-                dateCreated: formatDateDay({ date: item.dateCreated }),
-                isPinned: item.isPinned,
-            }));
-            setBoardPinnedList(pinnedContents);
-            setBoardList(contents);
-            setTotalPage(boardListData.pageInfo.totalPages);
-            setIsLoading(false);
+        if (["contest", "activity"].includes(url)) {
+            if (boardListData) {
+                setIsLoading(false);
+                setContestListData(boardListData?.data);
+                setTotalPage(boardListData.pageInfo.totalPages);
+            }
+        } else {
+            if (boardListData) {
+                const contents = boardListData.data.map((item: boardListInterface, idx: number) => ({
+                    number: boardListData.pageInfo.pageNumber * boardListData.pageInfo.pageSize + idx + 1,
+                    id: item.id,
+                    title: item.title,
+                    writerName: item.writerName,
+                    dateCreated: formatDateDay({ date: item.dateCreated }),
+                    isPinned: item.isPinned,
+                }));
+                const pinnedContents = boardListData.pinnedData?.map((item: boardListInterface, idx: number) => ({
+                    id: item.id,
+                    title: item.title,
+                    writerName: item.writerName,
+                    dateCreated: formatDateDay({ date: item.dateCreated }),
+                    isPinned: item.isPinned,
+                }));
+                setBoardPinnedList(pinnedContents);
+                setBoardList(contents);
+                setTotalPage(boardListData.pageInfo.totalPages);
+                setIsLoading(false);
+            }
         }
     }, [boardListData]);
 
-    useEffect(() => setBoardList([]), [url]);
+    useEffect(() => {
+        setBoardList([]);
+        setContestListData([]);
+    }, [url]);
+
+    useEffect(() => {
+        setContestOrderBy("&orderBy=ALL");
+    }, [url]);
 
     return (
         <>
             {isLoading ? (
-                <Loading />
+                <FlexDiv width="100%" height="100vh">
+                    <Loading />
+                </FlexDiv>
             ) : (
                 <Container $alignitems="start">
                     <StickyDiv $padding="0 15px">
@@ -134,15 +168,20 @@ const BoardList = () => {
                     </StickyDiv>
                     <Div $padding="0 15px">
                         <Suspense fallback={<Img src="/images/loading.svg" />}>
-                            <NavigateTable
-                                width={widthList}
-                                header={headerInfo}
-                                contents={boardList}
-                                pinnedContents={boardPinnedList}
-                                url="detail"
-                            />
+                            {["contest", "activity"].includes(url) ? (
+                                <Contest />
+                            ) : (
+                                <NavigateTable
+                                    width={widthList}
+                                    header={headerInfo}
+                                    contents={boardList}
+                                    pinnedContents={boardPinnedList}
+                                    url="detail"
+                                />
+                            )}
                         </Suspense>
-                        {checkWritingAuthorization() && (
+                        {/* 공모전 게시판의 게시글 작성은 Contest 컴포넌트에서 따로 작성 */}
+                        {checkWritingAuthorization() && contestListData.length === 0 && (
                             <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">
                                 <Button
                                     display="flex"
@@ -151,7 +190,9 @@ const BoardList = () => {
                                     $padding="12px 15px"
                                     $borderRadius={30}
                                     $HBackgroundColor="bgColorHo"
-                                    onClick={() => navigate(`/board/${url}/create`)}
+                                    onClick={() => {
+                                        navigate(`/board/${url}/create`);
+                                    }}
                                 >
                                     <FlexDiv height="15px">
                                         <Div width="12px" height="12px" $margin="0 10px 0 0">
@@ -166,12 +207,22 @@ const BoardList = () => {
                                 </Button>
                             </FlexDiv>
                         )}
+                        {/* 게시판 */}
                         {boardList && boardList.length !== 0 && (
                             <Pagination
                                 totalPage={totalPage}
                                 fetchUrl={`${fetchUrl}`}
                                 token
                                 paginationFetch={fetchBoardListData}
+                            />
+                        )}
+                        {/* 공모전 */}
+                        {contestListData && contestListData.length !== 0 && (
+                            <Pagination
+                                totalPage={totalPage}
+                                fetchUrl={`/contest/${url}?${contestOrderBy}`}
+                                paginationFetch={fetchBoardListData}
+                                size={4}
                             />
                         )}
                     </Div>

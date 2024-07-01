@@ -5,10 +5,10 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 
 import { headerNavInfo, headerTitleInfo, tokenAccess } from "../../Recoil/backState";
-import { menuInfo, failRefreshing } from "../../Recoil/frontState";
+import { menuInfo } from "../../Recoil/frontState";
 
-import useFetch from "../../Hooks/useFetch";
 import { useNavigate } from "react-router-dom";
+import useFetch from "../../Hooks/useFetch";
 
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import { H1 } from "../../styles/assets/H";
@@ -35,16 +35,8 @@ const HeaderTitle = () => {
     const nav = useRecoilValue(headerNavInfo);
     const accessToken = useRecoilValue(tokenAccess);
     const navigate = useNavigate();
-    const [isNotLogin, setIsNotLogin] = useRecoilState(failRefreshing);
-    
-    let titleId = 0;
 
-    useEffect(() => {
-        if ((isNotLogin && (!['opensource', 'sponsor', 'usage']?.includes(pathNameInfo[1]) && 'contest' !== pathNameInfo[0]))) {
-            alert('로그인을 해주세요');
-            navigate('/');
-        }
-    }, [location])
+    let titleId = 0;
 
     const titleInfo = (pathName1: string, pathName2: string) => {
         // case 분기 -> pathNameInfo[1] 번째 비교해서 또 분기
@@ -91,6 +83,12 @@ const HeaderTitle = () => {
                     case "usage":
                         titleId = 22;
                         break;
+                    case "contest":
+                        titleId = 18;
+                        break;
+                    case "activity":
+                        titleId = 19;
+                        break;
                     default: // 혹은 다른 값으로 설정
                         // pathName1이 위의 case에 일치하지 않는 경우에 대한 처리
                         titleId = 0;
@@ -115,16 +113,6 @@ const HeaderTitle = () => {
                     titleId = 14;
                 }
                 break;
-
-            case "contest":
-                switch (pathName2) {
-                    case undefined:
-                        titleId = 18;
-                        break;
-                    case "activity":
-                        titleId = 19;
-                        break;
-                }
         }
         return titleId;
     };
@@ -140,7 +128,7 @@ const HeaderTitle = () => {
         const id = titleInfo(pathNameInfo[0], pathNameInfo[1]);
         // 이전 titleId와 새로운 titleId가 다를 때에만 fetchTitleData 호출
 
-        if (Object.keys(nav).length === 0 && pathNameInfo[0] !== "staff") {
+        if (pathNameInfo[0] !== "staff") {
             fetchTitleData(`/menu/${id}`, "GET");
         }
     }, [pathNameInfo[0], pathNameInfo[1]]); // pathNameInfo와 titleId가 변경될 때마다 useEffect가 실행되도록 함

@@ -5,7 +5,7 @@ import Img from "../../../styles/assets/Img";
 import P from "../../../styles/assets/P";
 
 import Button from "../../../styles/assets/Button";
-import { Checkbox, Date, Label, NumberInput, Select, TextArea, TextInput } from "../../../styles/assets/Input";
+import { Checkbox, DateInput, Label, NumberInput, Select, TextArea, TextInput } from "../../../styles/assets/Input";
 import DragNDrop from "../../Common/DragNDrop";
 import TextEditor from "../../Common/TextEditor";
 
@@ -230,7 +230,7 @@ const LectureCreate = () => {
                             </Div>
                         </FlexDiv>
                         <Div width="100%" $padding="20px">
-                            <Date width="100%" />
+                            <DateInput width="100%" />
                         </Div>
                     </Div>
 

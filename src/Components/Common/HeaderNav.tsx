@@ -19,7 +19,7 @@ import {
 
 import { menuInterface } from "../../Types/TypeCommon";
 
-import { menuId } from "../../Recoil/frontState";
+import { failRefreshing, menuId } from "../../Recoil/frontState";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
@@ -54,7 +54,8 @@ const HeaderNav = () => {
     const [scrollPosition, setScrollPosition] = useState(0);
     const setCurrentMenuId = useSetRecoilState(menuId);
     const pathNameInfo = location.pathname.substring(1).split("/");
-    
+    const [isNotLogin, setIsNotLogin] = useRecoilState(failRefreshing);
+
     let titleId = 0;
 
     const titleInfo = (pathName1: string, pathName2: string) => {
@@ -102,6 +103,12 @@ const HeaderNav = () => {
                     case "usage":
                         titleId = 22;
                         break;
+                    case "contest":
+                        titleId = 18;
+                        break;
+                    case "activity":
+                        titleId = 19;
+                        break;
                     default: // 혹은 다른 값으로 설정
                         // pathName1이 위의 case에 일치하지 않는 경우에 대한 처리
                         titleId = 0;
@@ -126,27 +133,17 @@ const HeaderNav = () => {
                     titleId = 14;
                 }
                 break;
-
-            case "contest":
-                switch (pathName2) {
-                    case "":
-                        titleId = 18;
-                        break;
-                    case "activity":
-                        titleId = 19;
-                        break;
-                }
         }
         return titleId;
     };
 
     const menuUrl = [
         ["introduce", "activity", "honor"],
-        ["board/notice", "board/free", "board/question", "board/suggest", "board/opensource", "board/executive"],
+        ["board/notice", "board/free", "board/question", "board/opensource", "board/suggest", "board/executive"],
         ["lecture", "lecture", "lecture", "lecture"],
         ["bank/support", "bank"],
         ["board/alpha", "board/beta"],
-        ["contest", "contest/activity"],
+        ["board/contest", "board/activity"],
         ["scholarship", "board/sponsor", "board/usage"],
     ];
 
@@ -155,12 +152,29 @@ const HeaderNav = () => {
     };
 
     const menuClickEvent = (url: string, givenName: string, givenDescription: string) => {
-        if (['contest', 'contest/activity', 'lecture', 'honor', 'activity'].includes(url)) {
-            alert('사용할 수 없는 기능입니다.')
-            return
+        if (["lecture"].includes(url)) {
+            alert("사용할 수 없는 기능입니다.");
+            return;
+        } else if (
+            isNotLogin &&
+            ![
+                "board/opensource",
+                "board/sponsor",
+                "board/usage",
+                "board/contest",
+                "board/activity",
+                "activity",
+                "introduce",
+                "scholarship",
+                "login",
+            ]?.includes(url)
+        ) {
+            alert("로그인을 해주세요");
+            return;
+        } else {
+            navigate(`/${url}`);
+            setTitle({ ...title, name: givenName, description: givenDescription });
         }
-        navigate(`/${url}`);
-        setTitle({ ...title, name: givenName, description: givenDescription });
     };
 
     const logoutClickEvent = () => {
@@ -221,6 +235,7 @@ const HeaderNav = () => {
                     }));
                 }
             });
+
             setNav(newData);
         }
     }, [data]);
@@ -261,7 +276,9 @@ const HeaderNav = () => {
                         <FlexDiv>
                             <FlexDiv>
                                 {nav &&
-                                    Object.values(nav).map((item: any, idx: number) => {
+                                    // 아래는 모임 탭 제거 전 코드
+                                    // Object.values(nav).map((item: any, idx: number) => {
+                                    Object.values(nav).filter((item: any) => {return item.groupName !== '모임'}).map((item: any, idx: number) => {
                                         return (
                                             <Div $position="relative" key={idx}>
                                                 <FlexDiv
@@ -323,7 +340,7 @@ const HeaderNav = () => {
                                                                                     menuClickEvent(
                                                                                         element.url,
                                                                                         element.name,
-                                                                                        element.description,
+                                                                                        element.description
                                                                                     )
                                                                                 }
                                                                             >
@@ -361,7 +378,7 @@ const HeaderNav = () => {
                                                                                     menuClickEvent(
                                                                                         element.url,
                                                                                         element.name,
-                                                                                        element.description,
+                                                                                        element.description
                                                                                     )
                                                                                 }
                                                                             >
@@ -431,7 +448,13 @@ const HeaderNav = () => {
                                     width="35px"
                                     height="35px"
                                     $border="2px solid"
-                                    $borderColor={isAuthorizedOverBasic ? "success" : (isAuthorizedOverDeactivate ? "yellow" : "red")}
+                                    $borderColor={
+                                        isAuthorizedOverBasic
+                                            ? "success"
+                                            : isAuthorizedOverDeactivate
+                                            ? "yellow"
+                                            : "red"
+                                    }
                                     radius={100}
                                     overflow="hidden"
                                 >

@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import styled from "styled-components";
 import { theme } from "../../../../styles/theme";
@@ -15,6 +15,7 @@ import { applicationAnswersInterface } from "../../../../Types/IBAS/TypeMyinfo";
 import Button from "../../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import P from "../../../../styles/assets/P";
+import Loading from "../../../Common/Loading";
 
 const PassBtn = styled(Button)`
     color: ${theme.color.blue};
@@ -48,8 +49,9 @@ const MyApplication = () => {
     const [applicationData, fetchApplicationData] = useFetch();
     const [application, setApplication] = useRecoilState(applicationInfo);
     const [answer, setAnswer] = useRecoilState(applicationAnswerInfo);
-    const [title, setTitle] = useRecoilState(headerTitleInfo);
+    const setTitle = useSetRecoilState(headerTitleInfo);
     const [passFailData, fetchPassFailData] = useFetch();
+    const [isLoading, setIsLoading] = useState(true);
 
     // pass/fail Fetch
     const passFail = (passFailValue: string) => {
@@ -63,6 +65,7 @@ const MyApplication = () => {
     };
 
     useEffect(() => {
+        setIsLoading(true);
         fetchApplicationData(`/members/${memberId}/application`, "GET", "token");
     }, [access]);
 
@@ -71,6 +74,7 @@ const MyApplication = () => {
             const contents = {
                 name: applicationData.name,
                 grade: applicationData.grade,
+                studentId: applicationData.studentId,
                 major: applicationData.major,
                 email: applicationData.email,
                 phoneNumber: applicationData.phoneNumber,
@@ -85,6 +89,7 @@ const MyApplication = () => {
                 name: `${applicationData.name}님의 지원서`,
                 description: "",
             });
+            setIsLoading(false);
         }
         return () =>
             setTitle({
@@ -94,123 +99,15 @@ const MyApplication = () => {
     }, [access, applicationData]);
 
     return (
-        <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
-            <Container>
-                <Div width="100%" $margin="0 0 30px 0">
-                    <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
-                        <FlexDiv
-                            width=" 100%"
-                            $padding="20px"
-                            $justifycontent="start"
-                            $borderB={`1px solid ${theme.color.border}`}
-                        >
-                            <Div>
-                                <P fontWeight={600}>지원자 이름</P>
-                            </Div>
-                        </FlexDiv>
-                        <Div $padding="20px">
-                            <P $lineHeight={1.5}>{application?.name}</P>
-                        </Div>
-                    </Div>
-                    <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
-                        <FlexDiv
-                            width=" 100%"
-                            $padding="20px"
-                            $justifycontent="start"
-                            $borderB={`1px solid ${theme.color.border}`}
-                        >
-                            <Div>
-                                <P fontWeight={600}>지원일</P>
-                            </Div>
-                        </FlexDiv>
-                        <Div $padding="20px">
-                            <P $lineHeight={1.5}>{application?.dateJoined}</P>
-                        </Div>
-                    </Div>
-                    <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
-                        <FlexDiv
-                            width=" 100%"
-                            $padding="20px"
-                            $justifycontent="start"
-                            $borderB={`1px solid ${theme.color.border}`}
-                        >
-                            <Div>
-                                <P fontWeight={600}>지원자 학년</P>
-                            </Div>
-                        </FlexDiv>
-                        <Div $padding="20px">
-                            <P $lineHeight={1.5}>{application?.grade}</P>
-                        </Div>
-                    </Div>
-                    <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
-                        <FlexDiv
-                            width=" 100%"
-                            $padding="20px"
-                            $justifycontent="start"
-                            $borderB={`1px solid ${theme.color.border}`}
-                        >
-                            <Div>
-                                <P fontWeight={600}>지원자 학번</P>
-                            </Div>
-                        </FlexDiv>
-                        <Div $padding="20px">
-                            <P $lineHeight={1.5}>{application?.studentId}</P>
-                        </Div>
-                    </Div>
-                    <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
-                        <FlexDiv
-                            width=" 100%"
-                            $padding="20px"
-                            $justifycontent="start"
-                            $borderB={`1px solid ${theme.color.border}`}
-                        >
-                            <Div>
-                                <P fontWeight={600}>지원자 전공</P>
-                            </Div>
-                        </FlexDiv>
-                        <Div $padding="20px">
-                            <P $lineHeight={1.5}>{application?.major}</P>
-                        </Div>
-                    </Div>
-                    <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
-                        <FlexDiv
-                            width=" 100%"
-                            $padding="20px"
-                            $justifycontent="start"
-                            $borderB={`1px solid ${theme.color.border}`}
-                        >
-                            <Div>
-                                <P fontWeight={600}>지원자 이메일</P>
-                            </Div>
-                        </FlexDiv>
-                        <Div $padding="20px">
-                            <P $lineHeight={1.5}>{application?.email}</P>
-                        </Div>
-                    </Div>
-                    <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
-                        <FlexDiv
-                            width=" 100%"
-                            $padding="20px"
-                            $justifycontent="start"
-                            $borderB={`1px solid ${theme.color.border}`}
-                        >
-                            <Div>
-                                <P fontWeight={600}>지원자 휴대폰 번호</P>
-                            </Div>
-                        </FlexDiv>
-                        <Div $padding="20px">
-                            <P $lineHeight={1.5}>{application?.phoneNumber}</P>
-                        </Div>
-                    </Div>
-                    {answer?.map((element: applicationAnswersInterface) => (
-                        <Div
-                            key={element.questionId}
-                            width="100%"
-                            $border="1px solid"
-                            $borderColor="border"
-                            $margin=" 0 0 20px 0"
-                            radius={6}
-                        >
+        <>
+            {isLoading ? (
+                <FlexDiv width="100%" height="100vh">
+                    <Loading />
+                </FlexDiv>
+            ) : (
+                <Container>
+                    <Div width="100%" $margin="0 0 30px 0">
+                        <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
                             <FlexDiv
                                 width=" 100%"
                                 $padding="20px"
@@ -218,40 +115,154 @@ const MyApplication = () => {
                                 $borderB={`1px solid ${theme.color.border}`}
                             >
                                 <Div>
-                                    <P fontWeight={600}>{element.question}</P>
+                                    <P fontWeight={600}>지원자 이름</P>
                                 </Div>
                             </FlexDiv>
                             <Div $padding="20px">
-                                <P $whiteSpace="pre-wrap" $lineHeight={1.5}>
-                                    {element.answer}
-                                </P>
+                                <P $lineHeight={1.5}>{application?.name}</P>
                             </Div>
                         </Div>
-                    ))}
-                </Div>
-                <FlexDiv width="30%" $justifycontent="space-around">
-                    <PassBtn
-                        width="200px"
-                        $padding="12px 24px"
-                        $borderRadius={6}
-                        border={`1px solid ${theme.color.blue}`}
-                        onClick={() => passFail("pass")}
-                    >
-                        합격
-                    </PassBtn>
+                        <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
+                            <FlexDiv
+                                width=" 100%"
+                                $padding="20px"
+                                $justifycontent="start"
+                                $borderB={`1px solid ${theme.color.border}`}
+                            >
+                                <Div>
+                                    <P fontWeight={600}>지원일</P>
+                                </Div>
+                            </FlexDiv>
+                            <Div $padding="20px">
+                                <P $lineHeight={1.5}>{application?.dateJoined}</P>
+                            </Div>
+                        </Div>
+                        <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
+                            <FlexDiv
+                                width=" 100%"
+                                $padding="20px"
+                                $justifycontent="start"
+                                $borderB={`1px solid ${theme.color.border}`}
+                            >
+                                <Div>
+                                    <P fontWeight={600}>지원자 학년</P>
+                                </Div>
+                            </FlexDiv>
+                            <Div $padding="20px">
+                                <P $lineHeight={1.5}>{application?.grade}</P>
+                            </Div>
+                        </Div>
+                        <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
+                            <FlexDiv
+                                width=" 100%"
+                                $padding="20px"
+                                $justifycontent="start"
+                                $borderB={`1px solid ${theme.color.border}`}
+                            >
+                                <Div>
+                                    <P fontWeight={600}>지원자 학번</P>
+                                </Div>
+                            </FlexDiv>
+                            <Div $padding="20px">
+                                <P $lineHeight={1.5}>{application?.studentId}</P>
+                            </Div>
+                        </Div>
+                        <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
+                            <FlexDiv
+                                width=" 100%"
+                                $padding="20px"
+                                $justifycontent="start"
+                                $borderB={`1px solid ${theme.color.border}`}
+                            >
+                                <Div>
+                                    <P fontWeight={600}>지원자 전공</P>
+                                </Div>
+                            </FlexDiv>
+                            <Div $padding="20px">
+                                <P $lineHeight={1.5}>{application?.major}</P>
+                            </Div>
+                        </Div>
+                        <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
+                            <FlexDiv
+                                width=" 100%"
+                                $padding="20px"
+                                $justifycontent="start"
+                                $borderB={`1px solid ${theme.color.border}`}
+                            >
+                                <Div>
+                                    <P fontWeight={600}>지원자 이메일</P>
+                                </Div>
+                            </FlexDiv>
+                            <Div $padding="20px">
+                                <P $lineHeight={1.5}>{application?.email}</P>
+                            </Div>
+                        </Div>
+                        <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
+                            <FlexDiv
+                                width=" 100%"
+                                $padding="20px"
+                                $justifycontent="start"
+                                $borderB={`1px solid ${theme.color.border}`}
+                            >
+                                <Div>
+                                    <P fontWeight={600}>지원자 휴대폰 번호</P>
+                                </Div>
+                            </FlexDiv>
+                            <Div $padding="20px">
+                                <P $lineHeight={1.5}>{application?.phoneNumber}</P>
+                            </Div>
+                        </Div>
+                        {answer?.map((element: applicationAnswersInterface) => (
+                            <Div
+                                key={element.questionId}
+                                width="100%"
+                                $border="1px solid"
+                                $borderColor="border"
+                                $margin=" 0 0 20px 0"
+                                radius={6}
+                            >
+                                <FlexDiv
+                                    width=" 100%"
+                                    $padding="20px"
+                                    $justifycontent="start"
+                                    $borderB={`1px solid ${theme.color.border}`}
+                                >
+                                    <Div>
+                                        <P fontWeight={600}>{element.question}</P>
+                                    </Div>
+                                </FlexDiv>
+                                <Div $padding="20px">
+                                    <P $whiteSpace="pre-wrap" $lineHeight={1.5}>
+                                        {element.answer}
+                                    </P>
+                                </Div>
+                            </Div>
+                        ))}
+                    </Div>
+                    <FlexDiv width="30%" $justifycontent="space-around">
+                        <PassBtn
+                            width="200px"
+                            $padding="12px 24px"
+                            $borderRadius={6}
+                            border={`1px solid ${theme.color.blue}`}
+                            onClick={() => passFail("pass")}
+                        >
+                            합격
+                        </PassBtn>
 
-                    <FailBtn
-                        width="200px"
-                        $padding="12px 24px"
-                        $borderRadius={6}
-                        border={`1px solid ${theme.color.red}`}
-                        onClick={() => passFail("fail")}
-                    >
-                        불합격
-                    </FailBtn>
-                </FlexDiv>
-            </Container>
-        </FlexDiv>
+                        <FailBtn
+                            width="200px"
+                            $padding="12px 24px"
+                            $borderRadius={6}
+                            border={`1px solid ${theme.color.red}`}
+                            onClick={() => passFail("fail")}
+                        >
+                            불합격
+                        </FailBtn>
+                    </FlexDiv>
+                </Container>
+            )}
+        </>
     );
 };
 

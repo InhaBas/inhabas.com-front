@@ -18,6 +18,7 @@ import Button from "../../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../../styles/assets/Div";
 import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
+import Loading from "../../../Common/Loading";
 
 const MyInfoImgDiv = styled(Div)`
     background-image: url("/images/myinfo-background.jpg");
@@ -62,122 +63,136 @@ const MyInfo = () => {
 
     return (
         <>
-            <MyInfoDiv
-                $zIndex={2}
-                width="100%"
-                height="423px"
-                $backgroundColor="bklayer"
-                direction="column"
-                $justifycontent="end"
-            >
-                <FlexDiv
-                    $position="relative"
-                    $justifycontent="space-between"
-                    $backgroundColor="wh"
-                    height="100px"
-                    width="100%"
-                    $padding="0 8%"
-                >
-                    <Div>
+            {info == null ? (
+                <FlexDiv width="100%" height="100vh">
+                    <Loading />
+                </FlexDiv>
+            ) : (
+                <>
+                    <MyInfoDiv
+                        $zIndex={2}
+                        width="100%"
+                        height="423px"
+                        $backgroundColor="bklayer"
+                        direction="column"
+                        $justifycontent="end"
+                    >
                         <FlexDiv
-                            $position="absolute"
-                            $top="-3em"
-                            width="8em"
-                            height="8em"
-                            $border="4px solid"
-                            $borderColor="wh"
-                            radius={100}
-                            overflow="hidden"
+                            $position="relative"
+                            $justifycontent="space-between"
+                            $backgroundColor="wh"
+                            height="100px"
+                            width="100%"
+                            $padding="0 8%"
                         >
-                            <Img src={info?.picture} $objectFit="cover" />
-                        </FlexDiv>
-                        <Div $margin="0 0 0 10em ">
                             <Div>
-                                <P fontSize="xl" fontWeight={600}>
-                                    {info?.name}
-                                </P>
-                            </Div>
-                            <Div $margin="5px 0">
-                                <P>
-                                    {info?.major} • {info?.studentId}
-                                </P>
-                            </Div>
-                        </Div>
-                    </Div>
-                    <FlexDiv width="230px" $justifycontent="space-between">
-                        {isAuthorizedOverSecretary && (
-                            <Button
-                                $backgroundColor="grey3"
-                                width="110px"
-                                $padding="10px "
-                                $borderRadius={5}
-                                $HBackgroundColor="grey2"
-                                onClick={() => movePageEvent("staff/member")}
-                            >
-                                <FlexDiv width="100%">
-                                    <FlexDiv width="15px" height="15px" $margin="0 5px 0 0 ">
-                                        <Img src="/images/users_white.svg" />
-                                    </FlexDiv>
+                                <FlexDiv
+                                    $position="absolute"
+                                    $top="-3em"
+                                    width="8em"
+                                    height="8em"
+                                    $border="4px solid"
+                                    $borderColor="wh"
+                                    radius={100}
+                                    overflow="hidden"
+                                >
+                                    <Img src={info?.picture} $objectFit="cover" />
+                                </FlexDiv>
+                                <Div $margin="0 0 0 10em ">
                                     <Div>
-                                        <P color="wh" fontSize="sm" fontWeight={300}>
-                                            회원 관리
+                                        <P fontSize="xl" fontWeight={600}>
+                                            {info?.name}
                                         </P>
                                     </Div>
-                                </FlexDiv>
-                            </Button>
-                        )}
-                        <Button
-                            $backgroundColor="bgColor"
-                            width="110px"
-                            $padding="10px"
-                            $borderRadius={5}
-                            $HBackgroundColor="bgColorHo"
-                            onClick={() => openModal()}
-                        >
-                            <FlexDiv width="100%">
-                                <FlexDiv width="15px" height="15px" $margin="0 5px 0 0 ">
-                                    <Img src="/images/image_white.svg" />
-                                </FlexDiv>
-                                <Div>
-                                    <P color="wh" fontSize="sm" fontWeight={300}>
-                                        사진 설정
-                                    </P>
+                                    <Div $margin="5px 0">
+                                        <P>
+                                            {info?.major} • {info?.studentId}
+                                        </P>
+                                    </Div>
                                 </Div>
-                            </FlexDiv>
-                        </Button>
-                    </FlexDiv>
-                </FlexDiv>
-                <FlexDiv $backgroundColor="bgColor" height="50px" width="100%" $justifycontent="start" $padding="0 8%">
-                    {myInfoTabInfo.map((item, idx) => (
-                        <FlexDiv
-                            key={`nav${idx}`}
-                            $padding="0 15px"
-                            $pointer
-                            $backgroundColor={item.idx === clicked ? "wh" : "bgColor"}
-                            height="50px"
-                            onClick={() => setclicked(item.idx)}
-                        >
-                            <FlexDiv width="15px" height="15px" $margin="0 5px 0 0 ">
-                                <Img src={item.idx === clicked ? item.clickedUrl : item.url} />
-                            </FlexDiv>
-                            <FlexDiv>
-                                <P fontSize="xs" color={item.idx === clicked ? "bgColor" : "wh"}>
-                                    {item.info}
-                                </P>
+                            </Div>
+                            <FlexDiv width="230px" $justifycontent="space-between">
+                                {isAuthorizedOverSecretary && (
+                                    <Button
+                                        $backgroundColor="grey3"
+                                        width="110px"
+                                        $padding="10px "
+                                        $borderRadius={5}
+                                        $HBackgroundColor="grey2"
+                                        onClick={() => movePageEvent("staff/member")}
+                                    >
+                                        <FlexDiv width="100%">
+                                            <FlexDiv width="15px" height="15px" $margin="0 5px 0 0 ">
+                                                <Img src="/images/users_white.svg" />
+                                            </FlexDiv>
+                                            <Div>
+                                                <P color="wh" fontSize="sm" fontWeight={300}>
+                                                    회원 관리
+                                                </P>
+                                            </Div>
+                                        </FlexDiv>
+                                    </Button>
+                                )}
+                                <Button
+                                    $backgroundColor="bgColor"
+                                    width="110px"
+                                    $padding="10px"
+                                    $borderRadius={5}
+                                    $HBackgroundColor="bgColorHo"
+                                    onClick={() => openModal()}
+                                >
+                                    <FlexDiv width="100%">
+                                        <FlexDiv width="15px" height="15px" $margin="0 5px 0 0 ">
+                                            <Img src="/images/image_white.svg" />
+                                        </FlexDiv>
+                                        <Div>
+                                            <P color="wh" fontSize="sm" fontWeight={300}>
+                                                사진 설정
+                                            </P>
+                                        </Div>
+                                    </FlexDiv>
+                                </Button>
                             </FlexDiv>
                         </FlexDiv>
-                    ))}
-                </FlexDiv>
-            </MyInfoDiv>
-            <MyInfoImgDiv width="100%" height="423px" />
+                        <FlexDiv
+                            $backgroundColor="bgColor"
+                            height="50px"
+                            width="100%"
+                            $justifycontent="start"
+                            $padding="0 8%"
+                        >
+                            {myInfoTabInfo.map((item, idx) => (
+                                <FlexDiv
+                                    key={`nav${idx}`}
+                                    $padding="0 15px"
+                                    $pointer
+                                    $backgroundColor={item.idx === clicked ? "wh" : "bgColor"}
+                                    height="50px"
+                                    onClick={() => setclicked(item.idx)}
+                                >
+                                    <FlexDiv width="15px" height="15px" $margin="0 5px 0 0 ">
+                                        <Img src={item.idx === clicked ? item.clickedUrl : item.url} />
+                                    </FlexDiv>
+                                    <FlexDiv>
+                                        <P fontSize="xs" color={item.idx === clicked ? "bgColor" : "wh"}>
+                                            {item.info}
+                                        </P>
+                                    </FlexDiv>
+                                </FlexDiv>
+                            ))}
+                        </FlexDiv>
+                    </MyInfoDiv>
+                    <MyInfoImgDiv width="100%" height="423px" />
 
-            <Div width="100%" $padding="4% 9%">
-                {clicked === 0 && <MyLectureContainer />}
-                {clicked === 1 && <MyManageLectureContainer />}
-                {clicked === 2 && <MyBoardContainer />}
-                {clicked === 3 && <MyBankSupportContainer />}
-                {clicked === 4 && <MyInfoContainer />}
-            </Div>
+                    <Div width="100%" $padding="4% 9%">
+                        {clicked === 0 && <MyLectureContainer />}
+                        {clicked === 1 && <MyManageLectureContainer />}
+                        {clicked === 2 && <MyBoardContainer />}
+                        {clicked === 3 && <MyBankSupportContainer />}
+                        {clicked === 4 && <MyInfoContainer />}
+                    </Div>
+                </>
+            )}
         </>
     );
 };

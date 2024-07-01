@@ -22,7 +22,7 @@ export interface historyInterface {
 export interface scholarshipHistoryInterface {
     year: number | null;
     data: {
-        id: number,
+        id: number;
         title: string;
         dateHistory: string;
     }[];
@@ -35,4 +35,58 @@ export interface scholarshipDetailListInterface {
         id: string;
     }[];
     mainUrl: string;
+}
+
+// honor
+export interface honorDataInterface {
+    name: string;
+    memberId: number;
+    studentId: string;
+    generation: number;
+    major: string;
+    picture: string;
+    intro: string;
+    email: string;
+    phoneNumber: string;
+}
+
+// activity
+
+export interface ActivityInterface {
+    id: number;
+    title: string;
+    writerName: string;
+    dateCreated: string;
+    dateUpdated: string;
+    thumbnail: {
+        id: string;
+        name: string;
+        url: string;
+        size: number;
+        type: string;
+    } | null;
+}
+
+export interface ActivityDetailInterface {
+    id: string;
+    title: string;
+    content: string;
+    writerId: string;
+    writerName: string;
+    dateCreated: string;
+    dateUpdated: string;
+    images: {
+            id: string;
+            name: string;
+            url: string;
+            size: number;
+            type: string;
+    }[];
+    otherFiles: {
+            id: string;
+            name: string;
+            url: string;
+            size: number;
+            type: string;
+    }[];
 }

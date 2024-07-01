@@ -69,7 +69,9 @@ const MyBankSupportContainer = () => {
     return (
         <>
             {isLoading ? (
-                <Loading />
+                <FlexDiv width="100%" height="30vh">
+                    <Loading />
+                </FlexDiv>
             ) : (
                 <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
                     <FlexDiv

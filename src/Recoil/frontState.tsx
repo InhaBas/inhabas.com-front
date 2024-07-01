@@ -72,7 +72,7 @@ export const selectedFile = atom<any[]>({
 // bank
 export const selectedStudentInfos = atom({
     key: "selectedStudentInfos",
-    default: { name: "", major: "", studentId: "" },
+    default: { name: "", major: "", studentId: "", memberId: "" },
 });
 
 export const bankSupportRejectReasonInfo = atom({
@@ -83,5 +83,38 @@ export const bankSupportRejectReasonInfo = atom({
 // useFetch
 export const failRefreshing = atom({
     key: "failRefreshing",
+    default: false,
+});
+
+// carousel
+export const carouselOpen = atom({
+    key: "carouselOpenState",
+    default: false,
+});
+
+export const carouselInitialState = atom({
+    key: "carouselInitialState",
+    default: 0,
+});
+
+// contest
+export const contestOrder = atom({
+    key: "contestOrder",
+    default: "&orderBy=ALL",
+});
+
+// myInfo
+export const myAcceptUserState = atom({
+    key: "myAcceptUserState",
+    default: false,
+});
+
+export const mySetGraduateState = atom({
+    key: "mySetGraduateState",
+    default: false,
+});
+
+export const mySetUndergraduateState = atom({
+    key: "mySetUndergraduateState",
     default: false,
 });

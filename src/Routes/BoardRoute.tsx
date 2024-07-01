@@ -7,6 +7,8 @@ import BoardList from "../Components/Page/Board/BoardList";
 import { GetRoleAuthorization } from "../Functions/authFunctions";
 import { userRole } from "../Recoil/backState";
 import { failRefreshing } from "../Recoil/frontState";
+import ContestDetail from "../Components/Page/IBAS/Contest/ContestDetail";
+import ContestCreate from "../Components/Page/IBAS/Contest/ContestCreate";
 
 const BoardRoute = () => {
     const navigate = useNavigate();
@@ -35,18 +37,15 @@ const BoardRoute = () => {
                     <Route path="free" element={<BoardList />} />
                     <Route path="free/detail/:id" element={<BoardDetail />} />
                     <Route path="free/create" element={<BoardCreate />} />
-                    <Route path="free/update/:id" element={<BoardCreate />} />
-
+                    
                     <Route path="question" element={<BoardList />} />
                     <Route path="question/detail/:id" element={<BoardDetail />} />
                     <Route path="question/create" element={<BoardCreate />} />
-                    <Route path="question/update/:id" element={<BoardCreate />} />
-
+                    
                     <Route path="suggest" element={<BoardList />} />
                     <Route path="suggest/detail/:id" element={<BoardDetail />} />
                     <Route path="suggest/create" element={<BoardCreate />} />
-                    <Route path="suggest/update/:id" element={<BoardCreate />} />
-
+                    
                     <Route path="alpha" element={<BoardList />} />
                     <Route path="alpha/detail/:id" element={<BoardDetail />} />
 
@@ -54,29 +53,23 @@ const BoardRoute = () => {
                     <Route path="beta/detail/:id" element={<BoardDetail />} />
 
                     <Route path="opensource/create" element={<BoardCreate />} />
-                    <Route path="opensource/update/:id" element={<BoardCreate />} />
                 </>
             )}
 
             {isAuthorizedOverBasic && (
                 <>
                     <Route path="alpha/create" element={<BoardCreate />} />
-                    <Route path="alpha/update/:id" element={<BoardCreate />} />
-
                     <Route path="beta/create" element={<BoardCreate />} />
-                    <Route path="beta/update/:id" element={<BoardCreate />} />
                 </>
             )}
 
             {isAuthorizedOverSecretary && (
                 <>
                     <Route path="notice/create" element={<BoardCreate />} />
-                    <Route path="notice/update/:id" element={<BoardCreate />} />
 
                     <Route path="executive" element={<BoardList />} />
                     <Route path="executive/detail/:id" element={<BoardDetail />} />
                     <Route path="executive/create" element={<BoardCreate />} />
-                    <Route path="executive/update/:id" element={<BoardCreate />} />
                 </>
             )}
 
@@ -90,6 +83,28 @@ const BoardRoute = () => {
             <Route path="usage" element={<BoardList />} />
             <Route path="usage/detail/:id" element={<BoardDetail />} />
             <Route path="usage/create" element={<BoardCreate />} />
+            
+            <Route path="contest" element={<BoardList />} />
+            <Route path="contest/detail/:id" element={<ContestDetail />} />
+            <Route path="contest/create" element={<ContestCreate />} />
+            
+            <Route path="activity" element={<BoardList />} />
+            <Route path="activity/detail/:id" element={<ContestDetail />} />
+            <Route path="activity/create" element={<ContestCreate />} />
+
+            {/* update */}
+            <Route path="free/update/:id" element={<BoardCreate />} />
+            <Route path="question/update/:id" element={<BoardCreate />} />
+            <Route path="suggest/update/:id" element={<BoardCreate />} />
+            <Route path="opensource/update/:id" element={<BoardCreate />} />
+            <Route path="alpha/update/:id" element={<BoardCreate />} />
+            <Route path="beta/update/:id" element={<BoardCreate />} />
+            <Route path="notice/update/:id" element={<BoardCreate />} />
+            <Route path="executive/update/:id" element={<BoardCreate />} />
+            <Route path="sponsor/update/:id" element={<BoardCreate />} />
+            <Route path="usage/update/:id" element={<BoardCreate />} />
+            <Route path="contest/update/:id" element={<ContestCreate />} />
+            <Route path="activity/update/:id" element={<ContestCreate />} />
         </Routes>
     );
 };

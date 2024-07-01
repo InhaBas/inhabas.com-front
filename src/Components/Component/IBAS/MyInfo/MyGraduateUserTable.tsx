@@ -7,7 +7,7 @@ import { theme } from "../../../../styles/theme";
 import useFetch from "../../../../Hooks/useFetch";
 
 import { __totalPageInfo, graduateUserInfo, tokenAccess, totalGraduateUserInfo } from "../../../../Recoil/backState";
-import { __checkedList, refetch } from "../../../../Recoil/frontState";
+import { __checkedList, mySetGraduateState, mySetUndergraduateState } from "../../../../Recoil/frontState";
 
 import { userInterface } from "../../../../Types/IBAS/TypeMyinfo";
 
@@ -21,6 +21,7 @@ import Img from "../../../../styles/assets/Img";
 import { Checkbox, TextInput } from "../../../../styles/assets/Input";
 import P from "../../../../styles/assets/P";
 import Dropdown from "../../../Common/Dropdown";
+import Loading from "../../../Common/Loading";
 import Pagination from "../../../Common/Pagination";
 
 const MyGraduateUserTable = () => {
@@ -42,9 +43,12 @@ const MyGraduateUserTable = () => {
     const [CategoryValue, setCategoryValue] = useState("");
     const [roleChangeData, fetchRoleChangeData] = useFetch();
     const [typeChangeData, fetchTypeChangeData] = useFetch();
-    const [reload, setReload] = useRecoilState(refetch);
+    const [reload, setReload] = useState(false);
     const access = useRecoilValue(tokenAccess);
     const [searchValue, setSearchValue] = useState(""); // 검색어
+    const [isLoading, setIsLoading] = useState(true);
+    const [graduate, setGraduate] = useRecoilState(mySetGraduateState);
+    const setUndergraduate = useSetRecoilState(mySetUndergraduateState);
 
     const path = useLocation().pathname;
 
@@ -106,6 +110,7 @@ const MyGraduateUserTable = () => {
             };
             fetchTypeChangeData("/members/approved/type", "PUT", "token", typeSend);
             setReload(true);
+            setUndergraduate(true);
         }
     };
 
@@ -131,6 +136,7 @@ const MyGraduateUserTable = () => {
 
     // 졸업생 현황 조회 fetch
     useEffect(() => {
+        setIsLoading(true);
         let fetchUrl = "/members/graduated?page=0";
         if (path === "/staff/member/graduateStudents") {
             fetchUrl += "&size=15";
@@ -140,7 +146,7 @@ const MyGraduateUserTable = () => {
 
         fetchUser(fetchUrl, "GET", "token");
         setReload(false);
-    }, [reload, access]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함
+    }, [reload, access, graduate]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함
 
     // fetch된 data로 졸업생 List 만들 data 가공
     useEffect(() => {
@@ -161,198 +167,215 @@ const MyGraduateUserTable = () => {
             setTotalUser(user.pageInfo.totalElements);
             setTotalPage(user.pageInfo.totalPages);
             setCheck([] as Number[]);
+            setIsLoading(false);
+            setGraduate(false);
         }
     }, [user, access]);
 
     return (
         <Div width="100%">
-            {isSecretary && (
-                <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
-                    <Div $minWidth="100px" $margin="0 10px 0 0 ">
-                        <Dropdown
-                            label="관리"
-                            options={["활동회원", "비활동회원"]}
-                            value={["BASIC", "DEACTIVATED"]}
-                            onChange={handleRoleChange}
-                        />
-                    </Div>
-                    <Button
-                        $backgroundColor="bgColor"
-                        $HBackgroundColor="bgColorHo"
-                        $borderRadius={3}
-                        $padding="6px 12px"
-                        height="40px"
-                        onClick={() => changeRole()}
-                    >
-                        <FlexDiv $margin="0 5px 0 0">
-                            <FlexDiv width="15px" $margin="0 10px 0 0">
-                                <Img src="/images/check_white.svg" />
-                            </FlexDiv>
-                            <FlexDiv>
-                                <P color="wh" fontSize="sm">
-                                    적용
-                                </P>
-                            </FlexDiv>
-                        </FlexDiv>
-                    </Button>
+            {isLoading ? (
+                <FlexDiv width="100%" height="30vh">
+                    <Loading />
                 </FlexDiv>
-            )}
-
-            {isAuthorizedOverVice && (
-                <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
-                    <Div $minWidth="100px" $margin="0 10px 0 0 ">
-                        <Dropdown
-                            label="관리"
-                            options={["역할", "소속"]}
-                            value={["ROLE", "TYPE"]}
-                            onChange={handleCategoryChange}
-                        />
-                    </Div>
-                    {CategoryValue === "ROLE" && (
-                        <Div $minWidth="100px" $margin="0 10px 0 0 ">
-                            <Dropdown
-                                label="선택"
-                                options={["회장", "부회장", "운영진", "총무", "활동회원", "비활동회원"]}
-                                value={["CHIEF", "VICE_CHIEF", "EXECUTIVES", "SECRETARY", "BASIC", "DEACTIVATED"]}
-                                onChange={handleRoleChange}
-                            />
-                        </Div>
-                    )}
-                    {CategoryValue === "TYPE" && (
-                        <Div $minWidth="100px" $margin="0 10px 0 0 ">
-                            <Dropdown
-                                label="선택"
-                                options={["학부생", "대학원생", "교수"]}
-                                value={["UNDERGRADUATE", "BACHELOR", "PROFESSOR"]}
-                                onChange={handleTypeChange}
-                            />
-                        </Div>
-                    )}
-                    <Button
-                        $backgroundColor="bgColor"
-                        $HBackgroundColor="bgColorHo"
-                        $borderRadius={3}
-                        $padding="6px 12px"
-                        height="40px"
-                        onClick={() => (CategoryValue === "TYPE" ? changeType() : changeRole())}
-                    >
-                        <FlexDiv $margin="0 5px 0 0">
-                            <FlexDiv width="15px" $margin="0 10px 0 0">
-                                <Img src="/images/check_white.svg" />
-                            </FlexDiv>
-                            <FlexDiv>
-                                <P color="wh" fontSize="sm">
-                                    적용
-                                </P>
-                            </FlexDiv>
-                        </FlexDiv>
-                    </Button>
-                </FlexDiv>
-            )}
-
-            <Div width="100%">
-                <FlexDiv
-                    width="100%"
-                    height="45px"
-                    $justifycontent="space-evenly"
-                    $backgroundColor="wh"
-                    $borderB={`1.5px solid ${theme.color.grey1}`}
-                >
-                    {isAuthorizedExceptExecutives && (
-                        <FlexDiv $padding="10px">
-                            {userList && userList.length !== 0 && (
-                                <Checkbox
-                                    checked={!!user && check.length === userList.length}
-                                    onChange={checkAllClickEvent}
+            ) : (
+                <>
+                    {isSecretary && (
+                        <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
+                            <Div $minWidth="100px" $margin="0 10px 0 0 ">
+                                <Dropdown
+                                    label="관리"
+                                    options={["활동회원", "비활동회원"]}
+                                    value={["BASIC", "DEACTIVATED"]}
+                                    onChange={handleRoleChange}
                                 />
-                            )}
+                            </Div>
+                            <Button
+                                $backgroundColor="bgColor"
+                                $HBackgroundColor="bgColorHo"
+                                $borderRadius={3}
+                                $padding="6px 12px"
+                                height="40px"
+                                onClick={() => changeRole()}
+                            >
+                                <FlexDiv $margin="0 5px 0 0">
+                                    <FlexDiv width="15px" $margin="0 10px 0 0">
+                                        <Img src="/images/check_white.svg" />
+                                    </FlexDiv>
+                                    <FlexDiv>
+                                        <P color="wh" fontSize="sm">
+                                            적용
+                                        </P>
+                                    </FlexDiv>
+                                </FlexDiv>
+                            </Button>
                         </FlexDiv>
                     )}
-                    {headerInfo.map((item: string, idx: number) => (
-                        <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
-                            <P $center fontWeight={700}>
-                                {item}
-                            </P>
+
+                    {isAuthorizedOverVice && (
+                        <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
+                            <Div $minWidth="100px" $margin="0 10px 0 0 ">
+                                <Dropdown
+                                    label="관리"
+                                    options={["역할", "소속"]}
+                                    value={["ROLE", "TYPE"]}
+                                    onChange={handleCategoryChange}
+                                />
+                            </Div>
+                            {CategoryValue === "ROLE" && (
+                                <Div $minWidth="100px" $margin="0 10px 0 0 ">
+                                    <Dropdown
+                                        label="선택"
+                                        options={["회장", "부회장", "운영진", "총무", "활동회원", "비활동회원"]}
+                                        value={[
+                                            "CHIEF",
+                                            "VICE_CHIEF",
+                                            "EXECUTIVES",
+                                            "SECRETARY",
+                                            "BASIC",
+                                            "DEACTIVATED",
+                                        ]}
+                                        onChange={handleRoleChange}
+                                    />
+                                </Div>
+                            )}
+                            {CategoryValue === "TYPE" && (
+                                <Div $minWidth="100px" $margin="0 10px 0 0 ">
+                                    <Dropdown
+                                        label="선택"
+                                        options={["학부생", "대학원생", "교수"]}
+                                        value={["UNDERGRADUATE", "BACHELOR", "PROFESSOR"]}
+                                        onChange={handleTypeChange}
+                                    />
+                                </Div>
+                            )}
+                            <Button
+                                $backgroundColor="bgColor"
+                                $HBackgroundColor="bgColorHo"
+                                $borderRadius={3}
+                                $padding="6px 12px"
+                                height="40px"
+                                onClick={() => (CategoryValue === "TYPE" ? changeType() : changeRole())}
+                            >
+                                <FlexDiv $margin="0 5px 0 0">
+                                    <FlexDiv width="15px" $margin="0 10px 0 0">
+                                        <Img src="/images/check_white.svg" />
+                                    </FlexDiv>
+                                    <FlexDiv>
+                                        <P color="wh" fontSize="sm">
+                                            적용
+                                        </P>
+                                    </FlexDiv>
+                                </FlexDiv>
+                            </Button>
                         </FlexDiv>
-                    ))}
-                </FlexDiv>
-                {userList && userList.length !== 0 ? (
-                    userList.map((element: userInterface, idx: number) => (
+                    )}
+
+                    <Div width="100%">
                         <FlexDiv
-                            key={`contentItem${idx}`}
                             width="100%"
                             height="45px"
-                            $borderT={`1px solid ${theme.color.grey1}`}
                             $justifycontent="space-evenly"
                             $backgroundColor="wh"
+                            $borderB={`1.5px solid ${theme.color.grey1}`}
                         >
                             {isAuthorizedExceptExecutives && (
                                 <FlexDiv $padding="10px">
-                                    <Checkbox
-                                        checked={check.includes(element.memberId) ? true : false}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                            checkClickEvent(e, element.memberId)
-                                        }
-                                    />
+                                    {userList && userList.length !== 0 && (
+                                        <Checkbox
+                                            checked={!!user && check.length === userList.length}
+                                            onChange={checkAllClickEvent}
+                                        />
+                                    )}
                                 </FlexDiv>
                             )}
-                            {Object.entries(element).map(([key, value], idx: number) => {
-                                if (key !== "memberId") {
-                                    return (
-                                        <FlexDiv
-                                            key={`itemValue${idx}`}
-                                            $minWidth={`${widthList[idx]}px`}
-                                            $padding="10px"
-                                        >
-                                            <A $center fontWeight={idx === 0 ? 800 : 500}>
-                                                {value}
-                                            </A>
-                                        </FlexDiv>
-                                    );
-                                }
-                            })}
+                            {headerInfo.map((item: string, idx: number) => (
+                                <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
+                                    <P $center fontWeight={700}>
+                                        {item}
+                                    </P>
+                                </FlexDiv>
+                            ))}
                         </FlexDiv>
-                    ))
-                ) : (
-                    <FlexDiv width="100%" $padding="10px">
-                        <Div>
-                            <P>회원이 존재하지 않습니다.</P>
-                        </Div>
-                    </FlexDiv>
-                )}
-            </Div>
-            {path === "/staff/member/graduateStudents" && (
-                <FlexDiv width="100%" $justifycontent="end" $margin="30px 0">
-                    <FlexDiv>
-                        <TextInput
-                            width="300px"
-                            placeholder="이름이나 학번을 입력하세요"
-                            $borderRadius="3px 0 0px 3"
-                            onKeyDown={enterKeyDown}
-                            onChange={handleSearchChange}
-                        />
-                        <Button
-                            $backgroundColor="bgColor"
-                            $HBackgroundColor="bgColorHo"
-                            $padding="13px 20px"
-                            $borderRadius="0 3px 3px 0"
-                            onClick={searchStudent}
-                        >
-                            <FlexDiv width="14px">
-                                <Img src="/images/search_white.svg" />
+                        {userList && userList.length !== 0 ? (
+                            userList.map((element: userInterface, idx: number) => (
+                                <FlexDiv
+                                    key={`contentItem${idx}`}
+                                    width="100%"
+                                    height="45px"
+                                    $borderT={`1px solid ${theme.color.grey1}`}
+                                    $justifycontent="space-evenly"
+                                    $backgroundColor="wh"
+                                >
+                                    {isAuthorizedExceptExecutives && (
+                                        <FlexDiv $padding="10px">
+                                            <Checkbox
+                                                checked={check.includes(element.memberId) ? true : false}
+                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                                    checkClickEvent(e, element.memberId)
+                                                }
+                                            />
+                                        </FlexDiv>
+                                    )}
+                                    {Object.entries(element).map(([key, value], idx: number) => {
+                                        if (key !== "memberId") {
+                                            return (
+                                                <FlexDiv
+                                                    key={`itemValue${idx}`}
+                                                    $minWidth={`${widthList[idx]}px`}
+                                                    $padding="10px"
+                                                >
+                                                    <A $center fontWeight={idx === 0 ? 800 : 500}>
+                                                        {value}
+                                                    </A>
+                                                </FlexDiv>
+                                            );
+                                        }
+                                    })}
+                                </FlexDiv>
+                            ))
+                        ) : (
+                            <FlexDiv width="100%" $padding="10px">
+                                <Div>
+                                    <P>회원이 존재하지 않습니다.</P>
+                                </Div>
                             </FlexDiv>
-                        </Button>
-                    </FlexDiv>
-                </FlexDiv>
-            )}
-            {userList && userList.length !== 0 && (
-                <Pagination
-                    totalPage={totalPage}
-                    fetchUrl="/members/graduated"
-                    token
-                    paginationFetch={fetchUser}
-                    size={10}
-                />
+                        )}
+                    </Div>
+                    {path === "/staff/member/graduateStudents" && (
+                        <FlexDiv width="100%" $justifycontent="end" $margin="30px 0">
+                            <FlexDiv>
+                                <TextInput
+                                    width="300px"
+                                    placeholder="이름이나 학번을 입력하세요"
+                                    $borderRadius="3px 0 0px 3"
+                                    onKeyDown={enterKeyDown}
+                                    onChange={handleSearchChange}
+                                />
+                                <Button
+                                    $backgroundColor="bgColor"
+                                    $HBackgroundColor="bgColorHo"
+                                    $padding="13px 20px"
+                                    $borderRadius="0 3px 3px 0"
+                                    onClick={searchStudent}
+                                >
+                                    <FlexDiv width="14px">
+                                        <Img src="/images/search_white.svg" />
+                                    </FlexDiv>
+                                </Button>
+                            </FlexDiv>
+                        </FlexDiv>
+                    )}
+                    {userList && userList.length !== 0 && (
+                        <Pagination
+                            totalPage={totalPage}
+                            fetchUrl="/members/graduated"
+                            token
+                            paginationFetch={fetchUser}
+                            size={10}
+                        />
+                    )}
+                </>
             )}
         </Div>
     );
