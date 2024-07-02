@@ -1,5 +1,13 @@
 # IBAS (Inha Bigdata Analysis Society)
 
+[![GitHub contributors](https://img.shields.io/github/contributors/InhaBas/inhabas.com-front.svg)](https://GitHub.com/InhaBas/inhabas.com-front/graphs/contributors/)
+[![GitHub issues](https://img.shields.io/github/issues/InhaBas/inhabas.com-front.svg)](https://GitHub.com/InhaBas/inhabas.com-front/issues/)
+[![GitHub pull-requests](https://img.shields.io/github/issues-pr/InhaBas/inhabas.com-front.svg)](https://GitHub.com/InhaBas/inhabas.com-front/pulls/)
+
+[![GitHub watchers](https://img.shields.io/github/watchers/InhaBas/inhabas.com-front?style=social&label=Watch)](https://GitHub.com/InhaBas/inhabas.com-front/watchers/)
+[![GitHub forks](https://img.shields.io/github/forks/InhaBas/inhabas.com-front.svg?style=social&label=Fork)](https://GitHub.com/InhaBas/inhabas.com-front/network/)
+[![GitHub stars](https://img.shields.io/github/stars/InhaBas/inhabas.com-front?style=social&label=Star)](https://GitHub.com/InhaBas/inhabas.com-front/stargazers/)
+
 ![main logo of IBAS](docs/images/logo_purple.png)
 
 IBAS는 인하대학교의 빅데이터 학술동아리 입니다. 주로 데이터 분석 및 머신러닝 같은 데이터 관련 분야를 탐구하며, 웹 개발과 데이터 엔지니어링에 중점을 둔 IBAS 개발팀이 있어, 다양한 IT 분야에서의 활동을 지향하고 있습니다.
