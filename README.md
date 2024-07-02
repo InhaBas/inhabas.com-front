@@ -47,4 +47,4 @@ IBAS에 소속된 회원이라면 누구든지 이 프로젝트에 기여할 수
 
 ## Contributor Wall of Fame
 
-[![IBAS back end contributors](https://contrib.rocks/image?repo=InhaBas/inhabas.com-front)](https://github.com/InhaBas/inhabas.com-front/graphs/contributors)
+[![IBAS front end contributors](https://contrib.rocks/image?repo=InhaBas/inhabas.com-front)](https://github.com/InhaBas/inhabas.com-front/graphs/contributors)
