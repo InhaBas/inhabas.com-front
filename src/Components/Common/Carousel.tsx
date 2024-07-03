@@ -1,11 +1,10 @@
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 
-import Slider, { Settings } from "react-slick";
-import styled from "styled-components";
-
 import { useEffect, useRef, useState } from "react";
+import Slider from "react-slick";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import styled from "styled-components";
 import { carouselInitialState, carouselOpen } from "../../Recoil/frontState";
 import { carouselInterface } from "../../Types/TypeCommon";
 import { Div, FlexDiv } from "../../styles/assets/Div";
@@ -22,23 +21,23 @@ const StyledSlider = styled(Slider)`
     }
 
     .slick-prev {
-        left: 20px;
+        left: 20px !important;
     }
 
     .slick-next {
-        right: 20px;
+        right: 20px !important;
+    }
+
+    .slick-list {
+        overflow: hidden;
     }
 `;
-
-interface ArrowProps {
-    onClick?: () => void;
-}
 
 const ArrowButton = styled(Div)<{ $left?: string; $right?: string }>`
     position: absolute;
     top: 50%;
     z-index: 2;
-    background-color: #4611a7;
+    background-color: ${({ theme }) => theme.colors.bgColor};
     padding: 10px;
     cursor: pointer;
     transform: translateY(-50%);
@@ -46,32 +45,38 @@ const ArrowButton = styled(Div)<{ $left?: string; $right?: string }>`
     ${({ $right }) => $right && `right: ${$right};`}
 `;
 
-const NextArrow: React.FC<ArrowProps> = ({ onClick }) => (
-    <ArrowButton $right="20px" onClick={onClick}>
-        <Div width="22px" height="22px">
-            <Img src="/images/arrow-right_white.svg" />
-        </Div>
-    </ArrowButton>
-);
+const NextArrow = (props: any) => {
+    const { onClick } = props;
+    return (
+        <ArrowButton $right="20px" onClick={onClick}>
+            <Div width="22px" height="22px">
+                <Img src="/images/arrow-right_white.svg" />
+            </Div>
+        </ArrowButton>
+    );
+};
 
-const PrevArrow: React.FC<ArrowProps> = ({ onClick }) => (
-    <ArrowButton $left="20px" onClick={onClick}>
-        <Div width="22px" height="22px">
-            <Img src="/images/arrow-left_white.svg" />
-        </Div>
-    </ArrowButton>
-);
+const PrevArrow = (props: any) => {
+    const { onClick } = props;
+    return (
+        <ArrowButton $left="20px" onClick={onClick}>
+            <Div width="22px" height="22px">
+                <Img src="/images/arrow-left_white.svg" />
+            </Div>
+        </ArrowButton>
+    );
+};
 
 const Carousel: React.FC<carouselInterface> = ({ images }) => {
-    const sliderRef = useRef<Slider>(null);
+    const sliderRef = useRef<any>(null);
     const setIsCarouselOpen = useSetRecoilState(carouselOpen);
     const carouselInitial = useRecoilValue(carouselInitialState);
-    const [currentSlide, setCurrentSlide] = useState<number>(carouselInitial);
+    const [currentSlide, setCurrentSlide] = useState(carouselInitial);
 
     const moveBack = () => setIsCarouselOpen(false);
 
-    const settings: Settings = {
-        customPaging: (i) => {
+    const settings = {
+        customPaging: (i: number) => {
             const thumb = images[i];
             return (
                 <Div display="inline-block" height="100px" width="100px" $margin="0 10px 0 0" $pointer>
@@ -87,7 +92,7 @@ const Carousel: React.FC<carouselInterface> = ({ images }) => {
         nextArrow: <NextArrow />,
         swipeToSlide: true,
         initialSlide: carouselInitial,
-        afterChange: (index) => setCurrentSlide(index),
+        afterChange: (index: number) => setCurrentSlide(index),
     };
 
     const handleDownload = async () => {
