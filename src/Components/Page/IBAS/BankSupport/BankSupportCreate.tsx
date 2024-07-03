@@ -47,7 +47,7 @@ const BankSupportCreate = () => {
     }, []);
 
     useEffect(() => {
-        if (update == "update") {
+        if (update === "update") {
             getFetchData(`/budget/application/${paramID}`, "GET", "token");
         }
     }, [update, access]);
@@ -123,7 +123,7 @@ const BankSupportCreate = () => {
 
         // 파일 담기
         const inputData = {
-            dateUsed: infos.dateUsed.includes('T') ? infos.dateUsed : (infos.dateUsed += "T00:00:00"),
+            dateUsed: infos.dateUsed.includes("T") ? infos.dateUsed : (infos.dateUsed += "T00:00:00"),
             title: infos.title,
             details: infos.details,
             outcome: Number(infos.outcome),
@@ -135,6 +135,7 @@ const BankSupportCreate = () => {
                 ? fetchPostSupport("/budget/application", "POST", "token", inputData)
                 : fetchPostSupport(`/budget/application/${paramID}`, "POST", "token", inputData);
         }
+        console.log(inputData);
     };
 
     useEffect(() => {
@@ -163,7 +164,9 @@ const BankSupportCreate = () => {
                                     fontSize="xl"
                                     $borderRadius={5}
                                     value={infos.title}
-                                    onChange={(e: any) => setInfos((prev) => ({ ...prev, title: e.target.value }))}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                        setInfos((prev) => ({ ...prev, title: e.target.value }))
+                                    }
                                 ></TextInput>
                             </Div>
                         </Div>
@@ -183,11 +186,15 @@ const BankSupportCreate = () => {
                             <DateInput
                                 width="100%"
                                 value={infos.dateUsed?.split("T")[0]}
-                                onChange={(e: any) => setInfos((prev) => ({ ...prev, dateUsed: e.target.value }))}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                    setInfos((prev) => ({ ...prev, dateUsed: e.target.value }))
+                                }
                             />
                         </Div>
                         <Div $padding="5px 20px">
-                            <P fontSize="xs" color="TextDanger">지출일은 현재보다 이전이어야 합니다.</P>
+                            <P fontSize="xs" color="TextDanger">
+                                지출일은 현재보다 이전이어야 합니다.
+                            </P>
                         </Div>
                     </Div>
                     <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
@@ -206,7 +213,9 @@ const BankSupportCreate = () => {
                                 width="100%"
                                 placeholder="지출 목적 및 사용 내역을 입력하세요"
                                 value={infos.details}
-                                onChange={(e: any) => setInfos((prev) => ({ ...prev, details: e.target.value }))}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                    setInfos((prev) => ({ ...prev, details: e.target.value }))
+                                }
                             />
                         </Div>
                     </Div>
@@ -226,7 +235,9 @@ const BankSupportCreate = () => {
                                 width="100%"
                                 placeholder="정확한 지출액을 입력하세요"
                                 value={infos.outcome}
-                                onChange={(e: any) => setInfos((prev) => ({ ...prev, outcome: e.target.value }))}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                    setInfos((prev) => ({ ...prev, outcome: Number(e.target.value) }))
+                                }
                             />
                         </Div>
                     </Div>
@@ -246,7 +257,9 @@ const BankSupportCreate = () => {
                                 width="100%"
                                 placeholder="은행명, 계좌번호, 예금주를 입력해주세요"
                                 value={infos.account}
-                                onChange={(e: any) => setInfos((prev) => ({ ...prev, account: e.target.value }))}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                    setInfos((prev) => ({ ...prev, account: e.target.value }))
+                                }
                             />
                         </Div>
                     </Div>

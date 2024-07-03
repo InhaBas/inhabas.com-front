@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
+import styled from "styled-components";
 import { theme } from "../../../../styles/theme";
 
 import useFetch from "../../../../Hooks/useFetch";
@@ -10,14 +11,45 @@ import { bankDetailDataInfo, tokenAccess } from "../../../../Recoil/backState";
 
 import { jwtDecode } from "jwt-decode";
 import { GetRoleAuthorization } from "../../../../Functions/authFunctions";
-import { modalInfo, modalOpen, refetch } from "../../../../Recoil/frontState";
+import { carouselInitialState, carouselOpen, modalInfo, modalOpen, refetch } from "../../../../Recoil/frontState";
 import { tokenInterface } from "../../../../Types/TypeCommon";
 import Button from "../../../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../../../styles/assets/Div";
 import { H2 } from "../../../../styles/assets/H";
 import Img from "../../../../styles/assets/Img";
 import P from "../../../../styles/assets/P";
+import Carousel from "../../../Common/Carousel";
 import Loading from "../../../Common/Loading";
+
+const ScrollFlexDiv = styled(FlexDiv)`
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* 항목이 왼쪽으로 정렬되도록 합니다 */
+    flex-direction: row;
+    flex-wrap: nowrap; /* 항목이 가로로 나열되도록 설정합니다 */
+    overflow-x: auto; /* 가로 스크롤 활성화 */
+    overflow-y: hidden; /* 세로 스크롤 비활성화 */
+    white-space: nowrap; /* 자식 요소들이 한 줄로 나열되도록 설정합니다 */
+
+    /* 스크롤바 스타일링 */
+    &::-webkit-scrollbar {
+        height: 8px; /* 스크롤바의 높이 설정 */
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: ${theme.color.grey1};
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: ${(props) => props.theme.color.grey};
+    }
+
+    /* 스크롤바 트랙의 스타일을 추가할 수도 있습니다 */
+    &::-webkit-scrollbar-track {
+        background: ${theme.color.grey2}; /* 스크롤바 트랙의 배경색 설정 */
+    }
+`;
 
 const BankSupportDetail = () => {
     const navigate = useNavigate();
@@ -37,6 +69,8 @@ const BankSupportDetail = () => {
     const setOpen = useSetRecoilState(modalOpen);
     const setModalInfo = useSetRecoilState(modalInfo);
     const [reload, setReload] = useRecoilState(refetch);
+    const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
+    const [carouselInitial, setCarouselInitial] = useRecoilState(carouselInitialState);
 
     const { isSecretary } = GetRoleAuthorization();
 
@@ -48,6 +82,13 @@ const BankSupportDetail = () => {
 
     const movePage = () => {
         navigate(`/bank/support/update/${applicationId}`);
+    };
+
+    // Carousel을 렌더링할지 여부를 결정하는 함수
+    const handleCarousel = (idx: number) => {
+        setCarouselInitial(idx);
+
+        setIsCarouselOpen(true);
     };
 
     const deleteDetail = () => {
@@ -115,6 +156,8 @@ const BankSupportDetail = () => {
                 <FlexDiv width="100%" height="100vh">
                     <Loading />
                 </FlexDiv>
+            ) : isCarouselOpen ? (
+                <Carousel images={detail?.receipts?.map((image) => image.url) || []} />
             ) : (
                 <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
                     <Container>
@@ -320,19 +363,20 @@ const BankSupportDetail = () => {
                                         <P fontWeight={600}>증빙자료</P>
                                     </Div>
                                 </FlexDiv>
-                                <Div $padding="20px">
+                                <ScrollFlexDiv width="100%" $padding="20px">
                                     {detail?.receipts.map((image, idx) => (
                                         <Div
                                             key={`supportImage${idx}`}
-                                            width="190px"
-                                            height="190px"
                                             $pointer
-                                            onClick={() => window.open(image.url)}
+                                            $margin="0 30px 0 0"
+                                            onClick={() => handleCarousel(idx)}
                                         >
-                                            <Img src={image.url} $HFilter="brightness(50%)" />
+                                            <Div width="190px" height="190px">
+                                                <Img src={image.url} alt={`supportImage${idx}`} />
+                                            </Div>
                                         </Div>
                                     ))}
-                                </Div>
+                                </ScrollFlexDiv>
                             </Div>
                         </Div>
                         {detail?.applicantId === userId && (

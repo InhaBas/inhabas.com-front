@@ -7,11 +7,11 @@ import useFetch from "../../Hooks/useFetch";
 import { fileIdList } from "../../Recoil/backState";
 import { menuId, refetch, selectedFile } from "../../Recoil/frontState";
 
+import styled from "styled-components";
 import { Div, FlexDiv, InputLabel } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import { Input } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
-import styled from "styled-components";
 import { theme } from "../../styles/theme";
 
 interface DragNDropProps {
@@ -27,7 +27,7 @@ const ScrollFlexDiv = styled(FlexDiv)`
     justify-content: ${(props) => props.$justifycontent || "center"};
     flex-direction: ${(props) => props.direction || "row"};
     flex-wrap: ${(props) => props.wrap || "wrap"};
-    
+
     &::-webkit-scrollbar {
         display: block;
     }
@@ -184,6 +184,11 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
                         height: "",
                         id: "",
                     };
+
+                    if (onlyImg && !isImageFile(file)) {
+                        alert("이미지 파일만 업로드할 수 있습니다.");
+                        return;
+                    }
 
                     if (isImageFile(file)) {
                         setFileSelected(fileList);
