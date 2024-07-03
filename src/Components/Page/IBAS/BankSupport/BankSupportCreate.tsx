@@ -92,6 +92,12 @@ const BankSupportCreate = () => {
             return false;
         }
 
+        const today = new Date();
+        if (new Date(infos.dateUsed).toISOString().slice(0, 10) > today.toISOString().slice(0, 10)) {
+            alert(`${today.getMonth()+1}월 ${today.getDate()}일 이전의 날짜를 입력해주세요`);
+            return false
+        }
+
         if (infos.details === "") {
             alert("지출내역을 입력해주세요");
             return false;
