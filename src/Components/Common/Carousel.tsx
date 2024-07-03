@@ -37,7 +37,7 @@ const ArrowButton = styled(Div)<{ $left?: string; $right?: string }>`
     position: absolute;
     top: 50%;
     z-index: 2;
-    background-color: ${({ theme }) => theme.colors.bgColor};
+    background-color: #4611a7;
     padding: 10px;
     cursor: pointer;
     transform: translateY(-50%);
