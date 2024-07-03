@@ -15,6 +15,19 @@ import P from "../../styles/assets/P";
 const StyledSlider = styled(Slider)`
     width: 100%;
     height: calc(100vh - 200px);
+
+    .slick-prev,
+    .slick-next {
+        z-index: 2;
+    }
+
+    .slick-prev {
+        left: 20px;
+    }
+
+    .slick-next {
+        right: 20px;
+    }
 `;
 
 interface ArrowProps {
@@ -28,12 +41,13 @@ const ArrowButton = styled(Div)<{ $left?: string; $right?: string }>`
     background-color: #4611a7;
     padding: 10px;
     cursor: pointer;
+    transform: translateY(-50%);
     ${({ $left }) => $left && `left: ${$left};`}
     ${({ $right }) => $right && `right: ${$right};`}
 `;
 
 const NextArrow: React.FC<ArrowProps> = ({ onClick }) => (
-    <ArrowButton $right="10px" onClick={onClick}>
+    <ArrowButton $right="20px" onClick={onClick}>
         <Div width="22px" height="22px">
             <Img src="/images/arrow-right_white.svg" />
         </Div>
@@ -41,7 +55,7 @@ const NextArrow: React.FC<ArrowProps> = ({ onClick }) => (
 );
 
 const PrevArrow: React.FC<ArrowProps> = ({ onClick }) => (
-    <ArrowButton $left="10px" onClick={onClick}>
+    <ArrowButton $left="20px" onClick={onClick}>
         <Div width="22px" height="22px">
             <Img src="/images/arrow-left_white.svg" />
         </Div>
