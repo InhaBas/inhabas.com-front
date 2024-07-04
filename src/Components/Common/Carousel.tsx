@@ -25,7 +25,7 @@ const StyledSlider = styled(Slider)`
     }
 `;
 
-const ArrowButton = styled(Div)<{ $left?: string; $right?: string }>`
+const ArrowButton = styled(Div)`
     position: absolute;
     top: 50%;
     z-index: 2;
@@ -33,8 +33,6 @@ const ArrowButton = styled(Div)<{ $left?: string; $right?: string }>`
     padding: 10px;
     cursor: pointer;
     transform: translateY(-50%);
-    ${({ $left }) => ($left ? `left: ${$left} ` : `left: 0`)}
-    ${({ $right }) => ($right ? `right: ${$right} !important;` : `right: 0`)}
 `;
 
 const NextArrow = (props: any) => {
