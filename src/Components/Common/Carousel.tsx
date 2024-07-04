@@ -20,14 +20,6 @@ const StyledSlider = styled(Slider)`
         z-index: 2;
     }
 
-    .slick-prev {
-        left: 20px !important;
-    }
-
-    .slick-next {
-        right: 20px !important;
-    }
-
     .slick-list {
         overflow: hidden;
     }
@@ -41,8 +33,8 @@ const ArrowButton = styled(Div)<{ $left?: string; $right?: string }>`
     padding: 10px;
     cursor: pointer;
     transform: translateY(-50%);
-    ${({ $left }) => $left && `left: ${$left};`}
-    ${({ $right }) => $right && `right: ${$right};`}
+    ${({ $left }) => ($left ? `left: ${$left} ` : `left: 0`)}
+    ${({ $right }) => ($right ? `right: ${$right} !important;` : `right: 0`)}
 `;
 
 const NextArrow = (props: any) => {
