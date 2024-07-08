@@ -77,7 +77,7 @@ const BoardList = () => {
 
     const checkWritingAuthorization = () => {
         // 총무
-        if (["sponsor", "usage"].includes(url) && isAuthorizedOverSecretary) {
+        if (["sponsor", "usage", "notice", "executive"].includes(url) && isAuthorizedOverSecretary) {
             return true;
         }
         // 비활동 회원
