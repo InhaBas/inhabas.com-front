@@ -24,16 +24,15 @@ import Loading from "../../../Common/Loading";
 const ScrollFlexDiv = styled(FlexDiv)`
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* 항목이 왼쪽으로 정렬되도록 합니다 */
+    justify-content: flex-start;
     flex-direction: row;
-    flex-wrap: nowrap; /* 항목이 가로로 나열되도록 설정합니다 */
-    overflow-x: auto; /* 가로 스크롤 활성화 */
-    overflow-y: hidden; /* 세로 스크롤 비활성화 */
-    white-space: nowrap; /* 자식 요소들이 한 줄로 나열되도록 설정합니다 */
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
 
-    /* 스크롤바 스타일링 */
     &::-webkit-scrollbar {
-        height: 8px; /* 스크롤바의 높이 설정 */
+        height: 8px;
     }
 
     &::-webkit-scrollbar-thumb {
@@ -45,9 +44,8 @@ const ScrollFlexDiv = styled(FlexDiv)`
         background-color: ${(props) => props.theme.color.grey};
     }
 
-    /* 스크롤바 트랙의 스타일을 추가할 수도 있습니다 */
     &::-webkit-scrollbar-track {
-        background: ${theme.color.grey2}; /* 스크롤바 트랙의 배경색 설정 */
+        background: ${theme.color.grey2};
     }
 `;
 
@@ -84,10 +82,8 @@ const BankSupportDetail = () => {
         navigate(`/bank/support/update/${applicationId}`);
     };
 
-    // Carousel을 렌더링할지 여부를 결정하는 함수
     const handleCarousel = (idx: number) => {
         setCarouselInitial(idx);
-
         setIsCarouselOpen(true);
     };
 
@@ -103,7 +99,6 @@ const BankSupportDetail = () => {
         setIsLoading(true);
         fetchSetStatusData(`/budget/application/${applicationId}/status`, "PUT", "token", statusData);
         setStatusInfo("승인 완료");
-        setReload(true);
     };
 
     const makeStatusCompeleted = () => {
@@ -111,7 +106,6 @@ const BankSupportDetail = () => {
         setIsLoading(true);
         fetchSetStatusData(`/budget/application/${applicationId}/status`, "PUT", "token", statusData);
         setStatusInfo("지급 완료");
-        setReload(true);
     };
 
     const openModal = () => {
@@ -147,6 +141,7 @@ const BankSupportDetail = () => {
             alert(`'${statusInfo}' 처리 되었습니다. `);
             setStatusInfo("");
             setIsLoading(false);
+            setReload(true); // 데이터 갱신을 위해 리로드 설정
         }
     }, [statusData]);
 
@@ -379,7 +374,7 @@ const BankSupportDetail = () => {
                                 </ScrollFlexDiv>
                             </Div>
                         </Div>
-                        {detail?.applicantId === userId && (
+                        {detail?.status === "PENDING" && detail?.applicantId === userId && (
                             <FlexDiv width="100%" $justifycontent="end">
                                 <Button
                                     display="flex"
