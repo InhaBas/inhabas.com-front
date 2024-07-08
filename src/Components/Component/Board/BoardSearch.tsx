@@ -32,6 +32,7 @@ const BoardSearch = () => {
     const setTotalPage = useSetRecoilState(totalPageInfo);
     const setBoardPinnedList = useSetRecoilState(boardListPinnedDataInfo);
     const [isLoading, setIsLoading] = useState(true);
+    const [searchValue, setSearchValue] = useState(""); // 검색어
     const setContestListData = useSetRecoilState(contestListDataInfo);
 
     let fetchUrl: string;
@@ -53,16 +54,31 @@ const BoardSearch = () => {
         fetchUrl = `/board/${url}`;
     }
 
+    // 검색어 변경 핸들러
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchValue(e.target.value);
+    };
+
     const searchEvent = () => {
         // 토큰 없이 fetch
-        if (inputRef.current !== null && inputRef.current.value !== null) {
+        if (searchValue.trim() !== "") {
             if (["usage", "sponsor"].includes(url)) {
-                fetchBoardListData(`${fetchUrl}?search=${inputRef.current.value}&page=0&size=15`, "GET");
+                fetchBoardListData(`${fetchUrl}?search=${searchValue}&page=0&size=15`, "GET");
+                setIsLoading(true);
             } else if (["contest", "activity"].includes(url)) {
-                fetchBoardListData(`${fetchUrl}?search=${inputRef.current.value}&page=0&size=4&orderBy=ALL`, "GET");
+                fetchBoardListData(`${fetchUrl}?search=${searchValue}&page=0&size=4&orderBy=ALL`, "GET");
+                setIsLoading(true);
             } else {
-                fetchBoardListData(`${fetchUrl}?search=${inputRef.current.value}&page=0&size=15`, "GET", "token");
+                fetchBoardListData(`${fetchUrl}?search=${searchValue}&page=0&size=15`, "GET", "token");
+                setIsLoading(true);
             }
+        }
+    };
+
+    // 엔터키 press 핸들러
+    const enterKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            searchEvent();
         }
     };
 
@@ -109,7 +125,11 @@ const BoardSearch = () => {
 
                 <FlexDiv wrap="nowrap">
                     <Div>
-                        <SearchInput placeholder="검색어를 입력하세요." ref={inputRef} />
+                        <SearchInput
+                            placeholder="검색어를 입력하세요."
+                            onKeyDown={enterKeyDown}
+                            onChange={handleSearchChange}
+                        />
                     </Div>
                     <Button
                         $backgroundColor="bgColor"
