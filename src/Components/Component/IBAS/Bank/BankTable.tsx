@@ -37,13 +37,11 @@ const BankTable = () => {
 
     const clickDetailEvent = (ev: MouseEvent, name: string, selectedId: number) => {
         setOpen(true);
-
         setModalInfo({ type: "bankHistory", content: String(selectedId) });
     };
 
     const clickUpdateEvent = (ev: MouseEvent, name: string, selectedIdx: number) => {
         setOpen(true);
-
         setModalInfo({ type: "bankHistoryUpdate", content: String(selectedIdx) });
     };
 
@@ -62,7 +60,6 @@ const BankTable = () => {
 
     const clickPostEvent = (ev: MouseEvent, name: string, content: string) => {
         setOpen(true);
-
         setModalInfo({ type: "bankHistoryPost" });
     };
 
@@ -71,6 +68,7 @@ const BankTable = () => {
 
     const contents = useRecoilValue(bankHistoryInfo);
     const bankBalance = useRecoilValue(bankBalanceInfo);
+
     return (
         <>
             <Div width="100%" $padding="20px">
@@ -88,7 +86,6 @@ const BankTable = () => {
                             </P>
                         </FlexDiv>
                     ))}
-                    {/* 권한 여부 체크 */}
                     {role && isSecretary && (
                         <FlexDiv $minWidth="60px" $padding="10px">
                             <P $center fontWeight={700}>
@@ -124,25 +121,27 @@ const BankTable = () => {
                                 <Img src="/images/file_grey.svg" />
                             </Div>
                         </FlexDiv>
-                        {/* 권한 여부 체크 */}
-
-                        {role && isSecretary && element?.writerId === userId && (
-                            <FlexDiv $minWidth={"60px"} $padding="10px">
-                                <FlexDiv
-                                    width="15px"
-                                    $margin="0 6px"
-                                    onClick={(e: MouseEvent) => clickUpdateEvent(e, "ss", element?.id)}
-                                    $pointer
-                                >
-                                    <Img src="/images/pencil_grey.svg" />
-                                </FlexDiv>
-                                <FlexDiv
-                                    width="15px"
-                                    onClick={(e: MouseEvent) => clickDeleteEvent(e, "ss", element?.id)}
-                                    $pointer
-                                >
-                                    <Img src="/images/trash_grey.svg" />
-                                </FlexDiv>
+                        {role && isSecretary && (
+                            <FlexDiv $minWidth={"60px"} $padding="10px" $justifycontent="flex-end">
+                                {element?.writerId === userId && (
+                                    <>
+                                        <FlexDiv
+                                            width="15px"
+                                            $margin="0 6px"
+                                            onClick={(e: MouseEvent) => clickUpdateEvent(e, "ss", element?.id)}
+                                            $pointer
+                                        >
+                                            <Img src="/images/pencil_grey.svg" />
+                                        </FlexDiv>
+                                        <FlexDiv
+                                            width="15px"
+                                            onClick={(e: MouseEvent) => clickDeleteEvent(e, "ss", element?.id)}
+                                            $pointer
+                                        >
+                                            <Img src="/images/trash_grey.svg" />
+                                        </FlexDiv>
+                                    </>
+                                )}
                             </FlexDiv>
                         )}
                     </FlexDiv>
