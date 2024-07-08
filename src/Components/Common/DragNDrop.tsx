@@ -13,6 +13,7 @@ import Img from "../../styles/assets/Img";
 import { Input } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
 import { theme } from "../../styles/theme";
+import Loading from "./Loading";
 
 interface DragNDropProps {
     single?: boolean;
@@ -51,6 +52,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
     const [fileId, setFileIdList] = useRecoilState(fileIdList);
     const [currentMenuId, setCurrentMenuId] = useRecoilState(menuId);
     const location = useLocation();
+    const [loading, setLoading] = useState<boolean>(false); // 로딩 상태 추가
 
     const isImageFile = (file: File): boolean => {
         const acceptedImageTypes: string[] = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
@@ -206,10 +208,17 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
                         reader.readAsDataURL(file);
 
                         if (fileFetch) {
+                            setLoading(true); // 로딩 시작
                             // fetch 요청을 각 파일마다 발생
                             const previewsFormData = new FormData();
                             previewsFormData.append("file", file); // 파일을 FormData에 추가
-                            fetchFileData(`/file/upload/${currentMenuId}`, "POST", "token", previewsFormData, true);
+                            fetchFileData(
+                                `/file/upload/${currentMenuId}`,
+                                "POST",
+                                "token",
+                                previewsFormData,
+                                true
+                            ).finally(() => setLoading(false)); // 로딩 종료
                         }
                     } else {
                         if (isOtherFile(file)) {
@@ -222,10 +231,17 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
                             setPreviews((prevPreviews) => [...prevPreviews, newPreview]);
 
                             if (fileFetch) {
+                                setLoading(true); // 로딩 시작
                                 // fetch 요청을 각 파일마다 발생
                                 const previewsFormData = new FormData();
                                 previewsFormData.append("file", file); // 파일을 FormData에 추가
-                                fetchFileData(`/file/upload/${currentMenuId}`, "POST", "token", previewsFormData, true);
+                                fetchFileData(
+                                    `/file/upload/${currentMenuId}`,
+                                    "POST",
+                                    "token",
+                                    previewsFormData,
+                                    true
+                                ).finally(() => setLoading(false)); // 로딩 종료
                             }
                         } else {
                             alert("업로드할 수 있는 확장자 파일이 아닙니다.");
@@ -323,65 +339,71 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
                         </FlexDiv>
                     </FlexDiv>
                 </InputLabel>
-                <ScrollFlexDiv width="100%" overflow="auto" $justifycontent="start" wrap="no-wrap">
-                    {previews.map((preview, index) => (
-                        <Div
-                            key={index}
-                            $position="relative"
-                            display="inline-block"
-                            $border="2px solid"
-                            $borderColor="grey1"
-                            $margin="0 15px 15px 0"
-                            onMouseEnter={() => {
-                                setHover(index);
-                            }}
-                            onMouseLeave={() => {
-                                setHover(null);
-                            }}
-                        >
-                            <FlexDiv width="96px" height="96px" $position="relative">
-                                <FlexDiv width={preview.width} height={preview.height}>
-                                    <Img src={preview.url} alt={`File Preview ${index}`} />
-                                </FlexDiv>
-                                {hover === index && (
-                                    <FlexDiv
-                                        $position="absolute"
-                                        $top="0"
-                                        $left="0"
-                                        width="100%"
-                                        height="100%"
-                                        $backgroundColor="whlayer"
-                                        $zIndex={1}
-                                        $padding="10px"
-                                        style={{
-                                            backgroundColor: "rgba(255, 255, 255, 0.7)",
-                                        }}
-                                    >
-                                        <Div>
-                                            <P fontSize="xs" $whiteSpace="normal" fontWeight={700}>
-                                                {preview.name}
-                                            </P>
-                                        </Div>
-                                    </FlexDiv>
-                                )}
-                            </FlexDiv>
-                            <FlexDiv
-                                radius={100}
-                                $backgroundColor="red"
-                                $pointer
-                                $position="absolute"
-                                $top="3px"
-                                $right="3px"
-                                $zIndex={3}
-                                onClick={() => handleDeletePreview(index)}
+                {loading ? (
+                    <FlexDiv width="100%" $margin="20px">
+                        <Loading />
+                    </FlexDiv>
+                ) : (
+                    <ScrollFlexDiv width="100%" overflow="auto" $justifycontent="start" wrap="no-wrap">
+                        {previews.map((preview, index) => (
+                            <Div
+                                key={index}
+                                $position="relative"
+                                display="inline-block"
+                                $border="2px solid"
+                                $borderColor="grey1"
+                                $margin="0 15px 15px 0"
+                                onMouseEnter={() => {
+                                    setHover(index);
+                                }}
+                                onMouseLeave={() => {
+                                    setHover(null);
+                                }}
                             >
-                                <Div width="15px" height="15px">
-                                    <Img src="/images/x_white.svg" alt="Delete Preview" />
-                                </Div>
-                            </FlexDiv>
-                        </Div>
-                    ))}
-                </ScrollFlexDiv>
+                                <FlexDiv width="96px" height="96px" $position="relative">
+                                    <FlexDiv width={preview.width} height={preview.height}>
+                                        <Img src={preview.url} alt={`File Preview ${index}`} />
+                                    </FlexDiv>
+                                    {hover === index && (
+                                        <FlexDiv
+                                            $position="absolute"
+                                            $top="0"
+                                            $left="0"
+                                            width="100%"
+                                            height="100%"
+                                            $backgroundColor="whlayer"
+                                            $zIndex={1}
+                                            $padding="10px"
+                                            style={{
+                                                backgroundColor: "rgba(255, 255, 255, 0.7)",
+                                            }}
+                                        >
+                                            <Div>
+                                                <P fontSize="xs" $whiteSpace="normal" fontWeight={700}>
+                                                    {preview.name}
+                                                </P>
+                                            </Div>
+                                        </FlexDiv>
+                                    )}
+                                </FlexDiv>
+                                <FlexDiv
+                                    radius={100}
+                                    $backgroundColor="red"
+                                    $pointer
+                                    $position="absolute"
+                                    $top="3px"
+                                    $right="3px"
+                                    $zIndex={3}
+                                    onClick={() => handleDeletePreview(index)}
+                                >
+                                    <Div width="15px" height="15px">
+                                        <Img src="/images/x_white.svg" alt="Delete Preview" />
+                                    </Div>
+                                </FlexDiv>
+                            </Div>
+                        ))}
+                    </ScrollFlexDiv>
+                )}
             </Div>
         </>
     );
