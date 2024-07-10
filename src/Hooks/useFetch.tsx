@@ -44,9 +44,9 @@ const useFetch = (): [
 
                 const result = await res.json();
                 const newAccessToken = result.accessToken;
-                console.log(newAccessToken);
+                // console.log(newAccessToken);
                 setAccess(newAccessToken);
-                console.log(access);
+                // console.log(access);
             } else {
                 // console.log("fail refresh");
                 setIsNotLogin(true);
@@ -95,7 +95,7 @@ const useFetch = (): [
                             setData(new Date().toLocaleString());
                         } else {
                             result = await res.json();
-                            console.log({ ...result });
+                            // console.log({ ...result });
                             setData({ ...result });
                         }
                     } else {
@@ -135,13 +135,13 @@ const useFetch = (): [
                         setData(new Date().toLocaleString());
                     } else {
                         result = await res.json();
-                        console.log({ ...result });
+                        // console.log({ ...result });
                         setData({ ...result });
                     }
                 } else {
                     // Handle error response
                     const errorResponse = await res.json();
-                    console.log(errorResponse);
+                    // console.log(errorResponse);
                     console.error("Network response was not ok. Error:", errorResponse.message, errorResponse.code);
 
                     if (
@@ -181,7 +181,7 @@ const useFetch = (): [
             } else if (token === undefined) {
                 await fetchWithoutToken();
             }
-            console.log(`${method} : ${url}`);
+            // console.log(`${method} : ${url}`);
         } catch (error) {
             console.error("Error in fetchData:", error);
         }
