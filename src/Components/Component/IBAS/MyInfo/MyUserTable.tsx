@@ -133,6 +133,7 @@ const MyUserTable = () => {
         // 검색어를 이용하여 API 호출
 
         if (searchValue.trim() !== "") {
+            setIsLoading(true);
             fetchUser(`/members/notGraduated?search=${searchValue}`, "GET", "token");
         }
     };

@@ -111,6 +111,7 @@ const MyNewUserTable = () => {
     const searchStudent = () => {
         // 검색어를 이용하여 API 호출
         if (searchValue.trim() !== "") {
+            setIsLoading(true);
             fetchNewUserData(`/members/unapproved?search=${searchValue}`, "GET", "token");
         }
     };
