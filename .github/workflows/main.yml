@@ -58,6 +58,7 @@ jobs:
           host: ${{ github.ref == 'refs/heads/main' && secrets.IBAS_PROD_HOST || secrets.IBAS_DEV_HOST }}
           username: ${{ github.ref == 'refs/heads/main' && secrets.IBAS_PROD_USERNAME || secrets.IBAS_DEV_USERNAME }}
           key: ${{ github.ref == 'refs/heads/main' && secrets.IBAS_PROD_SSH_KEY || secrets.IBAS_DEV_SSH_KEY }}
+          passphrase: ${{ github.ref == 'refs/heads/main' && secrets.IBAS_PROD_PASSWORD || secrets.IBAS_DEV_PASSWORD }}
           source: "build/"
           target: ${{ github.ref == 'refs/heads/main' && secrets.IBAS_PROD_DEPLOY_PATH || secrets.IBAS_DEV_DEPLOY_PATH }}
 
