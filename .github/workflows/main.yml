@@ -26,9 +26,11 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: echo "REACT_APP_API_URL=${{ secrets.PROD_API_URL }}" > .env
 
-      - run: npm run build --legacy-peer-deps
+      - name: npm run build
+        run: npm run build --legacy-peer-deps
+        env:
+          CI: false
 
-      # always()로 실행해야 cleanup step에서 사용 가능
       - name: Get GitHub Actions IP
         id: ip
         if: always()
