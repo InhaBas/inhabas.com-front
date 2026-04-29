@@ -16,9 +16,8 @@ jobs:
         with:
           node-version: 18
 
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps
 
-      # 브랜치에 따라 환경변수 분기
       - name: Set env (dev)
         if: github.ref == 'refs/heads/dev'
         run: echo "REACT_APP_API_URL=${{ secrets.DEV_API_URL }}" > .env
@@ -27,22 +26,22 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: echo "REACT_APP_API_URL=${{ secrets.PROD_API_URL }}" > .env
 
-      - run: npm run build
+      - run: npm run build --legacy-peer-deps
 
-      # GitHub Actions IP 가져오기
+      # always()로 실행해야 cleanup step에서 사용 가능
       - name: Get GitHub Actions IP
         id: ip
+        if: always()
         uses: haythem/public-ip@v1.3
 
-      # AWS 자격증명 설정
       - name: Configure AWS credentials
+        if: always()
         uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_USER_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_USER_SECRET_KEY }}
           aws-region: ap-northeast-2
 
-      # Security Group에 GitHub Actions IP의 SSH 포트 오픈
       - name: Add GitHub IP to Security Group
         run: |
           aws ec2 authorize-security-group-ingress \
@@ -51,7 +50,6 @@ jobs:
             --port 22 \
             --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
-      # 서버에 배포
       - name: Deploy to server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -61,7 +59,6 @@ jobs:
           source: "build/"
           target: ${{ github.ref == 'refs/heads/main' && secrets.IBAS_PROD_DEPLOY_PATH || secrets.IBAS_DEV_DEPLOY_PATH }}
 
-      # Security Group에서 GitHub Actions IP 제거 (항상 실행)
       - name: Remove GitHub IP from Security Group
         if: always()
         run: |
