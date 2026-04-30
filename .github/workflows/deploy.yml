@@ -60,7 +60,7 @@ jobs:
           key: ${{ github.ref == 'refs/heads/main' && secrets.IBAS_PROD_SSH_KEY || secrets.IBAS_DEV_SSH_KEY }}
           passphrase: ${{ github.ref == 'refs/heads/main' && secrets.IBAS_PROD_PASSWORD || secrets.IBAS_DEV_PASSWORD }}
           source: "build/"
-          target: ${{ github.ref == 'refs/heads/main' && secrets.IBAS_PROD_DEPLOY_PATH || secrets.IBAS_DEV_DEPLOY_PATH }}
+          target: ${{ github.ref == 'refs/heads/main' && secrets.IBAS_FE_PROD_DEPLOY_PATH || secrets.IBAS_FE_DEV_DEPLOY_PATH }}
 
       - name: Remove GitHub IP from Security Group
         if: always()
