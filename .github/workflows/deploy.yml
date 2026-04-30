@@ -1,0 +1,72 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - run: npm ci --legacy-peer-deps
+
+      - name: Set env (dev)
+        if: github.ref == 'refs/heads/dev'
+        run: echo "REACT_APP_API_URL=${{ secrets.DEV_API_URL }}" > .env
+
+      - name: Set env (prod)
+        if: github.ref == 'refs/heads/main'
+        run: echo "REACT_APP_API_URL=${{ secrets.PROD_API_URL }}" > .env
+
+      - name: npm run build
+        run: npm run build --legacy-peer-deps
+        env:
+          CI: false
+
+      - name: Get GitHub Actions IP
+        id: ip
+        if: always()
+        uses: haythem/public-ip@v1.3
+
+      - name: Configure AWS credentials
+        if: always()
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          aws-access-key-id: ${{ secrets.AWS_USER_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_USER_SECRET_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Add GitHub IP to Security Group
+        run: |
+          aws ec2 authorize-security-group-ingress \
+            --group-id ${{ secrets.AWS_SECURITY_GROUP_ID }} \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
+      - name: Deploy to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ github.ref == 'refs/heads/main' && secrets.IBAS_PROD_HOST || secrets.IBAS_DEV_HOST }}
+          username: ${{ github.ref == 'refs/heads/main' && secrets.IBAS_PROD_USERNAME || secrets.IBAS_DEV_USERNAME }}
+          key: ${{ github.ref == 'refs/heads/main' && secrets.IBAS_PROD_SSH_KEY || secrets.IBAS_DEV_SSH_KEY }}
+          passphrase: ${{ github.ref == 'refs/heads/main' && secrets.IBAS_PROD_PASSWORD || secrets.IBAS_DEV_PASSWORD }}
+          source: "build/"
+          target: ${{ github.ref == 'refs/heads/main' && secrets.IBAS_PROD_DEPLOY_PATH || secrets.IBAS_DEV_DEPLOY_PATH }}
+
+      - name: Remove GitHub IP from Security Group
+        if: always()
+        run: |
+          aws ec2 revoke-security-group-ingress \
+            --group-id ${{ secrets.AWS_SECURITY_GROUP_ID }} \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${{ steps.ip.outputs.ipv4 }}/32
