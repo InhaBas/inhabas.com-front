@@ -36,6 +36,9 @@ interface Group {
     menuList: menuInterface[];
 }
 
+const HIDDEN_NAV_GROUPS = ['모임', '공모전'];
+const HIDDEN_BOARD_URLS = ['board/question', 'board/free', 'board/suggest', 'board/executive'];
+
 const HeaderNav = () => {
     const navigate = useNavigate();
     const { isAuthorizedOverSecretary, isAuthorizedOverBasic, isAuthorizedOverDeactivate } = GetRoleAuthorization();
@@ -276,9 +279,7 @@ const HeaderNav = () => {
                         <FlexDiv>
                             <FlexDiv>
                                 {nav &&
-                                    // 아래는 모임 탭 제거 전 코드
-                                    // Object.values(nav).map((item: any, idx: number) => {
-                                    Object.values(nav).filter((item: any) => {return item.groupName !== '모임'}).map((item: any, idx: number) => {
+                                    Object.values(nav).filter((item: any) => !HIDDEN_NAV_GROUPS.includes(item.groupName)).map((item: any, idx: number) => {
                                         return (
                                             <Div $position="relative" key={idx}>
                                                 <FlexDiv
@@ -316,7 +317,9 @@ const HeaderNav = () => {
                                                         onClick={() => setActiveGroup(null)}
                                                     >
                                                         {item.menuList &&
-                                                            Object.values(item.menuList).map(
+                                                            Object.values(item.menuList).filter((element: any) =>
+                                                                !HIDDEN_BOARD_URLS.includes(element.url)
+                                                            ).map(
                                                                 (element: any, idx: number) => {
                                                                     if (
                                                                         element.url === "board/executive" &&
