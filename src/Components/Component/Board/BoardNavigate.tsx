@@ -14,6 +14,8 @@ import { boardMenuInterface } from "../../../Types/TypeBoard";
 
 import { GetRoleAuthorization } from "../../../Functions/authFunctions";
 
+const HIDDEN_BOARD_MENUS = ['질문게시판', '자유게시판', '건의사항', '회장단 게시판'];
+
 const BoardNavigate = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -61,15 +63,7 @@ const BoardNavigate = () => {
 
                 <Div width="100%">
                     {menu &&
-                        menu.filter((item) => {
-                            if (item.menuName === '회장단 게시판') {
-                                if (isAuthorizedOverSecretary) {
-                                    return item
-                                }
-                            } else {
-                                return item
-                            }
-                        }).map((item: any, idx: number) => {
+                        menu.filter((item) => !HIDDEN_BOARD_MENUS.includes(item.menuName)).map((item: any, idx: number) => {
                             return (
                                 <Div key={idx} width="100%">
                                     <FlexDiv
