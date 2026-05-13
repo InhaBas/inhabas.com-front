@@ -46,7 +46,7 @@ const Login = () => {
     };
 
     const moveLogin = (method: string) => {
-        window.location.href = `${process.env.REACT_APP_API_URL}/login/oauth2/authorization/${method}`;
+        window.location.href = `${import.meta.env.VITE_API_URL}/login/oauth2/authorization/${method}`;
     };
 
     return (
