@@ -14,17 +14,17 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - run: npm ci --legacy-peer-deps
 
       - name: Set env (dev)
         if: github.ref == 'refs/heads/dev'
-        run: echo "REACT_APP_API_URL=${{ secrets.DEV_API_URL }}" > .env
+        run: echo "VITE_API_URL=${{ secrets.DEV_API_URL }}" > .env
 
       - name: Set env (prod)
         if: github.ref == 'refs/heads/main'
-        run: echo "REACT_APP_API_URL=${{ secrets.PROD_API_URL }}" > .env
+        run: echo "VITE_API_URL=${{ secrets.PROD_API_URL }}" > .env
 
       - name: npm run build
         run: npm run build --legacy-peer-deps
