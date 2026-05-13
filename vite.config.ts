@@ -11,6 +11,11 @@ export default defineConfig({
             "@toast-ui/editor-plugin-color-syntax",
         ],
     },
+    css: {
+        lightningcss: {
+            errorRecovery: true,
+        },
+    },
     server: {
         port: 3000,
         open: true,
