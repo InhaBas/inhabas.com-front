@@ -31,7 +31,7 @@ const useFetch = (): [
             // console.log("try refresh");
             const refreshToken = getCookie("ibas_refresh");
 
-            let res = await fetch(`${process.env.REACT_APP_API_URL}/token/refresh`, {
+            let res = await fetch(`${import.meta.env.VITE_API_URL}/token/refresh`, {
                 method: "POST",
                 body: JSON.stringify({
                     refreshToken: refreshToken,
@@ -85,7 +85,7 @@ const useFetch = (): [
 
             const fetchWithoutToken = async () => {
                 if (method.toUpperCase() === "GET") {
-                    res = await fetch(`${process.env.REACT_APP_API_URL}${url}`, {
+                    res = await fetch(`${import.meta.env.VITE_API_URL}${url}`, {
                         method: method,
                         headers: { "Content-Type": "application/json" },
                     });
@@ -118,13 +118,13 @@ const useFetch = (): [
             const fetchWithToken = async () => {
                 if (method.toUpperCase() !== "GET") {
                     let bodyData = media ? sendData : JSON.stringify(sendData);
-                    res = await fetch(`${process.env.REACT_APP_API_URL}${url}`, {
+                    res = await fetch(`${import.meta.env.VITE_API_URL}${url}`, {
                         method: method,
                         body: bodyData,
                         headers: headers,
                     });
                 } else {
-                    res = await fetch(`${process.env.REACT_APP_API_URL}${url}`, {
+                    res = await fetch(`${import.meta.env.VITE_API_URL}${url}`, {
                         method: method,
                         headers: headers,
                     });
