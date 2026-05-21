@@ -1,104 +1,99 @@
-# How to Contribute
+# 기여 가이드
 
-## 기여하는 방법
+이 문서는 inhabas.com-front 프로젝트에 기여하는 방법을 설명합니다.
 
-### 1. 새로운 브랜치 만들기
-
-IBAS Project를 로컬 환경에 설치하면 기본적으로 master / main 이라는 브랜치에서 시작합니다. 이 곳, master / main 브랜치에서 직접 개발하는 것이 아니라 새로운 브랜치를 만들어서 작업합니다.
-
-- 터미널에서 새로운 브랜치를 만듭니다.
-
-  ```jsx
-  git checkout -b branchName
-  ```
-
-### 2. 새로운 브랜치에서 파일 수정하기
-
-이제 새로운 브랜치에서 프로젝트를 수정합니다.
-
-수정이 끝나면 다음의 과정을 수행하세요:
-
-- git add .
-
-  ```jsx
-  git add .
-  ```
-
-  (수정사항들 git에 추가하는 명령어)
-
-- git commit -m"커밋메세지"
-
-  ```jsx
-  git commit -m"커밋메세지"
-  ```
-
-  (git에 추가된 수정사항들을 묶어서 “커밋메세지”라는 이름으로 저장)
-
-  > IBAS Project의 Commit convention은 다음과 같습니다.
-  >
-  > ```jsx
-  > [feature/#67] 대댓글 UI 추가
-  > ```
-
-- git push
-
-  ```jsx
-  git push origin branchName
-  ```
-
-  (“커밋메세지”라는 이름으로 저장된 수정사항들을 원격 저장소에 보내기)
-
-### 3.PR올리기
-
-수정후 push가 완료되면 IBAS Project로 들어갑니다(아래 링크 참고).
-
-백엔드: [GitHub - InhaBas/Inhabas.com-api](https://github.com/InhaBas/Inhabas.com-api)
-
-프론트엔드: [GitHub - InhaBas/Inhabas.com-front](https://github.com/InhaBas/inhabas.com-front)
-
-git push가 제대로 이루어졌다면 IBAS 백엔드,프론트엔드 깃허브로 갔을 때 PR을 생성하라는 알림이 새로 생깁니다.
-
-### 4.PR이 Merge되면 브랜치 삭제하기
-
-PR이 성공적으로 오픈소스의 master 브랜치에 Merge되면 PR용으로 작업했던 브랜치를 삭제해야 합니다.
-
-로컬환경에서 main 혹은 master 브랜치로 이동 후 오픈소스의 터미널에서
-
-1. `git branch -D branchName` (로컬 브랜치 삭제)
-
-2. `git push origin --delete branchName` (깃허브 브랜치 삭제)
-
-입력해서 깔끔하게 브랜치를 삭제해야 합니다.
+> 📚 **관련 문서**: [스타일 컨벤션](./STYLE-CONVENTION.md) | [커밋 가이드](./COMMITER-INSTRUCTION.md)
 
 ---
 
-## 프로젝트 원본이랑 동기화 시키기- git pull
+## 브랜치 구조
 
-### 방법1
-
-개발 작업을 하면서 프로젝트 원본이랑 충돌이 일어날 수 있기 때문에 프로젝트 원본에 수정사항이 생기면 주기적으로
-
-```jsx
-git pull upstream master
+```
+upstream/main   ← 프로덕션 배포 브랜치
+upstream/dev    ← 개발 통합 브랜치
+origin/main     ← 내 fork의 main
+origin/dev      ← 내 fork의 dev
+origin/<작업 브랜치>
 ```
 
-을 입력해서 프로젝트 원본이랑 동기화 시킵니다.
+- 작업은 항상 `upstream/dev` 기준으로 새 브랜치를 만들어서 진행합니다.
+- PR 대상은 `upstream/dev`입니다. (`main`에 직접 PR 금지)
 
-### 방법2(추천)
+---
 
-1. 깃허브에서 작업하는 브랜치로 이동
+## 기여 절차
 
-2. 프로젝트 위치의 터미널에서 `git pull origin 작업하는 브랜치이름` 입력
+### 1. 저장소 Fork 및 Clone
 
-### 주의해야할 점!(다른 브랜치로 이동하는경우)
+```bash
+# upstream 등록 (최초 1회)
+git remote add upstream https://github.com/InhaBas/inhabas.com-front.git
 
-1. 한 브랜치에서 다른 브랜치로 이동하기 전에는 무조건 git commit을 해야 합니다.
-2. 다른 브랜치로 이동하면 오른쪽 아래 생기는 Reload 버튼을 꼭 눌러줘야 합니다.(intelliJ 경우)
+# upstream 최신 상태 가져오기
+git fetch upstream
+```
 
-## PR 올릴 때 주의사항
+### 2. 작업 브랜치 만들기
 
-PR을 제출할 때는 다음 가이드라인을 따라야 합니다:
+항상 `upstream/dev`를 기준으로 브랜치를 생성합니다.
 
-- Style Convention을 참고하세요.
-  [STYLE-CONVENTION.md](STYLE-CONVENTION.md)
-- 작성한 코드가 기존 코드 스타일을 준수하고 있는지 확인해야 합니다.
+```bash
+git checkout -b feat/board-search upstream/dev
+```
+
+브랜치 네이밍 규칙은 [스타일 컨벤션](./STYLE-CONVENTION.md#브랜치-네이밍)을 참고하세요.
+
+### 3. 작업 및 커밋
+
+```bash
+git add .
+git commit -m "feat: 게시판 검색 기능 추가"
+```
+
+커밋 메시지 규칙은 [스타일 컨벤션](./STYLE-CONVENTION.md#커밋-컨벤션)을 참고하세요.
+
+### 4. Push 및 PR 생성
+
+```bash
+git push origin feat/board-search
+```
+
+GitHub에서 `origin/feat/board-search` → `upstream/dev`로 PR을 생성합니다.
+
+- PR 제목은 커밋 컨벤션을 따릅니다.
+- PR 본문에 변경 내용과 테스트 방법을 간략히 작성합니다.
+- 코드 리뷰를 받고 승인이 나면 Merge합니다.
+
+### 5. PR Merge 후 브랜치 삭제
+
+```bash
+# 로컬 브랜치 삭제
+git branch -D feat/board-search
+
+# 원격 브랜치 삭제
+git push origin --delete feat/board-search
+```
+
+---
+
+## upstream 최신 상태 동기화
+
+작업 전 또는 충돌 발생 시 `upstream/dev`와 동기화합니다.
+
+```bash
+git fetch upstream
+git rebase upstream/dev
+```
+
+> `merge` 대신 `rebase`를 권장합니다. 불필요한 Merge 커밋이 생기지 않아 히스토리가 깔끔하게 유지됩니다.
+
+---
+
+## PR 제출 전 체크리스트
+
+- [ ] `upstream/dev` 기준으로 브랜치를 만들었는가
+- [ ] 빌드가 정상적으로 되는가 (`npm run build`)
+- [ ] ESLint 에러가 없는가
+- [ ] 기존 기능이 정상 작동하는가
+- [ ] [스타일 컨벤션](./STYLE-CONVENTION.md)을 준수하는가
+- [ ] 불필요한 `console.log`나 주석 처리된 코드가 없는가

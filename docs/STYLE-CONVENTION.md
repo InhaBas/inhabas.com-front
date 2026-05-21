@@ -1,43 +1,129 @@
+# 스타일 컨벤션
 
-# IBAS Project Style Convention
+이 문서는 inhabas.com-front 프로젝트의 코드 스타일 규약을 설명합니다.
 
-이 문서는 IBAS Project의 Style Convention에 대해 설명하는 문서입니다. IBAS Project는 코드 품질과 가독성을 유지하기 위해 일관된 스타일 규약을 따릅니다. 이러한 스타일 규약을 통해 프로젝트 참여자들이 명확하고 일관된 방식으로 코드를 작성할 수 있으며, 협업과 코드 유지 관리를 용이하게 할 수 있습니다.
+---
 
-## IBAS Style Convention 논의사항
+## 코드 포매터 / 린터
 
-IBAS Project의 주요한 Style Convention은 깃허브 Issue를 통해 논의되고 정해집니다. 프로젝트의 모든 멤버가 스타일 결정에 참여하고 의견을 제시할 수 있습니다.
+### ESLint
 
-- [import 시 * 와일드카드 사용여부 논의](https://github.com/InhaBas/Inhabas.com-api/issues/187)
-- [PR Merge 방식에 대한 논의](https://github.com/InhaBas/Inhabas.com-api/issues/188)
-- [JUnit / AssertJ 채택 논의](https://github.com/InhaBas/Inhabas.com-api/issues/165)
+`.eslintrc.json`에 아래 규칙이 적용되어 있습니다.
 
-## Documentation style
+```json
+{
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
+        "plugin:@typescript-eslint/recommended"
+    ]
+}
+```
 
-IBAS Project의 기본 스타일은 [Google Developer Documentation Style Guide](https://developers.google.com/style)를 따르고 있습니다.
+> ⚠️ **Prettier는 현재 미적용 상태**입니다. 코드 포매팅은 팀원 각자의 IDE 설정을 따르고 있으며, 향후 도입을 검토할 수 있습니다.
 
-## Google Developer Document Style 적용
+---
 
-### Backend
+## 네이밍 컨벤션
 
-#### 포멧 적용
+### 파일 및 폴더
 
-1. 구글 스타일 깃허브에서 스타일 다운로드
+| 대상 | 규칙 | 예시 |
+|------|------|------|
+| 폴더 | `kebab-case` 또는 `camelCase` 소문자 | `components/`, `myInfo/` |
+| 컴포넌트 파일 | `PascalCase.tsx` | `BoardDetail.tsx` |
+| 훅 파일 | `camelCase.ts` | `useFetch.ts` |
+| 유틸/타입 파일 | `camelCase.ts` | `dateFunction.ts`, `TypeBoard.ts` |
 
-    - IntelliJ: [intellij-java-google-style.xml](https://github.com/google/styleguide/blob/gh-pages/intellij-java-google-style.xml)
+### 변수 및 함수
 
-    - Eclipse: [eclipse-java-google-style.xml](https://github.com/google/styleguide/blob/gh-pages/eclipse-java-google-style.xml)
+| 대상 | 규칙 | 예시 |
+|------|------|------|
+| 변수, 함수 | `camelCase` | `fetchBoardData`, `currentPage` |
+| React 컴포넌트 | `PascalCase` | `BoardDetail`, `CommentList` |
+| 커스텀 훅 | `use` 접두사 + `PascalCase` | `useFetch`, `useRoleAuthorization` |
+| 상수 | `UPPER_SNAKE_CASE` | `BOARD_URL_MAP`, `MODAL_COMPONENTS` |
+| 타입 / 인터페이스 | `PascalCase` | `BoardInfo`, `PaginationProps` |
+| Recoil atom | `camelCase` + `Info` / `Atom` 접미사 | `bankHistoryInfo`, `modalInfo` |
 
-2. IDE에서 스타일 포멧 적용
+---
 
-#### 코드 스타일 교정
+## TypeScript
 
-구글 코드 스타일에 맞게 코드 스타일 변경하는 명령어.
+- `any` 타입 사용을 **지양**합니다. 불가피한 경우 주석으로 이유를 명시합니다.
+- 타입 정의는 `src/types/` 폴더에 모아서 관리합니다.
+- JSX가 없는 파일은 `.ts`, JSX가 있는 파일은 `.tsx`를 사용합니다.
+- 함수의 반환 타입은 복잡한 경우 명시적으로 선언합니다.
 
-프로젝트 경로 터미널에서 아래 명령어 입력.
+```typescript
+// ✅ 좋은 예
+const fetchBoard = async (url: string): Promise<BoardInfo[]> => { ... };
 
-- 리눅스: `./gradlew spotlessApply`
-- 윈도우: `.\gradlew spotlessApply`
+// ❌ 지양
+const fetchBoard = async (url: any): Promise<any> => { ... };
+```
 
-### Frontend
+---
 
-prittier 이용해서 구글 스타일 컨벤션 적용.
+## React 컴포넌트
+
+- 함수형 컴포넌트만 사용합니다. (클래스 컴포넌트 사용 금지)
+- 컴포넌트 파일 하나에 하나의 컴포넌트를 원칙으로 합니다.
+- Props 타입은 인라인 또는 별도 `interface`로 명시합니다.
+
+```typescript
+// ✅ Props 타입 명시
+interface BoardCardProps {
+    title: string;
+    createdAt: string;
+    isAuthor: boolean;
+}
+
+const BoardCard = ({ title, createdAt, isAuthor }: BoardCardProps) => {
+    return <div>...</div>;
+};
+```
+
+---
+
+## import 순서
+
+아래 순서로 그룹을 나누고, 그룹 사이에 빈 줄을 둡니다.
+
+```typescript
+// 1. React / 외부 라이브러리
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+
+// 2. 내부 컴포넌트
+import BoardCard from '../components/board/BoardCard';
+
+// 3. 훅 / 유틸
+import { useFetch } from '../hooks/useFetch';
+
+// 4. 타입
+import type { BoardInfo } from '../types/TypeBoard';
+
+// 5. 스타일
+import { Wrapper } from './BoardList.styles';
+```
+
+> 와일드카드(`*`) import는 사용하지 않습니다.
+
+---
+
+## 커밋 컨벤션 · 브랜치 네이밍
+
+자세한 내용은 [커밋 컨벤션 문서](./COMMIT-CONVENTION.md)를 참고하세요.
+
+**형식:** `<type>: <한국어 제목>`
+
+주요 prefix: `feat`, `fix`, `design`, `refactor`, `docs`, `chore`, `style`, `test`, `ci`, `revert`
+
+**브랜치 네이밍:**
+```
+feat/<기능명>      fix/<버그명>      refactor/<대상>
+docs/<대상>        chore/<대상>      design/<대상>
+```
