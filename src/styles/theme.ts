@@ -42,12 +42,29 @@ const fontSize = {
     extraBig1: "60pt",
 };
 
+const breakpoints = {
+    mobile: "767px",
+    tablet: "1023px",
+    desktop: "1279px",
+} as const;
+
+export const media = {
+    mobile: `@media (max-width: ${breakpoints.mobile})`,
+    tablet: `@media (max-width: ${breakpoints.tablet})`,
+    desktop: `@media (max-width: ${breakpoints.desktop})`,
+    tabletOnly: `@media (min-width: 768px) and (max-width: ${breakpoints.tablet})`,
+} as const;
+
 export type ColorTypes = typeof color;
 export type FontSizeTypes = typeof fontSize;
+export type BreakpointTypes = typeof breakpoints;
+export type MediaTypes = typeof media;
 
 export const theme: DefaultTheme = {
     color,
     fontSize,
+    breakpoints,
+    media,
 };
 
 // const theme: DefaultTheme = {}
