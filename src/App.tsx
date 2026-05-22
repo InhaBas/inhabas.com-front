@@ -10,6 +10,7 @@ import { theme } from "./styles/theme";
 import { failRefreshing } from "./recoil/frontState";
 
 import Bottom from "./components/common/Bottom";
+import MobileBlocker from "./components/common/MobileBlocker";
 import { Modal } from "./components/common/modal/Modal";
 import ScrollToTop from "./components/common/ScrollToTop";
 import NotFound from "./pages/NotFound";
@@ -54,6 +55,7 @@ const App = () => {
     return (
         <ThemeProvider theme={theme}>
             <GlobalStyle />
+            <MobileBlocker />
             <Modal />
             <Div width="100%" height="100vh">
                 <ScrollToTop />
