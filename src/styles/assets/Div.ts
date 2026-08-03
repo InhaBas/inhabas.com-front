@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { DefaultTheme } from "styled-components/dist/types";
+import { media } from "../theme";
 
 interface DivStyle {
     theme: DefaultTheme;
@@ -97,12 +98,34 @@ const Container = styled(FlexDiv)`
     width: 80%;
     max-width: 80%;
     padding: 5% 0;
+
+    ${media.tablet} {
+        width: calc(100% - 48px);
+        max-width: calc(100% - 48px);
+    }
+
+    ${media.mobile} {
+        width: 100%;
+        max-width: 100%;
+        padding: 5% 16px;
+    }
 `;
 
 const DetailContainer = styled(Div)`
     width: 800px;
     max-width: 800px;
     padding: 5% 0;
+
+    ${media.tablet} {
+        width: calc(100% - 48px);
+        max-width: calc(100% - 48px);
+    }
+
+    ${media.mobile} {
+        width: 100%;
+        max-width: 100%;
+        padding: 5% 16px;
+    }
 `;
 
 const InputLabel = styled.label<DivStyle>`

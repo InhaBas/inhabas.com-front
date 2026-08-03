@@ -4,7 +4,51 @@ import { paginationPropsInterface } from "../../types/TypeCommon";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
+import styled from "styled-components";
+
+const PaginationContainer = styled(FlexDiv)`
+    ${media.mobile} {
+        gap: 4px 0;
+        padding: 16px 0;
+    }
+`;
+
+const PageButton = styled(FlexDiv)`
+    width: 45px;
+    height: 45px;
+    margin: 5px;
+    padding: 5px;
+
+    ${media.mobile} {
+        width: 36px;
+        height: 36px;
+        margin: 2px;
+        padding: 4px;
+    }
+`;
+
+const NavigationButtonWrapper = styled(Div)`
+    margin: 0 8px;
+
+    ${media.mobile} {
+        margin: 0 2px;
+    }
+`;
+
+const NavigationButton = styled(FlexDiv)`
+    width: 45px;
+    height: 45px;
+    margin: 5px;
+    padding: 5px;
+
+    ${media.mobile} {
+        width: 36px;
+        height: 36px;
+        margin: 0;
+        padding: 4px;
+    }
+`;
 
 const Pagination = (props: paginationPropsInterface) => {
     const { totalPage, fetchUrl, search, size, token, paginationFetch } = props;
@@ -22,17 +66,13 @@ const Pagination = (props: paginationPropsInterface) => {
         let pageNumList = [];
         for (let i = startPage; i < startPage + 5 && i <= totalPage; i++) {
             pageNumList.push(
-                <FlexDiv
+                <PageButton
                     onClick={() => {
                         setCurrentPage(i);
                         setPageChange(true);
                     }}
                     key={`page${i}`}
                     display="flex"
-                    width="45px"
-                    height="45px"
-                    $padding="5px"
-                    $margin="5px"
                     $pointer
                     $backgroundColor={i !== currentPage ? "wh" : "bgColor"}
                     $border={`2px solid ${theme.color.bk}`}
@@ -43,7 +83,7 @@ const Pagination = (props: paginationPropsInterface) => {
                             {i}
                         </P>
                     </Div>
-                </FlexDiv>
+                </PageButton>
             );
         }
 
@@ -82,10 +122,10 @@ const Pagination = (props: paginationPropsInterface) => {
     }, [pageChange]);
 
     return (
-        <FlexDiv width="100%" $padding="20px 0">
+        <PaginationContainer width="100%" $padding="20px 0">
             {totalPage !== 1 && (
                 <>
-                    <Div
+                    <NavigationButtonWrapper
                         onMouseEnter={() => setAllLeftHovered(true)}
                         onMouseLeave={() => setAllLeftHovered(false)}
                         onClick={() => {
@@ -95,13 +135,8 @@ const Pagination = (props: paginationPropsInterface) => {
                             }
                         }}
                         $pointer
-                        $margin="0 8px"
                     >
-                        <FlexDiv
-                            width="45px"
-                            height="45px"
-                            $padding="5px"
-                            $margin="5px"
+                        <NavigationButton
                             radius={50}
                             $backgroundColor={allLeftHovered ? "bgColor" : "wh"}
                             $pointer
@@ -113,10 +148,10 @@ const Pagination = (props: paginationPropsInterface) => {
                                     <Img src="/images/angles-left_purple.svg" />
                                 )}
                             </FlexDiv>
-                        </FlexDiv>
-                    </Div>
+                        </NavigationButton>
+                    </NavigationButtonWrapper>
 
-                    <Div
+                    <NavigationButtonWrapper
                         onMouseEnter={() => setLeftHovered(true)}
                         onMouseLeave={() => setLeftHovered(false)}
                         onClick={() => {
@@ -126,13 +161,8 @@ const Pagination = (props: paginationPropsInterface) => {
                             }
                         }}
                         $pointer
-                        $margin="0 8px"
                     >
-                        <FlexDiv
-                            width="45px"
-                            height="45px"
-                            $padding="5px"
-                            $margin="5px"
+                        <NavigationButton
                             radius={50}
                             $backgroundColor={leftHovered ? "bgColor" : "wh"}
                             $pointer
@@ -144,8 +174,8 @@ const Pagination = (props: paginationPropsInterface) => {
                                     <Img src="/images/arrow-left_purple.svg" />
                                 )}
                             </FlexDiv>
-                        </FlexDiv>
-                    </Div>
+                        </NavigationButton>
+                    </NavigationButtonWrapper>
                 </>
             )}
 
@@ -153,7 +183,7 @@ const Pagination = (props: paginationPropsInterface) => {
 
             {totalPage !== 1 && (
                 <>
-                    <Div
+                    <NavigationButtonWrapper
                         onMouseEnter={() => setRightHovered(true)}
                         onMouseLeave={() => setRightHovered(false)}
                         onClick={() => {
@@ -163,13 +193,8 @@ const Pagination = (props: paginationPropsInterface) => {
                             }
                         }}
                         $pointer
-                        $margin="0 8px"
                     >
-                        <FlexDiv
-                            width="45px"
-                            height="45px"
-                            $padding="5px"
-                            $margin="5px"
+                        <NavigationButton
                             radius={50}
                             $backgroundColor={rightHovered ? "bgColor" : "wh"}
                             $pointer
@@ -181,10 +206,10 @@ const Pagination = (props: paginationPropsInterface) => {
                                     <Img src="/images/arrow-right_purple.svg" />
                                 )}
                             </FlexDiv>
-                        </FlexDiv>
-                    </Div>
+                        </NavigationButton>
+                    </NavigationButtonWrapper>
 
-                    <Div
+                    <NavigationButtonWrapper
                         onMouseEnter={() => setAllRightHovered(true)}
                         onMouseLeave={() => setAllRightHovered(false)}
                         onClick={() => {
@@ -192,13 +217,8 @@ const Pagination = (props: paginationPropsInterface) => {
                             setPageChange(true);
                         }}
                         $pointer
-                        $margin="0 8px"
                     >
-                        <FlexDiv
-                            width="45px"
-                            height="45px"
-                            $padding="5px"
-                            $margin="5px"
+                        <NavigationButton
                             radius={50}
                             $backgroundColor={allRightHovered ? "bgColor" : "wh"}
                             $pointer
@@ -210,11 +230,11 @@ const Pagination = (props: paginationPropsInterface) => {
                                     <Img src="/images/angles-right_purple.svg" />
                                 )}
                             </FlexDiv>
-                        </FlexDiv>
-                    </Div>
+                        </NavigationButton>
+                    </NavigationButtonWrapper>
                 </>
             )}
-        </FlexDiv>
+        </PaginationContainer>
     );
 };
 

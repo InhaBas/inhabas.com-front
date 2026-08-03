@@ -13,17 +13,83 @@ import useFetch from "../../hooks/useFetch";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import { H1 } from "../../styles/assets/H";
 import P from "../../styles/assets/P";
+import { media } from "../../styles/theme";
 
 const HeaderImgDiv = styled(Div)`
     background-image: url("/images/board-name-img.jpg");
     background-size: cover;
     position: relative;
+    height: 423px;
+
+    ${media.tablet} {
+        height: 320px;
+    }
+
+    ${media.mobile} {
+        height: 240px;
+    }
 `;
 
 const HeaderHDiv = styled(FlexDiv)`
     position: absolute;
     top: 0;
     left: 0;
+    height: 423px;
+
+    ${media.tablet} {
+        height: 320px;
+    }
+
+    ${media.mobile} {
+        height: 240px;
+    }
+`;
+
+const TitleContent = styled.div`
+    width: 100%;
+    max-width: 1170px;
+    padding: 0 24px;
+    text-align: center;
+    white-space: normal;
+
+    & > div {
+        width: 100%;
+        white-space: normal;
+    }
+
+    ${media.mobile} {
+        padding: 0 16px;
+    }
+`;
+
+const TitleName = styled(H1)`
+    white-space: normal;
+    overflow-wrap: anywhere;
+
+    ${media.tablet} {
+        font-size: 36px;
+    }
+
+    ${media.mobile} {
+        font-size: 28px;
+        line-height: 1.25;
+    }
+`;
+
+const TitleDescription = styled(P)`
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+
+    ${media.tablet} {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    ${media.mobile} {
+        font-size: 14px;
+    }
 `;
 
 const HeaderTitle = () => {
@@ -142,23 +208,23 @@ const HeaderTitle = () => {
 
     return (
         <>
-            <HeaderHDiv $zIndex={2} width="100%" height="423px" $backgroundColor="bklayer" direction="column">
+            <HeaderHDiv $zIndex={2} width="100%" $backgroundColor="bklayer" direction="column">
                 {title && (
-                    <>
+                    <TitleContent>
                         <Div $margin="0 0 20px 0">
-                            <H1 color="wh" fontWeight={700} fontSize="xxxl">
+                            <TitleName color="wh" fontWeight={700} fontSize="xxxl">
                                 {title.name}
-                            </H1>
+                            </TitleName>
                         </Div>
                         <Div>
-                            <P color="grey3" fontWeight={300} fontSize="lg">
+                            <TitleDescription color="grey3" fontWeight={300} fontSize="lg">
                                 {title.description}
-                            </P>
+                            </TitleDescription>
                         </Div>
-                    </>
+                    </TitleContent>
                 )}
             </HeaderHDiv>
-            <HeaderImgDiv width="100%" height="423px" />
+            <HeaderImgDiv width="100%" />
         </>
     );
 };
