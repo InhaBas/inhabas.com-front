@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
+import { media } from "../../styles/theme";
 
 const DropDownList = styled("ul")`
     width: 100%;
@@ -14,6 +15,14 @@ const DropDownList = styled("ul")`
 
     font-size: ${(props) => props.theme.fontSize.sm};
     font-weight: 500;
+
+    ${media.mobile} {
+        max-width: calc(100vw - 32px);
+        max-height: min(320px, 50vh);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
     &:first-child {
         padding-top: 0.8em;
     }
@@ -24,6 +33,12 @@ const ListItem = styled("li")`
     margin-bottom: 0.8em;
     padding: 10px 20px;
     cursor: pointer;
+
+    ${media.mobile} {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
     &:hover {
         background: ${(props) => props.theme.color.bgColor};
         color: ${(props) => props.theme.color.wh};

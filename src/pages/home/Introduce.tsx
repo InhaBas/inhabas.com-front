@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import useFetch from "../../hooks/useFetch";
 
@@ -24,11 +24,19 @@ import Loading from "../../components/common/Loading";
 
 const IntroduceSection = styled(Div)`
     min-height: 100vh;
+
+    ${media.tablet} {
+        height: auto;
+    }
 `;
 
 const IntroImg = styled(Img)`
     object-fit: fill;
     position: absolute;
+
+    ${media.tablet} {
+        object-fit: cover;
+    }
 `;
 
 const IntroDiv = styled(Div)`
@@ -95,6 +103,300 @@ const Li = styled.li`
         height: 10px; /* 작은 동그라미의 지름 */
         border-radius: 50%;
         background-color: #441f87; /* 작은 동그라미의 색상 */
+    }
+`;
+
+const SectionContent = styled(Div)`
+    ${media.tablet} {
+        height: auto;
+        min-height: 100vh;
+    }
+`;
+
+const HeroContent = styled(IntroDiv)`
+    ${media.tablet} {
+        top: 25%;
+        left: 0;
+        width: 100%;
+        padding: 0 32px;
+    }
+
+    ${media.mobile} {
+        top: 20%;
+        padding: 0 16px;
+    }
+`;
+
+const HeroHeading = styled(H1)`
+    ${media.tablet} {
+        font-size: 60px;
+    }
+
+    ${media.mobile} {
+        font-size: 44px;
+    }
+`;
+
+const HeroTitleBox = styled(Div)`
+    ${media.tablet} {
+        margin-bottom: 48px;
+    }
+
+    ${media.mobile} {
+        margin-bottom: 32px;
+    }
+`;
+
+const HeroCopyBox = styled(Div)`
+    ${media.tablet} {
+        width: 100%;
+        max-width: 600px;
+    }
+`;
+
+const HeroCopy = styled(P)`
+    ${media.tablet} {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+    }
+
+    ${media.mobile} {
+        font-size: 16px;
+        line-height: 1.8;
+
+        br {
+            display: none;
+        }
+    }
+`;
+
+const CareerSectionContent = styled(SectionContent)`
+    ${media.tablet} {
+        min-height: 760px;
+    }
+
+    ${media.mobile} {
+        min-height: 700px;
+    }
+`;
+
+const CareerIntro = styled(Div)`
+    ${media.tablet} {
+        top: auto;
+        bottom: 12%;
+        left: 32px;
+    }
+
+    ${media.mobile} {
+        bottom: 10%;
+        left: 16px;
+
+        p {
+            font-size: 42px;
+        }
+    }
+`;
+
+const CareerExplanation = styled(Div)`
+    ${media.tablet} {
+        top: auto;
+        bottom: 10%;
+        left: 32px;
+        width: calc(100% - 64px);
+        max-height: 42%;
+        overflow-y: auto;
+
+        p {
+            white-space: pre-wrap;
+            overflow: visible;
+            text-overflow: clip;
+        }
+    }
+
+    ${media.mobile} {
+        bottom: 8%;
+        left: 16px;
+        width: calc(100% - 32px);
+        max-height: 46%;
+
+        p {
+            font-size: 16px;
+            line-height: 1.7;
+        }
+    }
+`;
+
+const CareerMenu = styled(Div)`
+    p {
+        font-size: clamp(70px, 5.56vw, 80px);
+    }
+
+    ${media.desktop} {
+        left: auto;
+        right: 5%;
+        max-width: 50%;
+
+        p {
+            font-size: 56px;
+        }
+    }
+
+    ${media.tablet} {
+        top: 12%;
+        left: auto;
+        right: 32px;
+        max-width: calc(100% - 64px);
+
+        p {
+            font-size: 44px;
+        }
+    }
+
+    ${media.mobile} {
+        top: 12%;
+        right: 16px;
+        max-width: calc(100% - 32px);
+
+        p {
+            font-size: 28px;
+        }
+    }
+`;
+
+const HistoryHeading = styled(P)`
+    ${media.tablet} {
+        font-size: 60px;
+    }
+
+    ${media.mobile} {
+        font-size: 38px;
+        letter-spacing: 3px;
+    }
+`;
+
+const HistoryHeader = styled(Div)`
+    ${media.tablet} {
+        left: 32px;
+    }
+
+    ${media.mobile} {
+        left: 16px;
+    }
+`;
+
+const HistoryScroll = styled(Div)`
+    ${media.tablet} {
+        top: 24%;
+        left: 32px;
+        width: calc(100% - 64px);
+        height: 72vh;
+    }
+
+    ${media.mobile} {
+        top: 20%;
+        left: 16px;
+        width: calc(100% - 32px);
+        height: 76vh;
+    }
+`;
+
+const TimelineRow = styled(FlexDiv)`
+    ${media.mobile} {
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }
+`;
+
+const TimelineYear = styled(Div)`
+    flex-shrink: 0;
+
+    ${media.mobile} {
+        width: 100%;
+        padding: 20px 0 0;
+
+        p {
+            white-space: normal;
+        }
+    }
+`;
+
+const TimelineContent = styled(Div)`
+    ${media.mobile} {
+        width: 100%;
+
+        ul {
+            padding: 30px 16px 0 32px;
+        }
+
+        li {
+            font-size: 20px;
+        }
+
+        li::before {
+            left: -44px;
+        }
+
+        li::after {
+            left: -39px;
+        }
+
+        p {
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+        }
+    }
+`;
+
+const AboutSection = styled(FlexDiv)`
+    ${media.tablet} {
+        height: auto;
+        min-height: 100vh;
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }
+`;
+
+const AboutImagePanel = styled(Div)`
+    ${media.tablet} {
+        width: 100%;
+        height: 40vh;
+        min-height: 320px;
+    }
+
+    ${media.mobile} {
+        height: 35vh;
+        min-height: 260px;
+    }
+`;
+
+const AboutContent = styled(Div)`
+    ${media.tablet} {
+        width: 100%;
+        height: auto;
+        padding: 48px 32px;
+    }
+
+    ${media.mobile} {
+        padding: 40px 16px;
+
+        > div:first-child p {
+            font-size: 40px;
+        }
+
+        p {
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+        }
+    }
+`;
+
+const StaffList = styled(FlexDiv)`
+    ${media.tablet} {
+        height: auto;
+        max-height: 40vh;
     }
 `;
 
@@ -231,33 +533,33 @@ const Introduce = () => {
         <>
             <HeaderNav />
             <IntroduceSection width="100%" height="100vh">
-                <Div $position="relative" width="100%" height="100vh">
+                <SectionContent $position="relative" width="100%" height="100vh">
                     <IntroImg src="/images/introduce.png" />
-                    <IntroDiv $zIndex={2} $position="absolute" $top="35%" $left="5%">
-                        <Div width="100%" $margin="0 0 80px 0">
-                            <H1 fontWeight={800} fontSize="extraBig" color="wh">
+                    <HeroContent $zIndex={2} $position="absolute" $top="35%" $left="5%">
+                        <HeroTitleBox width="100%" $margin="0 0 80px 0">
+                            <HeroHeading fontWeight={800} fontSize="extraBig" color="wh">
                                 Big Data
-                            </H1>
-                        </Div>
-                        <Div width="600px">
-                            <P color="wh" $whiteSpace="wrap" $lineHeight={2} fontSize="xl">
+                            </HeroHeading>
+                        </HeroTitleBox>
+                        <HeroCopyBox width="600px">
+                            <HeroCopy color="wh" $whiteSpace="wrap" $lineHeight={2} fontSize="xl">
                                 빅데이터란 디지털 환경에서 생성되는 데이터로
                                 <br />그 규모가 방대하고, 생성 주기도 짧고, 형태도 수치 데이터뿐 아니라 <br /> 문자와
                                 영상 데이터를 포함하는 대규모 데이터를 말합니다.
                                 <br /> 빅데이터는 과거에 비해 데이터가 폭증하였고 <br /> 데이터의 종류도 다양해져
                                 사람들의 행동은 물론이고 <br /> 위치정보와 SNS를 통해 생각과 의견까지 분석하고 예측할 수
                                 있습니다.
-                            </P>
-                        </Div>
-                    </IntroDiv>
-                </Div>
+                            </HeroCopy>
+                        </HeroCopyBox>
+                    </HeroContent>
+                </SectionContent>
             </IntroduceSection>
             <IntroduceSection width="100%" height="100vh">
-                <Div $position="relative" width="100%" height="100vh">
+                <CareerSectionContent $position="relative" width="100%" height="100vh">
                     <IntroImg src={`/images/${pageData[page].image}`} $filter="brightness(25%)" />
 
                     {page === 0 && (
-                        <Div $zIndex={2} $position="absolute" $top="60%" $left="5%">
+                        <CareerIntro $zIndex={2} $position="absolute" $top="60%" $left="5%">
                             <Div width="100%">
                                 <P color="grey" fontSize="extraBig1" fontWeight={800}>
                                     Big Data
@@ -266,19 +568,19 @@ const Introduce = () => {
                                     Career
                                 </P>
                             </Div>
-                        </Div>
+                        </CareerIntro>
                     )}
                     {page !== 0 && (
-                        <Div $zIndex={2} $position="absolute" $top="60%">
+                        <CareerExplanation $zIndex={2} $position="absolute" $top="60%">
                             <Div width="100%">
                                 <P fontWeight={600} color="wh" $whiteSpace="pre-wrap" fontSize="xl" $lineHeight={2}>
                                     {pageData[page].explain}
                                 </P>
                             </Div>
-                        </Div>
+                        </CareerExplanation>
                     )}
 
-                    <Div $zIndex={2} $position="absolute" $top="10%" $left="60%">
+                    <CareerMenu $zIndex={2} $position="absolute" $top="10%" $left="60%">
                         <Div width="100%">
                             <FlexDiv width="100%" $justifycontent="end">
                                 <Div $pointer onClick={() => careerEvent(1)}>
@@ -314,8 +616,8 @@ const Introduce = () => {
                                 </Div>
                             </FlexDiv>
                         </Div>
-                    </Div>
-                </Div>
+                    </CareerMenu>
+                </CareerSectionContent>
             </IntroduceSection>
             <IntroduceSection width="100%" height="100vh">
                 {isLoading ? (
@@ -323,13 +625,13 @@ const Introduce = () => {
                         <Loading />
                     </FlexDiv>
                 ) : (
-                    <Div $position="relative" width="100%" height="100vh">
+                    <SectionContent $position="relative" width="100%" height="100vh">
                         <IntroImg src="/images/history.jpg" />
-                        <Div $zIndex={2} $position="absolute" $top="5%" $left="5%">
+                        <HistoryHeader $zIndex={2} $position="absolute" $top="5%" $left="5%">
                             <Div width="100%">
-                                <P color="wh" $letterSpacing="5px" fontSize="extraBig" fontWeight={800}>
+                                <HistoryHeading color="wh" $letterSpacing="5px" fontSize="extraBig" fontWeight={800}>
                                     HISTORY
-                                </P>
+                                </HistoryHeading>
                             </Div>
                             {isAuthorizedOverExecutives && (
                                 <Div
@@ -344,8 +646,8 @@ const Introduce = () => {
                                     </P>
                                 </Div>
                             )}
-                        </Div>
-                        <Div
+                        </HistoryHeader>
+                        <HistoryScroll
                             width="80%"
                             height="70vh"
                             $zIndex={2}
@@ -357,13 +659,13 @@ const Introduce = () => {
                             {history &&
                                 history.length !== 0 &&
                                 Object.values(history).map((element: historyInterface) => (
-                                    <FlexDiv width="100%" $alignitems="start">
-                                        <Div $padding="50px" width="200px">
+                                    <TimelineRow width="100%" $alignitems="start">
+                                        <TimelineYear $padding="50px" width="200px">
                                             <P color="grey1" fontSize="xxl">
                                                 {element.year}
                                             </P>
-                                        </Div>
-                                        <Div width="80%">
+                                        </TimelineYear>
+                                        <TimelineContent width="80%">
                                             <Ul>
                                                 <Li>
                                                     <FlexDiv>
@@ -414,18 +716,18 @@ const Introduce = () => {
                                                     )}
                                                 </Li>
                                             </Ul>
-                                        </Div>
-                                    </FlexDiv>
+                                        </TimelineContent>
+                                    </TimelineRow>
                                 ))}
-                        </Div>
-                    </Div>
+                        </HistoryScroll>
+                    </SectionContent>
                 )}
             </IntroduceSection>
-            <FlexDiv width="100%" height="100vh" $backgroundColor="bk">
-                <Div $position="relative" width="40%" height="100vh">
+            <AboutSection width="100%" height="100vh" $backgroundColor="bk">
+                <AboutImagePanel $position="relative" width="40%" height="100vh">
                     <IntroImg src="/images/ibas_image.jpg" $filter="brightness(0.5)" />
-                </Div>
-                <Div width="60%" $padding="60px 30px" height="100vh">
+                </AboutImagePanel>
+                <AboutContent width="60%" $padding="60px 30px" height="100vh">
                     <Div>
                         <P color="wh" fontSize="extraBig1" fontWeight={800} $letterSpacing="5px">
                             IBAS
@@ -451,7 +753,7 @@ const Introduce = () => {
                             운영진
                         </P>
                     </Div>
-                    <FlexDiv width="100%" height="30vh" $justifycontent="start" $alignitems="start" overflow="auto">
+                    <StaffList width="100%" height="30vh" $justifycontent="start" $alignitems="start" overflow="auto">
                         <FlexDiv $margin="0 20px 50px 0" $justifycontent="space-between" $alignitems="start">
                             {staff &&
                                 staff.length !== 0 &&
@@ -501,9 +803,9 @@ const Introduce = () => {
                                     </Div>
                                 ))}
                         </FlexDiv>
-                    </FlexDiv>
-                </Div>
-            </FlexDiv>
+                    </StaffList>
+                </AboutContent>
+            </AboutSection>
         </>
     );
 };

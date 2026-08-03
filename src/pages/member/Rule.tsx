@@ -11,12 +11,84 @@ import { H2 } from "../../styles/assets/H";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
 import Loading from "../../components/common/Loading";
+import { media } from "../../styles/theme";
 
 const Hr = styled.hr`
     clear: both;
     margin: 2rem 0;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     width: 100%;
+`;
+
+const RulePage = styled(FlexDiv)`
+    ${media.mobile} {
+        height: auto;
+        min-height: 100vh;
+        align-items: flex-start;
+    }
+`;
+
+const RulePanel = styled(Div)`
+    ${media.tabletOnly} {
+        width: 60%;
+        padding: 0 4%;
+    }
+
+    ${media.mobile} {
+        width: 100%;
+        height: auto;
+        min-height: 100vh;
+        margin: 0;
+        padding: 32px 20px;
+    }
+`;
+
+const RuleHeader = styled(FlexDiv)`
+    ${media.mobile} {
+        flex-wrap: nowrap;
+        align-items: flex-start;
+    }
+`;
+
+const RuleLogo = styled(FlexDiv)`
+    flex-shrink: 0;
+
+    ${media.mobile} {
+        width: 34px;
+        margin-right: 12px;
+    }
+`;
+
+const RuleTitle = styled(H2)`
+    ${media.mobile} {
+        font-size: 22px;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+`;
+
+const RuleBody = styled(Div)`
+    p {
+        white-space: pre-wrap;
+        overflow: visible;
+        text-overflow: clip;
+        overflow-wrap: anywhere;
+    }
+
+    ${media.mobile} {
+        height: auto;
+        max-height: calc(100vh - 150px);
+    }
+`;
+
+const RuleBackground = styled(Div)`
+    ${media.tabletOnly} {
+        width: 40%;
+    }
+
+    ${media.mobile} {
+        display: none;
+    }
 `;
 
 const Rule = () => {
@@ -52,8 +124,8 @@ const Rule = () => {
                     <Loading />
                 </FlexDiv>
             ) : (
-                <FlexDiv width="100%" height="100vh">
-                    <Div
+                <RulePage width="100%" height="100vh">
+                    <RulePanel
                         width="56%"
                         height="80%"
                         direction="column"
@@ -61,20 +133,20 @@ const Rule = () => {
                         $margin="0 auto"
                         $justifycontent="start"
                     >
-                        <FlexDiv width="100%" $justifycontent="start">
-                            <FlexDiv width="40px" $margin="0 20px 0 0" onClick={() => movePage()} $pointer>
+                        <RuleHeader width="100%" $justifycontent="start">
+                            <RuleLogo width="40px" $margin="0 20px 0 0" onClick={() => movePage()} $pointer>
                                 <Img src="/images/ibas-main-logo_purple.png" />
-                            </FlexDiv>
+                            </RuleLogo>
                             <FlexDiv>
-                                <H2 fontSize="xxl" fontWeight={700}>
+                                <RuleTitle fontSize="xxl" fontWeight={700}>
                                     {policy?.title}
-                                </H2>
+                                </RuleTitle>
                             </FlexDiv>
 
                             <Hr />
-                        </FlexDiv>
+                        </RuleHeader>
 
-                        <Div width="100%" height="85%" overflow="auto">
+                        <RuleBody width="100%" height="85%" overflow="auto">
                             {policy && (
                                 <div>
                                     <P
@@ -96,12 +168,12 @@ const Rule = () => {
                                     <P color="wh"> 홈화면으로 돌아가기 </P>
                                 </Button>
                             </FlexDiv>
-                        </Div>
-                    </Div>
-                    <Div width="44%" height="100vh" overflow="hidden">
+                        </RuleBody>
+                    </RulePanel>
+                    <RuleBackground width="44%" height="100vh" overflow="hidden">
                         <Img src="/images/member-background.jpg" />
-                    </Div>
-                </FlexDiv>
+                    </RuleBackground>
+                </RulePage>
             )}
         </>
     );
