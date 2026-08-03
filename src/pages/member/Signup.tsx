@@ -15,6 +15,7 @@ import Img from "../../styles/assets/Img";
 import { Checkbox, Label, Radio, TextInput } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
 import Dropdown from "../../components/common/Dropdown";
+import { media } from "../../styles/theme";
 
 const HrSect = styled.div`
     display: flex;
@@ -32,6 +33,111 @@ const HrSect = styled.div`
         font-size: 0px;
         line-height: 0px;
         margin: 0px 16px;
+    }
+`;
+
+const SignupPage = styled(FlexDiv)`
+    ${media.mobile} {
+        height: auto;
+        min-height: 100vh;
+        align-items: flex-start;
+    }
+`;
+
+const SignupPanel = styled(FlexDiv)`
+    ${media.desktop} {
+        width: max(33%, 420px);
+    }
+
+    ${media.tabletOnly} {
+        width: 52%;
+        padding: 0 24px;
+    }
+
+    ${media.mobile} {
+        width: 100%;
+        height: auto;
+        min-height: 100vh;
+        margin: 0;
+        padding: 32px 20px;
+    }
+`;
+
+const SignupContent = styled(FlexDiv)`
+    ${media.mobile} {
+        width: 100%;
+    }
+`;
+
+const SignupLogo = styled(FlexDiv)`
+    ${media.mobile} {
+        width: 110px;
+        margin-bottom: 24px;
+    }
+`;
+
+const SignupFields = styled(FlexDiv)`
+    ${media.mobile} {
+        width: 100%;
+    }
+`;
+
+const StudentFields = styled(FlexDiv)`
+    ${media.mobile} {
+        flex-direction: column;
+
+        > div,
+        > input {
+            width: 100%;
+        }
+    }
+`;
+
+const MajorRow = styled(FlexDiv)`
+    min-width: 0;
+
+    p {
+        white-space: normal;
+    }
+`;
+
+const TermsRow = styled(FlexDiv)`
+    ${media.mobile} {
+        align-items: flex-start;
+    }
+`;
+
+const TermsCopy = styled(FlexDiv)`
+    min-width: 0;
+
+    ${media.mobile} {
+        width: calc(100% - 30px);
+
+        a {
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+        }
+    }
+`;
+
+const NextButton = styled(Button)`
+    ${media.mobile} {
+        margin: 32px 0 0;
+    }
+`;
+
+const SignupBackground = styled(Div)`
+    ${media.desktop} {
+        width: calc(100% - max(33%, 420px));
+    }
+
+    ${media.tabletOnly} {
+        width: 48%;
+    }
+
+    ${media.mobile} {
+        display: none;
     }
 `;
 
@@ -243,8 +349,8 @@ const Signup = () => {
 
     return (
         <>
-            <FlexDiv width="100%" height="100vh">
-                <FlexDiv
+            <SignupPage width="100%" height="100vh">
+                <SignupPanel
                     width="33%"
                     height="80%"
                     direction="column"
@@ -252,10 +358,10 @@ const Signup = () => {
                     $margin="0 auto"
                     $justifycontent="space-evenly"
                 >
-                    <FlexDiv width="90%">
-                        <FlexDiv width="150px" $margin="0 0 30px 0" $pointer onClick={() => movePage()}>
+                    <SignupContent width="90%">
+                        <SignupLogo width="150px" $margin="0 0 30px 0" $pointer onClick={() => movePage()}>
                             <Img src="/images/ibas-main-logo_purple.png" />
-                        </FlexDiv>
+                        </SignupLogo>
 
                         <FlexDiv width="100%">
                             <HrSect>기본 정보</HrSect>
@@ -281,7 +387,7 @@ const Signup = () => {
                                 <Label $margin="0 0 0 5px">교수님</Label>
                             </FlexDiv>
                         </FlexDiv>
-                        <FlexDiv width="100%">
+                        <SignupFields width="100%">
                             <TextInput
                                 defaultValue={info?.name || ""}
                                 placeholder="이름"
@@ -303,7 +409,7 @@ const Signup = () => {
                                 onChange={() => autoHyphen(ref.current[3])}
                             />
                             {status === "professor" ? (
-                                <FlexDiv $justifycontent="space-between" width="90%">
+                                <StudentFields $justifycontent="space-between" width="90%">
                                     <TextInput
                                         placeholder="교수번호"
                                         defaultValue={info?.studentId || ""}
@@ -312,9 +418,9 @@ const Signup = () => {
                                         $margin="10px 0 0 0"
                                         ref={(el: never) => (ref.current[4] = el)}
                                     />
-                                </FlexDiv>
+                                </StudentFields>
                             ) : (
-                                <FlexDiv $justifycontent="space-between" width="90%">
+                                <StudentFields $justifycontent="space-between" width="90%">
                                     <Div width="30%" $margin="10px 0 0 0">
                                         <Dropdown
                                             label="학년"
@@ -332,10 +438,10 @@ const Signup = () => {
                                         $margin="10px 0 0 0"
                                         ref={(el: never) => (ref.current[6] = el)}
                                     />
-                                </FlexDiv>
+                                </StudentFields>
                             )}
 
-                            <FlexDiv
+                            <MajorRow
                                 width="90%"
                                 $margin="10px 0 0 0"
                                 $justifycontent="space-between"
@@ -352,13 +458,13 @@ const Signup = () => {
                                 <FlexDiv width="20px" $justifycontent="end">
                                     <Img src="/images/search.svg" />
                                 </FlexDiv>
-                            </FlexDiv>
+                            </MajorRow>
 
-                            <FlexDiv $justifycontent="start" width="90%" $margin="10px 0 0 0">
+                            <TermsRow $justifycontent="start" width="90%" $margin="10px 0 0 0">
                                 <Div $margin="0 10px 0 0">
                                     <Checkbox ref={(el: never) => (ref.current[7] = el)} />
                                 </Div>
-                                <FlexDiv width="80%" $justifycontent="start">
+                                <TermsCopy width="80%" $justifycontent="start">
                                     <Div>
                                         <A fontSize="xs">본인은</A>
                                     </Div>
@@ -404,9 +510,9 @@ const Signup = () => {
                                     <Div>
                                         <A fontSize="xs">에 동의합니다. </A>
                                     </Div>
-                                </FlexDiv>
+                                </TermsCopy>
 
-                                <Button
+                                <NextButton
                                     display="flex"
                                     $backgroundColor="bgColor"
                                     $margin="50px 0"
@@ -417,15 +523,15 @@ const Signup = () => {
                                     onClick={() => sendInput()}
                                 >
                                     <P color="wh">다음</P>
-                                </Button>
-                            </FlexDiv>
-                        </FlexDiv>
-                    </FlexDiv>
-                </FlexDiv>
-                <Div width="67%" height="100vh" overflow="hidden">
+                                </NextButton>
+                            </TermsRow>
+                        </SignupFields>
+                    </SignupContent>
+                </SignupPanel>
+                <SignupBackground width="67%" height="100vh" overflow="hidden">
                     <Img src="/images/member-background.jpg" />
-                </Div>
-            </FlexDiv>
+                </SignupBackground>
+            </SignupPage>
         </>
     );
 };
