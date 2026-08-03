@@ -145,9 +145,12 @@ const MobileMenuHeader = styled(FlexDiv)`
     width: 100%;
     padding-bottom: 16px;
     border-bottom: 1px solid ${theme.color.border};
+    flex-wrap: nowrap;
 `;
 
 const MobileMenuTitle = styled(P)`
+    flex: 1;
+    width: auto;
     color: ${theme.color.bk};
     font-size: ${theme.fontSize.lg};
     font-weight: 800;
@@ -155,6 +158,7 @@ const MobileMenuTitle = styled(P)`
 `;
 
 const MobileMenuCloseButton = styled.button`
+    flex: 0 0 40px;
     width: 40px;
     height: 40px;
     padding: 0;
