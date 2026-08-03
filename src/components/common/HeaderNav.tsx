@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { styled } from "styled-components";
 
 import { GetRoleAuthorization } from "../../functions/authFunctions";
 
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import useFetch from "../../hooks/useFetch";
 import {
@@ -28,6 +28,215 @@ const FixedDiv = styled(FlexDiv)`
     position: fixed;
     top: 0;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+`;
+
+const NavInner = styled(FlexDiv)`
+    width: 1170px;
+    max-width: 1170px;
+
+    ${media.desktop} {
+        width: 100%;
+        max-width: 1170px;
+        padding: 0 24px;
+    }
+
+    ${media.mobile} {
+        padding: 0 16px;
+    }
+`;
+
+const Logo = styled(Div)`
+    width: 200px;
+    height: 75px;
+
+    ${media.desktop} {
+        width: 170px;
+    }
+
+    ${media.mobile} {
+        width: 150px;
+        height: 64px;
+    }
+`;
+
+const DesktopNav = styled(FlexDiv)`
+    ${media.tablet} {
+        display: none;
+    }
+`;
+
+const MobileMenuButton = styled.button<{ $isScrolled: boolean }>`
+    display: none;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    border: 0;
+    background: transparent;
+    color: ${({ $isScrolled }) => ($isScrolled ? theme.color.textColor : theme.color.wh)};
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        border-radius: 2px;
+        background-color: currentColor;
+    }
+
+    ${media.tablet} {
+        display: flex;
+    }
+`;
+
+const MobileMenuLayer = styled.div`
+    display: none;
+
+    ${media.tablet} {
+        display: block;
+        position: fixed;
+        top: 73px;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 4;
+    }
+`;
+
+const MobileMenuBackdrop = styled.button`
+    position: absolute;
+    top: 0;
+    right: min(420px, 88vw);
+    bottom: 0;
+    left: 0;
+    width: auto;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+
+    ${media.mobile} {
+        right: min(360px, 88vw);
+    }
+`;
+
+const MobileMenuPanel = styled.aside`
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: min(420px, 88vw);
+    height: 100%;
+    padding: 24px;
+    background-color: ${theme.color.wh};
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    ${media.mobile} {
+        width: min(360px, 88vw);
+        padding: 20px 16px;
+    }
+`;
+
+const MobileMenuHeader = styled(FlexDiv)`
+    width: 100%;
+    padding-bottom: 16px;
+    border-bottom: 1px solid ${theme.color.border};
+`;
+
+const MobileMenuTitle = styled(P)`
+    color: ${theme.color.bk};
+    font-size: ${theme.fontSize.lg};
+    font-weight: 800;
+    letter-spacing: 1px;
+`;
+
+const MobileMenuCloseButton = styled.button`
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background-color: transparent;
+    color: ${theme.color.bk};
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+        background-color: ${theme.color.border};
+    }
+`;
+
+const MobileMenuGroup = styled.div`
+    width: 100%;
+    padding: 20px 0;
+    border-bottom: 1px solid ${theme.color.border};
+    white-space: normal;
+`;
+
+const MobileGroupName = styled(P)`
+    margin-bottom: 8px;
+    color: ${theme.color.textColor};
+    font-weight: 800;
+    letter-spacing: 1px;
+    white-space: normal;
+    overflow: visible;
+`;
+
+const MobileMenuItem = styled.button`
+    display: block;
+    width: 100%;
+    padding: 11px 8px;
+    border: 0;
+    border-radius: 4px;
+    background-color: transparent;
+    color: ${theme.color.bk};
+    font-size: ${theme.fontSize.sm};
+    text-align: left;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+        background-color: ${theme.color.bgColor};
+        color: ${theme.color.wh};
+    }
+`;
+
+const MobileAccount = styled.div`
+    width: 100%;
+    padding-top: 20px;
+    white-space: normal;
+`;
+
+const MobileProfileButton = styled.button`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 12px;
+    padding: 8px;
+    border: 0;
+    border-radius: 4px;
+    background-color: transparent;
+    color: ${theme.color.bk};
+    font-size: ${theme.fontSize.sm};
+    text-align: left;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+        background-color: ${theme.color.border};
+    }
+`;
+
+const MobileAccountButton = styled(MobileMenuItem)`
+    margin-top: 8px;
+    color: ${theme.color.textColor};
+    font-weight: 800;
 `;
 
 interface Group {
@@ -58,6 +267,8 @@ const HeaderNav = () => {
     const setCurrentMenuId = useSetRecoilState(menuId);
     const pathNameInfo = location.pathname.substring(1).split("/");
     const [isNotLogin, setIsNotLogin] = useRecoilState(failRefreshing);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const mobileMenuId = useId();
 
     let titleId = 0;
 
@@ -152,6 +363,7 @@ const HeaderNav = () => {
 
     const movePage = (url: string) => {
         navigate(`/${url}`);
+        setIsMobileMenuOpen(false);
     };
 
     const menuClickEvent = (url: string, givenName: string, givenDescription: string) => {
@@ -177,6 +389,7 @@ const HeaderNav = () => {
         } else {
             navigate(`/${url}`);
             setTitle({ ...title, name: givenName, description: givenDescription });
+            setIsMobileMenuOpen(false);
         }
     };
 
@@ -186,6 +399,7 @@ const HeaderNav = () => {
             setRole("logout");
             document.cookie = "ibas_refresh" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
             navigate("/");
+            setIsMobileMenuOpen(false);
         }
     };
 
@@ -258,6 +472,45 @@ const HeaderNav = () => {
         };
     }, []);
 
+    useEffect(() => {
+        setIsMobileMenuOpen(false);
+    }, [location.pathname]);
+
+    useEffect(() => {
+        const desktopMedia = window.matchMedia(
+            `(min-width: ${Number.parseInt(theme.breakpoints.tablet, 10) + 1}px)`
+        );
+        const closeOnDesktop = (event: MediaQueryListEvent) => {
+            if (event.matches) {
+                setIsMobileMenuOpen(false);
+            }
+        };
+
+        desktopMedia.addEventListener("change", closeOnDesktop);
+        return () => desktopMedia.removeEventListener("change", closeOnDesktop);
+    }, []);
+
+    useEffect(() => {
+        if (!isMobileMenuOpen) {
+            return;
+        }
+
+        const originalOverflow = document.body.style.overflow;
+        const closeOnEscape = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                setIsMobileMenuOpen(false);
+            }
+        };
+
+        document.body.style.overflow = "hidden";
+        window.addEventListener("keydown", closeOnEscape);
+
+        return () => {
+            document.body.style.overflow = originalOverflow;
+            window.removeEventListener("keydown", closeOnEscape);
+        };
+    }, [isMobileMenuOpen]);
+
     return (
         <>
             <FixedDiv
@@ -267,15 +520,15 @@ const HeaderNav = () => {
                 $backgroundColor={scrollPosition < 100 ? "none" : "wh"}
                 $borderB={`0.1px solid ${theme.color.whlayer}`}
             >
-                <FlexDiv width="1170px" $maxWidth="1170px" $justifycontent="space-between">
-                    <Div width="200px" height="75px" $pointer onClick={() => movePage("")}>
+                <NavInner $justifycontent="space-between">
+                    <Logo $pointer onClick={() => movePage("")}>
                         {scrollPosition < 100 ? (
                             <Img src="/images/logo_white.png" />
                         ) : (
                             <Img src="/images/logo_purple.png" />
                         )}
-                    </Div>
-                    <FlexDiv>
+                    </Logo>
+                    <DesktopNav>
                         <FlexDiv>
                             <FlexDiv>
                                 {nav &&
@@ -487,9 +740,128 @@ const HeaderNav = () => {
                                 </FlexDiv> */}
                             </FlexDiv>
                         )}
-                    </FlexDiv>
-                </FlexDiv>
+                    </DesktopNav>
+                    <MobileMenuButton
+                        type="button"
+                        $isScrolled={scrollPosition >= 100}
+                        aria-label="메뉴 열기"
+                        aria-expanded={isMobileMenuOpen}
+                        aria-controls={mobileMenuId}
+                        onClick={() => setIsMobileMenuOpen(true)}
+                    >
+                        <span />
+                        <span />
+                        <span />
+                    </MobileMenuButton>
+                </NavInner>
             </FixedDiv>
+            {isMobileMenuOpen && (
+                <MobileMenuLayer>
+                    <MobileMenuBackdrop
+                        type="button"
+                        aria-label="메뉴 배경을 눌러 닫기"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                    />
+                    <MobileMenuPanel id={mobileMenuId} aria-label="모바일 메뉴">
+                        <MobileMenuHeader $justifycontent="space-between">
+                            <MobileMenuTitle>MENU</MobileMenuTitle>
+                            <MobileMenuCloseButton
+                                type="button"
+                                aria-label="메뉴 닫기"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                                ×
+                            </MobileMenuCloseButton>
+                        </MobileMenuHeader>
+                        {nav &&
+                            Object.values(nav)
+                                .filter((item: any) => !HIDDEN_NAV_GROUPS.includes(item.groupName))
+                                .map((item: any, idx: number) => (
+                                    <MobileMenuGroup key={`mobileGroup${idx}`}>
+                                        <MobileGroupName>{item.groupName}</MobileGroupName>
+                                        {item.menuList &&
+                                            Object.values(item.menuList)
+                                                .filter((element: any) => !HIDDEN_BOARD_URLS.includes(element.url))
+                                                .map((element: any, menuIdx: number) => {
+                                                    if (
+                                                        element.url === "board/executive" &&
+                                                        isAuthorizedOverSecretary
+                                                    ) {
+                                                        return (
+                                                            <MobileMenuItem
+                                                                type="button"
+                                                                key={`mobileMenu${menuIdx}`}
+                                                                onClick={() =>
+                                                                    menuClickEvent(
+                                                                        element.url,
+                                                                        element.name,
+                                                                        element.description
+                                                                    )
+                                                                }
+                                                            >
+                                                                {element.name}
+                                                            </MobileMenuItem>
+                                                        );
+                                                    } else if (element.url !== "board/executive") {
+                                                        return (
+                                                            <MobileMenuItem
+                                                                type="button"
+                                                                key={`mobileMenu${menuIdx}`}
+                                                                onClick={() =>
+                                                                    menuClickEvent(
+                                                                        element.url,
+                                                                        element.name,
+                                                                        element.description
+                                                                    )
+                                                                }
+                                                            >
+                                                                {element.name}
+                                                            </MobileMenuItem>
+                                                        );
+                                                    }
+                                                    return null;
+                                                })}
+                                    </MobileMenuGroup>
+                                ))}
+                        <MobileAccount>
+                            {access !== "default" && access !== "signing" && (
+                                <MobileProfileButton type="button" onClick={() => movePage("myInfo")}>
+                                    <FlexDiv
+                                        width="35px"
+                                        height="35px"
+                                        $border="2px solid"
+                                        $borderColor={
+                                            isAuthorizedOverBasic
+                                                ? "success"
+                                                : isAuthorizedOverDeactivate
+                                                ? "yellow"
+                                                : "red"
+                                        }
+                                        radius={100}
+                                        overflow="hidden"
+                                    >
+                                        <Img
+                                            src={info?.picture}
+                                            $objectFit="cover"
+                                            alt="현재 브라우저에서 지원하지 않는 형태 입니다. "
+                                        />
+                                    </FlexDiv>
+                                    <span>{info?.name}</span>
+                                </MobileProfileButton>
+                            )}
+                            {access === "default" || access === "signing" ? (
+                                <MobileAccountButton type="button" onClick={() => movePage("login")}>
+                                    LOG IN
+                                </MobileAccountButton>
+                            ) : (
+                                <MobileAccountButton type="button" onClick={() => logoutClickEvent()}>
+                                    LOG OUT
+                                </MobileAccountButton>
+                            )}
+                        </MobileAccount>
+                    </MobileMenuPanel>
+                </MobileMenuLayer>
+            )}
         </>
     );
 };
