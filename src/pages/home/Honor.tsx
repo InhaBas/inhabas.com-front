@@ -15,14 +15,93 @@ import P from "../../styles/assets/P";
 import HeaderNav from "../../components/common/HeaderNav";
 import HonorSlide from "../../components/common/HonorSlide";
 import Loading from "../../components/common/Loading";
+import { media } from "../../styles/theme";
 
 const HonorImg = styled(Img)`
     object-fit: fill;
     position: absolute;
+
+    ${media.tablet} {
+        object-fit: cover;
+    }
 `;
 const StyledSlider = styled(Slider)`
     width: 90%;
     height: 500px;
+
+    ${media.tablet} {
+        width: 100%;
+    }
+
+    ${media.mobile} {
+        height: auto;
+        max-width: calc(100vw - 32px);
+    }
+`;
+
+const HonorPage = styled(Div)`
+    ${media.tablet} {
+        height: auto;
+        min-height: 100vh;
+    }
+`;
+
+const HonorContent = styled(FlexDiv)`
+    ${media.tablet} {
+        position: relative;
+        top: auto;
+        min-height: 100vh;
+        padding: 140px 24px 56px;
+    }
+
+    ${media.mobile} {
+        padding: 112px 16px 40px;
+    }
+`;
+
+const HonorScroll = styled(Div)`
+    width: 100%;
+
+    ${media.tablet} {
+        overflow: visible;
+    }
+`;
+
+const HonorTitle = styled(H1)`
+    ${media.tablet} {
+        font-size: 40px;
+    }
+
+    ${media.mobile} {
+        font-size: 32px;
+    }
+`;
+
+const HonorDescription = styled(P)`
+    ${media.tablet} {
+        padding: 0 16px;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+    }
+
+    ${media.mobile} {
+        font-size: 16px;
+
+        br {
+            display: none;
+        }
+    }
+`;
+
+const HonorList = styled(FlexDiv)`
+    ${media.tablet} {
+        margin-top: 56px;
+    }
+
+    ${media.mobile} {
+        margin-top: 40px;
+    }
 `;
 
 const Honor = () => {
@@ -35,6 +114,15 @@ const Honor = () => {
         draggable: true,
         infinite: true,
         responsive: [
+            {
+                breakpoint: 768,
+                settings: {
+                    centerMode: false,
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                    infinite: true,
+                },
+            },
             {
                 breakpoint: 1024,
                 settings: {
@@ -73,16 +161,15 @@ const Honor = () => {
     return (
         <>
             <HeaderNav />
-            <Div $position="relative" width="100%" height="100vh">
-                <Div width="100%" height="100vh">
+            <HonorPage $position="relative" width="100%" height="100vh">
                     <HonorImg src="/images/board-name-img.jpg" $filter=" brightness(30%)" />
-                    <FlexDiv $zIndex={2} $position="absolute" width="100%" $top="15%">
-                        <Div overflow="auto">
+                    <HonorContent $zIndex={2} $position="absolute" width="100%" $top="15%">
+                        <HonorScroll overflow="auto">
                             <FlexDiv width="100%" direction="column">
                                 <Div>
-                                    <H1 fontSize="xxxl" color="wh">
+                                    <HonorTitle fontSize="xxxl" color="wh">
                                         명예의 전당
-                                    </H1>
+                                    </HonorTitle>
                                 </Div>
                                 <Div
                                     height="3px"
@@ -92,13 +179,13 @@ const Honor = () => {
                                     $backgroundColor="wh"
                                 ></Div>
                                 <Div>
-                                    <P color="wh" $center fontSize="lg" $lineHeight={1.5} fontWeight={300}>
+                                    <HonorDescription color="wh" $center fontSize="lg" $lineHeight={1.5} fontWeight={300}>
                                         졸업생 분들 중 정보공개에 동의하신 선배님들입니다. <br />
                                         IBAS의 성장을 위해 함께해주셔서 감사합니다.
-                                    </P>
+                                    </HonorDescription>
                                 </Div>
                             </FlexDiv>
-                            <FlexDiv width="100%" $margin="80px 0 0 0">
+                            <HonorList width="100%" $margin="80px 0 0 0">
                                 <>
                                     {isLoading ? (
                                         <FlexDiv width="100%" height="50vh">
@@ -125,11 +212,10 @@ const Honor = () => {
                                         </StyledSlider>
                                     )}
                                 </>
-                            </FlexDiv>
-                        </Div>
-                    </FlexDiv>
-                </Div>
-            </Div>
+                            </HonorList>
+                        </HonorScroll>
+                    </HonorContent>
+            </HonorPage>
         </>
     );
 };

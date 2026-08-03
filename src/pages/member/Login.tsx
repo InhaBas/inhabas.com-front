@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
+import { media } from "../../styles/theme";
 
 const HrSect = styled.div`
     display: flex;
@@ -24,18 +25,93 @@ const HrSect = styled.div`
     }
 `;
 
-const KakaoButton = styled(FlexDiv)`
+const OAuthButton = styled(FlexDiv)`
+    ${media.mobile} {
+        width: 100%;
+        max-width: 250px;
+    }
+`;
+
+const KakaoButton = styled(OAuthButton)`
     background-color: #fee500;
     border: 1px solid #fee500;
 `;
 
-const NaverButton = styled(FlexDiv)`
+const NaverButton = styled(OAuthButton)`
     background-color: #03c75a;
     border: 1px solid #03c75a;
 `;
 
 const Copyright = styled(P)`
     color: rgba(0, 0, 0, 0.35);
+
+    ${media.mobile} {
+        white-space: normal;
+        overflow: visible;
+        text-align: center;
+        text-overflow: clip;
+    }
+`;
+
+const LoginPage = styled(FlexDiv)`
+    ${media.mobile} {
+        height: auto;
+        min-height: 100vh;
+        align-items: flex-start;
+    }
+`;
+
+const LoginPanel = styled(FlexDiv)`
+    ${media.desktop} {
+        width: max(27%, 380px);
+    }
+
+    ${media.tabletOnly} {
+        width: 44%;
+        padding: 0 32px;
+    }
+
+    ${media.mobile} {
+        width: 100%;
+        height: auto;
+        min-height: 100vh;
+        margin: 0;
+        padding: 48px 24px 32px;
+    }
+`;
+
+const LoginContent = styled(FlexDiv)`
+    ${media.mobile} {
+        width: 100%;
+    }
+`;
+
+const LoginLogo = styled(FlexDiv)`
+    ${media.mobile} {
+        width: 120px;
+        margin-bottom: 24px;
+    }
+`;
+
+const LoginOptions = styled(FlexDiv)`
+    ${media.mobile} {
+        width: 100%;
+        max-width: 300px;
+    }
+`;
+
+const LoginBackground = styled(Div)`
+    ${media.desktop} {
+        width: calc(100% - max(27%, 380px));
+    }
+
+    ${media.tabletOnly} {
+        width: 56%;
+    }
+
+    ${media.mobile} {
+        display: none;
+    }
 `;
 
 const Login = () => {
@@ -51,8 +127,8 @@ const Login = () => {
 
     return (
         <>
-            <FlexDiv width="100%" height="100vh">
-                <FlexDiv
+            <LoginPage width="100%" height="100vh">
+                <LoginPanel
                     width="27%"
                     height="80%"
                     direction="column"
@@ -60,14 +136,14 @@ const Login = () => {
                     $margin="0 auto"
                     $justifycontent="space-evenly"
                 >
-                    <FlexDiv>
-                        <FlexDiv width="150px" $margin="0 0 30px 0" $pointer onClick={() => moveMain()}>
+                    <LoginContent>
+                        <LoginLogo width="150px" $margin="0 0 30px 0" $pointer onClick={() => moveMain()}>
                             <Img src="/images/ibas-main-logo_purple.png" />
-                        </FlexDiv>
+                        </LoginLogo>
 
-                        <FlexDiv width="80%">
+                        <LoginOptions width="80%">
                             <HrSect>소셜 로그인</HrSect>
-                            <FlexDiv
+                            <OAuthButton
                                 $backgroundColor="wh"
                                 width="250px"
                                 height="40px"
@@ -88,7 +164,7 @@ const Login = () => {
                                         <P fontSize="sm">Google 계정으로 로그인</P>
                                     </Div>
                                 </FlexDiv>
-                            </FlexDiv>
+                            </OAuthButton>
                             <NaverButton
                                 $backgroundColor="wh"
                                 width="250px"
@@ -133,8 +209,8 @@ const Login = () => {
                                     </Div>
                                 </FlexDiv>
                             </KakaoButton>
-                        </FlexDiv>
-                    </FlexDiv>
+                        </LoginOptions>
+                    </LoginContent>
                     <FlexDiv>
                         <Div>
                             <Copyright fontSize="xs" fontWeight={300} $lineHeight={1.3}>
@@ -147,11 +223,11 @@ const Login = () => {
                             </Copyright>
                         </Div>
                     </FlexDiv>
-                </FlexDiv>
-                <Div width="73%" height="100vh" overflow="hidden">
+                </LoginPanel>
+                <LoginBackground width="73%" height="100vh" overflow="hidden">
                     <Img src="/images/member-background.jpg" />
-                </Div>
-            </FlexDiv>
+                </LoginBackground>
+            </LoginPage>
         </>
     );
 };

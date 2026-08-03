@@ -11,6 +11,93 @@ import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import { TextArea } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
+import styled from "styled-components";
+import { media } from "../../styles/theme";
+
+const QuestionPage = styled(FlexDiv)`
+    ${media.mobile} {
+        height: auto;
+        min-height: 100vh;
+        align-items: flex-start;
+    }
+`;
+
+const QuestionPanel = styled(FlexDiv)`
+    ${media.tabletOnly} {
+        width: 60%;
+        padding: 0 32px;
+    }
+
+    ${media.mobile} {
+        width: 100%;
+        height: auto;
+        min-height: 100vh;
+        margin: 0;
+        padding: 32px 20px;
+    }
+`;
+
+const QuestionScroll = styled(FlexDiv)`
+    ${media.mobile} {
+        width: 100%;
+        height: auto;
+        overflow: visible;
+    }
+`;
+
+const QuestionList = styled(FlexDiv)`
+    ${media.mobile} {
+        height: auto;
+        align-content: flex-start;
+
+        p {
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+        }
+
+        textarea {
+            max-width: 100%;
+        }
+    }
+`;
+
+const QuestionActions = styled(FlexDiv)`
+    ${media.mobile} {
+        gap: 12px;
+        margin-top: 32px;
+    }
+`;
+
+const QuestionButton = styled(Button)`
+    min-width: 110px;
+
+    ${media.desktop} {
+        width: auto;
+        min-width: 110px;
+    }
+
+    ${media.tablet} {
+        width: auto;
+        min-width: 110px;
+    }
+
+    ${media.mobile} {
+        flex: 1;
+        min-width: 0;
+        margin: 0;
+    }
+`;
+
+const QuestionBackground = styled(Div)`
+    ${media.tabletOnly} {
+        width: 40%;
+    }
+
+    ${media.mobile} {
+        display: none;
+    }
+`;
 
 const SignupQuestion = () => {
     const navigate = useNavigate();
@@ -129,8 +216,8 @@ const SignupQuestion = () => {
 
     return (
         <>
-            <FlexDiv width="100%" height="100vh">
-                <FlexDiv
+            <QuestionPage width="100%" height="100vh">
+                <QuestionPanel
                     width="56%"
                     height="85%"
                     direction="column"
@@ -138,8 +225,8 @@ const SignupQuestion = () => {
                     $margin="0 auto"
                     $justifycontent="space-evenly"
                 >
-                    <FlexDiv width="90%" height="100%" overflow="auto">
-                        <FlexDiv width="100%" height="100%">
+                    <QuestionScroll width="90%" height="100%" overflow="auto">
+                        <QuestionList width="100%" height="100%">
                             {question &&
                                 Object.values(question).map((item: any, idx: number) => {
                                     return (
@@ -159,8 +246,8 @@ const SignupQuestion = () => {
                                         </Div>
                                     );
                                 })}
-                            <FlexDiv width="100%" $justifycontent="end">
-                                <Button
+                            <QuestionActions width="100%" $justifycontent="end">
+                                <QuestionButton
                                     display="flex"
                                     $backgroundColor="grey3"
                                     $margin="50px 30px "
@@ -171,8 +258,8 @@ const SignupQuestion = () => {
                                     onClick={() => saveInput()}
                                 >
                                     <P color="wh">임시저장</P>
-                                </Button>
-                                <Button
+                                </QuestionButton>
+                                <QuestionButton
                                     display="flex"
                                     $backgroundColor="bgColor"
                                     $margin="50px 0"
@@ -183,15 +270,15 @@ const SignupQuestion = () => {
                                     onClick={() => sendInput()}
                                 >
                                     <P color="wh">제출</P>
-                                </Button>
-                            </FlexDiv>
-                        </FlexDiv>
-                    </FlexDiv>
-                </FlexDiv>
-                <Div width="44%" height="100vh" overflow="hidden">
+                                </QuestionButton>
+                            </QuestionActions>
+                        </QuestionList>
+                    </QuestionScroll>
+                </QuestionPanel>
+                <QuestionBackground width="44%" height="100vh" overflow="hidden">
                     <Img src="/images/member-background.jpg" />
-                </Div>
-            </FlexDiv>
+                </QuestionBackground>
+            </QuestionPage>
         </>
     );
 };
