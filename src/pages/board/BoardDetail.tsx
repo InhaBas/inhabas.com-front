@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import { boardDetailData, tokenAccess } from "../../recoil/backState";
 import { carouselInitialState, carouselOpen } from "../../recoil/frontState";
@@ -33,8 +33,13 @@ import Loading from "../../components/common/Loading";
 import TextViewer from "../../components/common/TextViewer";
 
 const HorizonScrollDiv = styled(Div)`
+    max-width: 100%;
     white-space: nowrap;
-    overflow-x: scroll;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
 
     &::-webkit-scrollbar {
         display: block;
@@ -48,6 +53,88 @@ const HorizonScrollDiv = styled(Div)`
     /* 스크롤바 호버 스타일 추가 */
     &::-webkit-scrollbar-thumb:hover {
         background-color: ${(props) => props.theme.color.grey}; /* 스크롤바 썸의 호버 색상을 지정하세요 */
+    }
+`;
+
+const PostMeta = styled(FlexDiv)`
+    justify-content: flex-start;
+    row-gap: 8px;
+
+    ${media.mobile} {
+        align-items: flex-start;
+    }
+`;
+
+const MetaText = styled(P).attrs({ $whiteSpace: "normal" })`
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+`;
+
+const PostTitle = styled(H2)`
+    overflow-wrap: anywhere;
+    word-break: break-word;
+
+    ${media.mobile} {
+        font-size: ${theme.fontSize.xl};
+        line-height: 1.4;
+    }
+`;
+
+const ContentArea = styled(Div)`
+    min-width: 0;
+    max-width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+`;
+
+const AttachmentBox = styled(FlexDiv)`
+    width: 80%;
+    min-width: 0;
+    padding: 0 30px;
+    border: 2px solid ${theme.color.border};
+
+    ${media.mobile} {
+        width: 100%;
+        padding: 0 16px;
+    }
+`;
+
+const AttachmentRow = styled(FlexDiv)`
+    flex-wrap: nowrap;
+    min-width: 0;
+`;
+
+const FileNameContainer = styled(FlexDiv)`
+    min-width: 0;
+    flex: 1 1 auto;
+
+    > div {
+        width: 100%;
+        min-width: 0;
+        overflow: hidden;
+    }
+`;
+
+const FileName = styled(A)`
+    display: block;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
+
+const ActionRow = styled(FlexDiv)`
+    gap: 10px;
+
+    button {
+        margin: 0;
+        max-width: 100%;
+    }
+
+    ${media.mobile} {
+        justify-content: flex-start;
     }
 `;
 
@@ -253,54 +340,54 @@ const BoardDetail = () => {
                 <Carousel images={detail?.images?.map((image) => image.url) || []} />
             ) : (
                 <FlexDiv width="100%">
-                    <DetailContainer $alignitems="start">
+                    <DetailContainer $alignitems="start" $whiteSpace="normal">
                         <Div width="100%" $margin="0 0 30px 0">
-                            <FlexDiv $margin="50px 0 30px 0">
+                            <PostMeta $margin="50px 0 30px 0">
                                 <FlexDiv width="12px" $margin="0 5px 0 0">
                                     <Img src="/images/user_grey.svg" />
                                 </FlexDiv>
                                 <Div>
-                                    <P color="grey4" fontSize="sm">
+                                    <MetaText color="grey4" fontSize="sm">
                                         By {detail?.writerName} |
-                                    </P>
+                                    </MetaText>
                                 </Div>
                                 <FlexDiv width="12px" $margin="0 5px ">
                                     <Img src="/images/clock_grey.svg" />
                                 </FlexDiv>
                                 <Div>
-                                    <P color="grey4" fontSize="sm">
+                                    <MetaText color="grey4" fontSize="sm">
                                         {formatDateMinute({ date: detail?.dateCreated || "" })}
-                                    </P>
+                                    </MetaText>
                                 </Div>
-                            </FlexDiv>
-                            <Div>
-                                <H2 fontSize="xxl" fontWeight={800}>
+                            </PostMeta>
+                            <Div width="100%" $whiteSpace="normal">
+                                <PostTitle fontSize="xxl" fontWeight={800}>
                                     {detail?.title}
-                                </H2>
+                                </PostTitle>
                             </Div>
                             {["sponsor", "usage"].includes(url) && (
-                                <FlexDiv $margin="20px 0 30px 0">
+                                <PostMeta $margin="20px 0 30px 0">
                                     <FlexDiv width="12px" $margin="0">
                                         <Img src="/images/calendar_grey.svg" />
                                     </FlexDiv>
                                     <Div $margin="0 0 0 5px">
-                                        <P color="grey4" fontSize="sm">
+                                        <MetaText color="grey4" fontSize="sm">
                                             지급일 |
-                                        </P>
+                                        </MetaText>
                                     </Div>
                                     <FlexDiv width="12px" $margin="0 5px ">
                                         <Img src="/images/clock_grey.svg" />
                                     </FlexDiv>
                                     <Div>
-                                        <P color="grey4" fontSize="sm">
+                                        <MetaText color="grey4" fontSize="sm">
                                             {detail?.dateHistory?.split("T")[0] || ""}
-                                        </P>
+                                        </MetaText>
                                     </Div>
-                                </FlexDiv>
+                                </PostMeta>
                             )}
-                            <Div width="100%" $margin="50px 0" wrap="break-word" $whiteSpace="pre-wrap">
+                            <ContentArea width="100%" $margin="50px 0" $whiteSpace="pre-wrap">
                                 {detail?.content && <TextViewer contents={detail?.content} />}
-                            </Div>
+                            </ContentArea>
 
                             {detail && detail.images && detail.images.length > 0 && (
                                 <HorizonScrollDiv $margin="30px 0" width="100%">
@@ -322,10 +409,11 @@ const BoardDetail = () => {
 
                             <FlexDiv width="100%">
                                 {detail && detail.otherFiles && detail.otherFiles.length > 0 && (
-                                    <FlexDiv width="80%" $padding="0 30px" $border="2px solid" $borderColor="border">
+                                    <AttachmentBox $whiteSpace="normal">
                                         {detail.otherFiles.map((file, index) => (
-                                            <FlexDiv
+                                            <AttachmentRow
                                                 width="100%"
+                                                $whiteSpace="normal"
                                                 $justifycontent="start"
                                                 key={`otherFiles${index}`}
                                                 $borderB={
@@ -340,24 +428,28 @@ const BoardDetail = () => {
                                                         <Img src="/images/download_grey.svg" />
                                                     </Div>
                                                 </FlexDiv>
-                                                <FlexDiv $pointer>
-                                                    <Div onClick={() => onClickFileLink(file.url, file.name)}>
-                                                        <A
+                                                <FileNameContainer $pointer overflow="hidden">
+                                                    <Div
+                                                        width="100%"
+                                                        overflow="hidden"
+                                                        onClick={() => onClickFileLink(file.url, file.name)}
+                                                    >
+                                                        <FileName
                                                             color="textColor"
                                                             fontSize="sm"
                                                             fontWeight={700}
                                                             $hoverColor="bgColorHo"
                                                         >
                                                             {file.name}
-                                                        </A>
+                                                        </FileName>
                                                     </Div>
-                                                </FlexDiv>
-                                            </FlexDiv>
+                                                </FileNameContainer>
+                                            </AttachmentRow>
                                         ))}
-                                    </FlexDiv>
+                                    </AttachmentBox>
                                 )}
                             </FlexDiv>
-                            <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
+                            <ActionRow $margin="50px 0 0 0" width="100%" $justifycontent="end">
                                 {detail?.writerId === userId && (
                                     <Button
                                         display="flex"
@@ -397,7 +489,7 @@ const BoardDetail = () => {
                                         </Div>
                                     </Button>
                                 )}
-                            </FlexDiv>
+                            </ActionRow>
                         </Div>
                         {/* 공개자료실일 경우에 토큰 없이 댓글 패치 */}
                         {pathNameInfo[1] === "opensource" ? (
