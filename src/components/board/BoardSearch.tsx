@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-import { theme } from "../../styles/theme";
+import styled from "styled-components";
+import { media, theme } from "../../styles/theme";
 
 import { useLocation } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
@@ -18,6 +19,41 @@ import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import { SearchInput } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
+
+const SearchBox = styled(Div)`
+    width: 263px;
+    height: 147px;
+    border: 2px solid ${theme.color.border};
+    padding: 30px 20px 10px;
+
+    ${media.tablet} {
+        width: 100%;
+        height: auto;
+    }
+
+    ${media.mobile} {
+        padding: 20px 16px;
+    }
+`;
+
+const SearchRow = styled(FlexDiv)`
+    width: 100%;
+    flex-wrap: nowrap;
+`;
+
+const SearchField = styled(Div)`
+    flex: 1 1 auto;
+    min-width: 0;
+`;
+
+const ResponsiveSearchInput = styled(SearchInput)`
+    width: 100%;
+    min-width: 0;
+`;
+
+const SearchButton = styled(Button)`
+    flex: 0 0 53px;
+`;
 
 const BoardSearch = () => {
     const inputRef = useRef<HTMLInputElement>(null);
@@ -116,22 +152,22 @@ const BoardSearch = () => {
 
     return (
         <>
-            <Div width="263px" height="147px" $border={`2px solid`} $borderColor="border" $padding="30px 20px 10px">
+            <SearchBox>
                 <Div $borderL={`4px solid ${theme.color.bgColor}`} $padding="5px 0 5px 20px" $margin="0 0 15px 0">
                     <P fontSize="xl" fontWeight={700}>
                         게시글 검색
                     </P>
                 </Div>
 
-                <FlexDiv wrap="nowrap">
-                    <Div>
-                        <SearchInput
+                <SearchRow width="100%">
+                    <SearchField>
+                        <ResponsiveSearchInput
                             placeholder="검색어를 입력하세요."
                             onKeyDown={enterKeyDown}
                             onChange={handleSearchChange}
                         />
-                    </Div>
-                    <Button
+                    </SearchField>
+                    <SearchButton
                         $backgroundColor="bgColor"
                         width="53px"
                         height="40px"
@@ -143,9 +179,9 @@ const BoardSearch = () => {
                         <Div width="13px">
                             <Img src="/images/search_white.svg"></Img>
                         </Div>
-                    </Button>
-                </FlexDiv>
-            </Div>
+                    </SearchButton>
+                </SearchRow>
+            </SearchBox>
         </>
     );
 };
