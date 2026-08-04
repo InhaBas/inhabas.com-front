@@ -9,16 +9,39 @@ import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import { TextArea } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 const CommentRelativeDiv = styled(Div)`
     position: relative;
+    min-width: 0;
 `;
 
 const CommentAbsoluteDiv = styled(Div)`
     position: absolute;
     right: 20px;
     top: 20px;
+
+    ${media.mobile} {
+        right: 14px;
+        top: 14px;
+        margin: 0;
+    }
+`;
+
+const CommentTextArea = styled(TextArea)`
+    max-width: 100%;
+    padding-right: 50px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+
+    ${media.mobile} {
+        padding: 16px 42px 16px 16px;
+        border-radius: 20px;
+    }
+`;
+
+const CommentSubmitButton = styled(Button)`
+    max-width: 100%;
 `;
 
 const CommentInput = (props: commentPropsInterface) => {
@@ -57,7 +80,7 @@ const CommentInput = (props: commentPropsInterface) => {
         <>
             <Div width="100%" $padding="30px 0 0 0" $borderT={`1px solid ${theme.color.border}`}>
                 <CommentRelativeDiv width="100%">
-                    <TextArea
+                    <CommentTextArea
                         width="100%"
                         $padding="20px"
                         $borderRadius={30}
@@ -66,7 +89,7 @@ const CommentInput = (props: commentPropsInterface) => {
                         placeholder="댓글을 남겨보세요!"
                         value={commentInput}
                         onChange={(e: any) => setCommentInput(() => e.target.value)}
-                    ></TextArea>
+                    ></CommentTextArea>
 
                     <CommentAbsoluteDiv width="14px" $margin="0 10px 0 0">
                         <Img src="/images/pencil_purple.svg" />
@@ -74,7 +97,7 @@ const CommentInput = (props: commentPropsInterface) => {
                 </CommentRelativeDiv>
             </Div>
             <FlexDiv $justifycontent="end" width="100%" $margin="30px 0 0 0">
-                <Button
+                <CommentSubmitButton
                     $backgroundColor="bgColor"
                     $borderRadius={50}
                     $padding="15px 40px"
@@ -84,7 +107,7 @@ const CommentInput = (props: commentPropsInterface) => {
                     <P color="wh" fontSize="sm" $letterSpacing="1px">
                         댓글등록
                     </P>
-                </Button>
+                </CommentSubmitButton>
             </FlexDiv>
         </>
     );
