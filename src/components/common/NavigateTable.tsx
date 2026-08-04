@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 import { theme } from "../../styles/theme";
 
@@ -15,19 +16,74 @@ type NavigateTableProp = {
     pinnedContents?: any[];
 };
 
+const TableScroll = styled.div`
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: ${theme.color.grey2} ${theme.color.border};
+
+    &::-webkit-scrollbar {
+        display: block;
+        height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: ${theme.color.border};
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: ${theme.color.grey2};
+        border-radius: 4px;
+    }
+`;
+
+const TableContent = styled.div<{ $minWidth: number }>`
+    width: max(100%, ${(props) => props.$minWidth}px);
+`;
+
+const TableRow = styled(FlexDiv)`
+    min-width: 100%;
+    flex-wrap: nowrap;
+`;
+
+const TableCell = styled(FlexDiv)`
+    flex: 0 0 auto;
+    min-width: 0;
+
+    > div {
+        width: 100%;
+        min-width: 0;
+    }
+
+    a,
+    p {
+        display: block;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+`;
+
 // navigate url, headerInfo, widthList, contents를 props로 받아올 것
 // contents 에서 첫 요소는 idx + 1을, 두번째 요소는 데이터 id 값을, 3번째 요소는 title을 받아와야 함
 const NavigateTable = (props: NavigateTableProp) => {
     const { contents, url, width, header, pinnedContents } = props;
     const navigate = useNavigate();
+    const tableMinWidth = width.reduce((sum, item) => sum + item, 0) + 46;
 
     const movePage = (url: string, idx: number) => {
         navigate(`${url}/${idx}`);
     };
 
     return (
-        <Div width="100%">
-            <FlexDiv
+        <TableScroll role="region" aria-label="게시글 목록" tabIndex={0}>
+            <TableContent $minWidth={tableMinWidth}>
+            <TableRow
                 width="100%"
                 height="45px"
                 $borderT={`1px solid ${theme.color.grey1}`}
@@ -37,7 +93,7 @@ const NavigateTable = (props: NavigateTableProp) => {
             >
                 {header &&
                     header.map((item: string, idx: number) => (
-                        <FlexDiv
+                        <TableCell
                             key={`headerInfo${idx}`}
                             width={width && `${width[idx]}px`}
                             // $justifycontent={idx === 2 ? "start" : "center"}
@@ -48,12 +104,12 @@ const NavigateTable = (props: NavigateTableProp) => {
                                     {item}
                                 </P>
                             </Div>
-                        </FlexDiv>
+                        </TableCell>
                     ))}
-            </FlexDiv>
+            </TableRow>
             {pinnedContents &&
                 pinnedContents.map((element: object, idx: number) => (
-                    <FlexDiv
+                    <TableRow
                         key={`contentItem${idx}`}
                         width="100%"
                         height="45px"
@@ -61,13 +117,13 @@ const NavigateTable = (props: NavigateTableProp) => {
                         $padding="0 18px"
                         style={{ backgroundColor: "#fff7e4" }}
                     >
-                        <FlexDiv width={width && `${width[0]}px`} $margin="0 10px 0 0">
+                        <TableCell width={width && `${width[0]}px`} $margin="0 10px 0 0">
                             <Div width="17px" height="17px">
                                 <Img src="/images/tack_grey.svg" />
                             </Div>
-                        </FlexDiv>
+                        </TableCell>
                         {Object.entries(element).map(([key, value], idx) => (
-                            <FlexDiv
+                            <TableCell
                                 key={`itemValue${idx}`}
                                 width={width && `${width[idx + 1]}px`}
                                 $justifycontent={idx === 1 ? "start" : "center"}
@@ -85,13 +141,13 @@ const NavigateTable = (props: NavigateTableProp) => {
                                         </A>
                                     )}
                                 </Div>
-                            </FlexDiv>
+                            </TableCell>
                         ))}
-                    </FlexDiv>
+                    </TableRow>
                 ))}
             {contents.length !== 0 ? (
                 contents.map((element: object, idx: number) => (
-                    <FlexDiv
+                    <TableRow
                         key={`contentItem${idx}`}
                         width="100%"
                         height="45px"
@@ -100,7 +156,7 @@ const NavigateTable = (props: NavigateTableProp) => {
                         $backgroundColor="wh"
                     >
                         {Object.entries(element).map(([key, value], idx) => (
-                            <FlexDiv
+                            <TableCell
                                 key={`itemValue${idx}`}
                                 width={width && `${width[idx]}px`}
                                 $justifycontent={idx === 2 ? "start" : "center"}
@@ -119,12 +175,12 @@ const NavigateTable = (props: NavigateTableProp) => {
                                         </A>
                                     )}
                                 </Div>
-                            </FlexDiv>
+                            </TableCell>
                         ))}
-                    </FlexDiv>
+                    </TableRow>
                 ))
             ) : (
-                <FlexDiv
+                <TableRow
                     width="100%"
                     height="45px"
                     $borderT={`1px solid ${theme.color.grey1}`}
@@ -134,9 +190,10 @@ const NavigateTable = (props: NavigateTableProp) => {
                     <Div>
                         <P>게시글이 존재하지 않습니다</P>
                     </Div>
-                </FlexDiv>
+                </TableRow>
             )}
-        </Div>
+            </TableContent>
+        </TableScroll>
     );
 };
 

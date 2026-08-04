@@ -13,8 +13,46 @@ import P from "../../styles/assets/P";
 import { boardMenuInterface } from "../../types/TypeBoard";
 
 import { GetRoleAuthorization } from "../../functions/authFunctions";
+import styled from "styled-components";
+import { media } from "../../styles/theme";
 
 const HIDDEN_BOARD_MENUS = ['질문게시판', '자유게시판', '건의사항', '회장단 게시판'];
+
+const NavigateBox = styled(Div)`
+    width: 263px;
+    border: 2px solid ${theme.color.border};
+    padding: 30px 20px 10px;
+
+    ${media.tablet} {
+        width: 100%;
+    }
+
+    ${media.mobile} {
+        padding: 20px 16px 10px;
+    }
+`;
+
+const MenuRow = styled(FlexDiv)`
+    flex-wrap: nowrap;
+    align-items: flex-start;
+`;
+
+const MenuName = styled(Div)`
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-right: 12px;
+`;
+
+const MenuCount = styled(Div)`
+    flex: 0 0 auto;
+`;
+
+const MenuText = styled(P).attrs({ $whiteSpace: "normal" })`
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+`;
 
 const BoardNavigate = () => {
     const navigate = useNavigate();
@@ -54,7 +92,7 @@ const BoardNavigate = () => {
 
     return (
         <>
-            <Div width="263px" $border={`2px solid`} $borderColor="border" $padding="30px 20px 10px">
+            <NavigateBox>
                 <Div $borderL={`4px solid ${theme.color.bgColor}`} $padding="5px 0 5px 20px" $margin="0 0 15px 0">
                     <P fontSize="xl" fontWeight={700}>
                         게시판
@@ -66,7 +104,7 @@ const BoardNavigate = () => {
                         menu.filter((item) => !HIDDEN_BOARD_MENUS.includes(item.menuName)).map((item: any, idx: number) => {
                             return (
                                 <Div key={idx} width="100%">
-                                    <FlexDiv
+                                    <MenuRow
                                         width="100%"
                                         $padding="15px 0"
                                         $justifycontent="space-between"
@@ -74,24 +112,24 @@ const BoardNavigate = () => {
                                         onClick={() => movePageEvent(item.url)}
                                         $pointer
                                     >
-                                        <Div>
-                                            <P color="grey" fontSize="sm" fontWeight={400}>
+                                        <MenuName>
+                                            <MenuText color="grey" fontSize="sm" fontWeight={400}>
                                                 {item.menuName}
-                                            </P>
-                                        </Div>
+                                            </MenuText>
+                                        </MenuName>
                                         {item.menuName !== '건의사항' && (
-                                        <Div>
+                                        <MenuCount>
                                             <P color="grey" fontSize="sm" fontWeight={400}>
                                                 ({item.count})
                                             </P>
-                                        </Div>
+                                        </MenuCount>
                                         )}
-                                    </FlexDiv>
+                                    </MenuRow>
                                 </Div>
                             );
                         })}
                 </Div>
-            </Div>
+            </NavigateBox>
         </>
     );
 };

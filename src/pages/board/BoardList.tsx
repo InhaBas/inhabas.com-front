@@ -30,10 +30,41 @@ import Pagination from "../../components/common/Pagination";
 import BoardNavigate from "../../components/board/BoardNavigate";
 import BoardSearch from "../../components/board/BoardSearch";
 import Contest from "../activity/Contest";
+import { media } from "../../styles/theme";
 
 const StickyDiv = styled(Div)`
     position: sticky;
     top: 50px;
+    flex: 0 0 auto;
+    width: 293px;
+
+    ${media.tablet} {
+        position: static;
+        top: auto;
+        width: 100%;
+        padding: 0;
+        margin-bottom: 30px;
+    }
+`;
+
+const BoardContainer = styled(Container)`
+    flex-wrap: nowrap;
+
+    ${media.tablet} {
+        flex-direction: column;
+    }
+`;
+
+const BoardContent = styled(Div)`
+    flex: 1 1 auto;
+    min-width: 0;
+    width: calc(100% - 293px);
+    padding: 0 15px;
+
+    ${media.tablet} {
+        width: 100%;
+        padding: 0;
+    }
 `;
 
 const BoardList = () => {
@@ -155,18 +186,18 @@ const BoardList = () => {
                     <Loading />
                 </FlexDiv>
             ) : (
-                <Container $alignitems="start">
+                <BoardContainer $alignitems="start">
                     <StickyDiv $padding="0 15px">
-                        <Div $margin="0 0 30px 0">
+                        <Div width="100%" $margin="0 0 30px 0">
                             <BoardSearch />
                         </Div>
                         {url !== "sponsor" && url !== "usage" && (
-                            <Div>
+                            <Div width="100%">
                                 <BoardNavigate />
                             </Div>
                         )}
                     </StickyDiv>
-                    <Div $padding="0 15px">
+                    <BoardContent>
                         <Suspense fallback={<Img src="/images/loading.svg" />}>
                             {["contest", "activity"].includes(url) ? (
                                 <Contest />
@@ -225,8 +256,8 @@ const BoardList = () => {
                                 size={4}
                             />
                         )}
-                    </Div>
-                </Container>
+                    </BoardContent>
+                </BoardContainer>
             )}
         </>
     );
