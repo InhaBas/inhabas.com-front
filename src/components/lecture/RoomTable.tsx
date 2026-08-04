@@ -15,6 +15,37 @@ const BoardTableHover = styled(FlexDiv)`
     }
 `;
 
+const TableScroll = styled.div`
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+
+    &::-webkit-scrollbar {
+        display: block;
+        height: 8px;
+    }
+`;
+
+const Table = styled.div`
+    width: 735px;
+    min-width: 735px;
+`;
+
+const TableCell = styled(FlexDiv)`
+    min-width: ${({ $minWidth }) => $minWidth};
+    overflow-wrap: anywhere;
+
+    a,
+    p {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+    }
+`;
+
 const RoomTable = () => {
     const navigate = useNavigate();
 
@@ -54,6 +85,8 @@ const RoomTable = () => {
 
     return (
         <Div width="100%" $padding="20px">
+            <TableScroll>
+            <Table>
             <FlexDiv
                 width="100%"
                 height="45px"
@@ -62,11 +95,11 @@ const RoomTable = () => {
                 $alignitems="center"
             >
                 {headerInfo.map((item: string, idx: number) => (
-                    <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
+                    <TableCell key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
                         <P $center={idx === 1 ? false : true} fontWeight={700}>
                             {item}
                         </P>
-                    </FlexDiv>
+                    </TableCell>
                 ))}
             </FlexDiv>
             {contents.map((element: object, idx: number) => (
@@ -81,14 +114,16 @@ const RoomTable = () => {
                     $pointer
                 >
                     {Object.values(element).map((item: any, idx: number) => (
-                        <FlexDiv key={`itemValue${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
+                        <TableCell key={`itemValue${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
                             <A $center={idx === 1 ? false : true} fontWeight={idx === 0 ? 900 : 500}>
                                 {item}
                             </A>
-                        </FlexDiv>
+                        </TableCell>
                     ))}
                 </BoardTableHover>
             ))}
+            </Table>
+            </TableScroll>
         </Div>
     );
 };
