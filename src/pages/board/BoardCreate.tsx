@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import styled from "styled-components";
 
 import useFetch from "../../hooks/useFetch";
 
@@ -9,7 +10,7 @@ import { menuId, refetch, selectedFile } from "../../recoil/frontState";
 
 import { boardDetailInterface } from "../../types/TypeBoard";
 
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import DragNDrop from "../../components/common/DragNDrop";
 import Dropdown from "../../components/common/Dropdown";
@@ -25,6 +26,88 @@ import TextEditor from "../../components/common/TextEditor";
 import { tokenInterface } from "../../types/TypeCommon";
 
 import { jwtDecode } from "jwt-decode";
+
+const PolicyNotice = styled(FlexDiv)`
+    padding: 15px 20px;
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    border: 1px solid ${theme.color.bgColor};
+    border-radius: 5px;
+
+    ${media.mobile} {
+        align-items: flex-start;
+        padding: 14px 16px;
+    }
+`;
+
+const PolicyIcon = styled(Div)`
+    flex: 0 0 25px;
+`;
+
+const PolicyText = styled(P).attrs({ $whiteSpace: "normal" })`
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+`;
+
+const FormCard = styled(Div)`
+    min-width: 0;
+`;
+
+const FormHeader = styled(FlexDiv)`
+    width: 100%;
+    padding: 20px;
+    justify-content: space-between;
+    border-bottom: 1px solid ${theme.color.border};
+
+    ${media.mobile} {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px;
+    }
+`;
+
+const FormSection = styled(Div)`
+    width: 100%;
+    min-width: 0;
+    padding: 20px;
+
+    ${media.mobile} {
+        padding: 12px;
+    }
+`;
+
+const ResponsiveTextInput = styled(TextInput)`
+    max-width: 100%;
+
+    ${media.mobile} {
+        height: 52px;
+        font-size: ${theme.fontSize.lg};
+    }
+`;
+
+const ResponsiveDateInput = styled(DateInput)`
+    max-width: 100%;
+    box-sizing: border-box;
+
+    ${media.mobile} {
+        height: 52px;
+        font-size: ${theme.fontSize.lg};
+    }
+`;
+
+const SubmitButton = styled(Button)`
+    width: 400px;
+    max-width: 100%;
+
+    ${media.mobile} {
+        width: 100%;
+    }
+`;
 
 const BoardCreate = () => {
     const location = useLocation();
@@ -183,31 +266,19 @@ const BoardCreate = () => {
             ) : (
                 <Container $alignitems="start">
                     <Div width="100%" $margin="0 0 30px 0">
-                        <FlexDiv
-                            $padding="15px 20px"
-                            width="100%"
-                            $justifycontent="start"
-                            radius={5}
-                            $border="1px solid"
-                            $borderColor="bgColor"
-                        >
-                            <Div width="25px" height="25px" $margin="0 10px 0 0">
+                        <PolicyNotice>
+                            <PolicyIcon width="25px" height="25px" $margin="0 10px 0 0">
                                 <Img src="/images/triangle-warning_purple.svg"></Img>
-                            </Div>
-                            <Div>
-                                <P color="bgColor" fontSize="sm" fontWeight={700}>
+                            </PolicyIcon>
+                            <Div width="100%">
+                                <PolicyText color="bgColor" fontSize="sm" fontWeight={700}>
                                     웹사이트 운영 정책을 위반하는 게시글은 예고 없이 삭제 될 수 있습니다.
-                                </P>
+                                </PolicyText>
                             </Div>
-                        </FlexDiv>
+                        </PolicyNotice>
 
-                        <Div width="100%" $border="1px solid" $borderColor="border" $margin="20px 0" radius={6}>
-                            <FlexDiv
-                                width=" 100%"
-                                $padding="20px"
-                                $justifycontent="space-between"
-                                $borderB={`1px solid ${theme.color.border}`}
-                            >
+                        <FormCard width="100%" $border="1px solid" $borderColor="border" $margin="20px 0" radius={6}>
+                            <FormHeader>
                                 <Div>
                                     <P fontWeight={600}>게시글 작성</P>
                                 </Div>
@@ -221,10 +292,10 @@ const BoardCreate = () => {
                                         />
                                     </Div>
                                 )}
-                            </FlexDiv>
-                            <Div width="100%" $padding="20px">
+                            </FormHeader>
+                            <FormSection>
                                 <Div width="100%">
-                                    <TextInput
+                                    <ResponsiveTextInput
                                         width="100%"
                                         height="60px"
                                         placeholder="제목을 입력해주세요"
@@ -232,14 +303,14 @@ const BoardCreate = () => {
                                         $borderRadius={5}
                                         ref={(el: never) => (inputRef.current[0] = el)}
                                         defaultValue={detail?.title}
-                                    ></TextInput>
+                                    ></ResponsiveTextInput>
                                 </Div>
-                            </Div>
+                            </FormSection>
 
                             {(url === "sponsor" || url === "usage") && (
-                                <Div width="100%" $padding="20px">
+                                <FormSection>
                                     <Div width="100%">
-                                        <DateInput
+                                        <ResponsiveDateInput
                                             width="100%"
                                             height="60px"
                                             fontSize="xl"
@@ -249,31 +320,30 @@ const BoardCreate = () => {
                                             defaultValue={detail?.dateHistory?.split("T")[0]}
                                         />
                                     </Div>
-                                </Div>
+                                </FormSection>
                             )}
 
-                            <Div width="100%" $padding="20px">
+                            <FormSection>
                                 <DragNDrop fileFetch menuId={currentMenuId} />
-                            </Div>
-                            <Div width="100%" $padding="20px">
+                            </FormSection>
+                            <FormSection>
                                 <TextEditor
                                     ref={(el: never) => (inputRef.current[1] = el)}
                                     initialContent={detail?.content}
                                 />
-                            </Div>
-                        </Div>
+                            </FormSection>
+                        </FormCard>
 
                         <FlexDiv width="100%" $margin="30px 0 0 0">
-                            <Button
+                            <SubmitButton
                                 $backgroundColor="bgColor"
                                 $HBackgroundColor="bgColorHo"
                                 $borderRadius={2}
                                 $padding="15px 30px"
-                                width="400px"
                                 onClick={() => sendInput()}
                             >
                                 {update === "create" ? <P color="wh">작성하기</P> : <P color="wh">수정하기</P>}
-                            </Button>
+                            </SubmitButton>
                         </FlexDiv>
                     </Div>
                 </Container>
