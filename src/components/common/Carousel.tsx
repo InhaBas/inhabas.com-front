@@ -10,10 +10,96 @@ import { carouselInterface } from "../../types/TypeCommon";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
+import { media, theme } from "../../styles/theme";
+
+const CarouselOverlay = styled(Div)`
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+`;
+
+const CarouselFrame = styled(Div)`
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+`;
+
+const TopBar = styled(FlexDiv)`
+    width: 100%;
+    height: 50px;
+    flex-wrap: nowrap;
+`;
+
+const SlideCount = styled(Div)`
+    min-width: 0;
+    margin: 0 30px;
+
+    ${media.mobile} {
+        margin: 0 16px;
+    }
+`;
+
+const TopActions = styled(FlexDiv)`
+    flex: 0 0 100px;
+    width: 100px;
+    flex-wrap: nowrap;
+
+    ${media.mobile} {
+        flex-basis: 88px;
+        width: 88px;
+    }
+`;
+
+const CloseButton = styled(Div)`
+    margin-right: 30px;
+
+    ${media.mobile} {
+        margin-right: 16px;
+    }
+`;
+
+const SingleImageArea = styled(FlexDiv)`
+    width: 100%;
+    height: calc(100vh - 50px);
+    height: calc(100dvh - 50px);
+    min-height: 0;
+`;
+
+const Slide = styled(Div)`
+    height: calc(100vh - 200px);
+    height: calc(100dvh - 200px);
+
+    ${media.mobile} {
+        height: calc(100vh - 150px);
+        height: calc(100dvh - 150px);
+    }
+`;
+
+const Thumbnail = styled(Div)`
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    margin-right: 10px;
+
+    ${media.mobile} {
+        width: 72px;
+        height: 72px;
+    }
+`;
 
 const StyledSlider = styled(Slider)`
     width: 100%;
     height: calc(100vh - 200px);
+    height: calc(100dvh - 200px);
+    min-width: 0;
+
+    ${media.mobile} {
+        height: calc(100vh - 150px);
+        height: calc(100dvh - 150px);
+    }
 
     .slick-prev,
     .slick-next {
@@ -22,6 +108,35 @@ const StyledSlider = styled(Slider)`
 
     .slick-list {
         overflow: hidden;
+    }
+
+    .slick-dots {
+        max-width: 100%;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        overscroll-behavior-inline: contain;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: ${theme.color.grey2} ${theme.color.border};
+    }
+
+    .slick-dots::-webkit-scrollbar {
+        display: block;
+        height: 8px;
+    }
+
+    .slick-dots::-webkit-scrollbar-thumb {
+        background: ${theme.color.grey2};
+        border-radius: 4px;
+    }
+
+    ${media.mobile} {
+        .slick-dots li {
+            width: 72px;
+            height: 72px;
+        }
     }
 `;
 
@@ -69,9 +184,9 @@ const Carousel: React.FC<carouselInterface> = ({ images }) => {
         customPaging: (i: number) => {
             const thumb = images[i];
             return (
-                <Div display="inline-block" height="100px" width="100px" $margin="0 10px 0 0" $pointer>
+                <Thumbnail $pointer>
                     <Img $objectFit="fill" src={thumb} />
-                </Div>
+                </Thumbnail>
             );
         },
         dots: true,
@@ -106,40 +221,40 @@ const Carousel: React.FC<carouselInterface> = ({ images }) => {
     }, [images, carouselInitial]);
 
     return (
-        <Div width="100%" height="100vh" $position="absolute" $top="0" $left="0" $zIndex={9999} $backgroundColor="wh">
-            <Div $position="relative" width="100%">
-                <FlexDiv width="100%" $backgroundColor="bgColor" height="50px" $justifycontent="space-between">
-                    <Div $margin="0 30px">
+        <CarouselOverlay $zIndex={9999} $backgroundColor="wh">
+            <CarouselFrame $position="relative">
+                <TopBar $backgroundColor="bgColor" $justifycontent="space-between">
+                    <SlideCount>
                         <P color="wh">
                             {currentSlide + 1} / {images.length}
                         </P>
-                    </Div>
-                    <FlexDiv width="100px" $justifycontent="space-around">
+                    </SlideCount>
+                    <TopActions $justifycontent="space-around">
                         <Div $pointer width="20px" height="20px" onClick={handleDownload}>
                             <Img src="/images/download_white.svg" />
                         </Div>
-                        <Div $pointer $margin="0 30px 0 0" onClick={moveBack}>
+                        <CloseButton $pointer onClick={moveBack}>
                             <P color="wh" fontWeight={800}>
                                 X
                             </P>
-                        </Div>
-                    </FlexDiv>
-                </FlexDiv>
+                        </CloseButton>
+                    </TopActions>
+                </TopBar>
                 {images.length === 1 ? (
-                    <FlexDiv width="100%" height="calc(100vh - 50px)">
+                    <SingleImageArea>
                         <Img $objectFit="contain" src={images[0]} />
-                    </FlexDiv>
+                    </SingleImageArea>
                 ) : (
                     <StyledSlider {...settings} ref={sliderRef}>
                         {images.map((image, index) => (
-                            <Div key={index} height="calc(100vh - 200px)">
+                            <Slide key={index}>
                                 <Img $objectFit="contain" src={image} />
-                            </Div>
+                            </Slide>
                         ))}
                     </StyledSlider>
                 )}
-            </Div>
-        </Div>
+            </CarouselFrame>
+        </CarouselOverlay>
     );
 };
 
