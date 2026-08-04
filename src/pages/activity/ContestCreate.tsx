@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import styled from "styled-components";
 
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import useFetch from "../../hooks/useFetch";
 
@@ -20,6 +21,57 @@ import { DateInput, Label, Radio, TextInput } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
 
 import { DateFunction } from "../../functions/dateFunction";
+
+const FormContent = styled(Div)`
+    &,
+    * {
+        box-sizing: border-box;
+    }
+`;
+
+const PolicyNotice = styled(FlexDiv)`
+    box-sizing: border-box;
+    flex-wrap: nowrap;
+
+    > :last-child {
+        min-width: 0;
+    }
+
+    p {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        line-height: 1.5;
+    }
+
+    ${media.mobile} {
+        align-items: flex-start;
+        padding: 14px 16px;
+    }
+`;
+
+const RadioGroup = styled(FlexDiv)`
+    gap: 24px;
+    height: auto;
+
+    > div {
+        margin: 0;
+    }
+
+    ${media.mobile} {
+        align-items: flex-start;
+        gap: 14px 24px;
+    }
+`;
+
+const SubmitButton = styled(Button)`
+    width: 400px;
+    max-width: 100%;
+
+    ${media.mobile} {
+        width: 100%;
+    }
+`;
 
 interface contestDetailInterface {
     contestFieldId: number | null;
@@ -195,8 +247,8 @@ const ContestCreate = () => {
                 </FlexDiv>
             ) : (
                 <Container $alignitems="start">
-                    <Div width="100%" $margin="0 0 30px 0">
-                        <FlexDiv
+                    <FormContent width="100%" $margin="0 0 30px 0">
+                        <PolicyNotice
                             $padding="15px 20px"
                             width="100%"
                             $justifycontent="start"
@@ -212,7 +264,7 @@ const ContestCreate = () => {
                                     웹사이트 운영 정책을 위반하는 게시글은 예고 없이 삭제 될 수 있습니다.
                                 </P>
                             </Div>
-                        </FlexDiv>
+                        </PolicyNotice>
 
                         <Div width="100%" $border="1px solid" $borderColor="border" $margin="20px 0" radius={6}>
                             <FlexDiv
@@ -253,7 +305,7 @@ const ContestCreate = () => {
                             </FlexDiv>
                             <Div width="100%" $padding="20px">
                                 <Div width="100%">
-                                    <FlexDiv width="90%" $justifycontent="flex-start" height="50px">
+                                    <RadioGroup width="90%" $justifycontent="flex-start">
                                         <FlexDiv>
                                             <Radio
                                                 name="setHistoryType"
@@ -265,7 +317,7 @@ const ContestCreate = () => {
                                             />
                                             <Label $margin="0 0 0 5px">빅데이터</Label>
                                         </FlexDiv>
-                                        <FlexDiv $margin="0 90px">
+                                        <FlexDiv>
                                             <Radio
                                                 name="setHistoryType"
                                                 value={"IT"}
@@ -289,7 +341,7 @@ const ContestCreate = () => {
                                             />
                                             <Label $margin="0 0 0 5px">기타</Label>
                                         </FlexDiv> */}
-                                    </FlexDiv>
+                                    </RadioGroup>
                                 </Div>
                             </Div>
                         </Div>
@@ -437,18 +489,17 @@ const ContestCreate = () => {
                         </Div>
 
                         <FlexDiv width="100%" $margin="30px 0 0 0">
-                            <Button
+                            <SubmitButton
                                 $backgroundColor="bgColor"
                                 $HBackgroundColor="bgColorHo"
                                 $borderRadius={2}
                                 $padding="15px 30px"
-                                width="400px"
                                 onClick={() => sendInput()}
                             >
                                 {update === "create" ? <P color="wh">작성하기</P> : <P color="wh">수정하기</P>}
-                            </Button>
+                            </SubmitButton>
                         </FlexDiv>
-                    </Div>
+                    </FormContent>
                 </Container>
             )}
         </FlexDiv>
