@@ -4,6 +4,96 @@ import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
 import { theme } from "../../styles/theme";
+import styled from "styled-components";
+import { media } from "../../styles/theme";
+
+const ContestCardButton = styled(Button)`
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 360px;
+    margin: 0 auto;
+    text-align: left;
+`;
+
+const ContestCard = styled.div`
+    width: 360px;
+    max-width: 100%;
+    min-height: 600px;
+    border: 1px solid ${({ theme }) => theme.color.border};
+    overflow: hidden;
+
+    &,
+    * {
+        box-sizing: border-box;
+    }
+
+    ${media.mobile} {
+        width: 100%;
+        min-height: 0;
+    }
+`;
+
+const Poster = styled.div`
+    width: 100%;
+    aspect-ratio: 6 / 7;
+    border-bottom: 1px solid ${({ theme }) => theme.color.border};
+
+    img {
+        object-fit: cover;
+    }
+`;
+
+const CardBody = styled.div`
+    display: flex;
+    flex-direction: column;
+    min-height: 180px;
+
+    p {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        overflow-wrap: anywhere;
+    }
+`;
+
+const CardMain = styled.div`
+    flex: 1;
+    padding: 30px 10.5%;
+`;
+
+const CardLine = styled.div`
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    min-width: 0;
+
+    & + & {
+        margin-top: 5px;
+    }
+
+    > :last-child {
+        min-width: 0;
+        flex: 1;
+    }
+`;
+
+const StatusRow = styled.div`
+    padding: 5px 0 20px;
+`;
+
+const PeriodRow = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border-top: 1px solid ${({ theme }) => theme.color.border};
+
+    > :last-child {
+        min-width: 0;
+        flex: 1;
+    }
+`;
 
 const ContestInfo = ({ info }: { info: any }) => {
     const navigate = useNavigate();
@@ -24,46 +114,45 @@ const ContestInfo = ({ info }: { info: any }) => {
 
     return (
         <>
-            {/* 추후에 width 변경 */}
-            <Button width="100%" height="100%" onClick={() => navigate(`/board/${url}/detail/${data?.id}`)}>
-                <Div width="360px" height="600px" $border="1px solid" $borderColor="border">
+            <ContestCardButton onClick={() => navigate(`/board/${url}/detail/${data?.id}`)}>
+                <ContestCard>
                     {/* 사진 영역 */}
-                    <Div $minWidth="100%" width="100%" height="70%" $borderB={`1px solid ${theme.color.border}`}>
+                    <Poster>
                         <Img src={data?.thumbnailUrl} width="100%" />
-                    </Div>
+                    </Poster>
                     {/* 내용 영역 */}
-                    <FlexDiv height="30%" width="100%">
+                    <CardBody>
                         {/* 윗 내용 */}
-                        <Div height="45%" width="79%" $padding="30px 0">
+                        <CardMain>
                             {/* 월, 제목 */}
-                            <FlexDiv width="100%" $justifycontent="flex-start">
+                            <CardLine>
                                 <Div>
                                     <P color="textColor" fontSize="sm" fontWeight={600} >
                                         {data?.endMonth}월
                                     </P>
                                 </Div>
                                 {/* <Div $margin="0 0 0 20px"> */}
-                                <Div $margin="0 0 0 20px" $maxWidth="80%">
+                                <Div>
                                     <P fontSize="lg" fontWeight={700}>
                                         {data?.title}
                                     </P>
                                 </Div>
-                            </FlexDiv>
+                            </CardLine>
                             {/* 일, 내용 */}
-                            <FlexDiv $margin="5px 0 0 3px" width="100%" $justifycontent="flex-start">
+                            <CardLine>
                                 <Div>
                                     <P color="TextPrimary" fontSize="xl" fontWeight={600}>
                                         {data?.endDay}
                                     </P>
                                 </Div>
-                                <Div $margin="0 0 0 23px" $maxWidth="80%">
+                                <Div>
                                     <P color="grey">{data?.topic}</P>
                                 </Div>
-                            </FlexDiv>
-                        </Div>
+                            </CardLine>
+                        </CardMain>
                         {/* 진행 상태 */}
-                        <Div width="100%" $margin="0 0 20px 0" $padding="5px 0">
-                            <FlexDiv width="30%">
+                        <StatusRow>
+                            <FlexDiv width="100%">
                                 {data?.dday < 0 && (
                                     <Div $border="1px solid" $borderColor="grey3" $padding="3px" radius={5}>
                                         <P color="grey3" fontSize="sm">
@@ -86,31 +175,25 @@ const ContestInfo = ({ info }: { info: any }) => {
                                     </Div>
                                 )}
                             </FlexDiv>
-                        </Div>
+                        </StatusRow>
                         {/* 아랫 내용 */}
-                        <FlexDiv
-                            height="25%"
-                            width="100%"
-                            $borderT={`1px solid ${theme.color.border}`}
-                            $justifycontent="flex-start"
-                            $padding="15px"
-                        >
+                        <PeriodRow>
                             <Div>
                                 <P fontSize="sm" color="textColor">
                                     기간
                                 </P>
                             </Div>
-                            <Div $margin="0 0 0 15px">
+                            <Div>
                                 <P
                                     fontSize="sm"
                                     color="grey"
                                     fontWeight={600}
                                 >{`${data?.dateStart}~${data?.dateEnd}`}</P>
                             </Div>
-                        </FlexDiv>
-                    </FlexDiv>
-                </Div>
-            </Button>
+                        </PeriodRow>
+                    </CardBody>
+                </ContestCard>
+            </ContestCardButton>
         </>
     );
 };

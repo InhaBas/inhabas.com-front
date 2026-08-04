@@ -8,6 +8,27 @@ import { lectureRoomInfo, lectureRoomTutorInfo } from "../../recoil/backState";
 import { useNavigate } from "react-router-dom";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import P from "../../styles/assets/P";
+import styled from "styled-components";
+import { media } from "../../styles/theme";
+
+const NavigateBox = styled.div`
+    width: 263px;
+    max-width: 100%;
+    padding: 30px 20px 10px;
+    border: 2px solid ${({ theme }) => theme.color.border};
+    box-sizing: border-box;
+
+    ${media.tablet} {
+        width: 100%;
+    }
+
+    p {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        overflow-wrap: anywhere;
+    }
+`;
 
 const BoardNavigate = () => {
     const navigate = useNavigate();
@@ -73,7 +94,7 @@ const BoardNavigate = () => {
 
     return (
         <>
-            <Div width="263px" $border={`2px solid`} $borderColor="border" $padding="30px 20px 10px">
+            <NavigateBox>
                 <Div $borderL={`4px solid ${theme.color.bgColor}`} $padding="5px 0 5px 20px" $margin="0 0 15px 0">
                     <P fontSize="xl" fontWeight={700}>
                         강의실
@@ -102,9 +123,9 @@ const BoardNavigate = () => {
                         );
                     })}
                 </Div>
-            </Div>
+            </NavigateBox>
 
-            <Div width="263px" $margin="10px 0" $border={`2px solid`} $borderColor="border" $padding="30px 20px 10px">
+            <NavigateBox style={{ margin: "10px 0" }}>
                 <Div $borderL={`4px solid ${theme.color.bgColor}`} $padding="5px 0 5px 20px" $margin="0 0 15px 0">
                     <P fontSize="xl" fontWeight={700}>
                         강의자 메뉴
@@ -133,7 +154,7 @@ const BoardNavigate = () => {
                         );
                     })}
                 </Div>
-            </Div>
+            </NavigateBox>
         </>
     );
 };

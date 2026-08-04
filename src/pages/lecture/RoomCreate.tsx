@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import Button from "../../styles/assets/Button";
 import { Div, FlexDiv } from "../../styles/assets/Div";
@@ -16,6 +16,14 @@ const StickyDiv = styled(Div)`
     position: sticky;
     top: 50px;
     margin: 0 50px 0 0;
+
+    flex: 0 0 263px;
+
+    ${media.tablet} {
+        position: static;
+        width: 100%;
+        margin: 0 0 30px;
+    }
 `;
 
 const TitleTextInput = styled(TextInput)`
@@ -25,6 +33,77 @@ const TitleTextInput = styled(TextInput)`
     &::placeholder {
         color: ${(props) => props.theme.color.grey1};
     }
+
+    ${media.mobile} {
+        font-size: 20px;
+    }
+`;
+
+const RoomLayout = styled(FlexDiv)`
+    width: 90%;
+    max-width: 90%;
+    min-width: 0;
+
+    ${media.tablet} {
+        width: calc(100% - 48px);
+        max-width: calc(100% - 48px);
+        flex-direction: column;
+    }
+
+    ${media.mobile} {
+        width: calc(100% - 32px);
+        max-width: calc(100% - 32px);
+    }
+`;
+
+const RoomContent = styled(Div)`
+    && {
+        flex: 1 1 auto;
+        min-width: 0;
+        width: calc(100% - 313px);
+
+        ${media.tablet} {
+            width: 100%;
+        }
+    }
+
+    &,
+    * {
+        box-sizing: border-box;
+    }
+
+    > div {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+`;
+
+const PolicyNotice = styled(FlexDiv)`
+    > :last-child {
+        min-width: 0;
+    }
+
+    p {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        line-height: 1.5;
+    }
+
+    ${media.mobile} {
+        align-items: flex-start;
+        padding: 14px 16px;
+    }
+`;
+
+const SubmitButton = styled(Button)`
+    width: 400px;
+    max-width: 100%;
+
+    ${media.mobile} {
+        width: 100%;
+    }
 `;
 
 const RoomCreate = () => {
@@ -33,7 +112,7 @@ const RoomCreate = () => {
 
         // </FlexDiv>
         <>
-            <FlexDiv $justifycontent="start" $alignitems="start" $margin="0 5%">
+            <RoomLayout $justifycontent="start" $alignitems="start">
                 <StickyDiv>
                     <Div $margin="0 0 30px 0">
                         <RoomSearch />
@@ -43,11 +122,11 @@ const RoomCreate = () => {
                         <RoomNavigate />
                     </Div>
                 </StickyDiv>
-                <Div>
+                <RoomContent width="100%">
                     <Div $alignitems="start" $padding="0">
                         <Div width="100%" $margin="0 0 30px 0">
                             <Div width="100%" $margin="0 0 30px 0">
-                                <FlexDiv
+                                <PolicyNotice
                                     $padding="15px 20px"
                                     width="100%"
                                     $justifycontent="start"
@@ -63,7 +142,7 @@ const RoomCreate = () => {
                                             웹사이트 운영 정책을 위반하는 게시글은 예고 없이 삭제 될 수 있습니다.
                                         </P>
                                     </Div>
-                                </FlexDiv>
+                                </PolicyNotice>
 
                                 <Div
                                     $border="1px solid"
@@ -94,21 +173,20 @@ const RoomCreate = () => {
                                 </Div>
 
                                 <FlexDiv width="100%" $margin="30px 0 0 0">
-                                    <Button
+                                    <SubmitButton
                                         $backgroundColor="bgColor"
                                         $HBackgroundColor="bgColorHo"
                                         $borderRadius={2}
                                         $padding="15px 30px"
-                                        width="400px"
                                     >
                                         <P color="wh">작성하기</P>
-                                    </Button>
+                                    </SubmitButton>
                                 </FlexDiv>
                             </Div>
                         </Div>
                     </Div>
-                </Div>
-            </FlexDiv>
+                </RoomContent>
+            </RoomLayout>
         </>
     );
 };

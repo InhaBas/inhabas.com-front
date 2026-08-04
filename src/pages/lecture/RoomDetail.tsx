@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { media } from "../../styles/theme";
 
 import A from "../../styles/assets/A";
 import Button from "../../styles/assets/Button";
@@ -16,11 +17,105 @@ const StickyDiv = styled(Div)`
     position: sticky;
     top: 50px;
     margin: 0 50px 0 0;
+
+    flex: 0 0 263px;
+
+    ${media.tablet} {
+        position: static;
+        width: 100%;
+        margin: 0 0 30px;
+    }
+`;
+
+const RoomLayout = styled(FlexDiv)`
+    width: 90%;
+    max-width: 90%;
+    min-width: 0;
+
+    ${media.tablet} {
+        width: calc(100% - 48px);
+        max-width: calc(100% - 48px);
+        flex-direction: column;
+    }
+
+    ${media.mobile} {
+        width: calc(100% - 32px);
+        max-width: calc(100% - 32px);
+    }
+`;
+
+const RoomContent = styled(Div)`
+    && {
+        flex: 1 1 auto;
+        min-width: 0;
+        width: calc(100% - 313px);
+
+        ${media.tablet} {
+            width: 100%;
+        }
+    }
+
+    &,
+    * {
+        box-sizing: border-box;
+    }
+
+    > div {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+`;
+
+const ResponsiveDetailContainer = styled(DetailContainer)`
+    min-width: 0;
+
+    p,
+    h2,
+    a {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+`;
+
+const DetailMeta = styled(FlexDiv)`
+    row-gap: 6px;
+
+    ${media.mobile} {
+        align-items: flex-start;
+    }
+`;
+
+const FileList = styled(FlexDiv)`
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+
+    a {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    ${media.mobile} {
+        width: 100%;
+        padding: 16px;
+    }
+`;
+
+const DetailActions = styled(FlexDiv)`
+    gap: 10px;
+
+    button {
+        margin: 0;
+    }
+
+    ${media.mobile} {
+        justify-content: flex-start;
+    }
 `;
 
 const RoomDetail = () => {
     return (
-        <FlexDiv $justifycontent="start" $alignitems="start" $margin="0 5%">
+        <RoomLayout $justifycontent="start" $alignitems="start">
             <StickyDiv>
                 <Div $margin="0 0 30px 0">
                     <RoomSearch />
@@ -30,10 +125,10 @@ const RoomDetail = () => {
                     <RoomNavigate />
                 </Div>
             </StickyDiv>
-            <Div>
-                <DetailContainer $alignitems="start">
+            <RoomContent width="100%">
+                <ResponsiveDetailContainer $alignitems="start">
                     <Div width="100%" $margin="0 0 30px 0">
-                        <FlexDiv $margin="50px 0 30px 0">
+                        <DetailMeta $margin="50px 0 30px 0">
                             <FlexDiv width="12px" $margin="0 5px 0 0">
                                 <Img src="/images/user_grey.svg" />
                             </FlexDiv>
@@ -50,8 +145,8 @@ const RoomDetail = () => {
                                     2022-04-03 17:02
                                 </P>
                             </Div>
-                        </FlexDiv>
-                        <Div>
+                        </DetailMeta>
+                        <Div width="100%">
                             <H2 fontSize="xxl" fontWeight={800}>
                                 업로드 가능한 파일 제한 안내
                             </H2>
@@ -66,7 +161,7 @@ const RoomDetail = () => {
                         </Div>
 
                         <FlexDiv width="100%">
-                            <FlexDiv
+                            <FileList
                                 $justifycontent="start"
                                 width="80%"
                                 $padding="20px 30px"
@@ -81,10 +176,10 @@ const RoomDetail = () => {
                                         2022년도_2학기_베타테스터_프로젝트_팀_배분.xlsx
                                     </A>
                                 </Div>
-                            </FlexDiv>
+                            </FileList>
                         </FlexDiv>
 
-                        <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
+                        <DetailActions $margin="50px 0 0 0" width="100%" $justifycontent="end">
                             <Button
                                 display="flex"
                                 $backgroundColor="bgColor"
@@ -111,13 +206,13 @@ const RoomDetail = () => {
                                     </P>
                                 </Div>
                             </Button>
-                        </FlexDiv>
+                        </DetailActions>
                     </Div>
                     {/* <Comment></Comment> */}
                     <CommentInput></CommentInput>
-                </DetailContainer>
-            </Div>
-        </FlexDiv>
+                </ResponsiveDetailContainer>
+            </RoomContent>
+        </RoomLayout>
     );
 };
 

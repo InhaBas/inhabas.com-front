@@ -1,4 +1,4 @@
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import Button from "../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../styles/assets/Div";
@@ -20,6 +20,60 @@ const MoveBtn = styled(Button)`
     }
 `;
 
+const LectureContent = styled(Div)`
+    overflow-wrap: anywhere;
+
+    &,
+    * {
+        box-sizing: border-box;
+    }
+
+    p,
+    h2 {
+        overflow-wrap: anywhere;
+    }
+
+    div {
+        max-width: 100%;
+    }
+
+    p {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+    }
+`;
+
+const DetailMeta = styled(FlexDiv)`
+    row-gap: 6px;
+
+    ${media.mobile} {
+        align-items: flex-start;
+    }
+`;
+
+const DetailActions = styled(FlexDiv)`
+    gap: 10px;
+
+    button {
+        margin: 0;
+    }
+
+    ${media.mobile} {
+        justify-content: flex-start;
+    }
+`;
+
+const LectureImage = styled.div`
+    width: 190px;
+    max-width: 100%;
+    aspect-ratio: 1;
+
+    img {
+        object-fit: cover;
+    }
+`;
+
 const LectureDetail = () => {
     const navigate = useNavigate();
 
@@ -30,7 +84,7 @@ const LectureDetail = () => {
     return (
         <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
             <Container>
-                <Div width="100%" $margin="0 0 30px 0">
+                <LectureContent width="100%" $margin="0 0 30px 0">
                     <FlexDiv
                         width="100%"
                         radius={3}
@@ -43,7 +97,7 @@ const LectureDetail = () => {
                         </Div>
                     </FlexDiv>
                     <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
-                        <FlexDiv
+                        <DetailMeta
                             width=" 100%"
                             $padding="20px"
                             $justifycontent="start"
@@ -65,7 +119,7 @@ const LectureDetail = () => {
                                     2022-04-03 17:02
                                 </P>
                             </Div>
-                        </FlexDiv>
+                        </DetailMeta>
                         <Div $padding="20px">
                             <H2 fontSize="xl" $lineHeight={1.8} fontWeight={800}>
                                 R을 이용한 간단한 데이터 분석
@@ -251,13 +305,13 @@ const LectureDetail = () => {
                             </Div>
                         </FlexDiv>
                         <Div $padding="20px">
-                            <Div width="190px" height="190px">
+                            <LectureImage>
                                 <Img src="/images/board-name-img.jpg" />
-                            </Div>
+                            </LectureImage>
                         </Div>
                     </Div>
-                </Div>
-                <FlexDiv width="100%" $justifycontent="end">
+                </LectureContent>
+                <DetailActions width="100%" $justifycontent="end">
                     <Button
                         display="flex"
                         $backgroundColor="bgColor"
@@ -284,7 +338,7 @@ const LectureDetail = () => {
                             </P>
                         </Div>
                     </Button>
-                </FlexDiv>
+                </DetailActions>
                 <FlexDiv width="100%">
                     <MoveBtn
                         onClick={() => movePage()}

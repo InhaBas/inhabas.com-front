@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import P from "../../styles/assets/P";
@@ -13,12 +13,60 @@ const StickyDiv = styled(Div)`
     position: sticky;
     top: 50px;
     margin: 0 50px 0 0;
+
+    flex: 0 0 263px;
+
+    ${media.tablet} {
+        position: static;
+        width: 100%;
+        margin: 0 0 30px;
+    }
+`;
+
+const RoomLayout = styled(FlexDiv)`
+    width: 90%;
+    max-width: 90%;
+    min-width: 0;
+
+    ${media.tablet} {
+        width: calc(100% - 48px);
+        max-width: calc(100% - 48px);
+        flex-direction: column;
+    }
+
+    ${media.mobile} {
+        width: calc(100% - 32px);
+        max-width: calc(100% - 32px);
+    }
+`;
+
+const RoomContent = styled(Div)`
+    && {
+        flex: 1 1 auto;
+        min-width: 0;
+        width: calc(100% - 313px);
+
+        ${media.tablet} {
+            width: 100%;
+        }
+    }
+
+    &,
+    * {
+        box-sizing: border-box;
+    }
+
+    > div {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
 `;
 
 const RoomList = () => {
     return (
         <>
-            <FlexDiv $justifycontent="start" $alignitems="start" $margin="0 5%">
+            <RoomLayout $justifycontent="start" $alignitems="start">
                 <StickyDiv>
                     <Div $margin="0 0 30px 0">
                         <RoomSearch />
@@ -28,7 +76,7 @@ const RoomList = () => {
                         <RoomNavigate />
                     </Div>
                 </StickyDiv>
-                <Div>
+                <RoomContent width="100%">
                     <FlexDiv
                         $justifycontent="start"
                         $border="1px solid"
@@ -109,8 +157,8 @@ const RoomList = () => {
                             <RoomTable />
                         </Div>
                     </FlexDiv>
-                </Div>
-            </FlexDiv>
+                </RoomContent>
+            </RoomLayout>
         </>
     );
 };

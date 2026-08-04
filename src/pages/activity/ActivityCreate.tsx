@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import styled from "styled-components";
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import useFetch from "../../hooks/useFetch";
 
@@ -26,6 +26,26 @@ const TitleTextInput = styled(TextInput)`
 
     &::placeholder {
         color: ${(props) => props.theme.color.grey1};
+    }
+
+    ${media.mobile} {
+        font-size: 20px;
+    }
+`;
+
+const FormContent = styled(Div)`
+    &,
+    * {
+        box-sizing: border-box;
+    }
+`;
+
+const SubmitButton = styled(Button)`
+    width: 400px;
+    max-width: 100%;
+
+    ${media.mobile} {
+        width: 100%;
     }
 `;
 
@@ -155,7 +175,7 @@ const ActivityCreate = () => {
                 </FlexDiv>
             ) : (
                 <Container>
-                    <Div width="100%">
+                    <FormContent width="100%">
                         <Div $border="1px solid" $borderColor="border" radius={5} width="100%">
                             <Div $borderB={`1px solid ${theme.color.border}`} $padding="20px" width="100%">
                                 <P fontWeight={600}>{update === "update" ? "게시글 수정" : "게시글 작성"}</P>
@@ -182,18 +202,17 @@ const ActivityCreate = () => {
                         </Div>
 
                         <FlexDiv width="100%" $margin="30px 0 0 0">
-                            <Button
+                            <SubmitButton
                                 $backgroundColor="bgColor"
                                 $HBackgroundColor="bgColorHo"
                                 $borderRadius={2}
                                 $padding="15px 30px"
-                                width="400px"
                                 onClick={sendInput}
                             >
                                 <P color="wh">{update === "update" ? "수정하기" : "작성하기"}</P>
-                            </Button>
+                            </SubmitButton>
                         </FlexDiv>
-                    </Div>
+                    </FormContent>
                 </Container>
             )}
         </FlexDiv>
