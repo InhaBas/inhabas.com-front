@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
+import styled from "styled-components";
 
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import { jwtDecode } from "jwt-decode";
 import { GetRoleAuthorization } from "../../functions/authFunctions";
@@ -19,6 +20,131 @@ import { TextArea } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
 import CommentInput from "./CommentInput";
 import Loading from "./Loading";
+
+const CommentCard = styled(Div)`
+    min-width: 0;
+
+    ${media.mobile} {
+        padding: 14px;
+    }
+`;
+
+const CommentHeader = styled(FlexDiv)`
+    min-width: 0;
+`;
+
+const CommentHeaderLayout = styled(FlexDiv)`
+    min-width: 0;
+    flex-wrap: nowrap;
+
+    ${media.mobile} {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+`;
+
+const AuthorBlock = styled(FlexDiv)`
+    min-width: 0;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+`;
+
+const AuthorMeta = styled(FlexDiv)`
+    min-width: 0;
+
+    ${media.mobile} {
+        height: auto;
+        justify-content: flex-start;
+    }
+`;
+
+const AuthorInfo = styled(FlexDiv)`
+    min-width: 0;
+    justify-content: flex-start;
+    row-gap: 4px;
+`;
+
+const WriterDetails = styled(FlexDiv)`
+    min-width: 0;
+    justify-content: flex-start;
+    row-gap: 4px;
+`;
+
+const WrapText = styled(P).attrs({ $whiteSpace: "normal" })`
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+`;
+
+const ActionContainer = styled(Div)`
+    min-width: 0;
+
+    ${media.mobile} {
+        width: 100%;
+    }
+`;
+
+const ActionBar = styled(FlexDiv)`
+    gap: 8px 0;
+
+    ${media.mobile} {
+        justify-content: flex-start;
+    }
+`;
+
+const ParentPreview = styled(FlexDiv)`
+    min-width: 0;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+`;
+
+const ParentAuthor = styled(Div)`
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 40%;
+`;
+
+const ParentComment = styled(Div)`
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+`;
+
+const EditingTextArea = styled(TextArea)`
+    max-width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+
+    ${media.mobile} {
+        padding: 16px;
+        border-radius: 20px;
+    }
+`;
+
+const CommentContent = styled(P).attrs({ $whiteSpace: "pre-wrap" })`
+    white-space: pre-wrap;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+`;
+
+const Replies = styled(Div)<{ $depth: number }>`
+    width: 100%;
+    min-width: 0;
+    padding-left: ${(props) => (props.$depth <= 4 ? "20px" : "0")};
+
+    ${media.tablet} {
+        padding-left: ${(props) => (props.$depth <= 3 ? "12px" : "0")};
+    }
+
+    ${media.mobile} {
+        padding-left: ${(props) => (props.$depth <= 2 ? "8px" : "0")};
+    }
+`;
 
 const CommentList = (props: commentPropsInterface) => {
     const { boardId, menuId, token } = props;
@@ -174,11 +300,11 @@ const CommentList = (props: commentPropsInterface) => {
                 $borderT={!depth ? `1px solid ${theme.color.border}` : "none"}
                 key={`${comment.id}_${depth}_${comment.writer.id}`}
             >
-                <Div width="100%" $border="1px solid" $margin="15px 0" $padding="20px" $borderColor="grey1">
+                <CommentCard width="100%" $border="1px solid" $margin="15px 0" $padding="20px" $borderColor="grey1">
                     <Div width="100%">
-                        <FlexDiv width="100%" $padding="0 0 20px 0">
-                            <FlexDiv width="100%" $justifycontent="space-between">
-                                <FlexDiv>
+                        <CommentHeader width="100%" $padding="0 0 20px 0">
+                            <CommentHeaderLayout width="100%" $justifycontent="space-between">
+                                <AuthorBlock>
                                     <FlexDiv
                                         width="30px"
                                         height="30px"
@@ -188,38 +314,38 @@ const CommentList = (props: commentPropsInterface) => {
                                     >
                                         <Img src={comment?.writer.pictureUrl} $objectFit="cover" />
                                     </FlexDiv>
-                                    <FlexDiv height="30px">
-                                        <FlexDiv>
+                                    <AuthorMeta height="30px">
+                                        <AuthorInfo>
                                             <Div>
-                                                <P fontSize="sm" fontWeight={700}>
+                                                <WrapText fontSize="sm" fontWeight={700}>
                                                     {comment?.writer.name}
-                                                </P>
+                                                </WrapText>
                                             </Div>
                                             <Div>
-                                                <FlexDiv>
+                                                <WriterDetails>
                                                     <Div>
-                                                        <P fontSize="xs" color="grey4">
+                                                        <WrapText fontSize="xs" color="grey4">
                                                             ({comment?.writer.major}) |
-                                                        </P>
+                                                        </WrapText>
                                                     </Div>
                                                     <FlexDiv width="13px" height="13px" $margin="0 5px">
                                                         <Img src="/images/clock_grey.svg"></Img>
                                                     </FlexDiv>
                                                     <Div>
-                                                        <P fontSize="xs" color="grey4">
+                                                        <WrapText fontSize="xs" color="grey4">
                                                             {formatDateMinute({
                                                                 date: String(comment?.dateUpdated) || "",
                                                             })}
-                                                        </P>
+                                                        </WrapText>
                                                     </Div>
-                                                </FlexDiv>
+                                                </WriterDetails>
                                             </Div>
-                                        </FlexDiv>
-                                    </FlexDiv>
-                                </FlexDiv>
-                                <Div>
+                                        </AuthorInfo>
+                                    </AuthorMeta>
+                                </AuthorBlock>
+                                <ActionContainer>
                                     {isAuthorizedOverDeactivate && !comment.isDeleted && (
-                                        <FlexDiv width="100%" $justifycontent="space-between">
+                                        <ActionBar width="100%" $justifycontent="space-between">
                                             <FlexDiv $pointer onClick={() => handleCommentButtonClick(comment?.id)}>
                                                 <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
                                                     <Img src="/images/comment_purple.svg"></Img>
@@ -283,25 +409,25 @@ const CommentList = (props: commentPropsInterface) => {
                                                     </FlexDiv>
                                                 )}
                                             </FlexDiv>
-                                        </FlexDiv>
+                                        </ActionBar>
                                     )}
-                                </Div>
-                            </FlexDiv>
-                        </FlexDiv>
+                                </ActionContainer>
+                            </CommentHeaderLayout>
+                        </CommentHeader>
                     </Div>
                     {depth !== 0 && (
-                        <FlexDiv width="100%" $justifycontent="start">
-                            <Div $margin="0 10px 0 0">
-                                <P fontSize="sm" fontWeight={300} $lineHeight={1.5} color="blue">
+                        <ParentPreview width="100%" $justifycontent="start">
+                            <ParentAuthor $margin="0 10px 0 0">
+                                <WrapText fontSize="sm" fontWeight={300} $lineHeight={1.5} color="blue">
                                     @{comment?.parentAuthor}
-                                </P>
-                            </Div>
-                            <Div width="90%" overflow="hidden" $whiteSpace="nowrap">
+                                </WrapText>
+                            </ParentAuthor>
+                            <ParentComment>
                                 <P fontSize="sm" fontWeight={300} $lineHeight={1.5} color="grey2">
                                     {comment?.parentComment}
                                 </P>
-                            </Div>
-                        </FlexDiv>
+                            </ParentComment>
+                        </ParentPreview>
                     )}
 
                     {isLoading && editingCommentId === comment.id ? (
@@ -310,7 +436,7 @@ const CommentList = (props: commentPropsInterface) => {
                         </FlexDiv>
                     ) : isEditing(comment.id) ? (
                         <Div $margin="15px 0" width="100%">
-                            <TextArea
+                            <EditingTextArea
                                 width="100%"
                                 $padding="20px"
                                 $borderRadius={30}
@@ -324,9 +450,9 @@ const CommentList = (props: commentPropsInterface) => {
                         </Div>
                     ) : (
                         <Div>
-                            <P $whiteSpace="wrap" fontSize="sm" fontWeight={300} $lineHeight={1.5}>
+                            <CommentContent fontSize="sm" fontWeight={300} $lineHeight={1.5}>
                                 {comment?.content}
-                            </P>
+                            </CommentContent>
                         </Div>
                     )}
 
@@ -335,12 +461,12 @@ const CommentList = (props: commentPropsInterface) => {
                             <CommentInput boardId={props.boardId} menuId={props.menuId} parentId={comment?.id} />
                         </Div>
                     )}
-                </Div>
+                </CommentCard>
                 {/* 대댓글 렌더링 */}
                 {comment.childrenComment && (
-                    <Div width="100%" $padding="0 0 0 20px">
+                    <Replies $depth={depth + 1}>
                         {renderCommentsRecursively(comment.childrenComment, depth + 1)}
-                    </Div>
+                    </Replies>
                 )}
             </Div>
         ));
