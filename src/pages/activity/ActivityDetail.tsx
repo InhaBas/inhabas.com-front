@@ -1,6 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 import A from "../../styles/assets/A";
 import Button from "../../styles/assets/Button";
@@ -8,7 +9,7 @@ import { DetailContainer, Div, FlexDiv } from "../../styles/assets/Div";
 import { H2 } from "../../styles/assets/H";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import Carousel from "../../components/common/Carousel";
 import CommentInput from "../../components/common/CommentInput";
@@ -26,6 +27,85 @@ import { GetRoleAuthorization } from "../../functions/authFunctions";
 import { tokenInterface } from "../../types/TypeCommon";
 import Loading from "../../components/common/Loading";
 import TextViewer from "../../components/common/TextViewer";
+
+const DetailMeta = styled(FlexDiv)`
+    justify-content: flex-start;
+    row-gap: 6px;
+    min-width: 0;
+
+    > div:last-child {
+        min-width: 0;
+    }
+
+    ${media.mobile} {
+        align-items: flex-start;
+    }
+`;
+
+const DetailTitle = styled(H2)`
+    overflow-wrap: anywhere;
+`;
+
+const ImageGallery = styled.div`
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+
+    > * {
+        flex: 0 0 200px;
+    }
+`;
+
+const GalleryImage = styled.div`
+    width: 200px;
+    height: 200px;
+
+    img {
+        object-fit: cover;
+    }
+`;
+
+const FileList = styled.div`
+    width: 80%;
+    padding: 0 30px;
+    border: 2px solid ${({ theme }) => theme.color.border};
+    box-sizing: border-box;
+
+    a {
+        min-width: 0;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    ${media.mobile} {
+        width: 100%;
+        padding: 0 16px;
+    }
+`;
+
+const FileRow = styled(FlexDiv)`
+    min-width: 0;
+
+    > :last-child {
+        min-width: 0;
+    }
+`;
+
+const DetailActions = styled(FlexDiv)`
+    gap: 10px;
+
+    button {
+        margin: 0;
+    }
+
+    ${media.mobile} {
+        justify-content: flex-start;
+    }
+`;
 
 const ActivityDetail = () => {
     const navigate = useNavigate();
@@ -115,7 +195,7 @@ const ActivityDetail = () => {
                 <FlexDiv width="100%">
                     <DetailContainer $alignitems="start">
                         <Div width="100%" $margin="0 0 30px 0">
-                            <FlexDiv $margin="50px 0 30px 0">
+                            <DetailMeta $margin="50px 0 30px 0">
                                 <FlexDiv width="12px" $margin="0 5px 0 0">
                                     <Img src="/images/user_grey.svg" />
                                 </FlexDiv>
@@ -132,23 +212,23 @@ const ActivityDetail = () => {
                                         {detail?.dateCreated.split("T")[0]} {detail?.dateCreated.split("T")[1]}
                                     </P>
                                 </Div>
-                            </FlexDiv>
+                            </DetailMeta>
                             <Div>
-                                <H2 fontSize="xxl" fontWeight={800}>
+                                <DetailTitle fontSize="xxl" fontWeight={800}>
                                     {detail?.title}
-                                </H2>
+                                </DetailTitle>
                             </Div>
 
                             <Div width="100%" $margin="50px 0" overflow="">
                                 {detail?.content && <TextViewer contents={detail?.content} />}
                             </Div>
 
-                            <FlexDiv>
+                            <ImageGallery>
                                 {detail?.images?.slice(0, 3)?.map(({ url }, idx) => (
                                     <Button onClick={() => handleCarousel(idx)}>
-                                        <Div width="200px" height="200px" $pointer>
+                                        <GalleryImage $pointer>
                                             <Img src={url} $HFilter="brightness(80%)" />
-                                        </Div>
+                                        </GalleryImage>
                                     </Button>
                                 ))}
                                 {detail && detail.images.length > 3 ? (
@@ -158,9 +238,9 @@ const ActivityDetail = () => {
                                         $HFilter="brightness(2)"
                                         onClick={() => handleCarousel(0)}
                                     >
-                                        <Div width="200px" height="200px" $backgroundColor="bklayer">
+                                        <GalleryImage $backgroundColor="bklayer">
                                             <Img src={detail.images[3].url} $filter="brightness(10%)" />
-                                        </Div>
+                                        </GalleryImage>
                                         <FlexDiv $position="absolute" $top="0" width="200px" height="200px">
                                             <Div>
                                                 <P color="wh">이미지 더보기</P>
@@ -170,13 +250,13 @@ const ActivityDetail = () => {
                                 ) : (
                                     ""
                                 )}
-                            </FlexDiv>
+                            </ImageGallery>
 
                             <FlexDiv width="100%" $margin="50px 0 0 0">
                                 {detail && detail.otherFiles && detail.otherFiles.length > 0 && (
-                                    <FlexDiv width="80%" $padding="0 30px" $border="2px solid" $borderColor="border">
+                                    <FileList>
                                         {detail.otherFiles.map((file, index) => (
-                                            <FlexDiv
+                                            <FileRow
                                                 width="100%"
                                                 $justifycontent="start"
                                                 key={`otherFiles${index}`}
@@ -204,13 +284,13 @@ const ActivityDetail = () => {
                                                         </A>
                                                     </Div>
                                                 </FlexDiv>
-                                            </FlexDiv>
+                                            </FileRow>
                                         ))}
-                                    </FlexDiv>
+                                    </FileList>
                                 )}
                             </FlexDiv>
 
-                            <FlexDiv $margin="50px 0 0 0" width="100%" $justifycontent="end">
+                            <DetailActions $margin="50px 0 0 0" width="100%" $justifycontent="end">
                                 {detail?.writerId === userId && (
                                     <Button
                                         display="flex"
@@ -250,7 +330,7 @@ const ActivityDetail = () => {
                                         </Div>
                                     </Button>
                                 )}
-                            </FlexDiv>
+                            </DetailActions>
                         </Div>
 
                         <CommentList boardId={boardId} menuId={menuId} token={false} />

@@ -1,4 +1,4 @@
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import { Container, Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
@@ -8,13 +8,78 @@ import Button from "../../styles/assets/Button";
 import { Checkbox, DateInput, Label, NumberInput, Select, TextArea, TextInput } from "../../styles/assets/Input";
 import DragNDrop from "../../components/common/DragNDrop";
 import TextEditor from "../../components/common/TextEditor";
+import styled from "styled-components";
+
+const LectureForm = styled(Div)`
+    &,
+    * {
+        box-sizing: border-box;
+    }
+`;
+
+const PaymentGuide = styled(FlexDiv)`
+    > :first-child {
+        min-width: 0;
+    }
+
+    p {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+    }
+
+    ${media.mobile} {
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+    }
+`;
+
+const EditorArea = styled(Div)`
+    height: auto;
+    min-height: 550px;
+
+    ${media.mobile} {
+        min-height: 500px;
+        padding: 16px;
+    }
+`;
+
+const DaysSection = styled(FlexDiv)`
+    > :first-child {
+        width: 100%;
+    }
+
+    ${media.mobile} {
+        padding: 12px 16px;
+
+        > div:not(:first-child) {
+            padding: 8px;
+        }
+    }
+`;
+
+const SubmitButton = styled(Button)`
+    width: 342px;
+    max-width: 100%;
+
+    ${media.mobile} {
+        width: 100%;
+    }
+`;
+
+const ImageGuide = styled(FlexDiv)`
+    ${media.mobile} {
+        margin: 20px 0;
+    }
+`;
 
 const LectureCreate = () => {
     return (
         <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
             <Container>
-                <Div width="100%" $margin="0 0 30px 0">
-                    <FlexDiv
+                <LectureForm width="100%" $margin="0 0 30px 0">
+                    <PaymentGuide
                         width="100%"
                         $padding="20px"
                         $margin="0 0 20px 0"
@@ -35,7 +100,7 @@ const LectureCreate = () => {
                         <FlexDiv width="10px">
                             <Img src="/images/chevron-down_white.svg" />
                         </FlexDiv>
-                    </FlexDiv>
+                    </PaymentGuide>
                     <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
                         <FlexDiv
                             width=" 100%"
@@ -79,12 +144,12 @@ const LectureCreate = () => {
                                 <P fontWeight={600}>강의 소개 및 계획</P>
                             </Div>
                         </FlexDiv>
-                        <Div $padding="20px" width="100%" height="550px">
+                        <EditorArea $padding="20px" width="100%">
                             <TextEditor />
-                        </Div>
+                        </EditorArea>
                     </Div>
 
-                    <FlexDiv
+                    <DaysSection
                         width="100%"
                         $justifycontent="start"
                         $border="1px solid"
@@ -144,7 +209,7 @@ const LectureCreate = () => {
                                 <P fontSize="sm">일요일</P>
                             </Label>
                         </FlexDiv>
-                    </FlexDiv>
+                    </DaysSection>
 
                     <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
                         <FlexDiv
@@ -247,27 +312,26 @@ const LectureCreate = () => {
                         </FlexDiv>
                         <Div $padding="0 20px" width="100%">
                             <DragNDrop />
-                            <FlexDiv width="100%" $margin="20px">
+                            <ImageGuide width="100%" $margin="20px">
                                 <Div>
                                     <P color="red" fontSize="sm">
                                         두 장 이상의 사진을 첨부 할 경우 마지막 사진이 등록됩니다.
                                     </P>
                                 </Div>
-                            </FlexDiv>
+                            </ImageGuide>
                         </Div>
                     </Div>
                     <FlexDiv width="100%">
-                        <Button
+                        <SubmitButton
                             $backgroundColor="bgColor"
                             $HBackgroundColor="bgColorHo"
                             $padding="20px 30px"
                             $borderRadius={2}
-                            width="342px"
                         >
                             <P color="wh">등록하기</P>
-                        </Button>
+                        </SubmitButton>
                     </FlexDiv>
-                </Div>
+                </LectureForm>
             </Container>
         </FlexDiv>
     );

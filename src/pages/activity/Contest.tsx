@@ -8,11 +8,58 @@ import { contestListDataInfo } from "../../recoil/backState";
 import { contestOrder } from "../../recoil/frontState";
 
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import A from "../../styles/assets/A";
 import Button from "../../styles/assets/Button";
 import Img from "../../styles/assets/Img";
 
 import { GetRoleAuthorization } from "../../functions/authFunctions";
+import { media } from "../../styles/theme";
+
+const ContestContainer = styled.div`
+    position: relative;
+    width: 100%;
+    min-width: 0;
+
+    &,
+    * {
+        box-sizing: border-box;
+    }
+`;
+
+const ContestToolbar = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    margin: -50px 0 24px;
+
+    ${media.tablet} {
+        margin: 0 0 24px;
+    }
+`;
+
+const ContestGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 360px));
+    justify-content: space-between;
+    gap: 50px 24px;
+    width: 100%;
+
+    ${media.tablet} {
+        gap: 32px 20px;
+    }
+
+    ${media.mobile} {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 24px;
+    }
+`;
+
+const ContestAction = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin: 40px 0 10px;
+`;
 
 const Contest = () => {
     const infos = useRecoilValue(contestListDataInfo);
@@ -22,9 +69,8 @@ const Contest = () => {
     const navigate = useNavigate();
 
     return (
-        <>
-            <Div width="100%" $position="relative">
-                <Div $position="absolute" $top="-50px" $right="-35px">
+        <ContestContainer>
+                <ContestToolbar>
                     <Dropdown
                         label={order === "&orderBy=ALL" ? "전체보기" : "진행중"}
                         options={["전체보기", "모집중"]}
@@ -32,67 +78,18 @@ const Contest = () => {
                         onChange={(v) => setOrder(v)}
                         purple
                     />
-                </Div>
-                <Div width="100%" height="100%">
-                    {infos && infos?.length === 4 && (
-                        <>
-                            <FlexDiv width="100%" $justifycontent="space-between">
-                                <FlexDiv width="45%">
-                                    <ContestInfo info={infos[0]} />
-                                </FlexDiv>
-                                <FlexDiv width="45%">
-                                    <ContestInfo info={infos[1]} />
-                                </FlexDiv>
-                            </FlexDiv>
-                            <FlexDiv width="100%" $justifycontent="space-between" $margin="50px 0 0 0">
-                                <FlexDiv width="45%">
-                                    <ContestInfo info={infos[2]} />
-                                </FlexDiv>
-                                <FlexDiv width="45%">
-                                    <ContestInfo info={infos[3]} />
-                                </FlexDiv>
-                            </FlexDiv>
-                        </>
-                    )}
-                    {infos && infos?.length === 3 && (
-                        <>
-                            <FlexDiv width="100%" $justifycontent="space-between">
-                                <FlexDiv width="45%">
-                                    <ContestInfo info={infos[0]} />
-                                </FlexDiv>
-                                <FlexDiv width="45%">
-                                    <ContestInfo info={infos[1]} />
-                                </FlexDiv>
-                            </FlexDiv>
-                            <Div width="100%" $margin="50px 0 0 0">
-                                <FlexDiv width="45%">
-                                    <ContestInfo info={infos[2]} />
-                                </FlexDiv>
-                            </Div>
-                        </>
-                    )}
-                    {infos && infos?.length === 2 && (
-                        <FlexDiv width="100%" $justifycontent="space-between">
-                            <FlexDiv width="45%">
-                                <ContestInfo info={infos[0]} />
-                            </FlexDiv>
-                            <FlexDiv width="45%">
-                                <ContestInfo info={infos[1]} />
-                            </FlexDiv>
-                        </FlexDiv>
-                    )}
-                    {infos && infos?.length === 1 && (
-                        <Div width="720px">
-                            <FlexDiv width="45%">
-                                <ContestInfo info={infos[0]} />
-                            </FlexDiv>
-                        </Div>
-                    )}
-                    {infos && infos?.length === 0 && <FlexDiv width="720px">게시글이 존재하지 않습니다</FlexDiv>}
-                </Div>
+                </ContestToolbar>
+                {infos && infos.length > 0 ? (
+                    <ContestGrid>
+                        {infos.map((info: any) => (
+                            <ContestInfo key={info.id} info={info} />
+                        ))}
+                    </ContestGrid>
+                ) : (
+                    <FlexDiv width="100%">게시글이 존재하지 않습니다</FlexDiv>
+                )}
                 {isAuthorizedOverBasic && (
-                    <FlexDiv $position="relative" width="100%" $justifycontent="end" $margin="40px 0 10px 0">
-                        <Div $position="absolute" $right="-45px">
+                    <ContestAction>
                             <Button
                                 display="flex"
                                 $backgroundColor="bgColor"
@@ -115,11 +112,9 @@ const Contest = () => {
                                     </A>
                                 </Div>
                             </Button>
-                        </Div>
-                    </FlexDiv>
+                    </ContestAction>
                 )}
-            </Div>
-        </>
+        </ContestContainer>
     );
 };
 

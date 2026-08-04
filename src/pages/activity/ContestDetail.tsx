@@ -2,7 +2,7 @@ import { jwtDecode } from "jwt-decode";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import { tokenAccess } from "../../recoil/backState";
 import { carouselInitialState, carouselOpen } from "../../recoil/frontState";
@@ -41,6 +41,110 @@ const HorizonScrollDiv = styled(Div)`
     /* 스크롤바 호버 스타일 추가 */
     &::-webkit-scrollbar-thumb:hover {
         background-color: ${(props) => props.theme.color.grey}; /* 스크롤바 썸의 호버 색상을 지정하세요 */
+    }
+`;
+
+const ContestDetailContent = styled(Div)`
+    width: 800px;
+    max-width: 800px;
+    margin: 50px 0 100px;
+    overflow-wrap: anywhere;
+
+    &,
+    * {
+        box-sizing: border-box;
+    }
+
+    ${media.tablet} {
+        width: calc(100% - 48px);
+        max-width: calc(100% - 48px);
+    }
+
+    ${media.mobile} {
+        width: 100%;
+        max-width: 100%;
+        padding: 0 16px;
+        margin: 24px 0 64px;
+    }
+`;
+
+const DetailMeta = styled(FlexDiv)`
+    justify-content: flex-start;
+    row-gap: 6px;
+`;
+
+const DetailTitle = styled(H2)`
+    overflow-wrap: anywhere;
+`;
+
+const DetailInfo = styled(FlexDiv)`
+    justify-content: flex-start;
+    row-gap: 6px;
+`;
+
+const TopicContent = styled(FlexDiv)`
+    box-sizing: border-box;
+
+    ${media.mobile} {
+        padding: 24px;
+    }
+
+    p {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        overflow-wrap: anywhere;
+    }
+`;
+
+const ContentImage = styled.div`
+    width: 60%;
+    max-width: 100%;
+
+    img {
+        height: auto;
+        object-fit: contain;
+    }
+
+    ${media.mobile} {
+        width: 100%;
+    }
+`;
+
+const FileList = styled.div`
+    width: 80%;
+    padding: 0 30px;
+    border: 2px solid ${({ theme }) => theme.color.border};
+
+    a {
+        min-width: 0;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    ${media.mobile} {
+        width: 100%;
+        padding: 0 16px;
+    }
+`;
+
+const FileRow = styled(FlexDiv)`
+    min-width: 0;
+
+    > :last-child {
+        min-width: 0;
+    }
+`;
+
+const DetailActions = styled(FlexDiv)`
+    gap: 10px;
+
+    button {
+        margin: 0;
+    }
+
+    ${media.mobile} {
+        justify-content: flex-start;
     }
 `;
 
@@ -165,9 +269,9 @@ const ContestDetail = () => {
             ) : isCarouselOpen ? (
                 <Carousel images={detail?.images?.map((image) => image.url) || []} />
             ) : (
-                <Div width="800px" $margin="50px 0 100px 0" direction="column">
+                <ContestDetailContent direction="column">
                     {/* 작성 info */}
-                    <FlexDiv $margin="50px 0 30px 0">
+                    <DetailMeta $margin="50px 0 30px 0">
                         <FlexDiv width="12px" $margin="0 5px 0 0">
                             <Img src="/images/user_grey.svg" />
                         </FlexDiv>
@@ -184,17 +288,17 @@ const ContestDetail = () => {
                                 {detail?.dateCreated.split("T")[0]} {detail?.dateCreated.split("T")[1]}
                             </P>
                         </FlexDiv>
-                    </FlexDiv>
+                    </DetailMeta>
 
                     {/* 게시글 title */}
                     <Div>
-                        <H2 fontSize="xxl" fontWeight={800}>
+                        <DetailTitle fontSize="xxl" fontWeight={800}>
                             {detail?.title}
-                        </H2>
+                        </DetailTitle>
                     </Div>
 
                     {/* 주최기관, 개최기간 */}
-                    <FlexDiv $padding="20px 0 40px 0" width="100%" $justifycontent="flex-start">
+                    <DetailInfo $padding="20px 0 40px 0" width="100%" $justifycontent="flex-start">
                         <FlexDiv $margin="0 5px 0 0" width="12px">
                             <Img src="/images/building_grey.svg" />
                         </FlexDiv>
@@ -212,7 +316,7 @@ const ContestDetail = () => {
                                 {detail?.dateContestStart.split("T")[0]} ~ {detail?.dateContestEnd.split("T")[0]}
                             </P>
                         </FlexDiv>
-                    </FlexDiv>
+                    </DetailInfo>
 
                     {/* 주제 */}
                     <FlexDiv width="100%" $borderT={`1px solid ${theme.color.border}`} $padding="15px">
@@ -229,7 +333,7 @@ const ContestDetail = () => {
                             )}
                         </Div>
                     </FlexDiv>
-                    <FlexDiv
+                    <TopicContent
                         width="100%"
                         $borderT={`1px solid ${theme.color.border}`}
                         $borderB={`1px solid ${theme.color.border}`}
@@ -240,14 +344,14 @@ const ContestDetail = () => {
                                 {detail?.topic}
                             </P>
                         </Div>
-                    </FlexDiv>
+                    </TopicContent>
 
                     {/* 사진들 */}
                     {detail?.images?.map((image) => (
                         <FlexDiv width="100%" $margin="50px 0">
-                            <Div width="60%">
+                            <ContentImage>
                                 <Img src={image.url} />
-                            </Div>
+                            </ContentImage>
                         </FlexDiv>
                     ))}
 
@@ -275,9 +379,9 @@ const ContestDetail = () => {
 
                     <FlexDiv width="100%">
                         {detail && detail.otherFiles && detail.otherFiles.length > 0 && (
-                            <FlexDiv width="80%" $padding="0 30px" $border="2px solid" $borderColor="border">
+                            <FileList>
                                 {detail.otherFiles.map((file, index) => (
-                                    <FlexDiv
+                                    <FileRow
                                         width="100%"
                                         $justifycontent="start"
                                         key={`otherFiles${index}`}
@@ -305,15 +409,15 @@ const ContestDetail = () => {
                                                 </A>
                                             </Div>
                                         </FlexDiv>
-                                    </FlexDiv>
+                                    </FileRow>
                                 ))}
-                            </FlexDiv>
+                            </FileList>
                         )}
                     </FlexDiv>
 
                     {/* // api에 writerId 포함되면 수정 */}
 
-                    <FlexDiv $margin="50px 0 20px 0" width="100%" $justifycontent="end">
+                    <DetailActions $margin="50px 0 20px 0" width="100%" $justifycontent="end">
                         {detail?.writerId === userId && (
                             <Button
                                 display="flex"
@@ -353,14 +457,14 @@ const ContestDetail = () => {
                                 </Div>
                             </Button>
                         )}
-                    </FlexDiv>
+                    </DetailActions>
                     <CommentList boardId={boardId} menuId={menuId} token={false} />
                     {isAuthorizedOverDeactivate && (
                         <>
                             <CommentInput boardId={boardId} menuId={menuId} />
                         </>
                     )}
-                </Div>
+                </ContestDetailContent>
             )}
         </>
     );
