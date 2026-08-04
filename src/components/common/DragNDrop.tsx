@@ -12,7 +12,7 @@ import { Div, FlexDiv, InputLabel } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import { Input } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 import Loading from "./Loading";
 
 interface DragNDropProps {
@@ -27,10 +27,19 @@ const ScrollFlexDiv = styled(FlexDiv)`
     align-items: ${(props) => props.$alignitems || "center"};
     justify-content: ${(props) => props.$justifycontent || "center"};
     flex-direction: ${(props) => props.direction || "row"};
-    flex-wrap: ${(props) => props.wrap || "wrap"};
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
 
     &::-webkit-scrollbar {
         display: block;
+        height: 8px;
     }
 
     &::-webkit-scrollbar-thumb {
@@ -42,6 +51,41 @@ const ScrollFlexDiv = styled(FlexDiv)`
     &::-webkit-scrollbar-thumb:hover {
         background-color: ${(props) => props.theme.color.grey}; /* 스크롤바 썸의 호버 색상을 지정하세요 */
     }
+`;
+
+const DropZone = styled(Div)`
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 20px 20px 3px;
+
+    ${media.mobile} {
+        padding: 14px 12px 3px;
+    }
+`;
+
+const UploadPrompt = styled(P).attrs({ $whiteSpace: "normal" })`
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+    text-align: center;
+    line-height: 1.5;
+`;
+
+const PreviewCard = styled(Div)`
+    flex: 0 0 auto;
+    max-width: 100%;
+    overflow: hidden;
+`;
+
+const PreviewName = styled(P).attrs({ $whiteSpace: "normal" })`
+    max-width: 76px;
+    max-height: 76px;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
 `;
 
 const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => {
@@ -320,12 +364,10 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
                 accept={onlyImg ? "image/*" : undefined}
                 draggable="true"
             />
-            <Div
+            <DropZone
                 id="dropZone"
                 $border="2px dashed"
                 $borderColor="border"
-                width="100%"
-                $padding="20px 20px 3px 20px"
                 onDragOver={(e: React.DragEvent<HTMLDivElement>) => e.preventDefault()}
                 onDrop={handleDrop}
             >
@@ -335,7 +377,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
                             <Img src="/images/upload_grey.svg" />
                         </FlexDiv>
                         <FlexDiv $margin="0 0 20px 0">
-                            <P>클릭하거나 드래그하여 파일을 업로드하세요</P>
+                            <UploadPrompt>클릭하거나 드래그하여 파일을 업로드하세요</UploadPrompt>
                         </FlexDiv>
                     </FlexDiv>
                 </InputLabel>
@@ -344,9 +386,9 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
                         <Loading />
                     </FlexDiv>
                 ) : (
-                    <ScrollFlexDiv width="100%" overflow="auto" $justifycontent="start" wrap="no-wrap">
+                    <ScrollFlexDiv $justifycontent="start">
                         {previews.map((preview, index) => (
-                            <Div
+                            <PreviewCard
                                 key={index}
                                 $position="relative"
                                 display="inline-block"
@@ -359,6 +401,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
                                 onMouseLeave={() => {
                                     setHover(null);
                                 }}
+                                title={preview.name}
                             >
                                 <FlexDiv width="96px" height="96px" $position="relative">
                                     <FlexDiv width={preview.width} height={preview.height}>
@@ -379,9 +422,9 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
                                             }}
                                         >
                                             <Div>
-                                                <P fontSize="xs" $whiteSpace="normal" fontWeight={700}>
+                                                <PreviewName fontSize="xs" fontWeight={700}>
                                                     {preview.name}
-                                                </P>
+                                                </PreviewName>
                                             </Div>
                                         </FlexDiv>
                                     )}
@@ -400,11 +443,11 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
                                         <Img src="/images/x_white.svg" alt="Delete Preview" />
                                     </Div>
                                 </FlexDiv>
-                            </Div>
+                            </PreviewCard>
                         ))}
                     </ScrollFlexDiv>
                 )}
-            </Div>
+            </DropZone>
         </>
     );
 };
