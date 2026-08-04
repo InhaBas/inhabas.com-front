@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import styled from "styled-components";
 
 import useFetch from "../../hooks/useFetch";
 
@@ -13,10 +14,59 @@ import Button from "../../styles/assets/Button";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
+import { media } from "../../styles/theme";
 
 import Loading from "../../components/common/Loading";
 import Pagination from "../../components/common/Pagination";
 import ActivityCard from "../../components/activity/ActivityCard";
+
+const ActivityGrid = styled.div`
+    width: 70%;
+    max-width: 1500px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 360px);
+    justify-content: center;
+    gap: 0 50px;
+    margin: 50px 0 0;
+
+    &,
+    * {
+        box-sizing: border-box;
+    }
+
+    ${media.tablet} {
+        width: calc(100% - 48px);
+        grid-template-columns: repeat(2, minmax(0, 360px));
+        gap: 24px;
+    }
+
+    ${media.mobile} {
+        width: calc(100% - 32px);
+        grid-template-columns: minmax(0, 360px);
+        gap: 20px;
+    }
+`;
+
+const ActivityGridItem = styled.div`
+    min-width: 0;
+    margin-bottom: 50px;
+
+    ${media.tablet} {
+        margin-bottom: 0;
+    }
+`;
+
+const ActivityFooter = styled(FlexDiv)`
+    width: 70%;
+
+    ${media.tablet} {
+        width: calc(100% - 48px);
+    }
+
+    ${media.mobile} {
+        width: calc(100% - 32px);
+    }
+`;
 
 const Activity = () => {
     const navigate = useNavigate();
@@ -103,15 +153,9 @@ const Activity = () => {
                     )}
                 </FlexDiv> */}
 
-                    <FlexDiv
-                        width="70%"
-                        $maxWidth="1500px"
-                        $justifycontent="center"
-                        $alignitems="start"
-                        $margin="50px 0 0 0"
-                    >
+                    <ActivityGrid>
                         {detail?.map(({ thumbnail, title, dateCreated, writerName, id }) => (
-                            <Div width="360px" $margin="0 25px 50px 25px">
+                            <ActivityGridItem key={id}>
                                 <ActivityCard
                                     imgSrc={thumbnail?.url}
                                     title={title}
@@ -119,30 +163,19 @@ const Activity = () => {
                                     writerName={writerName}
                                     id={id}
                                 />
-                            </Div>
+                            </ActivityGridItem>
                         ))}
-                        {detail?.length === 2 || detail?.length === 5 ? (
-                            <Div width="360px" height="360px" $margin="0 25px 50px 25px" />
-                        ) : detail?.length === 1 || detail?.length === 4 ? (
-                            <>
-                                <Div width="360px" height="360px" $margin="0 25px 50px 25px" />
-
-                                <Div width="360px" height="360px" $margin="0 25px 50px 25px" />
-                            </>
-                        ) : (
-                            ""
-                        )}
-                    </FlexDiv>
-                    <Div width="70%" $margin="0 0 50px 0">
+                    </ActivityGrid>
+                    <ActivityFooter $margin="0 0 50px 0">
                         <Pagination
                             totalPage={totalPage}
                             fetchUrl="/club/activities"
                             paginationFetch={fetchActivityListData}
                             size={6}
                         />
-                    </Div>
+                    </ActivityFooter>
                     {isAuthorizedOverSecretary && (
-                        <FlexDiv $margin="50px 0" width="70%" $justifycontent="end">
+                        <ActivityFooter $margin="50px 0" $justifycontent="end">
                             <Button
                                 display="flex"
                                 $backgroundColor="bgColor"
@@ -160,7 +193,7 @@ const Activity = () => {
                                     </P>
                                 </Div>
                             </Button>
-                        </FlexDiv>
+                        </ActivityFooter>
                     )}
                 </FlexDiv>
             )}
