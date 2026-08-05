@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import styled from "styled-components";
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import useFetch from "../../hooks/useFetch";
 
@@ -22,6 +22,7 @@ import Carousel from "../../components/common/Carousel";
 import Loading from "../../components/common/Loading";
 
 const ScrollFlexDiv = styled(FlexDiv)`
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -46,6 +47,78 @@ const ScrollFlexDiv = styled(FlexDiv)`
 
     &::-webkit-scrollbar-track {
         background: ${theme.color.grey2};
+    }
+`;
+
+const SupportDetailPage = styled(FlexDiv)`
+    min-width: 0;
+
+    &,
+    & *,
+    & *::before,
+    & *::after {
+        box-sizing: border-box;
+    }
+`;
+
+const StatusMessage = styled(P)`
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+`;
+
+const MetaInfo = styled(FlexDiv)`
+    min-width: 0;
+
+    ${media.mobile} {
+        align-items: flex-start;
+        gap: 8px;
+    }
+`;
+
+const MetaText = styled(P)`
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+`;
+
+const DetailTitle = styled(H2)`
+    overflow-wrap: anywhere;
+`;
+
+const DetailValue = styled(P)`
+    white-space: pre-wrap;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+`;
+
+const DetailActions = styled(FlexDiv)`
+    gap: 10px;
+
+    ${media.mobile} {
+        justify-content: flex-start;
+
+        & > button {
+            margin: 0;
+        }
+    }
+`;
+
+const DecisionActions = styled(FlexDiv)`
+    gap: 20px;
+
+    ${media.mobile} {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+
+        & > button {
+            width: 100% !important;
+            margin: 0 !important;
+        }
     }
 `;
 
@@ -154,7 +227,7 @@ const BankSupportDetail = () => {
             ) : isCarouselOpen ? (
                 <Carousel images={detail?.receipts?.map((image) => image.url) || []} />
             ) : (
-                <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
+                <SupportDetailPage width="100%" $border={`1px solid ${theme.color.grey1}`}>
                     <Container>
                         <Div width="100%" $margin="0 0 30px 0">
                             <FlexDiv
@@ -173,7 +246,7 @@ const BankSupportDetail = () => {
                                 $margin=" 0 0 20px 0"
                             >
                                 <Div>
-                                    <P
+                                    <StatusMessage
                                         color={
                                             detail?.status === "COMPLETED"
                                                 ? "TextPrimary"
@@ -191,7 +264,7 @@ const BankSupportDetail = () => {
                                             : detail?.status === "REJECTED"
                                             ? `승인 거절 (사유: ${detail.rejectReason})`
                                             : "승인 대기"}
-                                    </P>
+                                    </StatusMessage>
                                 </Div>
                             </FlexDiv>
                             <Div
@@ -201,7 +274,7 @@ const BankSupportDetail = () => {
                                 $margin=" 0 0 20px 0"
                                 radius={6}
                             >
-                                <FlexDiv
+                                <MetaInfo
                                     width=" 100%"
                                     $padding="20px"
                                     $justifycontent="start"
@@ -211,23 +284,23 @@ const BankSupportDetail = () => {
                                         <Img src="/images/user_grey.svg" />
                                     </FlexDiv>
                                     <Div>
-                                        <P color="grey4" fontSize="sm">
+                                        <MetaText color="grey4" fontSize="sm">
                                             By {detail?.applicantName} |
-                                        </P>
+                                        </MetaText>
                                     </Div>
                                     <FlexDiv width="12px" $margin="0 5px ">
                                         <Img src="/images/clock_grey.svg" />
                                     </FlexDiv>
                                     <Div>
-                                        <P color="grey4" fontSize="sm">
+                                        <MetaText color="grey4" fontSize="sm">
                                             {detail?.dateCreated.split("T")[0]}
-                                        </P>
+                                        </MetaText>
                                     </Div>
-                                </FlexDiv>
+                                </MetaInfo>
                                 <Div $padding="20px">
-                                    <H2 fontSize="xl" $lineHeight={1.8} fontWeight={800}>
+                                    <DetailTitle fontSize="xl" $lineHeight={1.8} fontWeight={800}>
                                         {detail?.title}
-                                    </H2>
+                                    </DetailTitle>
                                 </Div>
                             </Div>
                             <Div
@@ -248,7 +321,7 @@ const BankSupportDetail = () => {
                                     </Div>
                                 </FlexDiv>
                                 <Div $padding="20px">
-                                    <P $lineHeight={1.5}>{detail?.dateUsed.split("T")[0]}</P>
+                                    <DetailValue $lineHeight={1.5}>{detail?.dateUsed.split("T")[0]}</DetailValue>
                                 </Div>
                             </Div>
 
@@ -270,9 +343,9 @@ const BankSupportDetail = () => {
                                     </Div>
                                 </FlexDiv>
                                 <Div $padding="20px">
-                                    <P $whiteSpace="pre-wrap" $lineHeight={1.5}>
+                                    <DetailValue $lineHeight={1.5}>
                                         {detail?.details}
-                                    </P>
+                                    </DetailValue>
                                 </Div>
                             </Div>
 
@@ -294,7 +367,7 @@ const BankSupportDetail = () => {
                                     </Div>
                                 </FlexDiv>
                                 <Div $padding="20px">
-                                    <P $lineHeight={1.5}>{detail?.outcome}</P>
+                                    <DetailValue $lineHeight={1.5}>{detail?.outcome}</DetailValue>
                                 </Div>
                             </Div>
 
@@ -316,7 +389,7 @@ const BankSupportDetail = () => {
                                     </Div>
                                 </FlexDiv>
                                 <Div $padding="20px">
-                                    <P $lineHeight={1.5}>{detail?.applicantName}</P>
+                                    <DetailValue $lineHeight={1.5}>{detail?.applicantName}</DetailValue>
                                 </Div>
                             </Div>
                             <Div
@@ -337,7 +410,7 @@ const BankSupportDetail = () => {
                                     </Div>
                                 </FlexDiv>
                                 <Div $padding="20px">
-                                    <P $lineHeight={1.5}>{detail?.account}</P>
+                                    <DetailValue $lineHeight={1.5}>{detail?.account}</DetailValue>
                                 </Div>
                             </Div>
 
@@ -375,7 +448,7 @@ const BankSupportDetail = () => {
                             </Div>
                         </Div>
                         {detail?.status === "PENDING" && detail?.applicantId === userId && (
-                            <FlexDiv width="100%" $justifycontent="end">
+                            <DetailActions width="100%" $justifycontent="end">
                                 <Button
                                     display="flex"
                                     $backgroundColor="bgColor"
@@ -411,10 +484,10 @@ const BankSupportDetail = () => {
                                         </P>
                                     </Div>
                                 </Button>
-                            </FlexDiv>
+                            </DetailActions>
                         )}
                         {isSecretary && detail?.status === "PENDING" && (
-                            <FlexDiv width="100%">
+                            <DecisionActions width="100%">
                                 <Button
                                     width="300px"
                                     $HBackgroundColor="success"
@@ -452,10 +525,10 @@ const BankSupportDetail = () => {
                                         </Div>
                                     </FlexDiv>
                                 </Button>
-                            </FlexDiv>
+                            </DecisionActions>
                         )}
                         {isSecretary && detail?.status === "APPROVED" && (
-                            <FlexDiv width="100%">
+                            <DecisionActions width="100%">
                                 <Button
                                     width="300px"
                                     $HBackgroundColor="blue"
@@ -475,10 +548,10 @@ const BankSupportDetail = () => {
                                         </Div>
                                     </FlexDiv>
                                 </Button>
-                            </FlexDiv>
+                            </DecisionActions>
                         )}
                     </Container>
-                </FlexDiv>
+                </SupportDetailPage>
             )}
         </>
     );

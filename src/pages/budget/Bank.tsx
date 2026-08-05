@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
+import styled from "styled-components";
 
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import { H2 } from "../../styles/assets/H";
+import { media } from "../../styles/theme";
 
 import Dropdown from "../../components/common/Dropdown";
 import Pagination from "../../components/common/Pagination";
@@ -19,6 +21,54 @@ import {
 } from "../../recoil/backState";
 import { refetch } from "../../recoil/frontState";
 import Loading from "../../components/common/Loading";
+
+const BankPage = styled(FlexDiv)`
+    min-width: 0;
+
+    &,
+    & *,
+    & *::before,
+    & *::after {
+        box-sizing: border-box;
+    }
+`;
+
+const BankContent = styled(FlexDiv)`
+    width: 100%;
+    min-width: 0;
+    padding: 80px;
+
+    ${media.tablet} {
+        padding: 48px 24px;
+    }
+
+    ${media.mobile} {
+        padding: 32px 16px;
+    }
+`;
+
+const BankInner = styled(FlexDiv)`
+    width: 90vw;
+    max-width: 90vw;
+    min-width: 0;
+
+    ${media.tablet} {
+        width: 100%;
+        max-width: 100%;
+    }
+`;
+
+const BankHeader = styled(FlexDiv)`
+    box-sizing: border-box;
+
+    ${media.mobile} {
+        width: 100%;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 16px;
+        padding: 16px;
+    }
+`;
 
 export interface bankHistoryInterface {
     id?: number;
@@ -100,15 +150,15 @@ const Bank = () => {
     }, [bankHistoryData]);
 
     return (
-        <FlexDiv width="100%">
+        <BankPage width="100%">
             {isLoading ? (
                 <FlexDiv width="100%" height="100vh">
                     <Loading />
                 </FlexDiv>
             ) : (
-                <FlexDiv $padding="80px">
-                    <FlexDiv width="90vw">
-                        <FlexDiv
+                <BankContent>
+                    <BankInner>
+                        <BankHeader
                             $border="3px solid"
                             $borderColor="border"
                             width="98%"
@@ -140,7 +190,7 @@ const Bank = () => {
                                     purple
                                 />
                             </Div>
-                        </FlexDiv>
+                        </BankHeader>
                         <BankTable />
 
                         {/* <Pagination /> */}
@@ -154,10 +204,10 @@ const Bank = () => {
                                 search={`&year=${selectedYear}`}
                             />
                         )}
-                    </FlexDiv>
-                </FlexDiv>
+                    </BankInner>
+                </BankContent>
             )}
-        </FlexDiv>
+        </BankPage>
     );
 };
 
