@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import { modalInfo, modalOpen } from "../../../recoil/frontState";
 import { FlexDiv } from "../../../styles/assets/Div";
+import { media } from "../../../styles/theme";
 import ModalBankHistoryDetail from "./ModalBankHistoryDetail";
 import ModalBankSupportReject from "./ModalBankSupportReject";
 import ModalChangeImg from "./ModalChangeImg";
@@ -20,12 +21,55 @@ import ModalUpdateBankHistory from "./ModalUpdateBankHistory";
 type CustomMouseEvent = MouseEvent<HTMLElement>;
 
 const ModalBackground = styled(FlexDiv)`
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100dvh;
     position: fixed;
-    top: 0;
+    inset: 0;
+    box-sizing: border-box;
+    padding: 24px;
     background: rgba(0, 0, 0, 0.5);
     z-index: 10;
+    overflow: auto;
+
+    > div {
+        box-sizing: border-box;
+        min-width: 0;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    ${media.tablet} {
+        > div {
+            width: min(100%, 640px) !important;
+        }
+
+        p,
+        h1,
+        h2,
+        h3,
+        label {
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
+        input,
+        textarea,
+        select,
+        img {
+            box-sizing: border-box;
+            max-width: 100%;
+        }
+    }
+
+    ${media.mobile} {
+        padding: 16px;
+
+        > div {
+            width: 100% !important;
+            max-height: calc(100dvh - 32px);
+        }
+
+    }
 `;
 
 export const Modal = () => {
