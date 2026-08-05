@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
+import styled from "styled-components";
 
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import useFetch from "../../hooks/useFetch";
 
@@ -16,6 +17,19 @@ import { TextInput } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
 import Loading from "../../components/common/Loading";
 import TextEditor from "../../components/common/TextEditor";
+
+const RuleContent = styled(Div)`
+    box-sizing: border-box;
+    min-width: 0;
+
+    ${media.tablet} {
+        padding: 32px !important;
+    }
+
+    ${media.mobile} {
+        padding: 16px !important;
+    }
+`;
 
 const MyStaffRuleContainer = () => {
     const editorRef = useRef<any[]>([]);
@@ -110,7 +124,7 @@ const MyStaffRuleContainer = () => {
                                 </Div>
                             </FlexDiv>
                         </FlexDiv>
-                        <Div width="100%" $padding="50px">
+                        <RuleContent width="100%" $padding="50px">
                             <TextInput
                                 defaultValue={item?.title}
                                 placeholder="정책 제목을 입력해주세요"
@@ -143,7 +157,7 @@ const MyStaffRuleContainer = () => {
                                     </FlexDiv>
                                 </Button>
                             </FlexDiv>
-                        </Div>
+                        </RuleContent>
                     </Div>
                 ))
             )}
