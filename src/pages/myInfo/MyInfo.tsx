@@ -19,6 +19,7 @@ import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
 import Loading from "../../components/common/Loading";
+import { media } from "../../styles/theme";
 
 const MyInfoImgDiv = styled(Div)`
     background-image: url("/images/myinfo-background.jpg");
@@ -31,6 +32,86 @@ const MyInfoDiv = styled(FlexDiv)`
     position: absolute;
     top: 0;
     left: 0;
+`;
+
+const ProfileBar = styled(FlexDiv)`
+    box-sizing: border-box;
+
+    ${media.tablet} {
+        padding: 0 24px !important;
+    }
+
+    ${media.mobile} {
+        height: auto !important;
+        min-height: 150px;
+        padding: 56px 16px 16px !important;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+
+        > div:first-child {
+            width: 100%;
+        }
+
+        > div:first-child > div:first-child {
+            position: static !important;
+            width: 5.5em !important;
+            height: 5.5em !important;
+            margin-bottom: 8px;
+        }
+
+        > div:first-child > div:last-child {
+            margin: 0 !important;
+        }
+
+        p {
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+    }
+`;
+
+const ProfileActions = styled(FlexDiv)`
+    flex-shrink: 0;
+
+    ${media.mobile} {
+        width: 100% !important;
+        justify-content: flex-start;
+        gap: 8px;
+    }
+`;
+
+const MyInfoTabs = styled(FlexDiv)`
+    box-sizing: border-box;
+
+    ${media.tablet} {
+        padding: 0 24px !important;
+    }
+
+    ${media.mobile} {
+        padding: 0 16px !important;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+
+        > div {
+            flex: 0 0 auto;
+        }
+    }
+`;
+
+const MyInfoContent = styled(Div)`
+    box-sizing: border-box;
+    min-width: 0;
+
+    ${media.tablet} {
+        padding: 4% 24px !important;
+    }
+
+    ${media.mobile} {
+        padding: 24px 16px !important;
+    }
 `;
 
 const MyInfo = () => {
@@ -77,7 +158,7 @@ const MyInfo = () => {
                         direction="column"
                         $justifycontent="end"
                     >
-                        <FlexDiv
+                        <ProfileBar
                             $position="relative"
                             $justifycontent="space-between"
                             $backgroundColor="wh"
@@ -111,7 +192,7 @@ const MyInfo = () => {
                                     </Div>
                                 </Div>
                             </Div>
-                            <FlexDiv width="230px" $justifycontent="space-between">
+                            <ProfileActions width="230px" $justifycontent="space-between">
                                 {isAuthorizedOverSecretary && (
                                     <Button
                                         $backgroundColor="grey3"
@@ -152,9 +233,9 @@ const MyInfo = () => {
                                         </Div>
                                     </FlexDiv>
                                 </Button>
-                            </FlexDiv>
-                        </FlexDiv>
-                        <FlexDiv
+                            </ProfileActions>
+                        </ProfileBar>
+                        <MyInfoTabs
                             $backgroundColor="bgColor"
                             height="50px"
                             width="100%"
@@ -180,17 +261,17 @@ const MyInfo = () => {
                                     </FlexDiv>
                                 </FlexDiv>
                             ))}
-                        </FlexDiv>
+                        </MyInfoTabs>
                     </MyInfoDiv>
                     <MyInfoImgDiv width="100%" height="423px" />
 
-                    <Div width="100%" $padding="4% 9%">
+                    <MyInfoContent width="100%" $padding="4% 9%">
                         {clicked === 0 && <MyLectureContainer />}
                         {clicked === 1 && <MyManageLectureContainer />}
                         {clicked === 2 && <MyBoardContainer />}
                         {clicked === 3 && <MyBankSupportContainer />}
                         {clicked === 4 && <MyInfoContainer />}
-                    </Div>
+                    </MyInfoContent>
                 </>
             )}
         </>

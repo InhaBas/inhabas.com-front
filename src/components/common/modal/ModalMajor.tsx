@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 
-import { theme } from "../../../styles/theme";
+import { media, theme } from "../../../styles/theme";
 
 import useFetch from "../../../hooks/useFetch";
 
@@ -20,6 +20,32 @@ import P from "../../../styles/assets/P";
 const TableHover = styled(FlexDiv)`
     &:hover {
         background-color: ${theme.color.tableHo};
+    }
+`;
+
+const MajorTableScroll = styled.div`
+    width: 100%;
+    max-width: 100%;
+
+    ${media.mobile} {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+`;
+
+const MajorTable = styled(Div)`
+    ${media.mobile} {
+        width: 580px;
+
+        > div {
+            flex-wrap: nowrap;
+        }
+    }
+`;
+
+const MajorList = styled(Div)`
+    ${media.mobile} {
+        height: 220px !important;
     }
 `;
 
@@ -146,47 +172,51 @@ const ModalMajor = () => {
                     </FlexDiv>
                 ) : (
                     <>
-                        <FlexDiv
-                            width="100%"
-                            height="45px"
-                            $borderB={`1px solid ${theme.color.tableBorder}`}
-                            $justifycontent="space-between"
-                        >
-                            {headerInfo.map((item: string, idx: number) => (
-                                <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
-                                    <P $center fontWeight={700}>
-                                        {item}
-                                    </P>
-                                </FlexDiv>
-                            ))}
-                        </FlexDiv>
-                        <Div width="100%" height="60%" overflow="auto">
-                            {filteredResults.map((element: { college: string; major: string }, idx: number) => (
-                                <TableHover
-                                    key={`contentItem${idx}`}
+                        <MajorTableScroll>
+                            <MajorTable width="100%">
+                                <FlexDiv
                                     width="100%"
                                     height="45px"
-                                    $borderT={`1px solid ${theme.color.grey1}`}
+                                    $borderB={`1px solid ${theme.color.tableBorder}`}
                                     $justifycontent="space-between"
-                                    $backgroundColor={selectedTable.major === element.major ? "tableHo" : "wh"}
-                                    $pointer
-                                    onClick={() => chooseMajor(element)}
                                 >
-                                    <FlexDiv $padding="10px" $minWidth={`${widthList[0]}px`}>
-                                        <A $center>인하대학교</A>
-                                    </FlexDiv>
-                                    {Object.values(element).map((item: any, idx: number) => (
-                                        <FlexDiv
-                                            key={`itemValue${idx}`}
-                                            $minWidth={`${widthList[idx + 1]}px`}
-                                            $padding="10px"
-                                        >
-                                            <A $center>{item}</A>
+                                    {headerInfo.map((item: string, idx: number) => (
+                                        <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
+                                            <P $center fontWeight={700}>
+                                                {item}
+                                            </P>
                                         </FlexDiv>
                                     ))}
-                                </TableHover>
-                            ))}
-                        </Div>
+                                </FlexDiv>
+                                <MajorList width="100%" height="60%" overflow="auto">
+                                    {filteredResults.map((element: { college: string; major: string }, idx: number) => (
+                                        <TableHover
+                                            key={`contentItem${idx}`}
+                                            width="100%"
+                                            height="45px"
+                                            $borderT={`1px solid ${theme.color.grey1}`}
+                                            $justifycontent="space-between"
+                                            $backgroundColor={selectedTable.major === element.major ? "tableHo" : "wh"}
+                                            $pointer
+                                            onClick={() => chooseMajor(element)}
+                                        >
+                                            <FlexDiv $padding="10px" $minWidth={`${widthList[0]}px`}>
+                                                <A $center>인하대학교</A>
+                                            </FlexDiv>
+                                            {Object.values(element).map((item: any, idx: number) => (
+                                                <FlexDiv
+                                                    key={`itemValue${idx}`}
+                                                    $minWidth={`${widthList[idx + 1]}px`}
+                                                    $padding="10px"
+                                                >
+                                                    <A $center>{item}</A>
+                                                </FlexDiv>
+                                            ))}
+                                        </TableHover>
+                                    ))}
+                                </MajorList>
+                            </MajorTable>
+                        </MajorTableScroll>
                     </>
                 )}
 
