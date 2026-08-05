@@ -5,6 +5,7 @@ import { theme } from "../../styles/theme";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import styled from "styled-components";
 import useFetch from "../../hooks/useFetch";
 import { bankDetailDataInfo, fileIdList, tokenAccess } from "../../recoil/backState";
 import { menuId, refetch, selectedFile } from "../../recoil/frontState";
@@ -13,7 +14,34 @@ import Button from "../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../styles/assets/Div";
 import { DateInput, TextInput } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
+import { media } from "../../styles/theme";
 import DragNDrop from "../../components/common/DragNDrop";
+
+const SupportFormPage = styled(FlexDiv)`
+    min-width: 0;
+
+    &,
+    & *,
+    & *::before,
+    & *::after {
+        box-sizing: border-box;
+    }
+`;
+
+const FormHint = styled(P)`
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+`;
+
+const SubmitButton = styled(Button)`
+    max-width: 100%;
+
+    ${media.mobile} {
+        width: 100%;
+    }
+`;
 
 const BankSupportCreate = () => {
     const navigate = useNavigate();
@@ -154,7 +182,7 @@ const BankSupportCreate = () => {
     }, [postSupport]);
 
     return (
-        <FlexDiv width="100%">
+        <SupportFormPage width="100%">
             <Container $alignitems="start">
                 <Div width="100%" $margin="0 0 30px 0">
                     <Div $border="1px solid" $borderColor="border" radius={5} width="100%" $margin="30px 0 0 0">
@@ -198,9 +226,9 @@ const BankSupportCreate = () => {
                             />
                         </Div>
                         <Div $padding="5px 20px">
-                            <P fontSize="xs" color="TextDanger">
+                            <FormHint fontSize="xs" color="TextDanger">
                                 지출일은 현재보다 이전이어야 합니다.
-                            </P>
+                            </FormHint>
                         </Div>
                     </Div>
                     <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
@@ -289,7 +317,7 @@ const BankSupportCreate = () => {
                     </Div>
 
                     <FlexDiv width="100%" $margin="30px 0 0 0">
-                        <Button
+                        <SubmitButton
                             $backgroundColor="bgColor"
                             $HBackgroundColor="bgColorHo"
                             $borderRadius={2}
@@ -298,11 +326,11 @@ const BankSupportCreate = () => {
                             onClick={() => clickPostEvent()}
                         >
                             {update === "create" ? <P color="wh">작성하기</P> : <P color="wh">수정하기</P>}
-                        </Button>
+                        </SubmitButton>
                     </FlexDiv>
                 </Div>
             </Container>
-        </FlexDiv>
+        </SupportFormPage>
     );
 };
 

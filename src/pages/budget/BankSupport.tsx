@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 import A from "../../styles/assets/A";
 import Button from "../../styles/assets/Button";
 import { Container, Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
+import { media } from "../../styles/theme";
 
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -15,6 +17,34 @@ import Dropdown from "../../components/common/Dropdown";
 import Loading from "../../components/common/Loading";
 import Pagination from "../../components/common/Pagination";
 import BankSupportTable from "../../components/budget/BankSupportTable";
+
+const SupportPage = styled.div`
+    min-width: 0;
+
+    &,
+    & *,
+    & *::before,
+    & *::after {
+        box-sizing: border-box;
+    }
+`;
+
+const SupportContent = styled(Div)`
+    min-width: 0;
+
+    ${media.tablet} {
+        width: 100%;
+    }
+`;
+
+const SupportActions = styled(FlexDiv)`
+    min-width: 0;
+
+    ${media.mobile} {
+        justify-content: flex-start;
+        margin-top: 16px;
+    }
+`;
 
 const BankSupport = () => {
     const { formatDateDay } = DateFunction();
@@ -79,8 +109,9 @@ const BankSupport = () => {
                     <Loading />
                 </FlexDiv>
             ) : (
+                <SupportPage>
                 <Container $alignitems="start">
-                    <Div width="80%">
+                    <SupportContent width="80%">
                         <Div>
                             <Dropdown
                                 label="전체보기"
@@ -91,7 +122,7 @@ const BankSupport = () => {
                             />
                         </Div>
                         <BankSupportTable />
-                        <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">
+                        <SupportActions width="100%" $justifycontent="end" $margin="20px 0 0 0">
                             <Button
                                 $backgroundColor="bgColor"
                                 $margin="0 10px 0 0"
@@ -111,7 +142,7 @@ const BankSupport = () => {
                                     </Div>
                                 </FlexDiv>
                             </Button>
-                        </FlexDiv>
+                        </SupportActions>
                         {bankList && bankList.length !== 0 && (
                             <Pagination
                                 totalPage={totalPage}
@@ -121,8 +152,9 @@ const BankSupport = () => {
                                 search={statusValue === "" ? "" : `&status=${statusValue}`}
                             />
                         )}
-                    </Div>
+                    </SupportContent>
                 </Container>
+                </SupportPage>
             )}
         </>
     );

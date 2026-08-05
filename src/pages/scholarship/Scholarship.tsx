@@ -7,6 +7,7 @@ import Button from "../../styles/assets/Button";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
+import { media } from "../../styles/theme";
 
 import { modalInfo, modalOpen, refetch } from "../../recoil/frontState";
 
@@ -19,6 +20,201 @@ import { userRole } from "../../recoil/backState";
 
 const ScholarshipSection = styled(Div)`
     min-height: 100vh;
+    min-width: 0;
+
+    ${media.tablet} {
+        &,
+        & *,
+        & *::before,
+        & *::after {
+            box-sizing: border-box;
+        }
+    }
+`;
+
+const HeroSection = styled(FlexDiv)`
+    ${media.tablet} {
+        height: auto;
+        min-height: 600px;
+        padding: 120px 48px 80px;
+    }
+
+    ${media.mobile} {
+        min-height: 500px;
+        padding: 120px 24px 64px;
+    }
+`;
+
+const HeroLogo = styled(Div)`
+    ${media.tablet} {
+        width: 300px;
+        height: 300px;
+        top: 150px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    ${media.mobile} {
+        width: 220px;
+        height: 220px;
+        top: 90px;
+    }
+`;
+
+const HeroTitle = styled(P)`
+    ${media.mobile} {
+        font-size: 38px;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        text-align: center;
+    }
+`;
+
+const HeroDescription = styled(P)`
+    ${media.mobile} {
+        font-size: 18px;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        text-align: center;
+    }
+`;
+
+const ContentWidth = styled(Div)`
+    ${media.tablet} {
+        width: calc(100% - 96px);
+    }
+
+    ${media.mobile} {
+        width: 100%;
+        padding: 0 20px;
+    }
+`;
+
+const IntroSection = styled(FlexDiv)`
+    ${media.tablet} {
+        height: auto;
+        min-height: 0;
+        padding: 80px 0;
+    }
+
+    ${media.mobile} {
+        padding: 64px 0;
+    }
+`;
+
+const DetailSection = styled(FlexDiv)`
+    ${media.tablet} {
+        height: auto;
+        padding: 48px 0;
+    }
+
+    ${media.mobile} {
+        padding: 32px 0;
+    }
+`;
+
+const DetailContent = styled(FlexDiv)`
+    min-width: 0;
+
+    ${media.tablet} {
+        width: calc(100% - 96px);
+    }
+
+    ${media.mobile} {
+        width: 100%;
+        padding: 0 20px;
+        gap: 32px;
+        flex-direction: column;
+    }
+`;
+
+const DetailColumn = styled(FlexDiv)`
+    min-width: 0;
+
+    ${media.mobile} {
+        width: 100%;
+        height: auto;
+    }
+`;
+
+const DetailHeader = styled(FlexDiv)`
+    min-width: 0;
+
+    ${media.mobile} {
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 12px;
+    }
+`;
+
+const YearButtons = styled(FlexDiv)`
+    flex-wrap: wrap;
+
+    ${media.mobile} {
+        width: 100%;
+        margin: 0;
+        justify-content: flex-start;
+        gap: 8px;
+    }
+`;
+
+const ImagePanel = styled(Div)`
+    ${media.tablet} {
+        height: 300px;
+    }
+
+    ${media.mobile} {
+        height: 220px;
+    }
+`;
+
+const ScholarshipImage = styled(Img)`
+    ${media.tablet} {
+        object-fit: cover;
+    }
+`;
+
+const ThanksSection = styled(FlexDiv)`
+    ${media.tablet} {
+        height: auto;
+        padding: 48px 0;
+    }
+
+    ${media.mobile} {
+        padding: 32px 0;
+    }
+`;
+
+const ThanksRow = styled(FlexDiv)`
+    ${media.tablet} {
+        width: 100%;
+        justify-content: flex-start;
+    }
+`;
+
+const ThanksCard = styled(FlexDiv)`
+    min-width: 0;
+
+    ${media.tablet} {
+        width: 50%;
+        height: auto;
+        min-height: 340px;
+        padding-right: 20px;
+
+        p {
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            overflow-wrap: anywhere;
+        }
+    }
+
+    ${media.mobile} {
+        width: 100%;
+        padding-right: 0;
+    }
 `;
 
 const Scholarship = () => {
@@ -120,33 +316,33 @@ const Scholarship = () => {
         <>
             <ScholarshipSection $position="relative" width="100%" $backgroundColor="bk">
                 {/* 배너부분 */}
-                <FlexDiv $position="flex" width="100%" height="100vh" direction="column">
+                <HeroSection $position="flex" width="100%" height="100vh" direction="column">
                     <FlexDiv width="100%">
-                        <Div width="400px" height="400px" $position="absolute" $top="230px">
+                        <HeroLogo width="400px" height="400px" $position="absolute" $top="230px">
                             <Img src="/images/ibas-main-logo_white.png" $filter="opacity(25%)" />
-                        </Div>
+                        </HeroLogo>
                     </FlexDiv>
                     <Div $margin="0 0 0 0">
-                        <P color="wh" fontWeight={600} fontSize="xxxl">
+                        <HeroTitle color="wh" fontWeight={600} fontSize="xxxl">
                             최태성 장학회
-                        </P>
+                        </HeroTitle>
                     </Div>
                     <Div $margin="40px 0 0 0">
-                        <P color="wh" fontWeight={200} fontSize="xxl">
+                        <HeroDescription color="wh" fontWeight={200} fontSize="xxl">
                             최태성 장학회로부터
                             <br />
-                        </P>
+                        </HeroDescription>
                     </Div>
                     <Div $margin="15px 0 0 0">
-                        <P color="wh" fontWeight={200} fontSize="xxl">
+                        <HeroDescription color="wh" fontWeight={200} fontSize="xxl">
                             인하대학교 IBAS활동 지원을 받고 있습니다.
-                        </P>
+                        </HeroDescription>
                     </Div>
-                </FlexDiv>
+                </HeroSection>
 
                 {/* 히스토리 부분 */}
-                <FlexDiv $position="flex" width="100%" height="100vh" direction="column">
-                    <Div width="70%">
+                <IntroSection $position="flex" width="100%" height="100vh" direction="column">
+                    <ContentWidth width="70%">
                         {/* 히스토리 */}
                         <Div>
                             <Div $borderT="2px solid white" $padding="5px">
@@ -183,12 +379,12 @@ const Scholarship = () => {
                                 있습니다.
                             </P>
                         </Div>
-                    </Div>
-                </FlexDiv>
+                    </ContentWidth>
+                </IntroSection>
 
                 {/* 연혁 */}
                 <FlexDiv $position="flex" width="100%" height="auto" direction="column">
-                    <Div width="70%">
+                    <ContentWidth width="70%">
                         <Div $borderT="2px solid white" $margin="20px 0 0 0" $padding="5px">
                             {/* <P fontSize="xxxl" color="wh"> */}
                             <P color="wh" style={{ fontSize: titleFontSize }}>
@@ -227,15 +423,15 @@ const Scholarship = () => {
                             $borderL="10px solid transparent"
                             $borderR="10px solid transparent"
                         />
-                    </Div>
+                    </ContentWidth>
                 </FlexDiv>
 
                 {/* 후원내용 */}
-                <FlexDiv width="100%" height="40vh" $margin="70px 0 0 0">
-                    <FlexDiv width="70%" height="100%" $justifycontent="space-between">
+                <DetailSection width="100%" height="40vh" $margin="70px 0 0 0">
+                    <DetailContent width="70%" height="100%" $justifycontent="space-between">
                         {/* 왼쪽 컨텐츠 부분 */}
-                        <FlexDiv width="48%" height="100%" direction="column" $justifycontent="space-between">
-                            <FlexDiv $left="0px" width="100%" $justifycontent="flex-between" $alignitems="flex-end">
+                        <DetailColumn width="48%" height="100%" direction="column" $justifycontent="space-between">
+                            <DetailHeader $left="0px" width="100%" $justifycontent="flex-between" $alignitems="flex-end">
                                 {/* 타이틀 부분 */}
                                 <Div $borderT="2px solid white" $left="0px" $padding="5px">
                                     {/* <P fontSize="xxxl" color="wh"> */}
@@ -244,7 +440,7 @@ const Scholarship = () => {
                                     </P>
                                 </Div>
                                 {/* 버튼 영역 */}
-                                <FlexDiv $margin="0 0 0 20px" $justifycontent="space-between" width="240px">
+                                <YearButtons $margin="0 0 0 20px" $justifycontent="space-between" width="240px">
                                     {/* 받아온 데이터에서 연도를 추출하여 map에 넣어줌 */}
                                     {/* 4개년이 넘는다면 4개까지만 slice */}
                                     {sponsorYears?.slice(0, Math.min(4, sponsorYears?.length))?.map((year) => (
@@ -261,8 +457,8 @@ const Scholarship = () => {
                                             <P color="wh">{year}</P>
                                         </Button>
                                     ))}
-                                </FlexDiv>
-                            </FlexDiv>
+                                </YearButtons>
+                            </DetailHeader>
                             {/* 자세한 내용들 */}
                             <Div width="100%" height="65%">
                                 <ScholarshipDetailList
@@ -277,29 +473,29 @@ const Scholarship = () => {
                                     </FlexDiv>
                                 </Button>
                             </Div>
-                        </FlexDiv>
+                        </DetailColumn>
                         {/* 오른쪽 컨텐츠 부분 */}
-                        <FlexDiv width="48%" height="100%">
+                        <DetailColumn width="48%" height="100%">
                             {/* 사진 컨테이너 */}
-                            <Div width="100%" height="100%">
-                                <Img src="/images/sponsor.png" />
-                            </Div>
-                        </FlexDiv>
-                    </FlexDiv>
-                </FlexDiv>
+                            <ImagePanel width="100%" height="100%">
+                                <ScholarshipImage src="/images/sponsor.png" />
+                            </ImagePanel>
+                        </DetailColumn>
+                    </DetailContent>
+                </DetailSection>
 
                 {/* 장학금 사용 용도 */}
-                <FlexDiv width="100%" height="40vh" $margin="50px 0 0 0">
-                    <FlexDiv width="70%" height="100%" $justifycontent="space-between">
+                <DetailSection width="100%" height="40vh" $margin="50px 0 0 0">
+                    <DetailContent width="70%" height="100%" $justifycontent="space-between">
                         {/* 왼쪽 컨텐츠 부분 */}
-                        <FlexDiv width="48%" height="100%">
+                        <DetailColumn width="48%" height="100%">
                             {/* 사진 컨테이너 */}
-                            <Div width="100%" height="100%">
-                                <Img src="/images/usage.png" />
-                            </Div>
-                        </FlexDiv>
+                            <ImagePanel width="100%" height="100%">
+                                <ScholarshipImage src="/images/usage.png" />
+                            </ImagePanel>
+                        </DetailColumn>
                         {/* 오른쪽 컨텐츠 부분 */}
-                        <FlexDiv width="48%" height="100%" direction="column">
+                        <DetailColumn width="48%" height="100%" direction="column">
                             {/* 타이틀 부분 */}
                             <FlexDiv width="100%" $justifycontent="flex-end">
                                 <FlexDiv $borderT="2px solid white" $left="0px" $padding="5px">
@@ -336,21 +532,21 @@ const Scholarship = () => {
                                     </FlexDiv>
                                 </Button>
                             </Div>
-                        </FlexDiv>
-                    </FlexDiv>
-                </FlexDiv>
+                        </DetailColumn>
+                    </DetailContent>
+                </DetailSection>
 
                 {/* Thanks for 부분 */}
-                <FlexDiv width="100%" height="1200px">
-                    <Div width="70%">
+                <ThanksSection width="100%" height="1200px">
+                    <ContentWidth width="70%">
                         <Div width="100%">
                             <Div $borderT="2px solid white" $padding="5px">
                                 <P color="wh" style={{ fontSize: titleFontSize }}>
                                     Thanks for
                                 </P>
                             </Div>
-                            <FlexDiv $margin="70px 0 0 0" width="100%" $justifycontent="flex-start">
-                                <FlexDiv direction="column" width="25%" height="340px">
+                            <ThanksRow $margin="70px 0 0 0" width="100%" $justifycontent="flex-start">
+                                <ThanksCard direction="column" width="25%" height="340px">
                                     <Div
                                         width="150px"
                                         height="150px"
@@ -375,8 +571,8 @@ const Scholarship = () => {
                                             <P color="wh">인하대학교 경영학과 교수</P>
                                         </Div>
                                     </FlexDiv>
-                                </FlexDiv>
-                                <FlexDiv direction="column" width="25%" height="340px">
+                                </ThanksCard>
+                                <ThanksCard direction="column" width="25%" height="340px">
                                     <Div
                                         width="150px"
                                         height="150px"
@@ -404,8 +600,8 @@ const Scholarship = () => {
                                             <P color="wh">IBAS 동아리 지도교수</P>
                                         </Div>
                                     </FlexDiv>
-                                </FlexDiv>
-                                <FlexDiv direction="column" width="25%" height="340px">
+                                </ThanksCard>
+                                <ThanksCard direction="column" width="25%" height="340px">
                                     <Div
                                         width="150px"
                                         height="150px"
@@ -430,8 +626,8 @@ const Scholarship = () => {
                                             <P color="wh">IBAS 서버 컴퓨터 지원</P>
                                         </Div>
                                     </FlexDiv>
-                                </FlexDiv>
-                                <FlexDiv direction="column" width="25%" height="340px">
+                                </ThanksCard>
+                                <ThanksCard direction="column" width="25%" height="340px">
                                     <Div
                                         width="150px"
                                         height="150px"
@@ -456,10 +652,10 @@ const Scholarship = () => {
                                             <P color="wh">최태성 장학회 前 회장</P>
                                         </Div>
                                     </FlexDiv>
-                                </FlexDiv>
-                            </FlexDiv>
-                            <FlexDiv $margin="15px 0 0 0" width="100%" $justifycontent="flex-start">
-                                <FlexDiv direction="column" width="25%" height="340px">
+                                </ThanksCard>
+                            </ThanksRow>
+                            <ThanksRow $margin="15px 0 0 0" width="100%" $justifycontent="flex-start">
+                                <ThanksCard direction="column" width="25%" height="340px">
                                     <Div
                                         width="150px"
                                         height="150px"
@@ -487,8 +683,8 @@ const Scholarship = () => {
                                             <P color="wh">미강상사 대표</P>
                                         </Div>
                                     </FlexDiv>
-                                </FlexDiv>
-                                <FlexDiv direction="column" width="25%" height="340px">
+                                </ThanksCard>
+                                <ThanksCard direction="column" width="25%" height="340px">
                                     <Div
                                         width="150px"
                                         height="150px"
@@ -516,11 +712,11 @@ const Scholarship = () => {
                                             <P color="wh">NAVER 재직 중</P>
                                         </Div>
                                     </FlexDiv>
-                                </FlexDiv>
-                            </FlexDiv>
+                                </ThanksCard>
+                            </ThanksRow>
                         </Div>
-                    </Div>
-                </FlexDiv>
+                    </ContentWidth>
+                </ThanksSection>
             </ScholarshipSection>
         </>
     );

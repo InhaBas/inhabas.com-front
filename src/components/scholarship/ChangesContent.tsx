@@ -1,6 +1,8 @@
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
+import styled from "styled-components";
+import { media } from "../../styles/theme";
 
 import useFetch from "../../hooks/useFetch";
 
@@ -12,6 +14,54 @@ import { scholarshipHistoryInterface } from "../../types/ibas/TypeIBAS";
 
 import { GetRoleAuthorization } from "../../functions/authFunctions";
 import { userRole } from "../../recoil/backState";
+
+const HistoryYear = styled(FlexDiv)`
+    min-width: 0;
+`;
+
+const HistoryItem = styled(FlexDiv)`
+    min-width: 0;
+
+    ${media.tablet} {
+        width: calc(100% - 10px);
+        height: auto;
+        min-height: 28px;
+        align-items: flex-start;
+    }
+
+    ${media.mobile} {
+        gap: 4px;
+    }
+`;
+
+const HistoryDate = styled(FlexDiv)`
+    flex-shrink: 0;
+`;
+
+const HistoryTitle = styled(FlexDiv)`
+    flex: 1;
+    min-width: 0;
+`;
+
+const HistoryText = styled(P)`
+    ${media.tablet} {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        overflow-wrap: anywhere;
+        line-height: 1.5;
+    }
+`;
+
+const HistoryActions = styled(FlexDiv)`
+    flex-shrink: 0;
+
+    ${media.mobile} {
+        width: 100%;
+        margin: 0;
+        justify-content: flex-end;
+    }
+`;
 
 const ChangesContent = ({ changesContent }: { changesContent: scholarshipHistoryInterface[] }) => {
     const { isAuthorizedOverVice } = GetRoleAuthorization();
@@ -47,7 +97,7 @@ const ChangesContent = ({ changesContent }: { changesContent: scholarshipHistory
             <Div>
                 {changesContent?.map(({ year, data }: scholarshipHistoryInterface) => (
                     <>
-                        <FlexDiv key={year} $margin="20px 0 0 0">
+                        <HistoryYear key={year} $margin="20px 0 0 0">
                             {/* 연도 옆 원 */}
                             <Div width="15px" height="15px" radius={100} $backgroundColor="grey2"></Div>
                             <Div $margin="0 0 0 5px">
@@ -55,18 +105,18 @@ const ChangesContent = ({ changesContent }: { changesContent: scholarshipHistory
                                     {year}
                                 </P>
                             </Div>
-                        </FlexDiv>
+                        </HistoryYear>
                         <FlexDiv direction="column" $margin="5px 0 10px 30px">
                             {data.map(({ dateHistory, title, id }: { dateHistory: any; title: any; id: any }) => (
-                                <FlexDiv key={id} $margin="5px 0 5px 10px" width="100%" $justifycontent="flex-start">
-                                    <FlexDiv>
+                                <HistoryItem key={id} $margin="5px 0 5px 10px" width="100%" $justifycontent="flex-start">
+                                    <HistoryDate>
                                         <P color="wh">{dateHistory?.split("T")[0]?.substring(5)}</P>
-                                    </FlexDiv>
-                                    <FlexDiv $margin="5px">
-                                        <P color="grey2">{title}</P>
-                                    </FlexDiv>
+                                    </HistoryDate>
+                                    <HistoryTitle $margin="5px">
+                                        <HistoryText color="grey2">{title}</HistoryText>
+                                    </HistoryTitle>
                                     {role && isAuthorizedOverVice && (
-                                        <FlexDiv $margin="3px">
+                                        <HistoryActions $margin="3px">
                                             <FlexDiv
                                                 width="15px"
                                                 $margin="0 6px"
@@ -78,9 +128,9 @@ const ChangesContent = ({ changesContent }: { changesContent: scholarshipHistory
                                             <FlexDiv width="15px" $pointer onClick={() => clickDeleteEvent(String(id))}>
                                                 <Img src="/images/trash_grey.svg" />
                                             </FlexDiv>
-                                        </FlexDiv>
+                                        </HistoryActions>
                                     )}
-                                </FlexDiv>
+                                </HistoryItem>
                             ))}
                         </FlexDiv>
                     </>
