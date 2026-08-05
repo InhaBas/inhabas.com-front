@@ -1,12 +1,59 @@
 import { useNavigate } from "react-router-dom";
 
-import { theme } from "../../styles/theme";
+import styled from "styled-components";
+
+import { media, theme } from "../../styles/theme";
 
 import { useRecoilState } from "recoil";
 import { bankListDataInfo } from "../../recoil/backState";
 import A from "../../styles/assets/A";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import P from "../../styles/assets/P";
+
+const TableScrollArea = styled.div`
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+`;
+
+const Table = styled.div`
+    width: max-content;
+    min-width: 905px;
+`;
+
+const TableRow = styled(FlexDiv)`
+    flex-wrap: nowrap;
+
+    ${media.tablet} {
+        height: auto;
+        min-height: 45px;
+        align-items: stretch;
+    }
+`;
+
+const TableCell = styled(FlexDiv)`
+    flex-shrink: 0;
+`;
+
+const TableLink = styled(A)`
+    ${media.tablet} {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        overflow-wrap: anywhere;
+    }
+`;
+
+const StatusText = styled(P)`
+    ${media.tablet} {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        overflow-wrap: anywhere;
+    }
+`;
 
 const BankSupportTable = () => {
     const navigate = useNavigate();
@@ -22,8 +69,9 @@ const BankSupportTable = () => {
 
     return (
         <>
-            <Div width="100%" $padding="20px 0">
-                <FlexDiv
+            <TableScrollArea>
+                <Table>
+                <TableRow
                     width="100%"
                     height="45px"
                     $borderB={`1px solid ${theme.color.tableBorder}`}
@@ -31,16 +79,16 @@ const BankSupportTable = () => {
                     $alignitems="center"
                 >
                     {headerInfo.map((item: string, idx: number) => (
-                        <FlexDiv key={`headerInfo${idx}`} width={`${widthList[idx]}px`} $padding="10px">
+                        <TableCell key={`headerInfo${idx}`} width={`${widthList[idx]}px`} $padding="10px">
                             <P $center fontWeight={700}>
                                 {item}
                             </P>
-                        </FlexDiv>
+                        </TableCell>
                     ))}
-                </FlexDiv>
+                </TableRow>
                 {bankList.length !== 0 ? (
                     bankList.map((element: object, idx: number) => (
-                        <FlexDiv
+                        <TableRow
                             key={`contentItem${idx}`}
                             width="100%"
                             height="45px"
@@ -51,7 +99,7 @@ const BankSupportTable = () => {
                             {Object.values(element)
                                 .slice(0, 5)
                                 .map((item: any, idx: number) => (
-                                    <FlexDiv
+                                    <TableCell
                                         key={`itemValue${idx}`}
                                         width={`${widthList[idx]}px`}
                                         $padding="10px"
@@ -61,7 +109,7 @@ const BankSupportTable = () => {
                                     >
                                         {idx === 4 ? (
                                             <Div width="70%">
-                                                <P
+                                                <StatusText
                                                     color={
                                                         item === "승인 대기"
                                                             ? "bk"
@@ -75,26 +123,26 @@ const BankSupportTable = () => {
                                                     }
                                                 >
                                                     {item}
-                                                </P>
+                                                </StatusText>
                                             </Div>
                                         ) : (
                                             <Div>
-                                                <A
+                                                <TableLink
                                                     $center={idx === 1 ? false : true}
                                                     fontWeight={idx === 1 ? 700 : idx === 0 ? 900 : 500}
                                                     $hoverColor={idx === 1 ? "textColor" : idx === 0 ? "grey3" : "bk"}
                                                     color={idx === 0 ? "grey3" : "bk"}
                                                 >
                                                     {item}
-                                                </A>
+                                                </TableLink>
                                             </Div>
                                         )}
-                                    </FlexDiv>
+                                    </TableCell>
                                 ))}
-                        </FlexDiv>
+                        </TableRow>
                     ))
                 ) : (
-                    <FlexDiv
+                    <TableRow
                         width="100%"
                         height="45px"
                         $borderT={`1px solid ${theme.color.grey1}`}
@@ -104,9 +152,10 @@ const BankSupportTable = () => {
                         <Div>
                             <P>게시글이 존재하지 않습니다</P>
                         </Div>
-                    </FlexDiv>
+                    </TableRow>
                 )}
-            </Div>
+                </Table>
+            </TableScrollArea>
         </>
     );
 };
