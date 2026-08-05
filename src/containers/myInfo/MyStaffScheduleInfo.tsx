@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
+import styled from "styled-components";
 
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import useFetch from "../../hooks/useFetch";
 
@@ -13,6 +14,24 @@ import Img from "../../styles/assets/Img";
 import { DateTime, NumberInput } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
 import Loading from "../../components/common/Loading";
+
+const ScheduleContent = styled(Div)`
+    box-sizing: border-box;
+    min-width: 0;
+
+    p {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    ${media.tablet} {
+        padding: 32px !important;
+    }
+
+    ${media.mobile} {
+        padding: 16px !important;
+    }
+`;
 
 const MyStaffScheduleInfo = () => {
     let fontStyle: React.CSSProperties = {};
@@ -134,7 +153,7 @@ const MyStaffScheduleInfo = () => {
                             </Div>
                         </FlexDiv>
                     </FlexDiv>
-                    <Div width="100%" $padding="50px">
+                    <ScheduleContent width="100%" $padding="50px">
                         <Div width="100%" $borderB={`1px solid ${theme.color.border}`} $margin="0 0 30px 0">
                             <FlexDiv $justifycontent="start" width="100%" $margin="0 0 10px 0">
                                 <Div>
@@ -263,7 +282,7 @@ const MyStaffScheduleInfo = () => {
                                 </FlexDiv>
                             </Button>
                         </FlexDiv>
-                    </Div>
+                    </ScheduleContent>
                 </Div>
             )}
         </>
