@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import styled from "styled-components";
 
 import useFetch from "../../hooks/useFetch";
 import A from "../../styles/assets/A";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import P from "../../styles/assets/P";
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import Loading from "../common/Loading";
 import Pagination from "../common/Pagination";
@@ -13,6 +14,32 @@ import { useRecoilState } from "recoil";
 import { myCommentsInfo } from "../../recoil/backState";
 
 import { myCommentInterface } from "../../types/TypeCommon";
+
+const TableScroll = styled.div`
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+
+    ${media.tablet} {
+        & > div {
+            width: 680px;
+        }
+
+        & > div > div {
+            height: auto !important;
+            min-height: 45px;
+            flex-wrap: nowrap;
+        }
+
+        p,
+        a {
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+    }
+`;
 
 const MyCommentTable = () => {
     const headerInfo = ["게시판 유형", "댓글 내용", "작성일"];
@@ -53,6 +80,7 @@ const MyCommentTable = () => {
                 </FlexDiv>
             ) : (
                 <>
+                    <TableScroll>
                     <Div width="100%" $borderB={`1px solid ${theme.color.grey1}`}>
                         <FlexDiv
                             width="100%"
@@ -149,6 +177,7 @@ const MyCommentTable = () => {
                             />
                         )}
                     </Div>
+                    </TableScroll>
                 </>
             )}
         </>
