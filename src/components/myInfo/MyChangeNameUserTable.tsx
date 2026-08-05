@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
+import styled from "styled-components";
 
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import useFetch from "../../hooks/useFetch";
 
@@ -21,6 +22,36 @@ import P from "../../styles/assets/P";
 import Dropdown from "../common/Dropdown";
 import Loading from "../common/Loading";
 import Pagination from "../common/Pagination";
+
+const TableScroll = styled.div`
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+
+    & > div {
+        width: max(100%, 1050px);
+        min-width: 1050px;
+    }
+
+    & > div > div {
+        flex-wrap: nowrap;
+    }
+
+    ${media.tablet} {
+        & > div > div {
+            height: auto !important;
+            min-height: 45px;
+            align-items: stretch;
+        }
+
+        p {
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+    }
+`;
 
 const MyChangeNameUserTable = () => {
     const { isAuthorizedOverVice } = GetRoleAuthorization();
@@ -137,6 +168,7 @@ const MyChangeNameUserTable = () => {
                         </FlexDiv>
                     )}
 
+                    <TableScroll>
                     <Div width="100%">
                         <FlexDiv
                             width="100%"
@@ -216,6 +248,7 @@ const MyChangeNameUserTable = () => {
                             </FlexDiv>
                         )}
                     </Div>
+                    </TableScroll>
 
                     {userList && userList.length !== 0 && (
                         <Pagination
