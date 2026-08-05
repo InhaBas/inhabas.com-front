@@ -12,6 +12,74 @@ import { modalInfo, modalOpen, refetch } from "../../recoil/frontState";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
+import styled from "styled-components";
+import { media } from "../../styles/theme";
+
+const InfoContent = styled(Div)`
+    box-sizing: border-box;
+    min-width: 0;
+
+    ${media.tablet} {
+        padding: 32px !important;
+    }
+
+    ${media.mobile} {
+        padding: 16px !important;
+    }
+`;
+
+const InfoTable = styled(Div)`
+    min-width: 0;
+
+    p {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+`;
+
+const InfoRow = styled(FlexDiv)`
+    box-sizing: border-box;
+    min-width: 0;
+    flex-wrap: nowrap;
+
+    > div,
+    > div > div {
+        box-sizing: border-box;
+        min-width: 0 !important;
+    }
+
+    ${media.tablet} {
+        height: auto !important;
+        min-height: 45px;
+
+        > div,
+        > div > div {
+            padding: 10px 16px !important;
+        }
+    }
+
+    ${media.mobile} {
+        align-items: stretch;
+
+        > div,
+        > div > div {
+            padding: 10px 12px !important;
+        }
+    }
+`;
+
+const InfoNotice = styled(FlexDiv)`
+    min-width: 0;
+
+    p {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    ${media.mobile} {
+        align-items: flex-start;
+    }
+`;
 
 const MyInfoContainer = () => {
     const widthList = [150, 500, 150];
@@ -101,9 +169,9 @@ const MyInfoContainer = () => {
                         </Div>
                     </FlexDiv>
                 </FlexDiv>
-                <Div width="100%" $padding="50px">
-                    <Div width="100%" $borderB={`1px solid ${theme.color.grey1}`}>
-                        <FlexDiv
+                <InfoContent width="100%" $padding="50px">
+                    <InfoTable width="100%" $borderB={`1px solid ${theme.color.grey1}`}>
+                        <InfoRow
                             width="100%"
                             height="45px"
                             $borderT={`1px solid ${theme.color.grey1}`}
@@ -123,9 +191,9 @@ const MyInfoContainer = () => {
                                     <Img src="/images/pencil_purple.svg" />
                                 </FlexDiv>
                             </FlexDiv>
-                        </FlexDiv>
+                        </InfoRow>
 
-                        <FlexDiv
+                        <InfoRow
                             width="100%"
                             height="45px"
                             $borderT={`1px solid ${theme.color.grey1}`}
@@ -138,8 +206,8 @@ const MyInfoContainer = () => {
                             <FlexDiv $minWidth={`${widthList[1]}px`} $padding="10px 40px">
                                 <P>{info?.studentId}</P>
                             </FlexDiv>
-                        </FlexDiv>
-                        <FlexDiv
+                        </InfoRow>
+                        <InfoRow
                             width="100%"
                             height="45px"
                             $borderT={`1px solid ${theme.color.grey1}`}
@@ -159,8 +227,8 @@ const MyInfoContainer = () => {
                                     <Img src="/images/pencil_purple.svg" />
                                 </FlexDiv>
                             </FlexDiv>
-                        </FlexDiv>
-                        <FlexDiv
+                        </InfoRow>
+                        <InfoRow
                             width="100%"
                             height="45px"
                             $borderT={`1px solid ${theme.color.grey1}`}
@@ -173,8 +241,8 @@ const MyInfoContainer = () => {
                             <FlexDiv $minWidth={`${widthList[1]}px`} $padding="10px 40px">
                                 <P>{info?.email}</P>
                             </FlexDiv>
-                        </FlexDiv>
-                        <FlexDiv
+                        </InfoRow>
+                        <InfoRow
                             width="100%"
                             height="45px"
                             $borderT={`1px solid ${theme.color.grey1}`}
@@ -194,8 +262,8 @@ const MyInfoContainer = () => {
                                     <Img src="/images/pencil_purple.svg" />
                                 </FlexDiv>
                             </FlexDiv>
-                        </FlexDiv>
-                        <FlexDiv
+                        </InfoRow>
+                        <InfoRow
                             width="100%"
                             height="45px"
                             $borderT={`1px solid ${theme.color.grey1}`}
@@ -235,8 +303,8 @@ const MyInfoContainer = () => {
                                     </FlexDiv>
                                 )}
                             </FlexDiv>
-                        </FlexDiv>
-                        <FlexDiv
+                        </InfoRow>
+                        <InfoRow
                             width="100%"
                             height="45px"
                             $borderT={`1px solid ${theme.color.grey1}`}
@@ -260,14 +328,14 @@ const MyInfoContainer = () => {
                                     <Img src="/images/pencil_purple.svg" />
                                 </FlexDiv>
                             </FlexDiv>
-                        </FlexDiv>
-                    </Div>
+                        </InfoRow>
+                    </InfoTable>
 
                     {info?.role === "CHIEF" ||
                     info?.role === "VICE_CHIEF" ||
                     info?.role === "EXECUTIVES" ||
                     info?.role === "SECRETARY" ? (
-                        <FlexDiv width="100%" $margin="30px 0 0 0">
+                        <InfoNotice width="100%" $margin="30px 0 0 0">
                             <FlexDiv width="20px" height="20px" $margin="0 10px 0 0">
                                 <Img src="/images/check_grey.svg" />
                             </FlexDiv>
@@ -277,9 +345,9 @@ const MyInfoContainer = () => {
                                     요청하세요
                                 </P>
                             </FlexDiv>
-                        </FlexDiv>
+                        </InfoNotice>
                     ) : null}
-                </Div>
+                </InfoContent>
             </Div>
         </>
     );
