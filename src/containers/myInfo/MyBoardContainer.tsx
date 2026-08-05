@@ -1,4 +1,5 @@
 import { theme } from "../../styles/theme";
+import styled from "styled-components";
 
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
@@ -6,6 +7,20 @@ import P from "../../styles/assets/P";
 
 import MyBoardTable from "../../components/myInfo/MyBoardTable";
 import MyCommentTable from "../../components/myInfo/MyCommentTable";
+import { media } from "../../styles/theme";
+
+const TableSection = styled(FlexDiv)`
+    box-sizing: border-box;
+    min-width: 0;
+
+    ${media.tablet} {
+        padding: 24px !important;
+    }
+
+    ${media.mobile} {
+        padding: 16px !important;
+    }
+`;
 
 const MyBoardContainer = () => {
     return (
@@ -26,9 +41,9 @@ const MyBoardContainer = () => {
                         </Div>
                     </FlexDiv>
                 </FlexDiv>
-                <FlexDiv width="100%" $justifycontent="space-around" $padding="30px">
+                <TableSection width="100%" $justifycontent="space-around" $padding="30px">
                     <MyBoardTable />
-                </FlexDiv>
+                </TableSection>
             </Div>
 
             <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
@@ -47,9 +62,9 @@ const MyBoardContainer = () => {
                         </Div>
                     </FlexDiv>
                 </FlexDiv>
-                <FlexDiv width="100%" $justifycontent="space-around" $padding="30px">
+                <TableSection width="100%" $justifycontent="space-around" $padding="30px">
                     <MyCommentTable />
-                </FlexDiv>
+                </TableSection>
             </Div>
         </>
     );

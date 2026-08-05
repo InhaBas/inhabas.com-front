@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import styled from "styled-components";
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import useFetch from "../../hooks/useFetch";
 import { applicationAnswerInfo, applicationInfo, headerTitleInfo, tokenAccess } from "../../recoil/backState";
@@ -36,6 +36,34 @@ const FailBtn = styled(Button)`
     &:hover {
         background-color: ${theme.color.red};
         color: ${theme.color.wh};
+    }
+`;
+
+const ApplicationContent = styled(Div)`
+    min-width: 0;
+
+    p {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+`;
+
+const ApplicationActions = styled(FlexDiv)`
+    flex-wrap: nowrap;
+
+    ${media.tablet} {
+        width: 100% !important;
+        justify-content: center;
+        gap: 16px;
+    }
+
+    ${media.mobile} {
+        flex-direction: column;
+        gap: 8px;
+
+        > button {
+            width: 100% !important;
+        }
     }
 `;
 
@@ -106,7 +134,7 @@ const MyApplication = () => {
                 </FlexDiv>
             ) : (
                 <Container>
-                    <Div width="100%" $margin="0 0 30px 0">
+                    <ApplicationContent width="100%" $margin="0 0 30px 0">
                         <Div width="100%" $border="1px solid" $borderColor="border" $margin=" 0 0 20px 0" radius={6}>
                             <FlexDiv
                                 width=" 100%"
@@ -238,8 +266,8 @@ const MyApplication = () => {
                                 </Div>
                             </Div>
                         ))}
-                    </Div>
-                    <FlexDiv width="30%" $justifycontent="space-around">
+                    </ApplicationContent>
+                    <ApplicationActions width="30%" $justifycontent="space-around">
                         <PassBtn
                             width="200px"
                             $padding="12px 24px"
@@ -259,7 +287,7 @@ const MyApplication = () => {
                         >
                             불합격
                         </FailBtn>
-                    </FlexDiv>
+                    </ApplicationActions>
                 </Container>
             )}
         </>

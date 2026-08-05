@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import styled from "styled-components";
 
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import useFetch from "../../hooks/useFetch";
 
@@ -22,6 +23,50 @@ import P from "../../styles/assets/P";
 import Dropdown from "../common/Dropdown";
 import Loading from "../common/Loading";
 import Pagination from "../common/Pagination";
+
+const TableScroll = styled.div`
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+
+    & > div {
+        width: max(100%, 1050px);
+        min-width: 1050px;
+    }
+
+    & > div > div {
+        flex-wrap: nowrap;
+    }
+
+    ${media.tablet} {
+        & > div > div {
+            height: auto !important;
+            min-height: 45px;
+            align-items: stretch;
+        }
+
+        a,
+        p {
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+    }
+`;
+
+const SearchControls = styled(FlexDiv)`
+    min-width: 0;
+
+    ${media.mobile} {
+        width: 100%;
+
+        > input {
+            width: calc(100% - 54px) !important;
+            min-width: 0;
+        }
+    }
+`;
 
 const MyNewUserTable = () => {
     const { isAuthorizedOverExecutives } = GetRoleAuthorization();
@@ -204,6 +249,7 @@ const MyNewUserTable = () => {
                         </FlexDiv>
                     )}
 
+                    <TableScroll>
                     <Div width="100%">
                         <FlexDiv
                             width="100%"
@@ -289,9 +335,10 @@ const MyNewUserTable = () => {
                             </FlexDiv>
                         )}
                     </Div>
+                    </TableScroll>
                     {path === "/staff/member/newStudents" && (
                         <FlexDiv width="100%" $justifycontent="end" $margin="30px 0">
-                            <FlexDiv>
+                            <SearchControls>
                                 <TextInput
                                     width="300px"
                                     placeholder="이름이나 학번을 입력하세요"
@@ -310,7 +357,7 @@ const MyNewUserTable = () => {
                                         <Img src="/images/search_white.svg" />
                                     </FlexDiv>
                                 </Button>
-                            </FlexDiv>
+                            </SearchControls>
                         </FlexDiv>
                     )}
                     {newUser && newUser.length !== 0 && (
