@@ -1,6 +1,7 @@
 import { MouseEvent, useEffect } from 'react';
 
 import { useRecoilValue, useSetRecoilState } from 'recoil';
+import styled from 'styled-components';
 
 import { bankBalanceInfo, bankHistoryInfo } from '../../recoil/backState';
 import { modalInfo, modalOpen, refetch } from '../../recoil/frontState';
@@ -8,7 +9,7 @@ import { modalInfo, modalOpen, refetch } from '../../recoil/frontState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
-import { theme } from '../../styles/theme';
+import { media, theme } from '../../styles/theme';
 
 import useFetch from '../../hooks/useFetch';
 
@@ -17,6 +18,51 @@ import { tokenAccess, userRole } from '../../recoil/backState';
 
 import { jwtDecode } from 'jwt-decode';
 import { tokenInterface } from '../../types/TypeCommon';
+
+const TableScrollArea = styled.div`
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+`;
+
+const Table = styled.div`
+  width: max-content;
+  min-width: 1010px;
+`;
+
+const TableRow = styled(FlexDiv)`
+  flex-wrap: nowrap;
+
+  ${media.tablet} {
+    height: auto;
+    min-height: 45px;
+    align-items: stretch;
+  }
+`;
+
+const TableCell = styled(FlexDiv)`
+  flex-shrink: 0;
+`;
+
+const TableText = styled(P)`
+  ${media.tablet} {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+  }
+`;
+
+const TableActions = styled(FlexDiv)`
+  box-sizing: border-box;
+
+  ${media.tablet} {
+    padding-right: 20px;
+    margin-right: 0;
+  }
+`;
 
 const BankTable = () => {
   const { isSecretary } = GetRoleAuthorization();
@@ -71,8 +117,9 @@ const BankTable = () => {
 
   return (
     <>
-      <Div width="100%" $padding="20px">
-        <FlexDiv
+      <TableScrollArea>
+        <Table>
+        <TableRow
           width="100%"
           height="45px"
           $borderT={`1px solid ${theme.color.grey1}`}
@@ -80,22 +127,22 @@ const BankTable = () => {
           $backgroundColor="wh"
         >
           {headerInfo.map((item: string, idx: number) => (
-            <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
-              <P $center fontWeight={700}>
+            <TableCell key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
+              <TableText $center fontWeight={700}>
                 {item}
-              </P>
-            </FlexDiv>
+              </TableText>
+            </TableCell>
           ))}
           {role && isSecretary && (
-            <FlexDiv $minWidth="60px" $padding="10px">
-              <P $center fontWeight={700}>
+            <TableCell $minWidth="60px" $padding="10px">
+              <TableText $center fontWeight={700}>
                 비고
-              </P>
-            </FlexDiv>
+              </TableText>
+            </TableCell>
           )}
-        </FlexDiv>
+        </TableRow>
         {contents?.map((element: any, idx: number) => (
-          <FlexDiv
+          <TableRow
             key={`contentItem${idx}`}
             width="100%"
             height="45px"
@@ -106,13 +153,13 @@ const BankTable = () => {
             {Object.values(element)
               .slice(1, 7)
               .map((item: any, idx: number) => (
-                <FlexDiv key={`itemValue${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
-                  <P $center fontWeight={500}>
+                <TableCell key={`itemValue${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
+                  <TableText $center fontWeight={500}>
                     {item === '0' ? '-' : item}
-                  </P>
-                </FlexDiv>
+                  </TableText>
+                </TableCell>
               ))}
-            <FlexDiv $minWidth="50px" $padding="10px">
+            <TableCell $minWidth="50px" $padding="10px">
               <Div
                 width="15px"
                 onClick={(e: MouseEvent) => clickDetailEvent(e, 'ss', element?.id)}
@@ -120,9 +167,9 @@ const BankTable = () => {
               >
                 <Img src="/images/file_grey.svg" />
               </Div>
-            </FlexDiv>
+            </TableCell>
             {role && isSecretary && (
-              <FlexDiv $minWidth={'60px'} $padding="10px" $justifycontent="flex-end">
+              <TableCell $minWidth={'60px'} $padding="10px" $justifycontent="flex-end">
                 {element?.writerId === userId && (
                   <>
                     <FlexDiv
@@ -142,14 +189,15 @@ const BankTable = () => {
                     </FlexDiv>
                   </>
                 )}
-              </FlexDiv>
+              </TableCell>
             )}
-          </FlexDiv>
+          </TableRow>
         ))}
-      </Div>
+        </Table>
+      </TableScrollArea>
 
       {role && isSecretary && (
-        <FlexDiv
+        <TableActions
           width="100%"
           $justifycontent="flex-end"
           $padding="0 20px 10px 0"
@@ -164,7 +212,7 @@ const BankTable = () => {
           >
             <Img src="/images/plus_grey.svg" />
           </FlexDiv>
-        </FlexDiv>
+        </TableActions>
       )}
 
       {/* <FlexDiv width="100%">
