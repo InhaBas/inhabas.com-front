@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
+import styled from "styled-components";
 
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import useFetch from "../../hooks/useFetch";
 
@@ -16,6 +17,48 @@ import Img from "../../styles/assets/Img";
 import P from "../../styles/assets/P";
 import Loading from "../../components/common/Loading";
 import Pagination from "../../components/common/Pagination";
+
+const SupportContent = styled(Div)`
+    box-sizing: border-box;
+
+    ${media.tablet} {
+        padding: 32px !important;
+    }
+
+    ${media.mobile} {
+        padding: 16px !important;
+    }
+`;
+
+const TableScroll = styled.div`
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+
+    & > div {
+        width: max(100%, 1050px);
+        min-width: 1050px;
+    }
+
+    & > div > div {
+        flex-wrap: nowrap;
+    }
+
+    ${media.tablet} {
+        & > div > div {
+            height: auto !important;
+            min-height: 45px;
+            align-items: stretch;
+        }
+
+        p {
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+    }
+`;
 
 const MyBankSupportContainer = () => {
     const { formatDateDay } = DateFunction();
@@ -90,7 +133,8 @@ const MyBankSupportContainer = () => {
                         </FlexDiv>
                     </FlexDiv>
 
-                    <Div width="100%" $padding="50px">
+                    <SupportContent width="100%" $padding="50px">
+                        <TableScroll>
                         <Div width="100%" $borderB={`1px solid ${theme.color.grey1}`}>
                             <FlexDiv
                                 width="100%"
@@ -171,6 +215,7 @@ const MyBankSupportContainer = () => {
                                 </FlexDiv>
                             )}
                         </Div>
+                        </TableScroll>
                         {bankList && bankList.length !== 0 && (
                             <Pagination
                                 totalPage={totalPage}
@@ -180,7 +225,7 @@ const MyBankSupportContainer = () => {
                                 paginationFetch={fetchBankListData}
                             />
                         )}
-                    </Div>
+                    </SupportContent>
                 </Div>
             )}
         </>
