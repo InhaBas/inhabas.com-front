@@ -9,7 +9,7 @@ import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import { TextInput } from "../../styles/assets/Input";
 import P from "../../styles/assets/P";
-import { theme } from "../../styles/theme";
+import { media, theme } from "../../styles/theme";
 
 import useFetch from "../../hooks/useFetch";
 
@@ -24,7 +24,31 @@ export interface searchedMemberInterface {
     role: string;
 }
 
-const TableHover = styled(FlexDiv)`
+const SearchContainer = styled(FlexDiv)`
+    min-width: 0;
+
+    ${media.mobile} {
+        width: 100%;
+    }
+`;
+
+const SearchTableScroll = styled.div`
+    width: 100%;
+    height: 180px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+`;
+
+const SearchTable = styled.div`
+    width: max-content;
+    min-width: 390px;
+`;
+
+const SearchRow = styled(FlexDiv)`
+    flex-wrap: nowrap;
+`;
+
+const TableHover = styled(SearchRow)`
     &:hover {
         background-color: ${theme.color.tableHo};
     }
@@ -63,7 +87,7 @@ const StudentSearchTable = () => {
 
     return (
         <>
-            <FlexDiv width="90%">
+            <SearchContainer width="90%">
                 {/* 검색 입력란 */}
                 <FlexDiv width="100%">
                     <TextInput
@@ -81,68 +105,71 @@ const StudentSearchTable = () => {
                     </FlexDiv>
                 ) : (
                     <>
-                        <FlexDiv
-                            width="100%"
-                            height="45px"
-                            $borderB={`1px solid ${theme.color.tableBorder}`}
-                            $justifycontent="space-between"
-                        >
-                            {/* 테이블 헤더 */}
-                            {headerInfo.map((item, idx) => (
-                                // <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
-                                <FlexDiv key={`headerInfo${idx}`} width={`${widthList[idx]}px`}>
-                                    <P $center fontWeight={700}>
-                                        {item}
-                                    </P>
-                                </FlexDiv>
-                            ))}
-                        </FlexDiv>
-                        <Div width="100%" height="135px" overflow="auto">
-                            {/* 검색 결과 테이블 내용 */}
-                            {filteredResults?.map((element: searchedMemberInterface, idx: number) => (
-                                <TableHover
-                                    key={`contentItem${idx}`}
+                        <SearchTableScroll>
+                            <SearchTable>
+                                <SearchRow
                                     width="100%"
                                     height="45px"
-                                    $borderT={`1px solid ${theme.color.grey1}`}
+                                    $borderB={`1px solid ${theme.color.tableBorder}`}
                                     $justifycontent="space-between"
-                                    $backgroundColor={
-                                        selectedStudent.studentId === element?.studentId ? "tableHo" : "wh"
-                                    }
-                                    $pointer
-                                    onClick={() => chooseStudent(element)}
                                 >
-                                    {/* 테이블 셀 */}
-                                    <FlexDiv
-                                        key={`itemValue0${idx}`}
-                                        width={`${widthList[0]}px`}
-                                        $padding="10px"
-                                        height="100%"
-                                    >
-                                        <A $center>{element?.major}</A>
-                                    </FlexDiv>
-                                    <FlexDiv
-                                        key={`itemValue1${idx}`}
-                                        width={`${widthList[1]}px`}
-                                        $padding="10px"
-                                        height="100%"
-                                    >
-                                        <A $center>{element?.name}</A>
-                                    </FlexDiv>
-                                    <FlexDiv
-                                        key={`itemValue2${idx}`}
-                                        width={`${widthList[2]}px`}
-                                        $padding="10px"
-                                        height="100%"
-                                    >
-                                        <A $center>{element?.studentId}</A>
-                                    </FlexDiv>
-                                </TableHover>
-                            ))}
-                        </Div>
+                                    {/* 테이블 헤더 */}
+                                    {headerInfo.map((item, idx) => (
+                                        <FlexDiv key={`headerInfo${idx}`} width={`${widthList[idx]}px`}>
+                                            <P $center fontWeight={700}>
+                                                {item}
+                                            </P>
+                                        </FlexDiv>
+                                    ))}
+                                </SearchRow>
+                                <Div width="100%">
+                                    {/* 검색 결과 테이블 내용 */}
+                                    {filteredResults?.map((element: searchedMemberInterface, idx: number) => (
+                                        <TableHover
+                                            key={`contentItem${idx}`}
+                                            width="100%"
+                                            height="45px"
+                                            $borderT={`1px solid ${theme.color.grey1}`}
+                                            $justifycontent="space-between"
+                                            $backgroundColor={
+                                                selectedStudent.studentId === element?.studentId ? "tableHo" : "wh"
+                                            }
+                                            $pointer
+                                            onClick={() => chooseStudent(element)}
+                                        >
+                                            {/* 테이블 셀 */}
+                                            <FlexDiv
+                                                key={`itemValue0${idx}`}
+                                                width={`${widthList[0]}px`}
+                                                $padding="10px"
+                                                height="100%"
+                                            >
+                                                <A $center>{element?.major}</A>
+                                            </FlexDiv>
+                                            <FlexDiv
+                                                key={`itemValue1${idx}`}
+                                                width={`${widthList[1]}px`}
+                                                $padding="10px"
+                                                height="100%"
+                                            >
+                                                <A $center>{element?.name}</A>
+                                            </FlexDiv>
+                                            <FlexDiv
+                                                key={`itemValue2${idx}`}
+                                                width={`${widthList[2]}px`}
+                                                $padding="10px"
+                                                height="100%"
+                                            >
+                                                <A $center>{element?.studentId}</A>
+                                            </FlexDiv>
+                                        </TableHover>
+                                    ))}
+                                </Div>
+                            </SearchTable>
+                        </SearchTableScroll>
                     </>
                 )}
-            </FlexDiv>
+            </SearchContainer>
         </>
     );
 };
