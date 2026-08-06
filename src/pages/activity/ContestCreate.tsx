@@ -50,6 +50,25 @@ const PolicyNotice = styled(FlexDiv)`
     }
 `;
 
+const FileUploadTitle = styled(FlexDiv)`
+    ${media.mobile} {
+        align-items: flex-start;
+        flex-wrap: nowrap;
+
+        > :last-child {
+            flex: 1;
+            min-width: 0;
+        }
+
+        p {
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            line-height: 1.5;
+        }
+    }
+`;
+
 const RadioGroup = styled(FlexDiv)`
     gap: 24px;
     height: auto;
@@ -449,7 +468,7 @@ const ContestCreate = () => {
                         </Div>
 
                         <Div width="100%" $border="1px solid" $borderColor="border" $margin="20px 0" radius={6}>
-                            <FlexDiv
+                            <FileUploadTitle
                                 width="100%"
                                 $padding="20px"
                                 $justifycontent="flex-start"
@@ -463,7 +482,7 @@ const ContestCreate = () => {
                                         ※ 첨부파일에 사진 파일이 없을 시 정상적으로 게시글이 등록되지 않습니다.
                                     </P>
                                 </Div>
-                            </FlexDiv>
+                            </FileUploadTitle>
                             <Div width="100%" $padding="20px">
                                 <DragNDrop fileFetch menuId={currentMenuId} />
                             </Div>

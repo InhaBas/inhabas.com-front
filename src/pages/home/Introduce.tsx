@@ -26,13 +26,17 @@ const IntroduceSection = styled(Div)`
     min-height: 100vh;
 
     ${media.tablet} {
-        height: auto;
+        height: 100vh;
     }
 `;
 
 const IntroImg = styled(Img)`
     object-fit: fill;
     position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 
     ${media.tablet} {
         object-fit: cover;
@@ -108,7 +112,7 @@ const Li = styled.li`
 
 const SectionContent = styled(Div)`
     ${media.tablet} {
-        height: auto;
+        height: 100vh;
         min-height: 100vh;
     }
 `;
@@ -168,16 +172,6 @@ const HeroCopy = styled(P)`
         br {
             display: none;
         }
-    }
-`;
-
-const CareerSectionContent = styled(SectionContent)`
-    ${media.tablet} {
-        min-height: 760px;
-    }
-
-    ${media.mobile} {
-        min-height: 700px;
     }
 `;
 
@@ -555,7 +549,7 @@ const Introduce = () => {
                 </SectionContent>
             </IntroduceSection>
             <IntroduceSection width="100%" height="100vh">
-                <CareerSectionContent $position="relative" width="100%" height="100vh">
+                <SectionContent $position="relative" width="100%" height="100vh">
                     <IntroImg src={`/images/${pageData[page].image}`} $filter="brightness(25%)" />
 
                     {page === 0 && (
@@ -617,7 +611,7 @@ const Introduce = () => {
                             </FlexDiv>
                         </Div>
                     </CareerMenu>
-                </CareerSectionContent>
+                </SectionContent>
             </IntroduceSection>
             <IntroduceSection width="100%" height="100vh">
                 {isLoading ? (
