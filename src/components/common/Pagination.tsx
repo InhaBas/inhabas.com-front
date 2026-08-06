@@ -9,6 +9,7 @@ import styled from "styled-components";
 
 const PaginationContainer = styled(FlexDiv)`
     ${media.mobile} {
+        flex-wrap: nowrap;
         gap: 4px 0;
         padding: 16px 0;
     }
@@ -21,10 +22,11 @@ const PageButton = styled(FlexDiv)`
     padding: 5px;
 
     ${media.mobile} {
-        width: 36px;
-        height: 36px;
-        margin: 2px;
-        padding: 4px;
+        flex: 0 0 auto;
+        width: 32px;
+        height: 32px;
+        margin: 1px;
+        padding: 2px;
     }
 `;
 
@@ -32,7 +34,8 @@ const NavigationButtonWrapper = styled(Div)`
     margin: 0 8px;
 
     ${media.mobile} {
-        margin: 0 2px;
+        flex: 0 0 auto;
+        margin: 0;
     }
 `;
 
@@ -43,10 +46,10 @@ const NavigationButton = styled(FlexDiv)`
     padding: 5px;
 
     ${media.mobile} {
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
         margin: 0;
-        padding: 4px;
+        padding: 2px;
     }
 `;
 
