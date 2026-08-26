@@ -280,8 +280,7 @@ const MyInfoContainer = () => {
                             </FlexDiv>
 
                             <FlexDiv>
-                                {info?.role === "CHIEF" ||
-                                    (info?.role === "VICE_CHIEF" && (
+                                {(info?.role === "CHIEF" || info?.role === "VICE_CHIEF") && (
                                         <FlexDiv
                                             onClick={() => navigate("/staff/manage")}
                                             $minWidth={`${widthList[2]}px`}
@@ -290,7 +289,7 @@ const MyInfoContainer = () => {
                                         >
                                             <P color="textColor">관리자페이지</P>
                                         </FlexDiv>
-                                    ))}
+                                    )}
 
                                 {info?.type === "UNDERGRADUATE" && (
                                     <FlexDiv

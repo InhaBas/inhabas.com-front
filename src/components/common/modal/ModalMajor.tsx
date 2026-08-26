@@ -9,7 +9,6 @@ import useFetch from "../../../hooks/useFetch";
 import { majorInfo } from "../../../recoil/backState";
 import { majorSelected, modalInfo, modalOpen, refetch } from "../../../recoil/frontState";
 
-import A from "../../../styles/assets/A";
 import Button from "../../../styles/assets/Button";
 import { Div, FlexDiv } from "../../../styles/assets/Div";
 import { H2 } from "../../../styles/assets/H";
@@ -17,36 +16,54 @@ import Img from "../../../styles/assets/Img";
 import { TextInput } from "../../../styles/assets/Input";
 import P from "../../../styles/assets/P";
 
-const TableHover = styled(FlexDiv)`
+const MajorTableRow = styled.div<{ $selected?: boolean; $pointer?: boolean }>`
+    display: grid;
+    grid-template-columns: 150px minmax(270px, 1fr) 160px;
+    align-items: center;
+    width: 100%;
+    min-width: 580px;
+    min-height: 45px;
+    background-color: ${({ $selected }) => ($selected ? theme.color.tableHo : theme.color.wh)};
+    border-top: 1px solid ${theme.color.grey1};
+    cursor: ${({ $pointer }) => ($pointer ? "pointer" : "default")};
+
     &:hover {
         background-color: ${theme.color.tableHo};
     }
 `;
 
+const MajorTableHeader = styled(MajorTableRow)`
+    border-top: 0;
+    border-bottom: 1px solid ${theme.color.tableBorder};
+`;
+
+const MajorTableCell = styled.div`
+    min-width: 0;
+    padding: 10px;
+`;
+
+const MajorTableText = styled(P)`
+    white-space: nowrap;
+`;
+
 const MajorTableScroll = styled.div`
     width: 100%;
     max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 
     ${media.mobile} {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+        margin: 0 -4px;
+        width: calc(100% + 8px);
     }
 `;
 
 const MajorTable = styled(Div)`
-    ${media.mobile} {
-        width: 580px;
-
-        > div {
-            flex-wrap: nowrap;
-        }
-    }
+    min-width: 580px;
 `;
 
 const MajorList = styled(Div)`
-    ${media.mobile} {
-        height: 220px !important;
-    }
+    height: 170px !important;
 `;
 
 interface MajorItem {
@@ -62,8 +79,7 @@ const ModalMajor = () => {
         setOpen(false);
     };
 
-    const headerInfo = ["학교명", "단과대학", "학과명"];
-    const widthList = [150, 160, 270];
+    const headerInfo = ["학교명", "학과명", "단과대학"];
 
     const modalType = useRecoilValue(modalInfo);
     const [data, fetchData] = useFetch();
@@ -174,45 +190,33 @@ const ModalMajor = () => {
                     <>
                         <MajorTableScroll>
                             <MajorTable width="100%">
-                                <FlexDiv
-                                    width="100%"
-                                    height="45px"
-                                    $borderB={`1px solid ${theme.color.tableBorder}`}
-                                    $justifycontent="space-between"
-                                >
-                                    {headerInfo.map((item: string, idx: number) => (
-                                        <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
-                                            <P $center fontWeight={700}>
+                                <MajorTableHeader>
+                                    {headerInfo.map((item: string) => (
+                                        <MajorTableCell key={item}>
+                                            <MajorTableText $center fontWeight={700}>
                                                 {item}
-                                            </P>
-                                        </FlexDiv>
+                                            </MajorTableText>
+                                        </MajorTableCell>
                                     ))}
-                                </FlexDiv>
+                                </MajorTableHeader>
                                 <MajorList width="100%" height="60%" overflow="auto">
                                     {filteredResults.map((element: { college: string; major: string }, idx: number) => (
-                                        <TableHover
+                                        <MajorTableRow
                                             key={`contentItem${idx}`}
-                                            width="100%"
-                                            height="45px"
-                                            $borderT={`1px solid ${theme.color.grey1}`}
-                                            $justifycontent="space-between"
-                                            $backgroundColor={selectedTable.major === element.major ? "tableHo" : "wh"}
+                                            $selected={selectedTable.major === element.major}
                                             $pointer
                                             onClick={() => chooseMajor(element)}
                                         >
-                                            <FlexDiv $padding="10px" $minWidth={`${widthList[0]}px`}>
-                                                <A $center>인하대학교</A>
-                                            </FlexDiv>
-                                            {Object.values(element).map((item: any, idx: number) => (
-                                                <FlexDiv
-                                                    key={`itemValue${idx}`}
-                                                    $minWidth={`${widthList[idx + 1]}px`}
-                                                    $padding="10px"
-                                                >
-                                                    <A $center>{item}</A>
-                                                </FlexDiv>
-                                            ))}
-                                        </TableHover>
+                                            <MajorTableCell>
+                                                <MajorTableText $center>인하대학교</MajorTableText>
+                                            </MajorTableCell>
+                                            <MajorTableCell>
+                                                <MajorTableText $center>{element.major}</MajorTableText>
+                                            </MajorTableCell>
+                                            <MajorTableCell>
+                                                <MajorTableText $center>{element.college}</MajorTableText>
+                                            </MajorTableCell>
+                                        </MajorTableRow>
                                     ))}
                                 </MajorList>
                             </MajorTable>

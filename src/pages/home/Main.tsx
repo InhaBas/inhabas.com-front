@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import { relogin } from "../../recoil/frontState";
 
+import RecruitmentScheduleNotice from "../../components/home/RecruitmentScheduleNotice";
 import { Div, FlexDiv } from "../../styles/assets/Div";
 import Img from "../../styles/assets/Img";
 import { media } from "../../styles/theme";
@@ -88,6 +89,7 @@ const Main = () => {
     return (
         <>
             <MainDiv width="100%" height="100vh" direction="column">
+                {import.meta.env.DEV && <RecruitmentScheduleNotice />}
                 <MainContent direction="column" width="100%" height="90%">
                     <Logo width="350px" height="350px">
                         <LogoImg src="/images/ibas-main-logo_white.png" />

@@ -62,6 +62,13 @@ const QuestionList = styled(FlexDiv)`
     }
 `;
 
+const QuestionTitle = styled(P).attrs({ $whiteSpace: "normal" })`
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.5;
+`;
+
 const QuestionActions = styled(FlexDiv)`
     ${media.mobile} {
         gap: 12px;
@@ -235,7 +242,7 @@ const SignupQuestion = () => {
                                             $margin={idx === 0 ? "0" : "30px 0 0 0"}
                                             key={`question${idx}`}
                                         >
-                                            <P fontWeight={700}> {item.question}</P>
+                                            <QuestionTitle fontWeight={700}>{item.question}</QuestionTitle>
                                             <TextArea
                                                 defaultValue={(answer && answer[idx]?.content) || ""}
                                                 ref={(el: never) => (ref.current[idx] = el)}
