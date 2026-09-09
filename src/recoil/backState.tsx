@@ -85,7 +85,7 @@ export const userRole = atom({
 });
 
 // dropdown
-export const fileIdList = atom<String[] | []>({
+export const fileIdList = atom<string[] | []>({
   key: 'fileIdList',
   default: [],
 });

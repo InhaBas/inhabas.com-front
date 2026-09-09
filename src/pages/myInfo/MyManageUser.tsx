@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-
 import MyChangeNameUserTable from '../../components/myInfo/MyChangeNameUserTable';
 import MyGraduateUserTable from '../../components/myInfo/MyGraduateUserTable';
 import MyNewUserTable from '../../components/myInfo/MyNewUserTable';

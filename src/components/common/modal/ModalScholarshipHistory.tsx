@@ -74,7 +74,9 @@ const ModalScholarshipHistory = () => {
     if (historyInfoData) {
       for (const data of Object.values(historyInfoData as Record<string, any>)) {
         for (const infos of data.data) {
-          if (infos.id == modalData?.content) {
+          // infos.id는 number, modalData?.content는 ChangesContent.tsx에서 문자열로 저장한
+          // id라 타입이 다르다. == 강제 변환에 의존하지 않도록 명시적으로 비교한다.
+          if (String(infos.id) === modalData?.content) {
             setHistory({
               id: infos.id,
               title: infos.title,

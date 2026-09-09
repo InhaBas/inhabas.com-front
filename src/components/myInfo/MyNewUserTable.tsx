@@ -3,10 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-
-
-
-
 import { GetRoleAuthorization } from '../../functions/authFunctions';
 import useFetch from '../../hooks/useFetch';
 import { newUserInfo, tokenAccess, totalNewUserInfo, totalPageInfo } from '../../recoil/backState';
@@ -200,7 +196,7 @@ const MyNewUserTable = () => {
       // 신입생 정보 set
       setNewUser(processedData);
 
-      setCheck([] as Number[]);
+      setCheck([] as number[]);
       setIsLoading(false);
     }
   }, [newUserData, access]);

@@ -17,7 +17,6 @@ import {
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
 
-
 const LectureForm = styled(Div)`
   &,
   * {

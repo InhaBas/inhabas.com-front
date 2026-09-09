@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 
-
-
 import RoomNavigate from '../../components/lecture/RoomNavigate';
 import RoomSearch from '../../components/lecture/RoomSearch';
 import RoomTable from '../../components/lecture/RoomTable';

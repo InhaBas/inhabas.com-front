@@ -148,7 +148,7 @@ const BankSupportDetail = () => {
 
   const { isSecretary } = GetRoleAuthorization();
 
-  let decoded;
+  let decoded: tokenInterface | undefined;
   if (access !== 'default') {
     decoded = jwtDecode(access) as tokenInterface;
   }

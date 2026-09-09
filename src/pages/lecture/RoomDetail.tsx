@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-
 import CommentInput from '../../components/common/CommentInput';
 import RoomNavigate from '../../components/lecture/RoomNavigate';
 import RoomSearch from '../../components/lecture/RoomSearch';

@@ -3,10 +3,6 @@ import { useLocation } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-
-
-
-
 import { GetRoleAuthorization } from '../../functions/authFunctions';
 import { ConvertLabel } from '../../functions/convertLabelFunctions';
 import useFetch from '../../hooks/useFetch';
@@ -228,7 +224,7 @@ const MyUserTable = () => {
       setUserList(contents);
       setTotalUser(user.pageInfo.totalElements);
       setTotalPage(user.pageInfo.totalPages);
-      setCheck([] as Number[]);
+      setCheck([] as number[]);
       setIsLoading(false);
       setAcceptUser(false); // 위치 다시 확인
       setUndergraduate(false);
@@ -400,6 +396,7 @@ const MyUserTable = () => {
                           </FlexDiv>
                         );
                       }
+                      return null;
                     })}
                   </FlexDiv>
                 ))

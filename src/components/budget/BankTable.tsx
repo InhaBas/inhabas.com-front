@@ -64,7 +64,7 @@ const BankTable = () => {
   const role = useRecoilValue(userRole);
   const access = useRecoilValue(tokenAccess);
 
-  let decoded;
+  let decoded: tokenInterface | undefined;
   if (access !== 'default') {
     decoded = jwtDecode(access) as tokenInterface;
   }

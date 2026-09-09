@@ -21,7 +21,7 @@ let Button = styled.button<ButtonStyle>`
   display: ${(props) => props.display || 'block'};
   background-color: ${(props) => props.theme.color[props.$backgroundColor || 'transparent']};
   border: ${(props) => props.border || 'none'};
-  border-radius: ${(props) => `${props.$borderRadius}px` || '0'};
+  border-radius: ${(props) => (props.$borderRadius ? `${props.$borderRadius}px` : '0')};
   cursor: pointer;
 
   &:hover {

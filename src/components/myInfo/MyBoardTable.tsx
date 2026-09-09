@@ -3,9 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-
-
-
 import { DateFunction } from '../../functions/dateFunction';
 import useFetch from '../../hooks/useFetch';
 import {

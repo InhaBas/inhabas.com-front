@@ -110,4 +110,6 @@ const TextEditor = forwardRef(({ initialContent }: { initialContent?: string }, 
   );
 });
 
+TextEditor.displayName = 'TextEditor';
+
 export default TextEditor;

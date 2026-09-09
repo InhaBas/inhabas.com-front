@@ -24,10 +24,10 @@ const Input = styled.input<InputStyle>`
   padding: ${(props) => props.$padding || '5px 10px'};
   background-color: ${(props) => props.theme.color || 'inherit'};
   font-size: ${(props) => props.theme.fontSize[props.fontSize || 'md']};
-  color: ${(props) => props.theme.color || props.theme.color};
+  color: ${(props) => props.theme.color};
   border: ${(props) => `${props.$border}` || 'none'};
   border-color: ${(props) => props.theme.color[props.color || 'border']};
-  border-radius: ${(props) => `${props.$borderRadius}px` || 'none'};
+  border-radius: ${(props) => (props.$borderRadius ? `${props.$borderRadius}px` : 'none')};
   display: ${(props) => props.display || 'inline-block'};
   text-indent: ${(props) => props.textIndent || 0};
   &:focus {
@@ -37,7 +37,7 @@ const Input = styled.input<InputStyle>`
 
 const TextInput = styled(Input).attrs({ type: 'text' })<InputStyle>`
   border: 1px solid ${(props) => props.theme.color.grey1};
-  border-radius: ${(props) => `${props.$borderRadius}px` || '2px'};
+  border-radius: ${(props) => (props.$borderRadius ? `${props.$borderRadius}px` : '2px')};
   ::-webkit-input-placeholder {
     color: ${(props) => props.theme.color.textColor};
     font-size: 10px;
@@ -151,7 +151,7 @@ const TextArea = styled.textarea<InputStyle>`
   font-size: ${(props) => props.theme.fontSize[props.fontSize || 'sm']};
   color: ${(props) => props.theme.color[props.color || 'bk']};
   border: 1px solid ${(props) => props.theme.color.grey1};
-  border-radius: ${(props) => `${props.$borderRadius}px` || '4px'};
+  border-radius: ${(props) => (props.$borderRadius ? `${props.$borderRadius}px` : '4px')};
   display: ${(props) => props.display || 'inline-block'};
   resize: none;
   &:focus {
@@ -171,7 +171,7 @@ const Select = styled.select<InputStyle>`
   font-size: ${(props) => props.theme.fontSize[props.fontSize || 'sm']};
   color: ${(props) => props.theme.color[props.color || 'bk']};
   border: 1px solid ${(props) => props.theme.color.grey1};
-  border-radius: ${(props) => `${props.$borderRadius}px` || '4px'};
+  border-radius: ${(props) => (props.$borderRadius ? `${props.$borderRadius}px` : '4px')};
   display: ${(props) => props.display || 'inline-block'};
   resize: none;
   cursor: pointer;

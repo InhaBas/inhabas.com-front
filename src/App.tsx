@@ -3,8 +3,6 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { ThemeProvider } from 'styled-components';
 
-
-
 import Bottom from './components/common/Bottom';
 import { Modal } from './components/common/modal/Modal';
 import ScrollToTop from './components/common/ScrollToTop';

@@ -20,7 +20,6 @@ import { media, theme } from '../../styles/theme';
 import { boardDetailInterface } from '../../types/TypeBoard';
 import { tokenInterface } from '../../types/TypeCommon';
 
-
 const PolicyNotice = styled(FlexDiv)`
   padding: 15px 20px;
   width: 100%;
@@ -124,7 +123,7 @@ const BoardCreate = () => {
   const setReload = useSetRecoilState(refetch);
 
   const access = useRecoilValue(tokenAccess);
-  let decoded;
+  let decoded: tokenInterface | undefined;
   if (access !== 'default') {
     decoded = jwtDecode(access) as tokenInterface;
   }
@@ -212,7 +211,7 @@ const BoardCreate = () => {
   }, [postData]);
 
   useEffect(() => {
-    if (update == 'update') {
+    if (update === 'update') {
       getFetchData(`${fetchUrl}/${paramID}`, 'GET', 'token');
     }
   }, [update]);

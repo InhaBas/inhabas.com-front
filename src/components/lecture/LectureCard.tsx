@@ -110,9 +110,6 @@ const LectureCard = () => {
     // const event = ev.target
     navigate('/lecture/detail');
   };
-  const cardPrint = () => {
-    for (let i = 0; i < 10; i++) {}
-  };
   return (
     <CardList>
       <Card onClick={(e: MouseEvent) => clickEvent(e, 'ss')}>

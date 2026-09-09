@@ -169,7 +169,7 @@ const Signup = () => {
 
     target.value = value
       .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/, '$1-$2-$3')
-      .replace(/(\-{1,2})$/, '');
+      .replace(/(-{1,2})$/, '');
   };
 
   /*
@@ -183,13 +183,13 @@ const Signup = () => {
     }
 
     try {
-      var base64Url = token.split('.')[1];
+      const base64Url = token.split('.')[1];
       if (!base64Url) {
         return null;
       }
 
-      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      var jsonPayload = decodeURIComponent(
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
         atob(base64)
           .split('')
           .map(function (c) {

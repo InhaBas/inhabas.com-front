@@ -164,7 +164,7 @@ const CommentList = (props: commentPropsInterface) => {
   const [editingCommentId, setEditingCommentId] = useState<number>();
   const [isLoading, setIsLoading] = useState<null | boolean>(null);
 
-  let decoded;
+  let decoded: tokenInterface | undefined;
   if (access !== 'default') {
     decoded = jwtDecode(access) as tokenInterface;
   }

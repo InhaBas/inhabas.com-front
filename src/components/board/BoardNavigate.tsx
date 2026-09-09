@@ -12,7 +12,6 @@ import { theme } from '../../styles/theme';
 import { media } from '../../styles/theme';
 import { boardMenuInterface } from '../../types/TypeBoard';
 
-
 const HIDDEN_BOARD_MENUS = ['질문게시판', '자유게시판', '건의사항', '회장단 게시판'];
 
 const NavigateBox = styled(Div)`

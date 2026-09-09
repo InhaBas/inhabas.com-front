@@ -3,7 +3,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-
 import DragNDrop from '../../components/common/DragNDrop';
 import Loading from '../../components/common/Loading';
 import TextEditor from '../../components/common/TextEditor';
@@ -222,7 +221,7 @@ const ContestCreate = () => {
   }, [postData]);
 
   useEffect(() => {
-    if (update == 'update') {
+    if (update === 'update') {
       getFetchData(`${fetchUrl}/${paramID}`, 'GET', 'token');
     }
   }, [update]);

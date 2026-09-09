@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-
 import useFetch from '../../../hooks/useFetch';
 import { majorInfo } from '../../../recoil/backState';
 import { majorSelected, modalInfo, modalOpen, refetch } from '../../../recoil/frontState';
@@ -131,7 +130,7 @@ const ModalMajor = () => {
         delete newData.change;
 
         const tmpContents: MajorItem[] = [];
-        (Object.values(newData) as MajorItem[]).map((element: MajorItem) => {
+        (Object.values(newData) as MajorItem[]).forEach((element: MajorItem) => {
           tmpContents.push({
             college: element.college,
             major: element.major,

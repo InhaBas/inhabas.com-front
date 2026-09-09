@@ -7,7 +7,6 @@ import P from '../../styles/assets/P';
 import { media } from '../../styles/theme';
 import { scholarshipDetailListInterface } from '../../types/ibas/TypeIBAS';
 
-
 const DetailItem = styled(Div)`
   box-sizing: border-box;
   max-width: 100%;
@@ -38,6 +37,7 @@ const ScholarshipDetailList: React.FC<scholarshipDetailListInterface> = ({ conte
     <>
       {contents?.slice(0, 3)?.map(({ date, content, id }) => (
         <DetailItem
+          key={id}
           width="100%"
           $borderB="2px solid grey"
           $margin="0 0 15px 0"

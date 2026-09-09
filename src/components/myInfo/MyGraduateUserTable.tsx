@@ -3,10 +3,6 @@ import { useLocation } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-
-
-
-
 import { GetRoleAuthorization } from '../../functions/authFunctions';
 import { ConvertLabel } from '../../functions/convertLabelFunctions';
 import useFetch from '../../hooks/useFetch';
@@ -221,7 +217,7 @@ const MyGraduateUserTable = () => {
       setUserList(contents);
       setTotalUser(user.pageInfo.totalElements);
       setTotalPage(user.pageInfo.totalPages);
-      setCheck([] as Number[]);
+      setCheck([] as number[]);
       setIsLoading(false);
       setGraduate(false);
     }
@@ -391,6 +387,7 @@ const MyGraduateUserTable = () => {
                           </FlexDiv>
                         );
                       }
+                      return null;
                     })}
                   </FlexDiv>
                 ))

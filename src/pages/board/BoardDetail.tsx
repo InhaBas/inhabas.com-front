@@ -150,7 +150,7 @@ const BoardDetail = () => {
 
   const pathNameInfo = location.pathname.substring(1).split('/');
 
-  let decoded;
+  let decoded: tokenInterface | undefined;
   if (access !== 'default') {
     decoded = jwtDecode(access) as tokenInterface;
   }

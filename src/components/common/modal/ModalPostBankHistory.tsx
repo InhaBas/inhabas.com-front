@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
-
 import useFetch from '../../../hooks/useFetch';
 import { fileIdList } from '../../../recoil/backState';
 import { menuId, modalOpen, refetch, selectedStudentInfos } from '../../../recoil/frontState';
@@ -123,7 +122,7 @@ const ModalPostBankHistory = () => {
 
     // 파일 담기
     const inputData = {
-      dateUsed: infos.dateUsed.includes('T') ? infos.dateUsed : (infos.dateUsed += 'T00:00:00'),
+      dateUsed: infos.dateUsed.includes('T') ? infos.dateUsed : `${infos.dateUsed}T00:00:00`,
       title: infos.title,
       details: infos.details,
       memberIdReceived: infos.memberIdReceived === '' ? null : infos.memberIdReceived,

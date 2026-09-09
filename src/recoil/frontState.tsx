@@ -10,17 +10,17 @@ export const refetch = atom({
 
 export const checkedList = atom({
   key: 'checkedList',
-  default: [] as Number[],
+  default: [] as number[],
 });
 
 export const _checkedList = atom({
   key: '_checkedList',
-  default: [] as Number[],
+  default: [] as number[],
 });
 
 export const __checkedList = atom({
   key: '__checkedList',
-  default: [] as Number[],
+  default: [] as number[],
 });
 
 export const checkOne = atom({

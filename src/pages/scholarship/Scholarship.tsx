@@ -271,7 +271,7 @@ const Scholarship = () => {
       ({ id, dateCreated, title }: { id: number; dateCreated: string; title: string }) => {
         const createdYear = dateCreated?.substring(0, 4);
 
-        if (parsedData?.hasOwnProperty(createdYear)) {
+        if (Object.prototype.hasOwnProperty.call(parsedData, createdYear)) {
           parsedData[createdYear]?.push({
             date: dateCreated?.substring(5, 10), // 'MM-DD' 형식으로 추출
             content: title,
@@ -359,7 +359,7 @@ const Scholarship = () => {
             <Div width="100%" $margin="20px 0 0 0">
               <P color="wh" $whiteSpace="normal" fontSize="lg" $lineHeight={2}>
                 장학회의 지원을 받은 인하대학교 학생들은 졸업후에도 장학회의 일원으로 남아, 받은
-                지원을 후배 학생들에게 돌려주는 '내리사랑'의 원칙을 실천하고 있습니다.
+                지원을 후배 학생들에게 돌려주는 &apos;내리사랑&apos;의 원칙을 실천하고 있습니다.
               </P>
             </Div>
             <Div width="100%">
@@ -370,10 +370,10 @@ const Scholarship = () => {
             </Div>
             <Div width="100%" $margin="20px 0 0 0">
               <P color="wh" $whiteSpace="normal" fontSize="lg" $lineHeight={2}>
-                빅데이터 동아리 'IBAS'는 동아리 창단부터 현재까지 최태성 장학회의 지원을 받고
-                있으며, 빅데이터 분야의 전문인력을 양성하고자 노력하고 있습니다. IBAS는 장학회의
-                지원을 기반으로 다양한 프로젝트를 진행하며, 실질적인 빅데이터 이해와 활용 능력을
-                키우는데 집중하고 있습니다.
+                빅데이터 동아리 &apos;IBAS&apos;는 동아리 창단부터 현재까지 최태성 장학회의 지원을
+                받고 있으며, 빅데이터 분야의 전문인력을 양성하고자 노력하고 있습니다. IBAS는
+                장학회의 지원을 기반으로 다양한 프로젝트를 진행하며, 실질적인 빅데이터 이해와 활용
+                능력을 키우는데 집중하고 있습니다.
               </P>
             </Div>
           </ContentWidth>
@@ -458,8 +458,8 @@ const Scholarship = () => {
                       width="56px"
                       height="24px"
                       $borderRadius={20}
-                      $backgroundColor={selectedYear == year ? 'bgColor' : 'grey'}
-                      $HBackgroundColor={selectedYear == year ? 'bgColor' : 'grey'}
+                      $backgroundColor={selectedYear === year ? 'bgColor' : 'grey'}
+                      $HBackgroundColor={selectedYear === year ? 'bgColor' : 'grey'}
                     >
                       <P color="wh">{year}</P>
                     </Button>

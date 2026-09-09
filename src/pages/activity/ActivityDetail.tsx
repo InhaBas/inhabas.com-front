@@ -136,7 +136,7 @@ const ActivityDetail = () => {
       });
   }, []);
 
-  let decoded;
+  let decoded: tokenInterface | undefined;
   if (access !== 'default') {
     decoded = jwtDecode(access) as tokenInterface;
   }
@@ -219,8 +219,8 @@ const ActivityDetail = () => {
               </Div>
 
               <ImageGallery>
-                {detail?.images?.slice(0, 3)?.map(({ url }, idx) => (
-                  <Button onClick={() => handleCarousel(idx)}>
+                {detail?.images?.slice(0, 3)?.map(({ id, url }, idx) => (
+                  <Button key={id} onClick={() => handleCarousel(idx)}>
                     <GalleryImage $pointer>
                       <Img src={url} $HFilter="brightness(80%)" />
                     </GalleryImage>

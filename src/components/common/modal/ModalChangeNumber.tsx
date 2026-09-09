@@ -25,7 +25,7 @@ const ModalChangeNumber = () => {
 
     target.value = value
       .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/, '$1-$2-$3')
-      .replace(/(\-{1,2})$/, '');
+      .replace(/(-{1,2})$/, '');
   };
 
   const setOpen = useSetRecoilState(modalOpen);

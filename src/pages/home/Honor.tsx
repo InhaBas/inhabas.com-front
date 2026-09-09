@@ -5,8 +5,6 @@ import Slider from 'react-slick';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-
-
 import HeaderNav from '../../components/common/HeaderNav';
 import HonorSlide from '../../components/common/HonorSlide';
 import Loading from '../../components/common/Loading';
@@ -198,7 +196,7 @@ const Honor = () => {
                   <FlexDiv width="100%" height="50vh">
                     <Loading />
                   </FlexDiv>
-                ) : honor && Object.values(honor).length == 0 ? (
+                ) : honor && Object.values(honor).length === 0 ? (
                   <FlexDiv width="100%" height="50vh">
                     <Div>
                       <P color="wh" fontSize="xl">

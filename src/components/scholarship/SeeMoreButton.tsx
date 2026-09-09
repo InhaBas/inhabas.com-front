@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import P from '../../styles/assets/P';
 
-
 const MoreButton = styled(FlexDiv)`
   max-width: 100%;
 `;

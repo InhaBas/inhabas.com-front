@@ -20,7 +20,7 @@ const useFetch = (): [
 
   const getCookie = (name: string) => {
     let matches = document.cookie.match(
-      new RegExp('(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'),
+      new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)'),
     );
     return matches ? decodeURIComponent(matches[1]) : undefined;
   };
@@ -81,8 +81,8 @@ const useFetch = (): [
     media?: boolean,
   ) => {
     try {
-      let res;
-      let result;
+      let res: Response | undefined;
+      let result: any;
 
       let headers = {
         Authorization: `Bearer ${access}`,

@@ -193,7 +193,7 @@ const ContestDetail = () => {
 
   const { isAuthorizedOverVice, isAuthorizedOverDeactivate } = GetRoleAuthorization();
 
-  let decoded;
+  let decoded: tokenInterface | undefined;
   if (access !== 'default') {
     decoded = jwtDecode(access) as tokenInterface;
   }
@@ -345,7 +345,7 @@ const ContestDetail = () => {
 
           {/* 사진들 */}
           {detail?.images?.map((image) => (
-            <FlexDiv width="100%" $margin="50px 0">
+            <FlexDiv key={image.id} width="100%" $margin="50px 0">
               <ContentImage>
                 <Img src={image.url} />
               </ContentImage>

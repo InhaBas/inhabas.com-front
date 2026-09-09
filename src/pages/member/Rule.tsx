@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-
 import Loading from '../../components/common/Loading';
 import useFetch from '../../hooks/useFetch';
 import { policyInfo } from '../../recoil/backState';

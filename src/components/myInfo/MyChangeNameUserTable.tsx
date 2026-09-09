@@ -2,10 +2,6 @@ import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-
-
-
-
 import { GetRoleAuthorization } from '../../functions/authFunctions';
 import { ConvertLabel } from '../../functions/convertLabelFunctions';
 import useFetch from '../../hooks/useFetch';
@@ -240,6 +236,7 @@ const MyChangeNameUserTable = () => {
                           </FlexDiv>
                         );
                       }
+                      return null;
                     })}
                   </FlexDiv>
                 ))

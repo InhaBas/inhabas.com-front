@@ -19,7 +19,6 @@ import { Div, FlexDiv } from '../../styles/assets/Div';
 import { H2 } from '../../styles/assets/H';
 import { media } from '../../styles/theme';
 
-
 const BankPage = styled(FlexDiv)`
   min-width: 0;
 
@@ -184,9 +183,9 @@ const Bank = () => {
                   ]}
                   value={[
                     '',
-                    ...Object?.values(bankYears)
-                      ?.sort((a, b) => b - a)
-                      ?.map((bankYear) => String(bankYear)),
+                    ...Object.values(bankYears)
+                      .sort((a, b) => b - a)
+                      .map((bankYear) => String(bankYear)),
                   ]}
                   onChange={handleSelectedYear}
                   purple

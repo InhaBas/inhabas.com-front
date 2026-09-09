@@ -652,7 +652,7 @@ const Introduce = () => {
               {history &&
                 history.length !== 0 &&
                 Object.values(history).map((element: historyInterface) => (
-                  <TimelineRow width="100%" $alignitems="start">
+                  <TimelineRow key={element.id} width="100%" $alignitems="start">
                     <TimelineYear $padding="50px" width="200px">
                       <P color="grey1" fontSize="xxl">
                         {element.year}
@@ -749,7 +749,7 @@ const Introduce = () => {
               {staff &&
                 staff.length !== 0 &&
                 staff.map((element: staffInterface) => (
-                  <Div $margin="0 0 15px 0">
+                  <Div key={element.studentId} $margin="0 0 15px 0">
                     <FlexDiv width="130px">
                       <FlexDiv
                         width="100px"

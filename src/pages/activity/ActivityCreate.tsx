@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-
 import DragNDrop from '../../components/common/DragNDrop';
 import Loading from '../../components/common/Loading';
 import TextEditor from '../../components/common/TextEditor';
@@ -108,7 +107,9 @@ const ActivityCreate = () => {
     };
 
     const formData = new FormData();
-    files.forEach((file) => formData.append('files', file));
+    files.forEach((file) => {
+      formData.append('files', file);
+    });
 
     if (update === 'update') {
       postFetchData(`/club/activity/${paramID}`, 'POST', 'token', inputData);

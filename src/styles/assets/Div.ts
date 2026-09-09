@@ -55,7 +55,7 @@ const Div = styled.div<DivStyle>`
   border-bottom: ${(props) => props.$borderB || ''};
   border-right: ${(props) => props.$borderR || ''};
   border-left: ${(props) => props.$borderL || ''};
-  border-radius: ${(props) => `${props.radius}px` || 'none'};
+  border-radius: ${(props) => (props.radius ? `${props.radius}px` : 'none')};
   border-collapse: collapse;
   display: ${(props) => props.display || 'block'};
   ${(props) => props.$pointer && 'cursor:pointer;'};
@@ -147,7 +147,7 @@ const InputLabel = styled.label<DivStyle>`
   border-bottom: ${(props) => props.$borderB || ''};
   border-right: ${(props) => props.$borderR || ''};
   border-left: ${(props) => props.$borderL || ''};
-  border-radius: ${(props) => `${props.radius}px` || 'none'};
+  border-radius: ${(props) => (props.radius ? `${props.radius}px` : 'none')};
   border-collapse: collapse;
   display: ${(props) => props.display || 'block'};
   ${(props) => props.$pointer && 'cursor:pointer;'};
