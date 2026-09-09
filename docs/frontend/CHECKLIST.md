@@ -51,7 +51,7 @@ useEffect(() => {
 
 ```typescript
 // ❌ src/components/common/modal/ModalUpdateBankHistory.tsx L63-67
-infos.income = modalContent.income;   // 직접 변이
+infos.income = modalContent.income; // 직접 변이
 infos.outcome = modalContent.outcome; // ← React는 변경을 감지하지 못함
 
 // ❌ src/components/common/modal/ModalPostBankHistory.tsx L89-94
@@ -60,7 +60,7 @@ infos.content = inputContent;
 // (setInfos 호출 없음)
 
 // ✅ 올바른 형태
-setInfos(prev => ({ ...prev, income: modalContent.income }));
+setInfos((prev) => ({ ...prev, income: modalContent.income }));
 ```
 
 #### 0-3. authFunctions 커스텀 훅 규칙 위반 (버그 가능성)
@@ -95,13 +95,14 @@ const [bankHistoryData, fetchBankHistoryData] = useFetch();
 const [bankHistory, setBankHistory] = useRecoilState(bankHistoryInfo);
 
 useEffect(() => {
-    if (bankHistoryData) {
-        setBankHistory(bankHistoryData); // 서버 데이터를 Recoil에 저장
-    }
+  if (bankHistoryData) {
+    setBankHistory(bankHistoryData); // 서버 데이터를 Recoil에 저장
+  }
 }, [bankHistoryData]);
 ```
 
 **문제:**
+
 - 로딩/에러 상태 관리를 직접 구현해야 함
 - 캐시 무효화 로직이 없어 `refetch` atom으로 수동 갱신
 - 동일한 API를 여러 컴포넌트에서 중복 호출 가능성
@@ -111,13 +112,18 @@ useEffect(() => {
 
 ```typescript
 // TanStack Query 적용 후
-const { data: bankHistory, isLoading, error } = useQuery({
-    queryKey: ['budget', 'histories', { year: selectedYear }],
-    queryFn: () => fetchBankHistories({ year: selectedYear }),
+const {
+  data: bankHistory,
+  isLoading,
+  error,
+} = useQuery({
+  queryKey: ['budget', 'histories', { year: selectedYear }],
+  queryFn: () => fetchBankHistories({ year: selectedYear }),
 });
 ```
 
 **예상 효과:**
+
 - 자동 캐싱 및 캐시 무효화
 - 로딩/에러 상태 자동 관리
 - 중복 요청 방지
@@ -250,10 +256,10 @@ else if (url === 'sponsor') fetchUrl = '/scholarship/sponsor';
 ```typescript
 // src/constants/boardUrlMap.ts
 export const BOARD_URL_MAP: Record<string, string> = {
-    alpha: '/project/alpha',
-    beta: '/project/beta',
-    sponsor: '/scholarship/sponsor',
-    // ...
+  alpha: '/project/alpha',
+  beta: '/project/beta',
+  sponsor: '/scholarship/sponsor',
+  // ...
 } as const;
 ```
 
@@ -324,21 +330,21 @@ return ModalComponent ? <ModalComponent /> : null;
 
 단일 파일이 너무 많은 역할을 담당. 150줄 초과 파일 목록:
 
-| 줄 수 | 파일 |
-|------|------|
-| 529 | `pages/scholarship/Scholarship.tsx` |
-| 475 | `pages/home/Introduce.tsx` |
-| 470 | `components/common/HeaderNav.tsx` |
-| 458 | `pages/activity/ContestCreate.tsx` |
-| 457 | `pages/budget/BankSupportDetail.tsx` |
-| 394 | `pages/member/Signup.tsx` |
-| 390 | `components/common/modal/ModalUpdateBankHistory.tsx` |
-| 389 | `pages/board/BoardDetail.tsx` |
-| 377 | `components/common/DragNDrop.tsx` |
-| 369 | `components/myInfo/MyUserTable.tsx` / `MyGraduateUserTable.tsx` |
-| 334 | `components/common/CommentList.tsx` |
-| 285 | `pages/lecture/LectureDetail.tsx` |
-| 271 | `containers/myInfo/MyInfoContainer.tsx` |
+| 줄 수 | 파일                                                            |
+| ----- | --------------------------------------------------------------- |
+| 529   | `pages/scholarship/Scholarship.tsx`                             |
+| 475   | `pages/home/Introduce.tsx`                                      |
+| 470   | `components/common/HeaderNav.tsx`                               |
+| 458   | `pages/activity/ContestCreate.tsx`                              |
+| 457   | `pages/budget/BankSupportDetail.tsx`                            |
+| 394   | `pages/member/Signup.tsx`                                       |
+| 390   | `components/common/modal/ModalUpdateBankHistory.tsx`            |
+| 389   | `pages/board/BoardDetail.tsx`                                   |
+| 377   | `components/common/DragNDrop.tsx`                               |
+| 369   | `components/myInfo/MyUserTable.tsx` / `MyGraduateUserTable.tsx` |
+| 334   | `components/common/CommentList.tsx`                             |
+| 285   | `pages/lecture/LectureDetail.tsx`                               |
+| 271   | `containers/myInfo/MyInfoContainer.tsx`                         |
 
 **리팩토링 방안:**
 
@@ -361,14 +367,14 @@ return ModalComponent ? <ModalComponent /> : null;
 // pages/activity/ActivityDetail.tsx L44-62
 // pages/activity/ContestDetail.tsx L114-132
 const onClickFileLink = useCallback(async (fileUrl: string, fileName: string) => {
-    const response = await fetch(fileUrl);
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    a.click();
-    window.URL.revokeObjectURL(url);
+  const response = await fetch(fileUrl);
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.click();
+  window.URL.revokeObjectURL(url);
 }, []);
 ```
 
@@ -377,14 +383,14 @@ const onClickFileLink = useCallback(async (fileUrl: string, fileName: string) =>
 ```typescript
 // src/utils/fileDownload.ts
 export const downloadFile = async (fileUrl: string, fileName: string) => {
-    const response = await fetch(fileUrl);
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    a.click();
-    window.URL.revokeObjectURL(url);
+  const response = await fetch(fileUrl);
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.click();
+  window.URL.revokeObjectURL(url);
 };
 ```
 
@@ -576,14 +582,14 @@ src/components/common/ScrollToTop.tsx   ← return null, JSX 없음
 
 변수명·파일명에 오타가 존재하여 코드 가독성 저하.
 
-| 위치 | 오타 | 올바른 이름 |
-|------|------|------------|
-| `pages/myInfo/MyInfo.tsx` | `setclicked` | `setClicked` |
-| `containers/myInfo/MyInfoContainer.tsx` | `setMoalInfo` | `setModalInfo` |
-| 파일명 | `MyStaffRuleContainter.tsx` | `MyStaffRuleContainer.tsx` |
-| `pages/member/Signup.tsx` | `setSelecteMajor` | `setSelectedMajor` |
-| `recoil/backState.tsx` | `_totalPageInfo`, `__totalPageInfo` | 의미 있는 이름으로 변경 |
-| `recoil/frontState.tsx` | `String[]` | `string[]` (래퍼 타입 금지) |
+| 위치                                    | 오타                                | 올바른 이름                 |
+| --------------------------------------- | ----------------------------------- | --------------------------- |
+| `pages/myInfo/MyInfo.tsx`               | `setclicked`                        | `setClicked`                |
+| `containers/myInfo/MyInfoContainer.tsx` | `setMoalInfo`                       | `setModalInfo`              |
+| 파일명                                  | `MyStaffRuleContainter.tsx`         | `MyStaffRuleContainer.tsx`  |
+| `pages/member/Signup.tsx`               | `setSelecteMajor`                   | `setSelectedMajor`          |
+| `recoil/backState.tsx`                  | `_totalPageInfo`, `__totalPageInfo` | 의미 있는 이름으로 변경     |
+| `recoil/frontState.tsx`                 | `String[]`                          | `string[]` (래퍼 타입 금지) |
 
 ---
 

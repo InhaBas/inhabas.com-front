@@ -1,7 +1,7 @@
 ---
 name: ♻️ 리팩토링
 about: 코드 구조 개선, 기술 부채 해소, 성능 개선
-title: "[REFACTOR] "
+title: '[REFACTOR] '
 labels: refactor
 assignees: ''
 ---
@@ -26,15 +26,15 @@ assignees: ''
 
 ## 작업 항목
 
-- [ ] 
-- [ ] 
-- [ ] 
+- [ ]
+- [ ]
+- [ ]
 
 ## 영향 범위
 
 > 변경으로 인해 영향을 받는 파일 / 컴포넌트를 나열해 주세요.
 
-- 
+-
 
 ## 주의사항
 

@@ -1,7 +1,7 @@
 ---
 name: 🐛 버그
 about: 버그를 발견했을 때 작성해 주세요
-title: "[BUG] "
+title: '[BUG] '
 labels: bug
 assignees: ''
 ---
@@ -12,9 +12,9 @@ assignees: ''
 
 ## 재현 방법
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ## 예상 동작
 

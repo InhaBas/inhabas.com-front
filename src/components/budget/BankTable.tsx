@@ -119,80 +119,84 @@ const BankTable = () => {
     <>
       <TableScrollArea>
         <Table>
-        <TableRow
-          width="100%"
-          height="45px"
-          $borderT={`1px solid ${theme.color.grey1}`}
-          $justifycontent="space-between"
-          $backgroundColor="wh"
-        >
-          {headerInfo.map((item: string, idx: number) => (
-            <TableCell key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
-              <TableText $center fontWeight={700}>
-                {item}
-              </TableText>
-            </TableCell>
-          ))}
-          {role && isSecretary && (
-            <TableCell $minWidth="60px" $padding="10px">
-              <TableText $center fontWeight={700}>
-                비고
-              </TableText>
-            </TableCell>
-          )}
-        </TableRow>
-        {contents?.map((element: any, idx: number) => (
           <TableRow
-            key={`contentItem${idx}`}
             width="100%"
             height="45px"
             $borderT={`1px solid ${theme.color.grey1}`}
             $justifycontent="space-between"
             $backgroundColor="wh"
           >
-            {Object.values(element)
-              .slice(1, 7)
-              .map((item: any, idx: number) => (
-                <TableCell key={`itemValue${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
-                  <TableText $center fontWeight={500}>
-                    {item === '0' ? '-' : item}
-                  </TableText>
-                </TableCell>
-              ))}
-            <TableCell $minWidth="50px" $padding="10px">
-              <Div
-                width="15px"
-                onClick={(e: MouseEvent) => clickDetailEvent(e, 'ss', element?.id)}
-                $pointer
-              >
-                <Img src="/images/file_grey.svg" />
-              </Div>
-            </TableCell>
+            {headerInfo.map((item: string, idx: number) => (
+              <TableCell key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
+                <TableText $center fontWeight={700}>
+                  {item}
+                </TableText>
+              </TableCell>
+            ))}
             {role && isSecretary && (
-              <TableCell $minWidth={'60px'} $padding="10px" $justifycontent="flex-end">
-                {element?.writerId === userId && (
-                  <>
-                    <FlexDiv
-                      width="15px"
-                      $margin="0 6px"
-                      onClick={(e: MouseEvent) => clickUpdateEvent(e, 'ss', element?.id)}
-                      $pointer
-                    >
-                      <Img src="/images/pencil_grey.svg" />
-                    </FlexDiv>
-                    <FlexDiv
-                      width="15px"
-                      onClick={(e: MouseEvent) => clickDeleteEvent(e, 'ss', element?.id)}
-                      $pointer
-                    >
-                      <Img src="/images/trash_grey.svg" />
-                    </FlexDiv>
-                  </>
-                )}
+              <TableCell $minWidth="60px" $padding="10px">
+                <TableText $center fontWeight={700}>
+                  비고
+                </TableText>
               </TableCell>
             )}
           </TableRow>
-        ))}
+          {contents?.map((element: any, idx: number) => (
+            <TableRow
+              key={`contentItem${idx}`}
+              width="100%"
+              height="45px"
+              $borderT={`1px solid ${theme.color.grey1}`}
+              $justifycontent="space-between"
+              $backgroundColor="wh"
+            >
+              {Object.values(element)
+                .slice(1, 7)
+                .map((item: any, idx: number) => (
+                  <TableCell
+                    key={`itemValue${idx}`}
+                    $minWidth={`${widthList[idx]}px`}
+                    $padding="10px"
+                  >
+                    <TableText $center fontWeight={500}>
+                      {item === '0' ? '-' : item}
+                    </TableText>
+                  </TableCell>
+                ))}
+              <TableCell $minWidth="50px" $padding="10px">
+                <Div
+                  width="15px"
+                  onClick={(e: MouseEvent) => clickDetailEvent(e, 'ss', element?.id)}
+                  $pointer
+                >
+                  <Img src="/images/file_grey.svg" />
+                </Div>
+              </TableCell>
+              {role && isSecretary && (
+                <TableCell $minWidth={'60px'} $padding="10px" $justifycontent="flex-end">
+                  {element?.writerId === userId && (
+                    <>
+                      <FlexDiv
+                        width="15px"
+                        $margin="0 6px"
+                        onClick={(e: MouseEvent) => clickUpdateEvent(e, 'ss', element?.id)}
+                        $pointer
+                      >
+                        <Img src="/images/pencil_grey.svg" />
+                      </FlexDiv>
+                      <FlexDiv
+                        width="15px"
+                        onClick={(e: MouseEvent) => clickDeleteEvent(e, 'ss', element?.id)}
+                        $pointer
+                      >
+                        <Img src="/images/trash_grey.svg" />
+                      </FlexDiv>
+                    </>
+                  )}
+                </TableCell>
+              )}
+            </TableRow>
+          ))}
         </Table>
       </TableScrollArea>
 

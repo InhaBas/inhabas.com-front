@@ -1,21 +1,21 @@
 {
-    "compilerOptions": {
-        "target": "ES2015",
-        "lib": ["dom", "dom.iterable", "esnext"],
-        "allowJs": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "noFallthroughCasesInSwitch": true,
-        "module": "esnext",
-        "moduleResolution": "bundler",
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "noEmit": true,
-        "jsx": "react-jsx",
-        "types": ["vite/client"]
-    },
-    "include": ["src"]
+  "compilerOptions": {
+    "target": "ES2015",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "types": ["vite/client"]
+  },
+  "include": ["src"]
 }

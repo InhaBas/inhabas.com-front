@@ -8,10 +8,10 @@
 
 ## 현재 상황
 
-| 항목 | 상태 |
-|------|------|
-| Prettier | ❌ 미설치 |
-| ESLint | ✅ `.eslintrc.json` 적용 중 |
+| 항목        | 상태                        |
+| ----------- | --------------------------- |
+| Prettier    | ❌ 미설치                   |
+| ESLint      | ✅ `.eslintrc.json` 적용 중 |
 | 포매팅 기준 | 팀원 IDE 설정에 따라 제각각 |
 
 코드 포매팅이 팀원마다 달라 PR 리뷰 시 들여쓰기, 따옴표 등 스타일 차이가 노이즈로 섞이는 상황입니다.
@@ -57,23 +57,23 @@ npm install -D prettier eslint-config-prettier
 
 ```json
 {
-    "singleQuote": true,
-    "semi": true,
-    "tabWidth": 4,
-    "trailingComma": "es5",
-    "printWidth": 100,
-    "arrowParens": "avoid"
+  "singleQuote": true,
+  "semi": true,
+  "tabWidth": 4,
+  "trailingComma": "es5",
+  "printWidth": 100,
+  "arrowParens": "avoid"
 }
 ```
 
-| 옵션 | 값 | 설명 |
-|------|-----|------|
-| `singleQuote` | `true` | 문자열에 작은따옴표 사용 |
-| `semi` | `true` | 문장 끝 세미콜론 |
-| `tabWidth` | `4` | 들여쓰기 4칸 (현재 코드베이스 스타일에 맞춤) |
-| `trailingComma` | `"es5"` | ES5 유효한 위치에 후행 쉼표 |
-| `printWidth` | `100` | 줄 최대 길이 |
-| `arrowParens` | `"avoid"` | 화살표 함수 단일 인자 괄호 생략 (`x => x`) |
+| 옵션            | 값        | 설명                                         |
+| --------------- | --------- | -------------------------------------------- |
+| `singleQuote`   | `true`    | 문자열에 작은따옴표 사용                     |
+| `semi`          | `true`    | 문장 끝 세미콜론                             |
+| `tabWidth`      | `4`       | 들여쓰기 4칸 (현재 코드베이스 스타일에 맞춤) |
+| `trailingComma` | `"es5"`   | ES5 유효한 위치에 후행 쉼표                  |
+| `printWidth`    | `100`     | 줄 최대 길이                                 |
+| `arrowParens`   | `"avoid"` | 화살표 함수 단일 인자 괄호 생략 (`x => x`)   |
 
 > ⚠️ `tabWidth: 4`는 현재 코드베이스의 4칸 들여쓰기를 반영한 것입니다. 2칸으로 전환하고 싶다면 별도로 팀 합의가 필요합니다.
 
@@ -93,13 +93,13 @@ public/
 
 ```json
 {
-    "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended",
-        "plugin:react-hooks/recommended",
-        "plugin:@typescript-eslint/recommended",
-        "prettier"
-    ]
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ]
 }
 ```
 
@@ -107,21 +107,21 @@ public/
 
 ```json
 {
-    "scripts": {
-        "dev": "vite",
-        "build": "vite build",
-        "preview": "vite preview",
-        "lint": "eslint src --ext .ts,.tsx",
-        "format": "prettier --write src",
-        "format:check": "prettier --check src"
-    }
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .ts,.tsx",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src"
+  }
 }
 ```
 
-| 스크립트 | 용도 |
-|---------|------|
-| `npm run lint` | ESLint 검사 |
-| `npm run format` | 전체 소스 자동 포매팅 |
+| 스크립트               | 용도                         |
+| ---------------------- | ---------------------------- |
+| `npm run lint`         | ESLint 검사                  |
+| `npm run format`       | 전체 소스 자동 포매팅        |
 | `npm run format:check` | 포매팅 위반 파일 확인 (CI용) |
 
 ---
@@ -132,14 +132,14 @@ public/
 
 ```json
 {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
-    "[typescript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[typescriptreact]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    }
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
 ```
 
@@ -187,12 +187,12 @@ GitHub Actions에 `format:check`를 추가하면 포매팅이 안 된 코드가 
 
 ## 예상 소요 시간
 
-| 작업 | 시간 |
-|------|------|
-| 설정 파일 작성 + 패키지 설치 | 30분 |
-| 전체 파일 자동 포매팅 | 즉시 (`npm run format`) |
-| 팀원 VSCode 설정 공유 | 10분 |
-| **합계** | **약 1시간** |
+| 작업                         | 시간                    |
+| ---------------------------- | ----------------------- |
+| 설정 파일 작성 + 패키지 설치 | 30분                    |
+| 전체 파일 자동 포매팅        | 즉시 (`npm run format`) |
+| 팀원 VSCode 설정 공유        | 10분                    |
+| **합계**                     | **약 1시간**            |
 
 ---
 

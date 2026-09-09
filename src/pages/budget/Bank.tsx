@@ -1,214 +1,218 @@
-import { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import styled from "styled-components";
+import { useEffect, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import styled from 'styled-components';
 
-import { Div, FlexDiv } from "../../styles/assets/Div";
-import { H2 } from "../../styles/assets/H";
-import { media } from "../../styles/theme";
+import { Div, FlexDiv } from '../../styles/assets/Div';
+import { H2 } from '../../styles/assets/H';
+import { media } from '../../styles/theme';
 
-import Dropdown from "../../components/common/Dropdown";
-import Pagination from "../../components/common/Pagination";
-import BankTable from "../../components/budget/BankTable";
+import Dropdown from '../../components/common/Dropdown';
+import Pagination from '../../components/common/Pagination';
+import BankTable from '../../components/budget/BankTable';
 
-import useFetch from "../../hooks/useFetch";
+import useFetch from '../../hooks/useFetch';
 
 import {
-    bankBalanceInfo,
-    bankHistoryInfo,
-    bankYearsInfo,
-    tokenAccess,
-    totalPageInfo,
-} from "../../recoil/backState";
-import { refetch } from "../../recoil/frontState";
-import Loading from "../../components/common/Loading";
+  bankBalanceInfo,
+  bankHistoryInfo,
+  bankYearsInfo,
+  tokenAccess,
+  totalPageInfo,
+} from '../../recoil/backState';
+import { refetch } from '../../recoil/frontState';
+import Loading from '../../components/common/Loading';
 
 const BankPage = styled(FlexDiv)`
-    min-width: 0;
+  min-width: 0;
 
-    &,
-    & *,
-    & *::before,
-    & *::after {
-        box-sizing: border-box;
-    }
+  &,
+  & *,
+  & *::before,
+  & *::after {
+    box-sizing: border-box;
+  }
 `;
 
 const BankContent = styled(FlexDiv)`
-    width: 100%;
-    min-width: 0;
-    padding: 80px;
+  width: 100%;
+  min-width: 0;
+  padding: 80px;
 
-    ${media.tablet} {
-        padding: 48px 24px;
-    }
+  ${media.tablet} {
+    padding: 48px 24px;
+  }
 
-    ${media.mobile} {
-        padding: 32px 16px;
-    }
+  ${media.mobile} {
+    padding: 32px 16px;
+  }
 `;
 
 const BankInner = styled(FlexDiv)`
-    width: 90vw;
-    max-width: 90vw;
-    min-width: 0;
+  width: 90vw;
+  max-width: 90vw;
+  min-width: 0;
 
-    ${media.tablet} {
-        width: 100%;
-        max-width: 100%;
-    }
+  ${media.tablet} {
+    width: 100%;
+    max-width: 100%;
+  }
 `;
 
 const BankHeader = styled(FlexDiv)`
-    box-sizing: border-box;
+  box-sizing: border-box;
 
-    ${media.mobile} {
-        width: 100%;
-        align-items: flex-start;
-        justify-content: flex-start;
-        gap: 16px;
-        padding: 16px;
-    }
+  ${media.mobile} {
+    width: 100%;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 16px;
+    padding: 16px;
+  }
 `;
 
 export interface bankHistoryInterface {
-    id?: number;
-    dateUsed: string;
-    dateCreated: string;
-    dateUpdated: string;
-    title: string;
-    income: string;
-    outcome: string;
-    memberStudentIdReceived: string;
-    memberNameReceived: string;
-    memberStudentIdInCharge: string;
-    memberNameInCharge: string;
+  id?: number;
+  dateUsed: string;
+  dateCreated: string;
+  dateUpdated: string;
+  title: string;
+  income: string;
+  outcome: string;
+  memberStudentIdReceived: string;
+  memberNameReceived: string;
+  memberStudentIdInCharge: string;
+  memberNameInCharge: string;
 }
 
 const Bank = () => {
-    const [bankHistoryData, fetchBankHistoryData] = useFetch();
-    const [bankHistory, setBankHistory] = useRecoilState(bankHistoryInfo);
-    const [bankBalance, setBankBalance] = useRecoilState(bankBalanceInfo);
-    const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
-    const accessToken = useRecoilValue(tokenAccess);
-    const [reload, setReload] = useRecoilState(refetch);
-    const [isLoading, setIsLoading] = useState(true);
+  const [bankHistoryData, fetchBankHistoryData] = useFetch();
+  const [bankHistory, setBankHistory] = useRecoilState(bankHistoryInfo);
+  const [bankBalance, setBankBalance] = useRecoilState(bankBalanceInfo);
+  const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
+  const accessToken = useRecoilValue(tokenAccess);
+  const [reload, setReload] = useRecoilState(refetch);
+  const [isLoading, setIsLoading] = useState(true);
 
-    const [bankYearsData, fetchBankYearsData] = useFetch();
-    const [bankYears, setBankYears] = useRecoilState(bankYearsInfo);
+  const [bankYearsData, fetchBankYearsData] = useFetch();
+  const [bankYears, setBankYears] = useRecoilState(bankYearsInfo);
 
-    const [selectedYear, setSelectedYear] = useState("");
+  const [selectedYear, setSelectedYear] = useState('');
 
-    const handleSelectedYear = (value: string) => {
-        setSelectedYear(value);
+  const handleSelectedYear = (value: string) => {
+    setSelectedYear(value);
+  };
+
+  // 연도 데이터 패치
+  useEffect(() => {
+    setIsLoading(true);
+    fetchBankYearsData('/budget/histories/years', 'GET');
+  }, [accessToken]);
+
+  // 연도 데이터 패치 후 bankYears에 매핑
+  useEffect(() => {
+    if (bankYearsData) {
+      setBankYears(bankYearsData);
+    }
+  }, [bankYearsData]);
+
+  // bankYears에 연도 데이터 매핑 후, 전체 히스토리 패치
+  useEffect(() => {
+    if (bankYears && bankYears[0]) {
+      fetchBankHistoryData(
+        `/budget/histories?year=${selectedYear}&page=${'0'}&size=${'15'}`,
+        'GET',
+        'token',
+      );
+    }
+    setReload(false);
+  }, [bankYears, selectedYear, accessToken, reload]);
+
+  useEffect(() => {
+    if (bankHistoryData) {
+      const contents = bankHistoryData?.page?.data?.map((data: any) => ({
+        id: data?.id,
+        사용일: data?.dateUsed?.split('T')[0],
+        게시일: data?.dateCreated?.split('T')[0],
+        수정일: data?.dateUpdated?.split('T')[0],
+        내용: data?.title,
+        수입액: String(data?.income)?.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+        지출액: String(data?.outcome)?.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+        writerId: data?.memberIdInCharge,
+      }));
+      setBankHistory(contents);
+      setIsLoading(false);
+    }
+
+    setTotalPage(bankHistoryData?.page?.pageInfo?.totalPages);
+    setBankBalance(bankHistoryData?.balance);
+
+    return () => {
+      setBankHistory([]);
+      setTotalPage(0);
+      setBankBalance(0);
     };
+  }, [bankHistoryData]);
 
-    // 연도 데이터 패치
-    useEffect(() => {
-        setIsLoading(true);
-        fetchBankYearsData("/budget/histories/years", "GET");
-    }, [accessToken]);
+  return (
+    <BankPage width="100%">
+      {isLoading ? (
+        <FlexDiv width="100%" height="100vh">
+          <Loading />
+        </FlexDiv>
+      ) : (
+        <BankContent>
+          <BankInner>
+            <BankHeader
+              $border="3px solid"
+              $borderColor="border"
+              width="98%"
+              $justifycontent="space-between"
+              $padding="20px"
+              $margin="0 0 50px 0"
+            >
+              <Div>
+                <H2 fontSize="xl" fontWeight={700}>
+                  전체 회계 내역
+                </H2>
+              </Div>
+              <Div>
+                <Dropdown
+                  label="전체보기"
+                  options={[
+                    '전체보기',
+                    ...Object.values(bankYears)
+                      .sort((a, b) => b - a)
+                      .map((bankYear) => String(bankYear)),
+                  ]}
+                  value={[
+                    '',
+                    ...Object?.values(bankYears)
+                      ?.sort((a, b) => b - a)
+                      ?.map((bankYear) => String(bankYear)),
+                  ]}
+                  onChange={handleSelectedYear}
+                  purple
+                />
+              </Div>
+            </BankHeader>
+            <BankTable />
 
-    // 연도 데이터 패치 후 bankYears에 매핑
-    useEffect(() => {
-        if (bankYearsData) {
-            setBankYears(bankYearsData);
-        }
-    }, [bankYearsData]);
-
-    // bankYears에 연도 데이터 매핑 후, 전체 히스토리 패치
-    useEffect(() => {
-        if (bankYears && bankYears[0]) {
-            fetchBankHistoryData(`/budget/histories?year=${selectedYear}&page=${"0"}&size=${"15"}`, "GET", "token");
-        }
-        setReload(false);
-    }, [bankYears, selectedYear, accessToken, reload]);
-
-    useEffect(() => {
-        if (bankHistoryData) {
-            const contents = bankHistoryData?.page?.data?.map((data: any) => ({
-                id: data?.id,
-                사용일: data?.dateUsed?.split("T")[0],
-                게시일: data?.dateCreated?.split("T")[0],
-                수정일: data?.dateUpdated?.split("T")[0],
-                내용: data?.title,
-                수입액: String(data?.income)?.replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-                지출액: String(data?.outcome)?.replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-                writerId: data?.memberIdInCharge,
-            }));
-            setBankHistory(contents);
-            setIsLoading(false);
-        }
-
-        setTotalPage(bankHistoryData?.page?.pageInfo?.totalPages);
-        setBankBalance(bankHistoryData?.balance);
-
-        return () => {
-            setBankHistory([]);
-            setTotalPage(0);
-            setBankBalance(0);
-        };
-    }, [bankHistoryData]);
-
-    return (
-        <BankPage width="100%">
-            {isLoading ? (
-                <FlexDiv width="100%" height="100vh">
-                    <Loading />
-                </FlexDiv>
-            ) : (
-                <BankContent>
-                    <BankInner>
-                        <BankHeader
-                            $border="3px solid"
-                            $borderColor="border"
-                            width="98%"
-                            $justifycontent="space-between"
-                            $padding="20px"
-                            $margin="0 0 50px 0"
-                        >
-                            <Div>
-                                <H2 fontSize="xl" fontWeight={700}>
-                                    전체 회계 내역
-                                </H2>
-                            </Div>
-                            <Div>
-                                <Dropdown
-                                    label="전체보기"
-                                    options={[
-                                        "전체보기",
-                                        ...Object.values(bankYears)
-                                            .sort((a, b) => b - a)
-                                            .map((bankYear) => String(bankYear)),
-                                    ]}
-                                    value={[
-                                        "",
-                                        ...Object?.values(bankYears)
-                                            ?.sort((a, b) => b - a)
-                                            ?.map((bankYear) => String(bankYear)),
-                                    ]}
-                                    onChange={handleSelectedYear}
-                                    purple
-                                />
-                            </Div>
-                        </BankHeader>
-                        <BankTable />
-
-                        {/* <Pagination /> */}
-                        {bankHistory && bankHistory.length !== 0 && (
-                            <Pagination
-                                totalPage={totalPage}
-                                fetchUrl={`/budget/histories`}
-                                token
-                                paginationFetch={fetchBankHistoryData}
-                                size={15}
-                                search={`&year=${selectedYear}`}
-                            />
-                        )}
-                    </BankInner>
-                </BankContent>
+            {/* <Pagination /> */}
+            {bankHistory && bankHistory.length !== 0 && (
+              <Pagination
+                totalPage={totalPage}
+                fetchUrl={`/budget/histories`}
+                token
+                paginationFetch={fetchBankHistoryData}
+                size={15}
+                search={`&year=${selectedYear}`}
+              />
             )}
-        </BankPage>
-    );
+          </BankInner>
+        </BankContent>
+      )}
+    </BankPage>
+  );
 };
 
 export default Bank;

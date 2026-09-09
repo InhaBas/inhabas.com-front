@@ -12,12 +12,12 @@
 
 ```json
 {
-    "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended",
-        "plugin:react-hooks/recommended",
-        "plugin:@typescript-eslint/recommended"
-    ]
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ]
 }
 ```
 
@@ -29,23 +29,23 @@
 
 ### 파일 및 폴더
 
-| 대상 | 규칙 | 예시 |
-|------|------|------|
-| 폴더 | `kebab-case` 또는 `camelCase` 소문자 | `components/`, `myInfo/` |
-| 컴포넌트 파일 | `PascalCase.tsx` | `BoardDetail.tsx` |
-| 훅 파일 | `camelCase.ts` | `useFetch.ts` |
-| 유틸/타입 파일 | `camelCase.ts` | `dateFunction.ts`, `TypeBoard.ts` |
+| 대상           | 규칙                                 | 예시                              |
+| -------------- | ------------------------------------ | --------------------------------- |
+| 폴더           | `kebab-case` 또는 `camelCase` 소문자 | `components/`, `myInfo/`          |
+| 컴포넌트 파일  | `PascalCase.tsx`                     | `BoardDetail.tsx`                 |
+| 훅 파일        | `camelCase.ts`                       | `useFetch.ts`                     |
+| 유틸/타입 파일 | `camelCase.ts`                       | `dateFunction.ts`, `TypeBoard.ts` |
 
 ### 변수 및 함수
 
-| 대상 | 규칙 | 예시 |
-|------|------|------|
-| 변수, 함수 | `camelCase` | `fetchBoardData`, `currentPage` |
-| React 컴포넌트 | `PascalCase` | `BoardDetail`, `CommentList` |
-| 커스텀 훅 | `use` 접두사 + `PascalCase` | `useFetch`, `useRoleAuthorization` |
-| 상수 | `UPPER_SNAKE_CASE` | `BOARD_URL_MAP`, `MODAL_COMPONENTS` |
-| 타입 / 인터페이스 | `PascalCase` | `BoardInfo`, `PaginationProps` |
-| Recoil atom | `camelCase` + `Info` / `Atom` 접미사 | `bankHistoryInfo`, `modalInfo` |
+| 대상              | 규칙                                 | 예시                                |
+| ----------------- | ------------------------------------ | ----------------------------------- |
+| 변수, 함수        | `camelCase`                          | `fetchBoardData`, `currentPage`     |
+| React 컴포넌트    | `PascalCase`                         | `BoardDetail`, `CommentList`        |
+| 커스텀 훅         | `use` 접두사 + `PascalCase`          | `useFetch`, `useRoleAuthorization`  |
+| 상수              | `UPPER_SNAKE_CASE`                   | `BOARD_URL_MAP`, `MODAL_COMPONENTS` |
+| 타입 / 인터페이스 | `PascalCase`                         | `BoardInfo`, `PaginationProps`      |
+| Recoil atom       | `camelCase` + `Info` / `Atom` 접미사 | `bankHistoryInfo`, `modalInfo`      |
 
 ---
 
@@ -123,6 +123,7 @@ import { Wrapper } from './BoardList.styles';
 주요 prefix: `feat`, `fix`, `design`, `refactor`, `docs`, `chore`, `style`, `test`, `ci`, `revert`
 
 **브랜치 네이밍:**
+
 ```
 feat/<기능명>      fix/<버그명>      refactor/<대상>
 docs/<대상>        chore/<대상>      design/<대상>

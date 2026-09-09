@@ -1,445 +1,455 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import styled from "styled-components";
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import styled from 'styled-components';
 
-import { media, theme } from "../../styles/theme";
+import { media, theme } from '../../styles/theme';
 
-import useFetch from "../../hooks/useFetch";
+import useFetch from '../../hooks/useFetch';
 
-import { _totalPageInfo, tokenAccess, totalUserInfo, userInfo, userRole } from "../../recoil/backState";
 import {
-    _checkedList,
-    myAcceptUserState,
-    mySetGraduateState,
-    mySetUndergraduateState,
-} from "../../recoil/frontState";
+  _totalPageInfo,
+  tokenAccess,
+  totalUserInfo,
+  userInfo,
+  userRole,
+} from '../../recoil/backState';
+import {
+  _checkedList,
+  myAcceptUserState,
+  mySetGraduateState,
+  mySetUndergraduateState,
+} from '../../recoil/frontState';
 
-import { userInterface } from "../../types/ibas/TypeMyinfo";
+import { userInterface } from '../../types/ibas/TypeMyinfo';
 
-import { GetRoleAuthorization } from "../../functions/authFunctions";
-import { ConvertLabel } from "../../functions/convertLabelFunctions";
+import { GetRoleAuthorization } from '../../functions/authFunctions';
+import { ConvertLabel } from '../../functions/convertLabelFunctions';
 
-import A from "../../styles/assets/A";
-import Button from "../../styles/assets/Button";
-import { Div, FlexDiv } from "../../styles/assets/Div";
-import Img from "../../styles/assets/Img";
-import { Checkbox, TextInput } from "../../styles/assets/Input";
-import P from "../../styles/assets/P";
-import Dropdown from "../common/Dropdown";
-import Loading from "../common/Loading";
-import Pagination from "../common/Pagination";
+import A from '../../styles/assets/A';
+import Button from '../../styles/assets/Button';
+import { Div, FlexDiv } from '../../styles/assets/Div';
+import Img from '../../styles/assets/Img';
+import { Checkbox, TextInput } from '../../styles/assets/Input';
+import P from '../../styles/assets/P';
+import Dropdown from '../common/Dropdown';
+import Loading from '../common/Loading';
+import Pagination from '../common/Pagination';
 
 const TableScroll = styled.div`
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
-    -webkit-overflow-scrolling: touch;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
 
-    & > div {
-        width: max(100%, 1050px);
-        min-width: 1050px;
-    }
+  & > div {
+    width: max(100%, 1050px);
+    min-width: 1050px;
+  }
 
+  & > div > div {
+    flex-wrap: nowrap;
+  }
+
+  ${media.tablet} {
     & > div > div {
-        flex-wrap: nowrap;
+      height: auto !important;
+      min-height: 45px;
+      align-items: stretch;
     }
 
-    ${media.tablet} {
-        & > div > div {
-            height: auto !important;
-            min-height: 45px;
-            align-items: stretch;
-        }
-
-        a,
-        p {
-            white-space: normal;
-            overflow-wrap: anywhere;
-        }
+    a,
+    p {
+      white-space: normal;
+      overflow-wrap: anywhere;
     }
+  }
 `;
 
 const SearchControls = styled(FlexDiv)`
-    min-width: 0;
+  min-width: 0;
 
-    ${media.mobile} {
-        width: 100%;
+  ${media.mobile} {
+    width: 100%;
 
-        > input {
-            width: calc(100% - 54px) !important;
-            min-width: 0;
-        }
+    > input {
+      width: calc(100% - 54px) !important;
+      min-width: 0;
     }
+  }
 `;
 
 const MyUserTable = () => {
-    const { isAuthorizedOverVice, isAuthorizedExceptExecutives } = GetRoleAuthorization();
-    const { convertRoleLabel, convertTypeLabel } = ConvertLabel();
+  const { isAuthorizedOverVice, isAuthorizedExceptExecutives } = GetRoleAuthorization();
+  const { convertRoleLabel, convertTypeLabel } = ConvertLabel();
 
-    const widthList = [50, 100, 150, 200, 200, 130, 130, 50];
-    const headerInfo = ["", "이름", "학번", "학과", "전화번호", "역할", "소속", "기수"];
+  const widthList = [50, 100, 150, 200, 200, 130, 130, 50];
+  const headerInfo = ['', '이름', '학번', '학과', '전화번호', '역할', '소속', '기수'];
 
-    const [user, fetchUser] = useFetch();
-    const [userList, setUserList] = useRecoilState(userInfo);
-    // totalPageInfo를 같은 페이지 내에서 MyNewUserTable 이라는 컴포넌트가 쓰고 있기 때문에, _totalPageInfo을 사용함
-    const [totalPage, setTotalPage] = useRecoilState(_totalPageInfo);
-    const setTotalUser = useSetRecoilState(totalUserInfo);
-    const role = useRecoilValue(userRole);
-    // checkedList를 같은 페이지 내에서 MyNewUserTable 이라는 컴포넌트가 쓰고 있기 때문에, _checkedList를 사용함
-    const [check, setCheck] = useRecoilState(_checkedList);
-    const [roleValue, setRoleValue] = useState("");
-    const [typeValue, setTypeValue] = useState("");
-    const [CategoryValue, setCategoryValue] = useState("");
-    const [roleChangeData, fetchRoleChangeData] = useFetch();
-    const [typeChangeData, fetchTypeChangeData] = useFetch();
-    const [reload, setReload] = useState(false);
-    const access = useRecoilValue(tokenAccess);
-    const [searchValue, setSearchValue] = useState(""); // 검색어
-    const [isLoading, setIsLoading] = useState(true);
-    const [acceptUser, setAcceptUser] = useRecoilState(myAcceptUserState);
-    const setGraduate = useSetRecoilState(mySetGraduateState);
-    const [undergraduate, setUndergraduate] = useRecoilState(mySetUndergraduateState);
+  const [user, fetchUser] = useFetch();
+  const [userList, setUserList] = useRecoilState(userInfo);
+  // totalPageInfo를 같은 페이지 내에서 MyNewUserTable 이라는 컴포넌트가 쓰고 있기 때문에, _totalPageInfo을 사용함
+  const [totalPage, setTotalPage] = useRecoilState(_totalPageInfo);
+  const setTotalUser = useSetRecoilState(totalUserInfo);
+  const role = useRecoilValue(userRole);
+  // checkedList를 같은 페이지 내에서 MyNewUserTable 이라는 컴포넌트가 쓰고 있기 때문에, _checkedList를 사용함
+  const [check, setCheck] = useRecoilState(_checkedList);
+  const [roleValue, setRoleValue] = useState('');
+  const [typeValue, setTypeValue] = useState('');
+  const [CategoryValue, setCategoryValue] = useState('');
+  const [roleChangeData, fetchRoleChangeData] = useFetch();
+  const [typeChangeData, fetchTypeChangeData] = useFetch();
+  const [reload, setReload] = useState(false);
+  const access = useRecoilValue(tokenAccess);
+  const [searchValue, setSearchValue] = useState(''); // 검색어
+  const [isLoading, setIsLoading] = useState(true);
+  const [acceptUser, setAcceptUser] = useRecoilState(myAcceptUserState);
+  const setGraduate = useSetRecoilState(mySetGraduateState);
+  const [undergraduate, setUndergraduate] = useRecoilState(mySetUndergraduateState);
 
-    const path = useLocation().pathname;
+  const path = useLocation().pathname;
 
-    // 단일 체크박스 클릭시 checkedList update
-    const checkClickEvent = (e: React.ChangeEvent<HTMLInputElement>, memberId: number) => {
-        const targetCheck = e.target.checked;
-        if (targetCheck === true) {
-            setCheck((prev) => [...prev, memberId]);
-        } else {
-            setCheck((prev) => prev.filter((item) => item !== memberId));
-        }
-    };
+  // 단일 체크박스 클릭시 checkedList update
+  const checkClickEvent = (e: React.ChangeEvent<HTMLInputElement>, memberId: number) => {
+    const targetCheck = e.target.checked;
+    if (targetCheck === true) {
+      setCheck((prev) => [...prev, memberId]);
+    } else {
+      setCheck((prev) => prev.filter((item) => item !== memberId));
+    }
+  };
 
-    // 전체 체크박스 클릭시 checkedList update
-    const checkAllClickEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const tmpList: number[] = [];
-        if (e.target.checked) {
-            userList && tmpList.push(...userList.map((item: userInterface) => item.memberId));
-        }
-        setCheck(tmpList);
-    };
+  // 전체 체크박스 클릭시 checkedList update
+  const checkAllClickEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const tmpList: number[] = [];
+    if (e.target.checked) {
+      userList && tmpList.push(...userList.map((item: userInterface) => item.memberId));
+    }
+    setCheck(tmpList);
+  };
 
-    // select 값 선택에 따른 state 변경 이벤트
-    const handleRoleChange = (value: string) => {
-        // 선택된 값을 업데이트
-        setRoleValue(value);
-    };
+  // select 값 선택에 따른 state 변경 이벤트
+  const handleRoleChange = (value: string) => {
+    // 선택된 값을 업데이트
+    setRoleValue(value);
+  };
 
-    // select 값 선택에 따른 state 변경 이벤트
-    const handleTypeChange = (value: string) => {
-        // 선택된 값을 업데이트
-        setTypeValue(value);
-    };
+  // select 값 선택에 따른 state 변경 이벤트
+  const handleTypeChange = (value: string) => {
+    // 선택된 값을 업데이트
+    setTypeValue(value);
+  };
 
-    // select 값 선택에 따른 state 변경 이벤트
-    const handleCategoryChange = (value: string) => {
-        // 선택된 값을 업데이트
-        setCategoryValue(value);
-    };
+  // select 값 선택에 따른 state 변경 이벤트
+  const handleCategoryChange = (value: string) => {
+    // 선택된 값을 업데이트
+    setCategoryValue(value);
+  };
 
-    // role Fetch
-    const changeRole = () => {
-        if (roleValue !== "") {
-            const roleSend = {
-                memberIdList: check,
-                role: roleValue,
-            };
-            fetchRoleChangeData("/members/approved/role", "PUT", "token", roleSend);
-            setReload(true);
-        }
-    };
+  // role Fetch
+  const changeRole = () => {
+    if (roleValue !== '') {
+      const roleSend = {
+        memberIdList: check,
+        role: roleValue,
+      };
+      fetchRoleChangeData('/members/approved/role', 'PUT', 'token', roleSend);
+      setReload(true);
+    }
+  };
 
-    // type Fetch
-    const changeType = () => {
-        if (typeValue !== "") {
-            const typeSend = {
-                memberIdList: check,
-                type: typeValue,
-            };
-            fetchTypeChangeData("/members/approved/type", "PUT", "token", typeSend);
-            setReload(true);
-            if (typeValue === "GRADUATED") {
-                setGraduate(true);
-            }
-        }
-    };
+  // type Fetch
+  const changeType = () => {
+    if (typeValue !== '') {
+      const typeSend = {
+        memberIdList: check,
+        type: typeValue,
+      };
+      fetchTypeChangeData('/members/approved/type', 'PUT', 'token', typeSend);
+      setReload(true);
+      if (typeValue === 'GRADUATED') {
+        setGraduate(true);
+      }
+    }
+  };
 
-    // 검색어 변경 핸들러
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchValue(e.target.value);
-    };
+  // 검색어 변경 핸들러
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
 
-    // 검색 버튼 클릭 핸들러
-    const searchStudent = () => {
-        // 검색어를 이용하여 API 호출
+  // 검색 버튼 클릭 핸들러
+  const searchStudent = () => {
+    // 검색어를 이용하여 API 호출
 
-        if (searchValue.trim() !== "") {
-            setIsLoading(true);
-            fetchUser(`/members/notGraduated?search=${searchValue}`, "GET", "token");
-        }
-    };
+    if (searchValue.trim() !== '') {
+      setIsLoading(true);
+      fetchUser(`/members/notGraduated?search=${searchValue}`, 'GET', 'token');
+    }
+  };
 
-    // 엔터키 press 핸들러
-    const enterKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter") {
-            searchStudent();
-        }
-    };
+  // 엔터키 press 핸들러
+  const enterKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      searchStudent();
+    }
+  };
 
-    // 동아리원 현황 조회 fetch, 회원관리 / 재학생 자세히 보기 페이지 별로 다른 fetch 처리
-    useEffect(() => {
-        setIsLoading(true);
-        let fetchUrl = "/members/notGraduated?page=0";
-        if (path === "/staff/member/students") {
-            fetchUrl += "&size=15";
-        } else if (path === "/staff/member") {
-            fetchUrl += "&size=10";
-        }
+  // 동아리원 현황 조회 fetch, 회원관리 / 재학생 자세히 보기 페이지 별로 다른 fetch 처리
+  useEffect(() => {
+    setIsLoading(true);
+    let fetchUrl = '/members/notGraduated?page=0';
+    if (path === '/staff/member/students') {
+      fetchUrl += '&size=15';
+    } else if (path === '/staff/member') {
+      fetchUrl += '&size=10';
+    }
 
-        fetchUser(fetchUrl, "GET", "token");
+    fetchUser(fetchUrl, 'GET', 'token');
 
-        setReload(false);
-    }, [reload, access, acceptUser, undergraduate]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함
+    setReload(false);
+  }, [reload, access, acceptUser, undergraduate]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함
 
-    // fetch된 data로 동아리원 List 만들 data 가공
-    useEffect(() => {
-        if (user) {
-            const contents = user.data.map((item: userInterface, idx: number) => ({
-                id: idx + 1,
-                name: item.name,
-                studentId: item.studentId,
-                major: item.major,
-                phoneNumber: item.phoneNumber,
-                role: convertRoleLabel(item.role),
-                type: convertTypeLabel(item.memberType),
-                generation: item.generation,
-                memberId: item.memberId,
-            }));
+  // fetch된 data로 동아리원 List 만들 data 가공
+  useEffect(() => {
+    if (user) {
+      const contents = user.data.map((item: userInterface, idx: number) => ({
+        id: idx + 1,
+        name: item.name,
+        studentId: item.studentId,
+        major: item.major,
+        phoneNumber: item.phoneNumber,
+        role: convertRoleLabel(item.role),
+        type: convertTypeLabel(item.memberType),
+        generation: item.generation,
+        memberId: item.memberId,
+      }));
 
-            setUserList(contents);
-            setTotalUser(user.pageInfo.totalElements);
-            setTotalPage(user.pageInfo.totalPages);
-            setCheck([] as Number[]);
-            setIsLoading(false);
-            setAcceptUser(false); // 위치 다시 확인
-            setUndergraduate(false);
-        }
-    }, [user, access]);
+      setUserList(contents);
+      setTotalUser(user.pageInfo.totalElements);
+      setTotalPage(user.pageInfo.totalPages);
+      setCheck([] as Number[]);
+      setIsLoading(false);
+      setAcceptUser(false); // 위치 다시 확인
+      setUndergraduate(false);
+    }
+  }, [user, access]);
 
-    return (
-        <Div width="100%">
-            {isLoading ? (
-                <FlexDiv width="100%" height="30vh">
-                    <Loading />
+  return (
+    <Div width="100%">
+      {isLoading ? (
+        <FlexDiv width="100%" height="30vh">
+          <Loading />
+        </FlexDiv>
+      ) : (
+        <>
+          {role === 'SECRETARY' && (
+            <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
+              <Div $minWidth="100px" $margin="0 10px 0 0 ">
+                <Dropdown
+                  label="관리"
+                  options={['활동회원', '비활동회원']}
+                  value={['BASIC', 'DEACTIVATED']}
+                  onChange={handleRoleChange}
+                />
+              </Div>
+              <Button
+                $backgroundColor="bgColor"
+                $HBackgroundColor="bgColorHo"
+                $borderRadius={3}
+                $padding="6px 12px"
+                height="40px"
+                onClick={() => changeRole()}
+              >
+                <FlexDiv $margin="0 5px 0 0">
+                  <FlexDiv width="15px" $margin="0 10px 0 0">
+                    <Img src="/images/check_white.svg" />
+                  </FlexDiv>
+                  <FlexDiv>
+                    <P color="wh" fontSize="sm">
+                      적용
+                    </P>
+                  </FlexDiv>
                 </FlexDiv>
-            ) : (
-                <>
-                    {role === "SECRETARY" && (
-                        <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
-                            <Div $minWidth="100px" $margin="0 10px 0 0 ">
-                                <Dropdown
-                                    label="관리"
-                                    options={["활동회원", "비활동회원"]}
-                                    value={["BASIC", "DEACTIVATED"]}
-                                    onChange={handleRoleChange}
-                                />
-                            </Div>
-                            <Button
-                                $backgroundColor="bgColor"
-                                $HBackgroundColor="bgColorHo"
-                                $borderRadius={3}
-                                $padding="6px 12px"
-                                height="40px"
-                                onClick={() => changeRole()}
-                            >
-                                <FlexDiv $margin="0 5px 0 0">
-                                    <FlexDiv width="15px" $margin="0 10px 0 0">
-                                        <Img src="/images/check_white.svg" />
-                                    </FlexDiv>
-                                    <FlexDiv>
-                                        <P color="wh" fontSize="sm">
-                                            적용
-                                        </P>
-                                    </FlexDiv>
-                                </FlexDiv>
-                            </Button>
-                        </FlexDiv>
-                    )}
-                    {isAuthorizedOverVice && (
-                        <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
-                            <Div $minWidth="100px" $margin="0 10px 0 0 ">
-                                <Dropdown
-                                    label="관리"
-                                    options={["역할", "소속"]}
-                                    value={["ROLE", "TYPE"]}
-                                    onChange={handleCategoryChange}
-                                />
-                            </Div>
-                            {CategoryValue === "ROLE" && (
-                                <Div $minWidth="100px" $margin="0 10px 0 0 ">
-                                    <Dropdown
-                                        label="선택"
-                                        options={["회장", "부회장", "운영진", "총무", "활동회원", "비활동회원"]}
-                                        value={[
-                                            "CHIEF",
-                                            "VICE_CHIEF",
-                                            "EXECUTIVES",
-                                            "SECRETARY",
-                                            "BASIC",
-                                            "DEACTIVATED",
-                                        ]}
-                                        onChange={handleRoleChange}
-                                    />
-                                </Div>
-                            )}
-                            {CategoryValue === "TYPE" && (
-                                <Div $minWidth="100px" $margin="0 10px 0 0 ">
-                                    <Dropdown
-                                        label="선택"
-                                        options={["졸업생", "대학원생", "교수"]}
-                                        value={["GRADUATED", "BACHELOR", "PROFESSOR"]}
-                                        onChange={handleTypeChange}
-                                    />
-                                </Div>
-                            )}
-                            <Button
-                                $backgroundColor="bgColor"
-                                $HBackgroundColor="bgColorHo"
-                                $borderRadius={3}
-                                $padding="6px 12px"
-                                height="40px"
-                                onClick={() => {
-                                    CategoryValue === "TYPE" ? changeType() : changeRole();
-                                }}
-                            >
-                                <FlexDiv $margin="0 5px 0 0">
-                                    <FlexDiv width="15px" $margin="0 10px 0 0">
-                                        <Img src="/images/check_white.svg" />
-                                    </FlexDiv>
-                                    <FlexDiv>
-                                        <P color="wh" fontSize="sm">
-                                            적용
-                                        </P>
-                                    </FlexDiv>
-                                </FlexDiv>
-                            </Button>
-                        </FlexDiv>
-                    )}
-                    <TableScroll>
-                    <Div width="100%">
-                        <FlexDiv
-                            width="100%"
-                            height="45px"
-                            $justifycontent="space-evenly"
-                            $backgroundColor="wh"
-                            $borderB={`1.5px solid ${theme.color.grey1}`}
-                        >
-                            {isAuthorizedExceptExecutives && (
-                                <FlexDiv $padding="10px">
-                                    {userList && userList.length !== 0 && (
-                                        <Checkbox
-                                            checked={!!user && check.length === userList.length}
-                                            onChange={checkAllClickEvent}
-                                        />
-                                    )}
-                                </FlexDiv>
-                            )}
-                            {headerInfo.map((item: string, idx: number) => (
-                                <FlexDiv key={`headerInfo${idx}`} $minWidth={`${widthList[idx]}px`} $padding="10px">
-                                    <P $center fontWeight={700}>
-                                        {item}
-                                    </P>
-                                </FlexDiv>
-                            ))}
-                        </FlexDiv>
-                        {userList && userList.length !== 0 ? (
-                            userList.map((element: userInterface, idx: number) => (
-                                <FlexDiv
-                                    key={`contentItem${idx}`}
-                                    width="100%"
-                                    height="45px"
-                                    $borderT={`1px solid ${theme.color.grey1}`}
-                                    $justifycontent="space-evenly"
-                                    $backgroundColor="wh"
-                                >
-                                    {isAuthorizedExceptExecutives && (
-                                        <FlexDiv $padding="10px">
-                                            <Checkbox
-                                                checked={check.includes(element.memberId) ? true : false}
-                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                                    checkClickEvent(e, element.memberId)
-                                                }
-                                            />
-                                        </FlexDiv>
-                                    )}
-
-                                    {Object.entries(element).map(([key, value], idx: number) => {
-                                        if (key !== "memberId") {
-                                            return (
-                                                <FlexDiv
-                                                    key={`itemValue${idx}`}
-                                                    $minWidth={`${widthList[idx]}px`}
-                                                    $padding="10px"
-                                                >
-                                                    <A $center fontWeight={idx === 0 ? 800 : 500}>
-                                                        {value}
-                                                    </A>
-                                                </FlexDiv>
-                                            );
-                                        }
-                                    })}
-                                </FlexDiv>
-                            ))
-                        ) : (
-                            <FlexDiv width="100%" $padding="10px">
-                                <Div>
-                                    <P>회원이 존재하지 않습니다.</P>
-                                </Div>
-                            </FlexDiv>
-                        )}
-                    </Div>
-                    </TableScroll>
-                    {path === "/staff/member/students" && (
-                        <FlexDiv width="100%" $justifycontent="end" $margin="30px 0">
-                            <SearchControls>
-                                <TextInput
-                                    width="300px"
-                                    placeholder="이름이나 학번을 입력하세요"
-                                    $borderRadius="3px 0 0px 3"
-                                    onKeyDown={enterKeyDown}
-                                    onChange={handleSearchChange}
-                                />
-                                <Button
-                                    $backgroundColor="bgColor"
-                                    $HBackgroundColor="bgColorHo"
-                                    $padding="13px 20px"
-                                    $borderRadius="0 3px 3px 0"
-                                    onClick={searchStudent}
-                                >
-                                    <FlexDiv width="14px">
-                                        <Img src="/images/search_white.svg" />
-                                    </FlexDiv>
-                                </Button>
-                            </SearchControls>
-                        </FlexDiv>
-                    )}
+              </Button>
+            </FlexDiv>
+          )}
+          {isAuthorizedOverVice && (
+            <FlexDiv $justifycontent="start" $margin="0 0 20px 0">
+              <Div $minWidth="100px" $margin="0 10px 0 0 ">
+                <Dropdown
+                  label="관리"
+                  options={['역할', '소속']}
+                  value={['ROLE', 'TYPE']}
+                  onChange={handleCategoryChange}
+                />
+              </Div>
+              {CategoryValue === 'ROLE' && (
+                <Div $minWidth="100px" $margin="0 10px 0 0 ">
+                  <Dropdown
+                    label="선택"
+                    options={['회장', '부회장', '운영진', '총무', '활동회원', '비활동회원']}
+                    value={[
+                      'CHIEF',
+                      'VICE_CHIEF',
+                      'EXECUTIVES',
+                      'SECRETARY',
+                      'BASIC',
+                      'DEACTIVATED',
+                    ]}
+                    onChange={handleRoleChange}
+                  />
+                </Div>
+              )}
+              {CategoryValue === 'TYPE' && (
+                <Div $minWidth="100px" $margin="0 10px 0 0 ">
+                  <Dropdown
+                    label="선택"
+                    options={['졸업생', '대학원생', '교수']}
+                    value={['GRADUATED', 'BACHELOR', 'PROFESSOR']}
+                    onChange={handleTypeChange}
+                  />
+                </Div>
+              )}
+              <Button
+                $backgroundColor="bgColor"
+                $HBackgroundColor="bgColorHo"
+                $borderRadius={3}
+                $padding="6px 12px"
+                height="40px"
+                onClick={() => {
+                  CategoryValue === 'TYPE' ? changeType() : changeRole();
+                }}
+              >
+                <FlexDiv $margin="0 5px 0 0">
+                  <FlexDiv width="15px" $margin="0 10px 0 0">
+                    <Img src="/images/check_white.svg" />
+                  </FlexDiv>
+                  <FlexDiv>
+                    <P color="wh" fontSize="sm">
+                      적용
+                    </P>
+                  </FlexDiv>
+                </FlexDiv>
+              </Button>
+            </FlexDiv>
+          )}
+          <TableScroll>
+            <Div width="100%">
+              <FlexDiv
+                width="100%"
+                height="45px"
+                $justifycontent="space-evenly"
+                $backgroundColor="wh"
+                $borderB={`1.5px solid ${theme.color.grey1}`}
+              >
+                {isAuthorizedExceptExecutives && (
+                  <FlexDiv $padding="10px">
                     {userList && userList.length !== 0 && (
-                        <Pagination
-                            totalPage={totalPage}
-                            fetchUrl="/members/notGraduated"
-                            token
-                            paginationFetch={fetchUser}
-                            size={path === "/staff/member/students" ? 15 : 10}
-                        />
+                      <Checkbox
+                        checked={!!user && check.length === userList.length}
+                        onChange={checkAllClickEvent}
+                      />
                     )}
-                </>
-            )}
-        </Div>
-    );
+                  </FlexDiv>
+                )}
+                {headerInfo.map((item: string, idx: number) => (
+                  <FlexDiv
+                    key={`headerInfo${idx}`}
+                    $minWidth={`${widthList[idx]}px`}
+                    $padding="10px"
+                  >
+                    <P $center fontWeight={700}>
+                      {item}
+                    </P>
+                  </FlexDiv>
+                ))}
+              </FlexDiv>
+              {userList && userList.length !== 0 ? (
+                userList.map((element: userInterface, idx: number) => (
+                  <FlexDiv
+                    key={`contentItem${idx}`}
+                    width="100%"
+                    height="45px"
+                    $borderT={`1px solid ${theme.color.grey1}`}
+                    $justifycontent="space-evenly"
+                    $backgroundColor="wh"
+                  >
+                    {isAuthorizedExceptExecutives && (
+                      <FlexDiv $padding="10px">
+                        <Checkbox
+                          checked={check.includes(element.memberId) ? true : false}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            checkClickEvent(e, element.memberId)
+                          }
+                        />
+                      </FlexDiv>
+                    )}
+
+                    {Object.entries(element).map(([key, value], idx: number) => {
+                      if (key !== 'memberId') {
+                        return (
+                          <FlexDiv
+                            key={`itemValue${idx}`}
+                            $minWidth={`${widthList[idx]}px`}
+                            $padding="10px"
+                          >
+                            <A $center fontWeight={idx === 0 ? 800 : 500}>
+                              {value}
+                            </A>
+                          </FlexDiv>
+                        );
+                      }
+                    })}
+                  </FlexDiv>
+                ))
+              ) : (
+                <FlexDiv width="100%" $padding="10px">
+                  <Div>
+                    <P>회원이 존재하지 않습니다.</P>
+                  </Div>
+                </FlexDiv>
+              )}
+            </Div>
+          </TableScroll>
+          {path === '/staff/member/students' && (
+            <FlexDiv width="100%" $justifycontent="end" $margin="30px 0">
+              <SearchControls>
+                <TextInput
+                  width="300px"
+                  placeholder="이름이나 학번을 입력하세요"
+                  $borderRadius="3px 0 0px 3"
+                  onKeyDown={enterKeyDown}
+                  onChange={handleSearchChange}
+                />
+                <Button
+                  $backgroundColor="bgColor"
+                  $HBackgroundColor="bgColorHo"
+                  $padding="13px 20px"
+                  $borderRadius="0 3px 3px 0"
+                  onClick={searchStudent}
+                >
+                  <FlexDiv width="14px">
+                    <Img src="/images/search_white.svg" />
+                  </FlexDiv>
+                </Button>
+              </SearchControls>
+            </FlexDiv>
+          )}
+          {userList && userList.length !== 0 && (
+            <Pagination
+              totalPage={totalPage}
+              fetchUrl="/members/notGraduated"
+              token
+              paginationFetch={fetchUser}
+              size={path === '/staff/member/students' ? 15 : 10}
+            />
+          )}
+        </>
+      )}
+    </Div>
+  );
 };
 
 export default MyUserTable;

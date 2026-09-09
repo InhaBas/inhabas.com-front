@@ -1,48 +1,48 @@
-import { useState } from "react";
-import { styled } from "styled-components";
-import { Div, FlexDiv } from "../../styles/assets/Div";
-import Img from "../../styles/assets/Img";
-import P from "../../styles/assets/P";
-import { media } from "../../styles/theme";
+import { useState } from 'react';
+import { styled } from 'styled-components';
+import { Div, FlexDiv } from '../../styles/assets/Div';
+import Img from '../../styles/assets/Img';
+import P from '../../styles/assets/P';
+import { media } from '../../styles/theme';
 
-const DropDownList = styled("ul")`
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    background: ${(props) => props.theme.color.wh};
-    box-sizing: border-box;
-    box-shadow: 0px 20px 50px 0 rgba(0, 0, 0, 0.2);
+const DropDownList = styled('ul')`
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background: ${(props) => props.theme.color.wh};
+  box-sizing: border-box;
+  box-shadow: 0px 20px 50px 0 rgba(0, 0, 0, 0.2);
 
-    font-size: ${(props) => props.theme.fontSize.sm};
-    font-weight: 500;
+  font-size: ${(props) => props.theme.fontSize.sm};
+  font-weight: 500;
 
-    ${media.mobile} {
-        max-width: calc(100vw - 32px);
-        max-height: min(320px, 50vh);
-        overflow-y: auto;
-        overscroll-behavior: contain;
-    }
+  ${media.mobile} {
+    max-width: calc(100vw - 32px);
+    max-height: min(320px, 50vh);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
 
-    &:first-child {
-        padding-top: 0.8em;
-    }
+  &:first-child {
+    padding-top: 0.8em;
+  }
 `;
 
-const ListItem = styled("li")`
-    list-style: none;
-    margin-bottom: 0.8em;
-    padding: 10px 20px;
-    cursor: pointer;
+const ListItem = styled('li')`
+  list-style: none;
+  margin-bottom: 0.8em;
+  padding: 10px 20px;
+  cursor: pointer;
 
-    ${media.mobile} {
-        white-space: normal;
-        overflow-wrap: anywhere;
-    }
+  ${media.mobile} {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
 
-    &:hover {
-        background: ${(props) => props.theme.color.bgColor};
-        color: ${(props) => props.theme.color.wh};
-    }
+  &:hover {
+    background: ${(props) => props.theme.color.bgColor};
+    color: ${(props) => props.theme.color.wh};
+  }
 `;
 
 /*
@@ -53,77 +53,78 @@ const ListItem = styled("li")`
 
 */
 const Dropdown = ({
-    borderRadius,
-    label,
-    options,
-    value,
-    onChange,
-    purple
+  borderRadius,
+  label,
+  options,
+  value,
+  onChange,
+  purple,
 }: {
-    borderRadius?: number;
-    label: string;
-    options: string[];
-    value?: string[];
-    onChange: (value: string) => void;
-    purple?: boolean;
+  borderRadius?: number;
+  label: string;
+  options: string[];
+  value?: string[];
+  onChange: (value: string) => void;
+  purple?: boolean;
 }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [selectedOption, setSelectedOption] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState('');
 
-    const toggling = () => setIsOpen(!isOpen);
+  const toggling = () => setIsOpen(!isOpen);
 
-    const onOptionClicked = (option: string, value?: string) => () => {
-        setSelectedOption(option);
+  const onOptionClicked = (option: string, value?: string) => () => {
+    setSelectedOption(option);
 
-        if (value !== undefined) {
-            onChange(value);
-        }
+    if (value !== undefined) {
+      onChange(value);
+    }
 
-        setIsOpen(false);
-    };
+    setIsOpen(false);
+  };
 
-    return (
-        <Div width="100%" $position="relative">
-            <FlexDiv
-                onClick={toggling}
-                width="100%"
-                height="40px"
-                $justifycontent="space-between"
-                $padding="6px 12px"
-                $border="1px solid"
-                $borderColor="grey1"
-                $pointer
-                $backgroundColor={purple ? 'bgColor': 'transparent'}
-                radius={borderRadius !== undefined ? borderRadius : (purple ? 20 : 3)}
-            >
-                <FlexDiv>
-                    <P
-                        fontSize="sm"
-                        color={purple ? 'wh': 'bk'}
-                    >
-                        {selectedOption || label}
-                    </P>
-                </FlexDiv>
-                <FlexDiv width="10px" $margin="0 0 0 5px">
-                    {purple ? (<Img src="/images/chevron-down_white.svg" />) : (<Img src="/images/chevron-down_grey.svg" />)}
-                </FlexDiv>
-            </FlexDiv>
-            {isOpen && (
-                <FlexDiv $zIndex={3} width="100%" $position="absolute">
-                    <DropDownList>
-                        {options.map((option, idx) => (
-                            <ListItem
-                                onClick={onOptionClicked(option, value !== undefined ? value[idx] : "")}
-                                key={Math.random()}
-                            >
-                                {option}
-                            </ListItem>
-                        ))}
-                    </DropDownList>
-                </FlexDiv>
-            )}
-        </Div>
-    );
+  return (
+    <Div width="100%" $position="relative">
+      <FlexDiv
+        onClick={toggling}
+        width="100%"
+        height="40px"
+        $justifycontent="space-between"
+        $padding="6px 12px"
+        $border="1px solid"
+        $borderColor="grey1"
+        $pointer
+        $backgroundColor={purple ? 'bgColor' : 'transparent'}
+        radius={borderRadius !== undefined ? borderRadius : purple ? 20 : 3}
+      >
+        <FlexDiv>
+          <P fontSize="sm" color={purple ? 'wh' : 'bk'}>
+            {selectedOption || label}
+          </P>
+        </FlexDiv>
+        <FlexDiv width="10px" $margin="0 0 0 5px">
+          {purple ? (
+            <Img src="/images/chevron-down_white.svg" />
+          ) : (
+            <Img src="/images/chevron-down_grey.svg" />
+          )}
+        </FlexDiv>
+      </FlexDiv>
+      {isOpen && (
+        <FlexDiv $zIndex={3} width="100%" $position="absolute">
+          <DropDownList>
+            {options.map((option, idx) => (
+              <ListItem
+                onClick={onOptionClicked(option, value !== undefined ? value[idx] : '')}
+                key={Math.random()}
+              >
+                {option}
+              </ListItem>
+            ))}
+          </DropDownList>
+        </FlexDiv>
+      )}
+    </Div>
+  );
 };
 
 export default Dropdown;
