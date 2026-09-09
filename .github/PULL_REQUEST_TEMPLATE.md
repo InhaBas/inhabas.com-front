@@ -36,7 +36,8 @@ resolves: #
 
 - [ ] `upstream/dev` 기준으로 브랜치를 만들었다
 - [ ] 빌드가 정상적으로 된다 (`npm run build`)
-- [ ] ESLint 에러가 없다
+- [ ] ESLint 에러가 없다 (`npm run lint`)
+- [ ] Prettier 포매팅이 적용되었다 (`npm run format`)
 - [ ] 기존 기능이 정상 작동한다
 - [ ] WIP 커밋을 정리했다 (`git rebase -i`)
 - [ ] 불필요한 `console.log`와 주석 처리된 코드를 제거했다

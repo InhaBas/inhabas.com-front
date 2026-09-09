@@ -6,22 +6,17 @@
 
 ## 코드 포매터 / 린터
 
-### ESLint
+ESLint(`eslint.config.js`, flat config) + Prettier(`.prettierrc`)를 사용합니다.
+설정 근거와 상세 옵션은 [ESLint + Prettier](./frontend/PRETTIER.md) 문서를
+참고하세요.
 
-`.eslintrc.json`에 아래 규칙이 적용되어 있습니다.
+- `npm run lint` — ESLint 검사
+- `npm run format` — Prettier 전체 포매팅
+- `npm run format:check` — 포매팅 위반 확인 (CI에서 실행)
 
-```json
-{
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
-    "plugin:@typescript-eslint/recommended"
-  ]
-}
-```
-
-> ⚠️ **Prettier는 현재 미적용 상태**입니다. 코드 포매팅은 팀원 각자의 IDE 설정을 따르고 있으며, 향후 도입을 검토할 수 있습니다.
+PR을 올리기 전에 `npm run lint`와 `npm run format`을 실행하세요. 저장 시
+자동 포매팅되도록 VSCode 확장을 설정하는 방법도
+[ESLint + Prettier 문서](./frontend/PRETTIER.md#vscode-설정-팀원-공유)에 있습니다.
 
 ---
 
@@ -111,6 +106,12 @@ import { Wrapper } from './BoardList.styles';
 ```
 
 > 와일드카드(`*`) import는 사용하지 않습니다.
+
+> ESLint의 `import/order`가 강제하는 건 "react 계열을 다른 외부 패키지보다
+> 앞세우고, 나머지는 알파벳순" 까지입니다. 위 2~5번처럼 상대 경로 import를
+> 세분화하는 건 컨벤션일 뿐 기계적으로 강제되지 않습니다 — 자동 정렬 규칙이
+> 오히려 저장할 때마다 순서가 바뀌는 불안정한 규칙이 돼서 포기했습니다.
+> 자세한 내용은 [ESLint + Prettier 문서](./frontend/PRETTIER.md#import-순서) 참고.
 
 ---
 

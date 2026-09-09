@@ -93,7 +93,8 @@ git rebase upstream/dev
 
 - [ ] `upstream/dev` 기준으로 브랜치를 만들었는가
 - [ ] 빌드가 정상적으로 되는가 (`npm run build`)
-- [ ] ESLint 에러가 없는가
+- [ ] ESLint 에러가 없는가 (`npm run lint`)
+- [ ] Prettier 포매팅이 적용되었는가 (`npm run format`)
 - [ ] 기존 기능이 정상 작동하는가
 - [ ] [스타일 컨벤션](./STYLE-CONVENTION.md)을 준수하는가
 - [ ] 불필요한 `console.log`나 주석 처리된 코드가 없는가

@@ -60,6 +60,10 @@ npm uninstall @types/react-router-dom
 
 TypeScript 5.x는 2023년 3월 출시, 현재 5.8까지 릴리즈됨. 프로젝트에 사용 중인 ESLint 패키지도 이미 `@typescript-eslint/eslint-plugin: ^8.x`로 최신 버전이라 TypeScript 자체만 구버전.
 
+> ESLint 본체는 `9.x` 최신판에 고정돼 있다 (`10.x`는 `eslint-plugin-react`가
+> 아직 지원하지 않아 즉시 크래시함 — [ESLint + Prettier 문서](./PRETTIER.md) 참고).
+> TS 5.x로 올릴 때 이 제약과는 무관하다.
+
 **TypeScript 5.x 주요 개선:**
 
 - `const` 타입 파라미터
