@@ -1,7 +1,7 @@
-import { theme } from '../../styles/theme';
 
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import P from '../../styles/assets/P';
+import { theme } from '../../styles/theme';
 
 const MyLectureContainer = () => {
   return (

@@ -2,9 +2,8 @@ import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import { relogin } from '../../recoil/frontState';
-
 import RecruitmentScheduleNotice from '../../components/home/RecruitmentScheduleNotice';
+import { relogin } from '../../recoil/frontState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { media } from '../../styles/theme';

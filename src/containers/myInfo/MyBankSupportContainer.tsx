@@ -3,20 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-import { media, theme } from '../../styles/theme';
-
-import useFetch from '../../hooks/useFetch';
-
-import { bankListDataInfo, tokenAccess, totalPageInfo } from '../../recoil/backState';
-
+import Loading from '../../components/common/Loading';
+import Pagination from '../../components/common/Pagination';
 import { DateFunction } from '../../functions/dateFunction';
-import { MySupportInterface } from '../../types/ibas/TypeMyinfo';
-
+import useFetch from '../../hooks/useFetch';
+import { bankListDataInfo, tokenAccess, totalPageInfo } from '../../recoil/backState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
-import Loading from '../../components/common/Loading';
-import Pagination from '../../components/common/Pagination';
+import { media, theme } from '../../styles/theme';
+import { MySupportInterface } from '../../types/ibas/TypeMyinfo';
 
 const SupportContent = styled(Div)`
   box-sizing: border-box;

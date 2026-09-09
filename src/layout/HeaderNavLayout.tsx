@@ -1,4 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
+
+import HeaderTitleLayout from './HeaderTitleLayout';
 import HeaderNav from '../components/common/HeaderNav';
 import Honor from '../pages/home/Honor';
 import Introduce from '../pages/home/Introduce';
@@ -6,7 +8,6 @@ import Main from '../pages/home/Main';
 import MyInfo from '../pages/myInfo/MyInfo';
 import Scholarship from '../pages/scholarship/Scholarship';
 import { Div } from '../styles/assets/Div';
-import HeaderTitleLayout from './HeaderTitleLayout';
 
 const HeaderNavPage = () => {
   return (

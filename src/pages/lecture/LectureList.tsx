@@ -1,12 +1,12 @@
+import styled from 'styled-components';
+
+import LectureCard from '../../components/lecture/LectureCard';
 import A from '../../styles/assets/A';
 import Button from '../../styles/assets/Button';
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { SearchInput } from '../../styles/assets/Input';
-import styled from 'styled-components';
 import { media } from '../../styles/theme';
-
-import LectureCard from '../../components/lecture/LectureCard';
 
 const SearchRow = styled.div`
   display: flex;

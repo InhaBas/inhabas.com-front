@@ -3,22 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-import { media, theme } from '../../styles/theme';
 
+
+
+import { DateFunction } from '../../functions/dateFunction';
 import useFetch from '../../hooks/useFetch';
-
 import {
   boardListDataInfo,
   boardListPinnedDataInfo,
   tokenAccess,
   totalPageInfo,
 } from '../../recoil/backState';
-
-import { DateFunction } from '../../functions/dateFunction';
-import { MyBoardInterface } from '../../types/ibas/TypeMyinfo';
-
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import P from '../../styles/assets/P';
+import { media, theme } from '../../styles/theme';
+import { MyBoardInterface } from '../../types/ibas/TypeMyinfo';
 import Loading from '../common/Loading';
 import Pagination from '../common/Pagination';
 

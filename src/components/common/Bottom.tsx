@@ -1,8 +1,9 @@
-import { styled } from 'styled-components';
 
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
+import { styled } from 'styled-components';
+
 import useFetch from '../../hooks/useFetch';
 import { chiefInfo } from '../../recoil/backState';
 import A from '../../styles/assets/A';

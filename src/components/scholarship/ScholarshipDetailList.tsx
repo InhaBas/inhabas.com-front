@@ -1,12 +1,12 @@
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+
+import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import P from '../../styles/assets/P';
-import Button from '../../styles/assets/Button';
-import styled from 'styled-components';
 import { media } from '../../styles/theme';
-
 import { scholarshipDetailListInterface } from '../../types/ibas/TypeIBAS';
 
-import { useNavigate } from 'react-router-dom';
 
 const DetailItem = styled(Div)`
   box-sizing: border-box;

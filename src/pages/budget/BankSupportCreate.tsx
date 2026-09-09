@@ -1,21 +1,22 @@
 import '@toast-ui/editor/dist/theme/toastui-editor-dark.css';
 import '@toast-ui/editor/dist/toastui-editor.css';
-import { theme } from '../../styles/theme';
 
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
+
+import DragNDrop from '../../components/common/DragNDrop';
 import useFetch from '../../hooks/useFetch';
 import { bankDetailDataInfo, fileIdList, tokenAccess } from '../../recoil/backState';
 import { menuId, refetch, selectedFile } from '../../recoil/frontState';
-import { supportDetailInterface } from '../../types/TypeBank';
 import Button from '../../styles/assets/Button';
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import { DateInput, TextInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media } from '../../styles/theme';
-import DragNDrop from '../../components/common/DragNDrop';
+import { theme } from '../../styles/theme';
+import { supportDetailInterface } from '../../types/TypeBank';
 
 const SupportFormPage = styled(FlexDiv)`
   min-width: 0;

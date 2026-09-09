@@ -1,17 +1,16 @@
 import styled from 'styled-components';
-import { media } from '../../styles/theme';
 
+
+import CommentInput from '../../components/common/CommentInput';
+import RoomNavigate from '../../components/lecture/RoomNavigate';
+import RoomSearch from '../../components/lecture/RoomSearch';
 import A from '../../styles/assets/A';
 import Button from '../../styles/assets/Button';
 import { DetailContainer, Div, FlexDiv } from '../../styles/assets/Div';
 import { H2 } from '../../styles/assets/H';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
-
-import CommentInput from '../../components/common/CommentInput';
-
-import RoomNavigate from '../../components/lecture/RoomNavigate';
-import RoomSearch from '../../components/lecture/RoomSearch';
+import { media } from '../../styles/theme';
 
 const StickyDiv = styled(Div)`
   position: sticky;

@@ -1,16 +1,14 @@
+import { jwtDecode } from 'jwt-decode';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-
 import styled from 'styled-components';
-import { media, theme } from '../../styles/theme';
 
-import useFetch from '../../hooks/useFetch';
-
-import { bankDetailDataInfo, tokenAccess } from '../../recoil/backState';
-
-import { jwtDecode } from 'jwt-decode';
+import Carousel from '../../components/common/Carousel';
+import Loading from '../../components/common/Loading';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
+import useFetch from '../../hooks/useFetch';
+import { bankDetailDataInfo, tokenAccess } from '../../recoil/backState';
 import {
   carouselInitialState,
   carouselOpen,
@@ -18,14 +16,13 @@ import {
   modalOpen,
   refetch,
 } from '../../recoil/frontState';
-import { tokenInterface } from '../../types/TypeCommon';
 import Button from '../../styles/assets/Button';
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import { H2 } from '../../styles/assets/H';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
-import Carousel from '../../components/common/Carousel';
-import Loading from '../../components/common/Loading';
+import { media, theme } from '../../styles/theme';
+import { tokenInterface } from '../../types/TypeCommon';
 
 const ScrollFlexDiv = styled(FlexDiv)`
   box-sizing: border-box;

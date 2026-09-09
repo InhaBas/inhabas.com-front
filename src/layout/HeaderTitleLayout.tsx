@@ -1,8 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 
-import { GetRoleAuthorization } from '../functions/authFunctions';
-
 import HeaderTitle from '../components/common/HeaderTitle';
+import { GetRoleAuthorization } from '../functions/authFunctions';
 import MyApplication from '../pages/myInfo/MyApplication';
 import MyManageExistUser from '../pages/myInfo/MyManageExistUser';
 import MyManageGraduateUser from '../pages/myInfo/MyManageGraduateUser';
@@ -12,7 +11,6 @@ import MyStaff from '../pages/myInfo/MyStaff';
 import BoardRoute from '../routes/BoardRoute';
 import LectureRoute from '../routes/LectureRoute';
 import MainRoute from '../routes/MainRoute';
-
 import { FlexDiv } from '../styles/assets/Div';
 
 const HeaderTitlePage = () => {

@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
 import { useSetRecoilState } from 'recoil';
 
-import { headerTitleInfo } from '../../recoil/backState';
-
-import { Container, FlexDiv } from '../../styles/assets/Div';
 import MyStaffRuleContainer from '../../containers/myInfo/MyStaffRuleContainter';
 import MyStaffScheduleInfo from '../../containers/myInfo/MyStaffScheduleInfo';
+import { headerTitleInfo } from '../../recoil/backState';
+import { Container, FlexDiv } from '../../styles/assets/Div';
 
 const MyStaff = () => {
   const setTitle = useSetRecoilState(headerTitleInfo);

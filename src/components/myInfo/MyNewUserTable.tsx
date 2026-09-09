@@ -3,23 +3,22 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import { media, theme } from '../../styles/theme';
 
-import useFetch from '../../hooks/useFetch';
 
-import { newUserInfo, tokenAccess, totalNewUserInfo, totalPageInfo } from '../../recoil/backState';
-import { checkedList, myAcceptUserState } from '../../recoil/frontState';
 
-import { newUserInterface } from '../../types/ibas/TypeMyinfo';
 
 import { GetRoleAuthorization } from '../../functions/authFunctions';
-
+import useFetch from '../../hooks/useFetch';
+import { newUserInfo, tokenAccess, totalNewUserInfo, totalPageInfo } from '../../recoil/backState';
+import { checkedList, myAcceptUserState } from '../../recoil/frontState';
 import A from '../../styles/assets/A';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { Checkbox, TextInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
+import { media, theme } from '../../styles/theme';
+import { newUserInterface } from '../../types/ibas/TypeMyinfo';
 import Dropdown from '../common/Dropdown';
 import Loading from '../common/Loading';
 import Pagination from '../common/Pagination';

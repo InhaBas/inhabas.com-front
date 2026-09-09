@@ -1,20 +1,21 @@
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
+import { useEffect, useState } from 'react';
+import Slider from 'react-slick';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import Slider from 'react-slick';
 
-import { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+
+import HeaderNav from '../../components/common/HeaderNav';
+import HonorSlide from '../../components/common/HonorSlide';
+import Loading from '../../components/common/Loading';
 import useFetch from '../../hooks/useFetch';
 import { honorDataInfo } from '../../recoil/backState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import { H1 } from '../../styles/assets/H';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
-import HeaderNav from '../../components/common/HeaderNav';
-import HonorSlide from '../../components/common/HonorSlide';
-import Loading from '../../components/common/Loading';
 import { media } from '../../styles/theme';
 
 const HonorImg = styled(Img)`

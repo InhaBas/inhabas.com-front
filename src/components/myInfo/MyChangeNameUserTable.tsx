@@ -2,23 +2,22 @@ import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-import { media, theme } from '../../styles/theme';
 
-import useFetch from '../../hooks/useFetch';
 
-import { changeNameTotalPageInfo, changeNameUserInfo, tokenAccess } from '../../recoil/backState';
-import { checkOne } from '../../recoil/frontState';
 
-import { changeNameUserInterface } from '../../types/ibas/TypeMyinfo';
 
 import { GetRoleAuthorization } from '../../functions/authFunctions';
 import { ConvertLabel } from '../../functions/convertLabelFunctions';
-
+import useFetch from '../../hooks/useFetch';
+import { changeNameTotalPageInfo, changeNameUserInfo, tokenAccess } from '../../recoil/backState';
+import { checkOne } from '../../recoil/frontState';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { Checkbox } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
+import { media, theme } from '../../styles/theme';
+import { changeNameUserInterface } from '../../types/ibas/TypeMyinfo';
 import Dropdown from '../common/Dropdown';
 import Loading from '../common/Loading';
 import Pagination from '../common/Pagination';

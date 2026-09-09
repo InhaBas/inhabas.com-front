@@ -1,29 +1,25 @@
+import { jwtDecode } from 'jwt-decode';
 import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-import { media, theme } from '../../styles/theme';
-
-import { jwtDecode } from 'jwt-decode';
+import CommentInput from './CommentInput';
+import Loading from './Loading';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
 import { DateFunction } from '../../functions/dateFunction';
-
 import useFetch from '../../hooks/useFetch';
 import { commentInfo, tokenAccess } from '../../recoil/backState';
 import { refetch } from '../../recoil/frontState';
-
+import { Div, FlexDiv } from '../../styles/assets/Div';
+import Img from '../../styles/assets/Img';
+import { TextArea } from '../../styles/assets/Input';
+import P from '../../styles/assets/P';
+import { media, theme } from '../../styles/theme';
 import {
   commentListInterface,
   commentPropsInterface,
   tokenInterface,
 } from '../../types/TypeCommon';
-
-import { Div, FlexDiv } from '../../styles/assets/Div';
-import Img from '../../styles/assets/Img';
-import { TextArea } from '../../styles/assets/Input';
-import P from '../../styles/assets/P';
-import CommentInput from './CommentInput';
-import Loading from './Loading';
 
 const CommentCard = styled(Div)`
   min-width: 0;

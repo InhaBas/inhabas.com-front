@@ -1,19 +1,17 @@
-import { Div, FlexDiv } from '../../styles/assets/Div';
-
-import Dropdown from '../../components/common/Dropdown';
-import ContestInfo from '../../components/activity/ContestInfo';
-
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { contestListDataInfo } from '../../recoil/backState';
-import { contestOrder } from '../../recoil/frontState';
 
 import { useNavigate } from 'react-router-dom';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
+
+import ContestInfo from '../../components/activity/ContestInfo';
+import Dropdown from '../../components/common/Dropdown';
+import { GetRoleAuthorization } from '../../functions/authFunctions';
+import { contestListDataInfo } from '../../recoil/backState';
+import { contestOrder } from '../../recoil/frontState';
 import A from '../../styles/assets/A';
 import Button from '../../styles/assets/Button';
+import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
-
-import { GetRoleAuthorization } from '../../functions/authFunctions';
 import { media } from '../../styles/theme';
 
 const ContestContainer = styled.div`

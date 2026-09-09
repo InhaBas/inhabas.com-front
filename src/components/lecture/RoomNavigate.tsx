@@ -1,14 +1,12 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-
-import { theme } from '../../styles/theme';
+import styled from 'styled-components';
 
 import { lectureRoomInfo, lectureRoomTutorInfo } from '../../recoil/backState';
-
-import { useNavigate } from 'react-router-dom';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import P from '../../styles/assets/P';
-import styled from 'styled-components';
+import { theme } from '../../styles/theme';
 import { media } from '../../styles/theme';
 
 const NavigateBox = styled.div`

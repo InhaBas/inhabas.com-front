@@ -5,12 +5,13 @@ import { useEffect, useRef, useState } from 'react';
 import Slider from 'react-slick';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
+
 import { carouselInitialState, carouselOpen } from '../../recoil/frontState';
-import { carouselInterface } from '../../types/TypeCommon';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
+import { carouselInterface } from '../../types/TypeCommon';
 
 const CarouselOverlay = styled(Div)`
   position: fixed;

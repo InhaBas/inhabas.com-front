@@ -3,22 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import { profileInfo } from '../../recoil/backState';
-import { modalInfo, modalOpen } from '../../recoil/frontState';
-
-import { GetRoleAuthorization } from '../../functions/authFunctions';
-
+import Loading from '../../components/common/Loading';
 import MyBankSupportContainer from '../../containers/myInfo/MyBankSupportContainer';
 import MyBoardContainer from '../../containers/myInfo/MyBoardContainer';
 import MyInfoContainer from '../../containers/myInfo/MyInfoContainer';
 import MyLectureContainer from '../../containers/myInfo/MyLectureContainer';
 import MyManageLectureContainer from '../../containers/myInfo/MyManageLectureContainer';
-
+import { GetRoleAuthorization } from '../../functions/authFunctions';
+import { profileInfo } from '../../recoil/backState';
+import { modalInfo, modalOpen } from '../../recoil/frontState';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
-import Loading from '../../components/common/Loading';
 import { media } from '../../styles/theme';
 
 const MyInfoImgDiv = styled(Div)`

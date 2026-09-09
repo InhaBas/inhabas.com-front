@@ -1,12 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { theme } from '../../styles/theme';
 
 import A from '../../styles/assets/A';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
+import { theme } from '../../styles/theme';
 
 type NavigateTableProp = {
   url?: string;

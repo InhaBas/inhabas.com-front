@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { styled } from 'styled-components';
+
 import useFetch from '../../hooks/useFetch';
 import { refetch } from '../../recoil/frontState';
-import { commentPropsInterface } from '../../types/TypeCommon';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { TextArea } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
+import { commentPropsInterface } from '../../types/TypeCommon';
 
 const CommentRelativeDiv = styled(Div)`
   position: relative;

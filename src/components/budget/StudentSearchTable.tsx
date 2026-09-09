@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react';
-
 import { useRecoilState } from 'recoil';
-import { selectedStudentInfos } from '../../recoil/frontState';
-
 import styled from 'styled-components';
+
+import useFetch from '../../hooks/useFetch';
+import { selectedStudentInfos } from '../../recoil/frontState';
 import A from '../../styles/assets/A';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { TextInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-
-import useFetch from '../../hooks/useFetch';
 
 export interface searchedMemberInterface {
   name: string;

@@ -1,8 +1,9 @@
-import { Div, FlexDiv } from '../../styles/assets/Div';
-import P from '../../styles/assets/P';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { useNavigate } from 'react-router-dom';
+import { Div, FlexDiv } from '../../styles/assets/Div';
+import P from '../../styles/assets/P';
+
 
 const MoreButton = styled(FlexDiv)`
   max-width: 100%;

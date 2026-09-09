@@ -1,11 +1,12 @@
 // Toast UI Editor
 import '@toast-ui/editor/dist/toastui-editor.css';
+import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import { Editor } from '@toast-ui/react-editor';
 // Color Syntax Plugin
-import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import { forwardRef } from 'react';
 import styled from 'styled-components';
+
 import 'tui-color-picker/dist/tui-color-picker.css';
 import { media, theme } from '../../styles/theme';
 

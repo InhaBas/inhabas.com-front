@@ -2,15 +2,12 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { theme } from '../../styles/theme';
-
+import MyUserTable from '../../components/myInfo/MyUserTable';
 import { headerTitleInfo, totalUserInfo } from '../../recoil/backState';
-
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
-
-import MyUserTable from '../../components/myInfo/MyUserTable';
+import { theme } from '../../styles/theme';
 
 const MyManageExistUser = () => {
   const navigate = useNavigate();

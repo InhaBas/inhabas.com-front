@@ -1,17 +1,15 @@
 import { useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import useFetch from '../../../hooks/useFetch';
-
 import { modalInfo, modalOpen, refetch } from '../../../recoil/frontState';
-
 import Button from '../../../styles/assets/Button';
 import { Div, FlexDiv } from '../../../styles/assets/Div';
 import { H2 } from '../../../styles/assets/H';
 import Img from '../../../styles/assets/Img';
 import { DateInput, TextInput } from '../../../styles/assets/Input';
 import P from '../../../styles/assets/P';
-import { useState } from 'react';
 
 const ModalScholarshipHistory = () => {
   const setOpen = useSetRecoilState(modalOpen);

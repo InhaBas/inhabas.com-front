@@ -1,10 +1,10 @@
-import { media, theme } from '../../styles/theme';
+import styled from 'styled-components';
 
+import DragNDrop from '../../components/common/DragNDrop';
+import TextEditor from '../../components/common/TextEditor';
+import Button from '../../styles/assets/Button';
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
-import P from '../../styles/assets/P';
-
-import Button from '../../styles/assets/Button';
 import {
   Checkbox,
   DateInput,
@@ -14,9 +14,9 @@ import {
   TextArea,
   TextInput,
 } from '../../styles/assets/Input';
-import DragNDrop from '../../components/common/DragNDrop';
-import TextEditor from '../../components/common/TextEditor';
-import styled from 'styled-components';
+import P from '../../styles/assets/P';
+import { media, theme } from '../../styles/theme';
+
 
 const LectureForm = styled(Div)`
   &,

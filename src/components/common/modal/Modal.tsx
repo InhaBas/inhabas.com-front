@@ -2,9 +2,6 @@ import { MouseEvent, useRef } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-import { modalInfo, modalOpen } from '../../../recoil/frontState';
-import { FlexDiv } from '../../../styles/assets/Div';
-import { media } from '../../../styles/theme';
 import ModalBankHistoryDetail from './ModalBankHistoryDetail';
 import ModalBankSupportReject from './ModalBankSupportReject';
 import ModalChangeImg from './ModalChangeImg';
@@ -17,6 +14,9 @@ import ModalMajor from './ModalMajor';
 import ModalPostBankHistory from './ModalPostBankHistory';
 import ModalScholarshipHistory from './ModalScholarshipHistory';
 import ModalUpdateBankHistory from './ModalUpdateBankHistory';
+import { modalInfo, modalOpen } from '../../../recoil/frontState';
+import { FlexDiv } from '../../../styles/assets/Div';
+import { media } from '../../../styles/theme';
 
 type CustomMouseEvent = MouseEvent<HTMLElement>;
 

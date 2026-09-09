@@ -1,17 +1,16 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import styled from 'styled-components';
 
 import useFetch from '../../hooks/useFetch';
 import { signupAnswer, signupQuestion, tokenAccess } from '../../recoil/backState';
 import { relogin } from '../../recoil/frontState';
-
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { TextArea } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
-import styled from 'styled-components';
 import { media } from '../../styles/theme';
 
 const QuestionPage = styled(FlexDiv)`

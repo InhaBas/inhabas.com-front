@@ -3,10 +3,13 @@ import { useLocation } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import { media, theme } from '../../styles/theme';
 
+
+
+
+import { GetRoleAuthorization } from '../../functions/authFunctions';
+import { ConvertLabel } from '../../functions/convertLabelFunctions';
 import useFetch from '../../hooks/useFetch';
-
 import {
   __totalPageInfo,
   graduateUserInfo,
@@ -18,18 +21,14 @@ import {
   mySetGraduateState,
   mySetUndergraduateState,
 } from '../../recoil/frontState';
-
-import { userInterface } from '../../types/ibas/TypeMyinfo';
-
-import { GetRoleAuthorization } from '../../functions/authFunctions';
-import { ConvertLabel } from '../../functions/convertLabelFunctions';
-
 import A from '../../styles/assets/A';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { Checkbox, TextInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
+import { media, theme } from '../../styles/theme';
+import { userInterface } from '../../types/ibas/TypeMyinfo';
 import Dropdown from '../common/Dropdown';
 import Loading from '../common/Loading';
 import Pagination from '../common/Pagination';

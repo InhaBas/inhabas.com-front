@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { theme } from '../../../styles/theme';
 
 import useFetch from '../../../hooks/useFetch';
-
 import { tokenAccess } from '../../../recoil/backState';
 import {
   carouselInitialState,
@@ -12,11 +10,11 @@ import {
   modalInfo,
   modalOpen,
 } from '../../../recoil/frontState';
-
 import { Div, FlexDiv } from '../../../styles/assets/Div';
 import { H2 } from '../../../styles/assets/H';
 import Img from '../../../styles/assets/Img';
 import P from '../../../styles/assets/P';
+import { theme } from '../../../styles/theme';
 import Carousel from '../Carousel';
 
 const ModalBankHistoryDetail = () => {

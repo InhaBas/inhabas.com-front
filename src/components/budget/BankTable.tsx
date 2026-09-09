@@ -1,22 +1,17 @@
+import { jwtDecode } from 'jwt-decode';
 import { MouseEvent, useEffect } from 'react';
-
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import { GetRoleAuthorization } from '../../functions/authFunctions';
+import useFetch from '../../hooks/useFetch';
 import { bankBalanceInfo, bankHistoryInfo } from '../../recoil/backState';
+import { tokenAccess, userRole } from '../../recoil/backState';
 import { modalInfo, modalOpen, refetch } from '../../recoil/frontState';
-
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-
-import useFetch from '../../hooks/useFetch';
-
-import { GetRoleAuthorization } from '../../functions/authFunctions';
-import { tokenAccess, userRole } from '../../recoil/backState';
-
-import { jwtDecode } from 'jwt-decode';
 import { tokenInterface } from '../../types/TypeCommon';
 
 const TableScrollArea = styled.div`

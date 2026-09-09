@@ -1,20 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-
 import styled from 'styled-components';
 
+import Dropdown from '../../components/common/Dropdown';
 import useFetch from '../../hooks/useFetch';
 import { signupInfo, tokenAccess, userEmail } from '../../recoil/backState';
 import { majorSelected, modalInfo, modalOpen, relogin } from '../../recoil/frontState';
-
 import A from '../../styles/assets/A';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { Checkbox, Label, Radio, TextInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
-import Dropdown from '../../components/common/Dropdown';
 import { media } from '../../styles/theme';
 
 const HrSect = styled.div`

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components/dist/types';
+
 import { media } from '../theme';
 
 interface DivStyle {

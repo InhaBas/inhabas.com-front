@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
+import styled from 'styled-components';
 
+import Loading from './Loading';
 import useFetch from '../../hooks/useFetch';
-
 import { fileIdList } from '../../recoil/backState';
 import { menuId, refetch, selectedFile } from '../../recoil/frontState';
-
-import styled from 'styled-components';
 import { Div, FlexDiv, InputLabel } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { Input } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-import Loading from './Loading';
 
 interface DragNDropProps {
   single?: boolean;

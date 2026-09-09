@@ -1,13 +1,13 @@
-import { media, theme } from '../../styles/theme';
+
+import { useNavigate } from 'react-router-dom';
+import { styled } from 'styled-components';
 
 import Button from '../../styles/assets/Button';
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import { H2 } from '../../styles/assets/H';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
-
-import { useNavigate } from 'react-router-dom';
-import { styled } from 'styled-components';
+import { media, theme } from '../../styles/theme';
 
 const MoveBtn = styled(Button)`
   color: ${theme.color.blue};

@@ -2,25 +2,22 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { theme } from '../../styles/theme';
 
+import MyChangeNameUserTable from '../../components/myInfo/MyChangeNameUserTable';
+import MyGraduateUserTable from '../../components/myInfo/MyGraduateUserTable';
+import MyNewUserTable from '../../components/myInfo/MyNewUserTable';
+import MyUserTable from '../../components/myInfo/MyUserTable';
+import { GetRoleAuthorization } from '../../functions/authFunctions';
 import {
   headerTitleInfo,
   totalGraduateUserInfo,
   totalNewUserInfo,
   totalUserInfo,
 } from '../../recoil/backState';
-
-import { GetRoleAuthorization } from '../../functions/authFunctions';
-
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
-
-import MyChangeNameUserTable from '../../components/myInfo/MyChangeNameUserTable';
-import MyGraduateUserTable from '../../components/myInfo/MyGraduateUserTable';
-import MyNewUserTable from '../../components/myInfo/MyNewUserTable';
-import MyUserTable from '../../components/myInfo/MyUserTable';
+import { theme } from '../../styles/theme';
 
 const MyManageUser = () => {
   const { isAuthorizedOverVice } = GetRoleAuthorization();

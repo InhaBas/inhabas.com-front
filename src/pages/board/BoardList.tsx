@@ -3,8 +3,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
+import BoardNavigate from '../../components/board/BoardNavigate';
+import BoardSearch from '../../components/board/BoardSearch';
+import Loading from '../../components/common/Loading';
+import NavigateTable from '../../components/common/NavigateTable';
+import Pagination from '../../components/common/Pagination';
+import { GetRoleAuthorization } from '../../functions/authFunctions';
+import { DateFunction } from '../../functions/dateFunction';
 import useFetch from '../../hooks/useFetch';
-
 import {
   boardListDataInfo,
   boardListPinnedDataInfo,
@@ -12,25 +18,14 @@ import {
   tokenAccess,
   totalPageInfo,
 } from '../../recoil/backState';
-
-import { boardListInterface } from '../../types/TypeBoard';
-
-import { DateFunction } from '../../functions/dateFunction';
-
+import { contestOrder } from '../../recoil/frontState';
 import A from '../../styles/assets/A';
 import Button from '../../styles/assets/Button';
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
-
-import { GetRoleAuthorization } from '../../functions/authFunctions';
-import { contestOrder } from '../../recoil/frontState';
-import Loading from '../../components/common/Loading';
-import NavigateTable from '../../components/common/NavigateTable';
-import Pagination from '../../components/common/Pagination';
-import BoardNavigate from '../../components/board/BoardNavigate';
-import BoardSearch from '../../components/board/BoardSearch';
-import Contest from '../activity/Contest';
 import { media } from '../../styles/theme';
+import { boardListInterface } from '../../types/TypeBoard';
+import Contest from '../activity/Contest';
 
 const StickyDiv = styled(Div)`
   position: sticky;

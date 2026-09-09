@@ -1,18 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-
-import { theme } from '../../styles/theme';
+import styled from 'styled-components';
 
 import useFetch from '../../hooks/useFetch';
-
 import { profileInfo } from '../../recoil/backState';
 import { modalInfo, modalOpen, refetch } from '../../recoil/frontState';
-
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
-import styled from 'styled-components';
+import { theme } from '../../styles/theme';
 import { media } from '../../styles/theme';
 
 const InfoContent = styled(Div)`

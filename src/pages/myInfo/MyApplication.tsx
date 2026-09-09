@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-
 import styled from 'styled-components';
-import { media, theme } from '../../styles/theme';
 
+import Loading from '../../components/common/Loading';
+import { DateFunction } from '../../functions/dateFunction';
 import useFetch from '../../hooks/useFetch';
 import {
   applicationAnswerInfo,
@@ -12,15 +12,11 @@ import {
   headerTitleInfo,
   tokenAccess,
 } from '../../recoil/backState';
-
-import { DateFunction } from '../../functions/dateFunction';
-
-import { applicationAnswersInterface } from '../../types/ibas/TypeMyinfo';
-
 import Button from '../../styles/assets/Button';
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import P from '../../styles/assets/P';
-import Loading from '../../components/common/Loading';
+import { media, theme } from '../../styles/theme';
+import { applicationAnswersInterface } from '../../types/ibas/TypeMyinfo';
 
 const PassBtn = styled(Button)`
   color: ${theme.color.blue};

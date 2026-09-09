@@ -1,14 +1,15 @@
 import { useEffect } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
+
+import { GetRoleAuthorization } from '../functions/authFunctions';
+import ContestCreate from '../pages/activity/ContestCreate';
+import ContestDetail from '../pages/activity/ContestDetail';
 import BoardCreate from '../pages/board/BoardCreate';
 import BoardDetail from '../pages/board/BoardDetail';
 import BoardList from '../pages/board/BoardList';
-import { GetRoleAuthorization } from '../functions/authFunctions';
 import { userRole } from '../recoil/backState';
 import { failRefreshing } from '../recoil/frontState';
-import ContestDetail from '../pages/activity/ContestDetail';
-import ContestCreate from '../pages/activity/ContestCreate';
 
 const BoardRoute = () => {
   const navigate = useNavigate();

@@ -4,7 +4,6 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import useFetch from '../../hooks/useFetch';
 import { signupCheck, tokenAccess, userEmail, userImage } from '../../recoil/backState';
-
 import { FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 

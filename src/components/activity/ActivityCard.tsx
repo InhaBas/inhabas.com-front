@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-
 import styled from 'styled-components';
 
 import { Div, FlexDiv } from '../../styles/assets/Div';

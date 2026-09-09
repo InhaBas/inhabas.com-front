@@ -1,16 +1,13 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { theme } from '../../styles/theme';
-
+import MyGraduateUserTable from '../../components/myInfo/MyGraduateUserTable';
 import { headerTitleInfo, totalGraduateUserInfo } from '../../recoil/backState';
-
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
-
-import { useEffect } from 'react';
-import MyGraduateUserTable from '../../components/myInfo/MyGraduateUserTable';
+import { theme } from '../../styles/theme';
 
 const MyManageGraduateUser = () => {
   const navigate = useNavigate();

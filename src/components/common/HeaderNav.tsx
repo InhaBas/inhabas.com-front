@@ -4,9 +4,6 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { styled } from 'styled-components';
 
 import { GetRoleAuthorization } from '../../functions/authFunctions';
-
-import { media, theme } from '../../styles/theme';
-
 import useFetch from '../../hooks/useFetch';
 import {
   headerNavInfo,
@@ -16,13 +13,12 @@ import {
   tokenAccess,
   userRole,
 } from '../../recoil/backState';
-
-import { menuInterface } from '../../types/TypeCommon';
-
 import { failRefreshing, menuId } from '../../recoil/frontState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
+import { media, theme } from '../../styles/theme';
+import { menuInterface } from '../../types/TypeCommon';
 
 const FixedDiv = styled(FlexDiv)`
   position: fixed;

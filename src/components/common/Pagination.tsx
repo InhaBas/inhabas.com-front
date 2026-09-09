@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+
 import useFetch from '../../hooks/useFetch';
-import { paginationPropsInterface } from '../../types/TypeCommon';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-import styled from 'styled-components';
+import { paginationPropsInterface } from '../../types/TypeCommon';
 
 const PaginationContainer = styled(FlexDiv)`
   ${media.mobile} {

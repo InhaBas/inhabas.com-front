@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+
+import Loading from '../../components/common/Loading';
 import useFetch from '../../hooks/useFetch';
 import { policyInfo } from '../../recoil/backState';
 import Button from '../../styles/assets/Button';
@@ -10,7 +12,6 @@ import { Div, FlexDiv } from '../../styles/assets/Div';
 import { H2 } from '../../styles/assets/H';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
-import Loading from '../../components/common/Loading';
 import { media } from '../../styles/theme';
 
 const Hr = styled.hr`

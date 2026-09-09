@@ -1,9 +1,9 @@
-import { Div, FlexDiv } from '../styles/assets/Div';
-import P from '../styles/assets/P';
-import Img from '../styles/assets/Img';
-
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+
+import { Div, FlexDiv } from '../styles/assets/Div';
+import Img from '../styles/assets/Img';
+import P from '../styles/assets/P';
 import { media } from '../styles/theme';
 
 const NotFoundPage = styled(Div)`

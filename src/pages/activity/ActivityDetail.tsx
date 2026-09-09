@@ -1,8 +1,18 @@
 import { jwtDecode } from 'jwt-decode';
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
+import Carousel from '../../components/common/Carousel';
+import CommentInput from '../../components/common/CommentInput';
+import CommentList from '../../components/common/CommentList';
+import Loading from '../../components/common/Loading';
+import TextViewer from '../../components/common/TextViewer';
+import { GetRoleAuthorization } from '../../functions/authFunctions';
+import useFetch from '../../hooks/useFetch';
+import { tokenAccess } from '../../recoil/backState';
+import { carouselInitialState, carouselOpen } from '../../recoil/frontState';
 import A from '../../styles/assets/A';
 import Button from '../../styles/assets/Button';
 import { DetailContainer, Div, FlexDiv } from '../../styles/assets/Div';
@@ -10,23 +20,8 @@ import { H2 } from '../../styles/assets/H';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-
-import Carousel from '../../components/common/Carousel';
-import CommentInput from '../../components/common/CommentInput';
-import CommentList from '../../components/common/CommentList';
-
-import useFetch from '../../hooks/useFetch';
-
 import { ActivityDetailInterface } from '../../types/ibas/TypeIBAS';
-
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { tokenAccess } from '../../recoil/backState';
-import { carouselInitialState, carouselOpen } from '../../recoil/frontState';
-
-import { GetRoleAuthorization } from '../../functions/authFunctions';
 import { tokenInterface } from '../../types/TypeCommon';
-import Loading from '../../components/common/Loading';
-import TextViewer from '../../components/common/TextViewer';
 
 const DetailMeta = styled(FlexDiv)`
   justify-content: flex-start;

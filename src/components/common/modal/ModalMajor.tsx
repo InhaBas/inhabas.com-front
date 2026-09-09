@@ -2,19 +2,17 @@ import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import { media, theme } from '../../../styles/theme';
 
 import useFetch from '../../../hooks/useFetch';
-
 import { majorInfo } from '../../../recoil/backState';
 import { majorSelected, modalInfo, modalOpen, refetch } from '../../../recoil/frontState';
-
 import Button from '../../../styles/assets/Button';
 import { Div, FlexDiv } from '../../../styles/assets/Div';
 import { H2 } from '../../../styles/assets/H';
 import Img from '../../../styles/assets/Img';
 import { TextInput } from '../../../styles/assets/Input';
 import P from '../../../styles/assets/P';
+import { media, theme } from '../../../styles/theme';
 
 const MajorTableRow = styled.div<{ $selected?: boolean; $pointer?: boolean }>`
   display: grid;

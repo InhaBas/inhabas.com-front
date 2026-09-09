@@ -1,19 +1,16 @@
 import { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import useFetch from '../../hooks/useFetch';
+import { myCommentsInfo } from '../../recoil/backState';
 import A from '../../styles/assets/A';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-
+import { myCommentInterface } from '../../types/TypeCommon';
 import Loading from '../common/Loading';
 import Pagination from '../common/Pagination';
-
-import { useRecoilState } from 'recoil';
-import { myCommentsInfo } from '../../recoil/backState';
-
-import { myCommentInterface } from '../../types/TypeCommon';
 
 const TableScroll = styled.div`
   width: 100%;

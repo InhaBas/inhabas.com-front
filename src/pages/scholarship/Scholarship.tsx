@@ -1,22 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import useFetch from '../../hooks/useFetch';
-
 import styled from 'styled-components';
+
+import ChangesContent from '../../components/scholarship/ChangesContent';
+import ScholarshipDetailList from '../../components/scholarship/ScholarshipDetailList';
+import SeeMoreButton from '../../components/scholarship/SeeMoreButton';
+import { GetRoleAuthorization } from '../../functions/authFunctions';
+import useFetch from '../../hooks/useFetch';
+import { userRole } from '../../recoil/backState';
+import { modalInfo, modalOpen, refetch } from '../../recoil/frontState';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
 import { media } from '../../styles/theme';
-
-import { modalInfo, modalOpen, refetch } from '../../recoil/frontState';
-
-import ChangesContent from '../../components/scholarship/ChangesContent';
-import ScholarshipDetailList from '../../components/scholarship/ScholarshipDetailList';
-import SeeMoreButton from '../../components/scholarship/SeeMoreButton';
-
-import { GetRoleAuthorization } from '../../functions/authFunctions';
-import { userRole } from '../../recoil/backState';
 
 const ScholarshipSection = styled(Div)`
   min-height: 100vh;

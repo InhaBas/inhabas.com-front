@@ -1,13 +1,13 @@
-import { useNavigate } from 'react-router-dom';
 
-import { theme } from '../../styles/theme';
 
 import { MouseEvent } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
+
 import A from '../../styles/assets/A';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import P from '../../styles/assets/P';
+import { theme } from '../../styles/theme';
 
 const BoardTableHover = styled(FlexDiv)`
   &:hover {

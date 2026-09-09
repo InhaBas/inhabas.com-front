@@ -1,7 +1,8 @@
-import { useRecoilValue } from 'recoil';
-import { userRole } from '../recoil/backState';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+
+import { userRole } from '../recoil/backState';
 import { failRefreshing } from '../recoil/frontState';
 
 export interface AuthorizationInterface {

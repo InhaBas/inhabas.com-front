@@ -1,19 +1,16 @@
+import { useEffect } from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import styled from 'styled-components';
+
+import { GetRoleAuthorization } from '../../functions/authFunctions';
+import useFetch from '../../hooks/useFetch';
+import { userRole } from '../../recoil/backState';
+import { modalInfo, modalOpen, refetch } from '../../recoil/frontState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
-import styled from 'styled-components';
 import { media } from '../../styles/theme';
-
-import useFetch from '../../hooks/useFetch';
-
-import { useEffect } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { modalInfo, modalOpen, refetch } from '../../recoil/frontState';
-
 import { scholarshipHistoryInterface } from '../../types/ibas/TypeIBAS';
-
-import { GetRoleAuthorization } from '../../functions/authFunctions';
-import { userRole } from '../../recoil/backState';
 
 const HistoryYear = styled(FlexDiv)`
   min-width: 0;

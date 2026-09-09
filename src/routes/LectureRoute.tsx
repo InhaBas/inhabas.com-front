@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+
 import LectureCreate from '../pages/lecture/LectureCreate';
 import LectureDetail from '../pages/lecture/LectureDetail';
 import LectureList from '../pages/lecture/LectureList';

@@ -2,18 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import { media, theme } from '../../styles/theme';
-
+import Loading from '../../components/common/Loading';
 import useFetch from '../../hooks/useFetch';
-
 import { scheduleInfo } from '../../recoil/backState';
-
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { DateTime, NumberInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
-import Loading from '../../components/common/Loading';
+import { media, theme } from '../../styles/theme';
 
 const ScheduleContent = styled(Div)`
   box-sizing: border-box;

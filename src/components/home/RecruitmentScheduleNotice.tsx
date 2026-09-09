@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { scheduleInterface } from '../../types/ibas/TypeMyinfo';
 import { media, theme } from '../../styles/theme';
+import { scheduleInterface } from '../../types/ibas/TypeMyinfo';
 
 type RecruitmentSchedule = Pick<scheduleInterface, 'signupStartDate' | 'signupEndDate'>;
 

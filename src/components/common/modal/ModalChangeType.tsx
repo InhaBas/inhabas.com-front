@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import useFetch from '../../../hooks/useFetch';
-
 import { modalOpen, refetch } from '../../../recoil/frontState';
-
 import Button from '../../../styles/assets/Button';
 import { Div, FlexDiv } from '../../../styles/assets/Div';
 import { H2 } from '../../../styles/assets/H';

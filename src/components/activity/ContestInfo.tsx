@@ -1,10 +1,11 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
 import { theme } from '../../styles/theme';
-import styled from 'styled-components';
 import { media } from '../../styles/theme';
 
 const ContestCardButton = styled(Button)`

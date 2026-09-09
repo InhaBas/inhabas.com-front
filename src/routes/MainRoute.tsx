@@ -1,7 +1,6 @@
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
 import { GetRoleAuthorization } from '../functions/authFunctions';
-
 import Activity from '../pages/activity/Activity';
 import ActivityCreate from '../pages/activity/ActivityCreate';
 import ActivityDetail from '../pages/activity/ActivityDetail';

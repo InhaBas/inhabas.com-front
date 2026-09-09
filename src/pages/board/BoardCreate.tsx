@@ -1,31 +1,25 @@
+import { jwtDecode } from 'jwt-decode';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import useFetch from '../../hooks/useFetch';
-
-import { boardDetailData, fileIdList, tokenAccess } from '../../recoil/backState';
-import { menuId, refetch, selectedFile } from '../../recoil/frontState';
-
-import { boardDetailInterface } from '../../types/TypeBoard';
-
-import { media, theme } from '../../styles/theme';
-
 import DragNDrop from '../../components/common/DragNDrop';
 import Dropdown from '../../components/common/Dropdown';
-
+import Loading from '../../components/common/Loading';
+import TextEditor from '../../components/common/TextEditor';
+import useFetch from '../../hooks/useFetch';
+import { boardDetailData, fileIdList, tokenAccess } from '../../recoil/backState';
+import { menuId, refetch, selectedFile } from '../../recoil/frontState';
 import Button from '../../styles/assets/Button';
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { DateInput, TextInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
-import Loading from '../../components/common/Loading';
-import TextEditor from '../../components/common/TextEditor';
-
+import { media, theme } from '../../styles/theme';
+import { boardDetailInterface } from '../../types/TypeBoard';
 import { tokenInterface } from '../../types/TypeCommon';
 
-import { jwtDecode } from 'jwt-decode';
 
 const PolicyNotice = styled(FlexDiv)`
   padding: 15px 20px;

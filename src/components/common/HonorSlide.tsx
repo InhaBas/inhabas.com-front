@@ -1,9 +1,10 @@
-import { honorDataInterface } from '../../types/ibas/TypeIBAS';
+import styled from 'styled-components';
+
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
-import styled from 'styled-components';
 import { media } from '../../styles/theme';
+import { honorDataInterface } from '../../types/ibas/TypeIBAS';
 
 interface HonorSlideProps {
   honors: honorDataInterface;

@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-
-import styled from 'styled-components';
-import { media, theme } from '../../styles/theme';
-
 import { useLocation } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
+import styled from 'styled-components';
+
 import { DateFunction } from '../../functions/dateFunction';
 import useFetch from '../../hooks/useFetch';
 import {
@@ -13,12 +11,13 @@ import {
   contestListDataInfo,
   totalPageInfo,
 } from '../../recoil/backState';
-import { boardListInterface } from '../../types/TypeBoard';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { SearchInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
+import { media, theme } from '../../styles/theme';
+import { boardListInterface } from '../../types/TypeBoard';
 
 const SearchBox = styled(Div)`
   width: 263px;

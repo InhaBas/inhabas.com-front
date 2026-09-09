@@ -1,26 +1,24 @@
 import { useEffect } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-
 import { ThemeProvider } from 'styled-components';
 
-import GlobalStyle from './styles/Globalstyles';
-import { theme } from './styles/theme';
 
-import { failRefreshing } from './recoil/frontState';
 
 import Bottom from './components/common/Bottom';
 import { Modal } from './components/common/modal/Modal';
 import ScrollToTop from './components/common/ScrollToTop';
-import NotFound from './pages/NotFound';
+import HeaderNavLayout from './layout/HeaderNavLayout';
 import Login from './pages/member/Login';
 import LoginProcess from './pages/member/LoginProcess';
 import Rule from './pages/member/Rule';
 import Signup from './pages/member/Signup';
 import SignupQuestion from './pages/member/SignupQuestion';
-import HeaderNavLayout from './layout/HeaderNavLayout';
-
+import NotFound from './pages/NotFound';
+import { failRefreshing } from './recoil/frontState';
 import { Div } from './styles/assets/Div';
+import GlobalStyle from './styles/Globalstyles';
+import { theme } from './styles/theme';
 
 import './index.css';
 

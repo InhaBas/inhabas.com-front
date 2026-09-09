@@ -2,25 +2,19 @@ import { useEffect, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import { media, theme } from '../../styles/theme';
-
-import useFetch from '../../hooks/useFetch';
-
-import { historyInfo, staffInfo } from '../../recoil/backState';
-import { modalInfo, modalOpen, refetch } from '../../recoil/frontState';
-
-import { historyInterface, staffInterface } from '../../types/ibas/TypeIBAS';
-
+import HeaderNav from '../../components/common/HeaderNav';
+import Loading from '../../components/common/Loading';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
 import { ConvertLabel } from '../../functions/convertLabelFunctions';
-
+import useFetch from '../../hooks/useFetch';
+import { historyInfo, staffInfo } from '../../recoil/backState';
+import { modalInfo, modalOpen, refetch } from '../../recoil/frontState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import { H1 } from '../../styles/assets/H';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
-
-import HeaderNav from '../../components/common/HeaderNav';
-import Loading from '../../components/common/Loading';
+import { media, theme } from '../../styles/theme';
+import { historyInterface, staffInterface } from '../../types/ibas/TypeIBAS';
 
 const IntroduceSection = styled(Div)`
   min-height: 100vh;

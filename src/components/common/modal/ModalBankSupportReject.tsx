@@ -1,10 +1,11 @@
-import { useRecoilState, useSetRecoilState } from 'recoil';
 
-import { bankSupportRejectReasonInfo, modalOpen, refetch } from '../../../recoil/frontState';
 
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+
 import useFetch from '../../../hooks/useFetch';
+import { bankSupportRejectReasonInfo, modalOpen, refetch } from '../../../recoil/frontState';
 import Button from '../../../styles/assets/Button';
 import { Div, FlexDiv } from '../../../styles/assets/Div';
 import { H2 } from '../../../styles/assets/H';

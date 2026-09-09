@@ -3,22 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import useFetch from '../../hooks/useFetch';
-
-import { totalPageInfo } from '../../recoil/backState';
-
+import ActivityCard from '../../components/activity/ActivityCard';
+import Loading from '../../components/common/Loading';
+import Pagination from '../../components/common/Pagination';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
-
-import { ActivityInterface } from '../../types/ibas/TypeIBAS';
+import useFetch from '../../hooks/useFetch';
+import { totalPageInfo } from '../../recoil/backState';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
 import { media } from '../../styles/theme';
-
-import Loading from '../../components/common/Loading';
-import Pagination from '../../components/common/Pagination';
-import ActivityCard from '../../components/activity/ActivityCard';
+import { ActivityInterface } from '../../types/ibas/TypeIBAS';
 
 const ActivityGrid = styled.div`
   width: 70%;

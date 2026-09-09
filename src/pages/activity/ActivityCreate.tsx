@@ -1,24 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-
 import styled from 'styled-components';
-import { media, theme } from '../../styles/theme';
 
+
+import DragNDrop from '../../components/common/DragNDrop';
+import Loading from '../../components/common/Loading';
+import TextEditor from '../../components/common/TextEditor';
 import useFetch from '../../hooks/useFetch';
-
 import { fileIdList } from '../../recoil/backState';
 import { menuId, refetch, selectedFile } from '../../recoil/frontState';
-
-import { ActivityDetailInterface } from '../../types/ibas/TypeIBAS';
-
 import Button from '../../styles/assets/Button';
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import { TextInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
-import DragNDrop from '../../components/common/DragNDrop';
-import Loading from '../../components/common/Loading';
-import TextEditor from '../../components/common/TextEditor';
+import { media, theme } from '../../styles/theme';
+import { ActivityDetailInterface } from '../../types/ibas/TypeIBAS';
 
 const TitleTextInput = styled(TextInput)`
   border-radius: 5px;

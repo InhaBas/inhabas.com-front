@@ -2,10 +2,8 @@ import { useEffect, useRef } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import useFetch from '../../../hooks/useFetch';
-
-import { modalInfo, modalOpen, refetch } from '../../../recoil/frontState';
-
 import { oneHistoryInfo } from '../../../recoil/backState';
+import { modalInfo, modalOpen, refetch } from '../../../recoil/frontState';
 import Button from '../../../styles/assets/Button';
 import { Div, FlexDiv } from '../../../styles/assets/Div';
 import { H2 } from '../../../styles/assets/H';

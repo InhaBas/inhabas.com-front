@@ -1,4 +1,5 @@
 import { atom } from 'recoil';
+
 import { modalInterface } from '../types/TypeCommon';
 
 // common
