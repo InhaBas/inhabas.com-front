@@ -80,7 +80,7 @@ describe('useFetch', () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve({ data: 'test' }),
-      })
+      }),
     );
 
     const { result } = renderHook(() => useFetch(), {
@@ -364,4 +364,3 @@ jobs:
 ---
 
 [← 메인 리팩토링 문서로 돌아가기](./REFACTORING.md)
-

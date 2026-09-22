@@ -1,7 +1,7 @@
 ---
 name: 🔧 설정 / 인프라
 about: 패키지 업데이트, 빌드 설정, CI/CD, 환경변수 등 인프라 작업
-title: "[CHORE] "
+title: '[CHORE] '
 labels: chore
 assignees: ''
 ---
@@ -21,8 +21,8 @@ assignees: ''
 
 ## 작업 항목
 
-- [ ] 
-- [ ] 
+- [ ]
+- [ ]
 
 ## 주의사항
 

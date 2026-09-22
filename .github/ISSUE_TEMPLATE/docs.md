@@ -1,7 +1,7 @@
 ---
 name: 📚 문서
 about: 문서 작성 및 수정
-title: "[DOCS] "
+title: '[DOCS] '
 labels: docs
 assignees: ''
 ---
@@ -12,9 +12,9 @@ assignees: ''
 
 ## 대상 문서
 
-- 
+-
 
 ## 작업 항목
 
-- [ ] 
-- [ ] 
+- [ ]
+- [ ]

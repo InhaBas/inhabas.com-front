@@ -1,0 +1,11 @@
+# ESLint + Prettier 도입 시 전체 코드에 도구를 일괄 적용한 커밋들.
+# 손으로 쓴 변경이 없으므로 git blame에서 건너뛴다.
+#
+# 적용:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# style: Prettier 포매터 일괄 적용
+53e7151611e4342185f1e4ce137608bbc75a42bb
+
+# style: import 순서 자동 정렬 적용
+bd12db77ba463efddd98a041141117bd739b1cba

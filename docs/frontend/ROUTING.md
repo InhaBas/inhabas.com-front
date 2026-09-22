@@ -41,13 +41,13 @@ src/
 
 홈페이지 개편으로 아래 게시판들이 삭제될 예정. `BoardRoute.tsx`와 이 문서에서 함께 제거한다.
 
-| 게시판 | 삭제 경로 |
-|-------|----------|
-| 공모전 | `/board/contest`, `/board/contest/detail/:id`, `/board/contest/create`, `/board/contest/update/:id` |
-| 질문 | `/board/question`, `/board/question/detail/:id`, `/board/question/create`, `/board/question/update/:id` |
-| 자유 | `/board/free`, `/board/free/detail/:id`, `/board/free/create`, `/board/free/update/:id` |
-| 건의 | `/board/suggest`, `/board/suggest/detail/:id`, `/board/suggest/create`, `/board/suggest/update/:id` |
-| 임원 | `/board/executive`, `/board/executive/detail/:id`, `/board/executive/create`, `/board/executive/update/:id` |
+| 게시판 | 삭제 경로                                                                                                   |
+| ------ | ----------------------------------------------------------------------------------------------------------- |
+| 공모전 | `/board/contest`, `/board/contest/detail/:id`, `/board/contest/create`, `/board/contest/update/:id`         |
+| 질문   | `/board/question`, `/board/question/detail/:id`, `/board/question/create`, `/board/question/update/:id`     |
+| 자유   | `/board/free`, `/board/free/detail/:id`, `/board/free/create`, `/board/free/update/:id`                     |
+| 건의   | `/board/suggest`, `/board/suggest/detail/:id`, `/board/suggest/create`, `/board/suggest/update/:id`         |
+| 임원   | `/board/executive`, `/board/executive/detail/:id`, `/board/executive/create`, `/board/executive/update/:id` |
 
 ---
 
@@ -55,26 +55,26 @@ src/
 
 ### 사용자 역할
 
-| 역할 | 코드 | 설명 |
-|------|------|------|
-| 회장 | `CHIEF` | 최고 권한 |
-| 부회장 | `VICE_CHIEF` | 부회장 권한 |
-| 운영팀 | `EXECUTIVES` | 운영팀 권한 |
-| 총무 | `SECRETARY` | 총무 권한 |
-| 활동회원 | `BASIC` | 일반 활동회원 |
-| 비활동회원 | `DEACTIVATED` | 비활동 회원 (졸업생 포함) |
-| 미승인 회원 | `NOT_APPROVED` | 승인 대기 중 |
-| 회원가입 중 | `SIGNING_UP` | 소셜로그인 직후 |
+| 역할        | 코드           | 설명                      |
+| ----------- | -------------- | ------------------------- |
+| 회장        | `CHIEF`        | 최고 권한                 |
+| 부회장      | `VICE_CHIEF`   | 부회장 권한               |
+| 운영팀      | `EXECUTIVES`   | 운영팀 권한               |
+| 총무        | `SECRETARY`    | 총무 권한                 |
+| 활동회원    | `BASIC`        | 일반 활동회원             |
+| 비활동회원  | `DEACTIVATED`  | 비활동 회원 (졸업생 포함) |
+| 미승인 회원 | `NOT_APPROVED` | 승인 대기 중              |
+| 회원가입 중 | `SIGNING_UP`   | 소셜로그인 직후           |
 
 ### 권한 레벨
 
-| 레벨 | 포함 역할 |
-|------|----------|
-| `OverVice` | 회장, 부회장 |
-| `OverExecutives` | 회장, 부회장, 운영팀 |
-| `OverSecretary` | 회장, 부회장, 운영팀, 총무 |
-| `OverBasic` | 회장, 부회장, 운영팀, 총무, 활동회원 |
-| `OverDeactivate` | 모든 승인된 회원 (비활동회원 포함) |
+| 레벨             | 포함 역할                            |
+| ---------------- | ------------------------------------ |
+| `OverVice`       | 회장, 부회장                         |
+| `OverExecutives` | 회장, 부회장, 운영팀                 |
+| `OverSecretary`  | 회장, 부회장, 운영팀, 총무           |
+| `OverBasic`      | 회장, 부회장, 운영팀, 총무, 활동회원 |
+| `OverDeactivate` | 모든 승인된 회원 (비활동회원 포함)   |
 
 ---
 
@@ -130,14 +130,14 @@ src/
 
 #### 관리자 전용
 
-| 경로 | 설명 | 필요 권한 |
-|------|------|----------|
-| `/staff/member` | 회원 관리 | `OverSecretary` |
-| `/staff/member/newStudents` | 신입생 관리 | `OverSecretary` |
-| `/staff/member/application/:id` | 신청서 상세 | `OverSecretary` |
-| `/staff/member/students` | 재학생 관리 | `OverSecretary` |
+| 경로                             | 설명        | 필요 권한       |
+| -------------------------------- | ----------- | --------------- |
+| `/staff/member`                  | 회원 관리   | `OverSecretary` |
+| `/staff/member/newStudents`      | 신입생 관리 | `OverSecretary` |
+| `/staff/member/application/:id`  | 신청서 상세 | `OverSecretary` |
+| `/staff/member/students`         | 재학생 관리 | `OverSecretary` |
 | `/staff/member/graduateStudents` | 졸업생 관리 | `OverSecretary` |
-| `/staff/manage` | 임원 관리 | `OverVice` |
+| `/staff/manage`                  | 임원 관리   | `OverVice`      |
 
 ---
 
@@ -178,34 +178,34 @@ src/
 
 #### 비로그인 접근 가능
 
-| `{type}` | 게시판 |
-|----------|-------|
+| `{type}`     | 게시판          |
+| ------------ | --------------- |
 | `opensource` | 오픈소스 게시판 |
-| `sponsor` | 후원 게시판 |
-| `usage` | 이용안내 |
-| `activity` | 활동 게시판 |
+| `sponsor`    | 후원 게시판     |
+| `usage`      | 이용안내        |
+| `activity`   | 활동 게시판     |
 
 #### `OverDeactivate` (비활동회원 이상)
 
-| `{type}` | 게시판 |
-|----------|-------|
+| `{type}` | 게시판   |
+| -------- | -------- |
 | `notice` | 공지사항 |
 
 #### `OverBasic` (활동회원 이상)
 
-| `{type}` | 게시판 |
-|----------|-------|
-| `alpha` | 알파 프로젝트 |
-| `beta` | 베타 프로젝트 |
+| `{type}` | 게시판        |
+| -------- | ------------- |
+| `alpha`  | 알파 프로젝트 |
+| `beta`   | 베타 프로젝트 |
 
 #### 삭제 예정
 
-| `{type}` | 게시판 | 삭제 사유 |
-|----------|-------|----------|
-| ~~`contest`~~ | 공모전 | 홈페이지 개편 |
-| ~~`free`~~ | 자유게시판 | 홈페이지 개편 |
-| ~~`question`~~ | 질문게시판 | 홈페이지 개편 |
-| ~~`suggest`~~ | 건의게시판 | 홈페이지 개편 |
+| `{type}`        | 게시판      | 삭제 사유     |
+| --------------- | ----------- | ------------- |
+| ~~`contest`~~   | 공모전      | 홈페이지 개편 |
+| ~~`free`~~      | 자유게시판  | 홈페이지 개편 |
+| ~~`question`~~  | 질문게시판  | 홈페이지 개편 |
+| ~~`suggest`~~   | 건의게시판  | 홈페이지 개편 |
 | ~~`executive`~~ | 임원 게시판 | 홈페이지 개편 |
 
 ---
@@ -292,7 +292,7 @@ src/
 
 ## 업데이트 이력
 
-| 날짜 | 내용 |
-|------|------|
-| 2024-12-19 | 초기 라우팅 문서 작성 |
+| 날짜       | 내용                                                               |
+| ---------- | ------------------------------------------------------------------ |
+| 2024-12-19 | 초기 라우팅 문서 작성                                              |
 | 2026-05-19 | 문서 구조 개편, Layout Route 분리 계획 추가, 삭제 예정 라우트 표기 |
