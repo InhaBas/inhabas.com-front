@@ -151,7 +151,7 @@ const ModalBankHistoryDetail = () => {
           </FlexDiv>
 
           <FlexDiv width="100%" height="60%" $padding="10px" $margin="20px 0">
-            {data?.receipts.map((elem: any, index: number) => (
+            {data?.receipts?.map((elem: any, index: number) => (
               <Div
                 width="70%"
                 $margin="20px 0"

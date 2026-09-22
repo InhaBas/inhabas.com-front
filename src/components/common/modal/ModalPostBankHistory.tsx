@@ -1,9 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
+import {
+  BankHistoryType,
+  getTodayKST,
+  toBankHistoryPayload,
+  validateBankHistory,
+} from '../../../functions/bankHistoryFunctions';
 import useFetch from '../../../hooks/useFetch';
 import { fileIdList } from '../../../recoil/backState';
-import { menuId, modalOpen, refetch, selectedStudentInfos } from '../../../recoil/frontState';
+import {
+  menuId,
+  modalOpen,
+  refetch,
+  selectedFile,
+  selectedStudentInfos,
+} from '../../../recoil/frontState';
 import Button from '../../../styles/assets/Button';
 import { Div, FlexDiv } from '../../../styles/assets/Div';
 import { H2 } from '../../../styles/assets/H';
@@ -13,6 +25,8 @@ import P from '../../../styles/assets/P';
 import { theme } from '../../../styles/theme';
 import StudentSearchTable from '../../budget/StudentSearchTable';
 import DragNDrop from '../DragNDrop';
+
+const EMPTY_STUDENT = { name: '', major: '', studentId: '', memberId: '' };
 
 const ModalPostBankHistory = () => {
   const setOpen = useSetRecoilState(modalOpen);
@@ -24,116 +38,64 @@ const ModalPostBankHistory = () => {
   const [selectedInfos, setSelectedInfos] = useRecoilState(selectedStudentInfos);
   const currentMenuId = useRecoilValue(menuId);
   const [files, setFiles] = useRecoilState(fileIdList);
+  const setFileSelected = useSetRecoilState(selectedFile);
   const setReload = useSetRecoilState(refetch);
 
   const [infos, setInfos] = useState({
     dateUsed: '',
     title: '',
     details: '',
-    memberIdReceived: '',
-    memberStudentIdReceived: '',
-    memberNameReceived: '',
-    income: '0',
-    outcome: '0',
+    amount: '',
   });
-  const [historyType, setHistoryType] = useState('income');
+  const [historyType, setHistoryType] = useState<BankHistoryType>('income');
   const [postHistory, fetchPostHistory] = useFetch();
-  const resetInfos = () => {
-    setInfos({
-      dateUsed: '',
-      title: '',
-      details: '',
-      memberIdReceived: '',
-      memberStudentIdReceived: '',
-      memberNameReceived: '',
-      income: '',
-      outcome: '',
-    });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmittingRef = useRef(false);
+
+  // 모달이 어떤 방식으로 닫히든 다음에 열리는 폼에 이전 부원/첨부 파일이 남지 않도록 초기화
+  useEffect(() => {
+    return () => {
+      setSelectedInfos(EMPTY_STUDENT);
+      setFiles([]);
+      setFileSelected([]);
+    };
+  }, []);
+
+  // 유형을 바꾸면 공통 항목(사용일, 제목, 내용, 첨부)은 유지하고 유형별 항목만 초기화
+  const changeHistoryType = (type: BankHistoryType) => {
+    if (type === historyType) return;
+    setHistoryType(type);
+    setInfos((prev) => ({ ...prev, amount: '' }));
+    if (type === 'income') {
+      setSelectedInfos(EMPTY_STUDENT);
+    }
   };
 
-  const checkIsCompletedContents = () => {
-    const today = new Date();
-    if (historyType === 'income') {
-      if (infos.dateUsed === '') {
-        alert('사용일을 입력해주세요');
-        return false;
-      }
-      if (new Date(infos.dateUsed).toISOString().slice(0, 10) > today.toISOString().slice(0, 10)) {
-        alert(`${today.getMonth() + 1}월 ${today.getDate()}일 이전의 날짜를 입력해주세요`);
-        return false;
-      }
-      if (infos.title === '') {
-        alert('제목을 입력해주세요');
-        return false;
-      }
-      if (infos.income !== String(parseInt(infos.income))) {
-        alert('올바른 수입액을 입력해주세요');
-        return false;
-      }
-      if (parseInt(infos.income) <= 0) {
-        alert('1원 이상의 수입액을 입력해주세요');
-        return false;
-      }
-    }
+  const clickPostEvent = async () => {
+    if (isSubmittingRef.current) return;
 
-    if (historyType === 'outcome') {
-      if (infos.dateUsed === '') {
-        alert('사용일을 입력해주세요');
-        return false;
-      }
-      if (new Date(infos.dateUsed).toDateString() >= today.toDateString()) {
-        alert(`${today.getMonth() + 1}월 ${today.getDate()}일 이전의 날짜를 입력해주세요`);
-        return false;
-      }
-      if (infos.title === '') {
-        alert('제목을 입력해주세요');
-        return false;
-      }
-      if (selectedInfos.name === '') {
-        alert('회비 사용 부원을 입력해주세요');
-        return false;
-      }
-      if (infos.outcome !== String(parseInt(infos.outcome))) {
-        alert('올바른 수입액을 입력해주세요');
-        return false;
-      }
-      if (parseInt(infos.outcome) <= 0) {
-        alert('1원 이상의 지출액을 입력해주세요');
-        return false;
-      }
-    }
+    const form = {
+      type: historyType,
+      ...infos,
+      member: selectedInfos,
+      files,
+    };
 
-    return true;
-  };
-
-  const clickPostEvent = () => {
     // 필요한 정보가 다 채워졌는지 확인
-    if (checkIsCompletedContents() === false) {
+    const errorMessage = validateBankHistory(form);
+    if (errorMessage) {
+      alert(errorMessage);
       return;
     }
 
-    // 데이터 전송 전 정보 채우기
-    if (infos.details.length === 0) {
-      infos.details = infos.title;
+    isSubmittingRef.current = true;
+    setIsSubmitting(true);
+    try {
+      await fetchPostHistory('/budget/history', 'POST', 'token', toBankHistoryPayload(form));
+    } finally {
+      isSubmittingRef.current = false;
+      setIsSubmitting(false);
     }
-    infos.memberIdReceived = selectedInfos.memberId;
-    infos.memberStudentIdReceived = selectedInfos.studentId;
-    infos.memberNameReceived = selectedInfos.name;
-
-    // 파일 담기
-    const inputData = {
-      dateUsed: infos.dateUsed.includes('T') ? infos.dateUsed : `${infos.dateUsed}T00:00:00`,
-      title: infos.title,
-      details: infos.details,
-      memberIdReceived: infos.memberIdReceived === '' ? null : infos.memberIdReceived,
-      memberStudentIdReceived:
-        infos.memberStudentIdReceived === '' ? null : infos.memberStudentIdReceived,
-      memberNameReceived: infos.memberNameReceived === '' ? null : infos.memberNameReceived,
-      income: Number(infos.income),
-      outcome: Number(infos.outcome),
-      files: files,
-    };
-    fetchPostHistory('/budget/history', 'POST', 'token', inputData);
   };
 
   useEffect(() => {
@@ -141,11 +103,6 @@ const ModalPostBankHistory = () => {
       alert('회계 내역이 정상적으로 등록되었습니다.');
       closeModal();
       setReload(true);
-      resetInfos();
-      // 선택 학생 초기화
-      setSelectedInfos({ name: '', major: '', studentId: '', memberId: '' });
-      // 파일 리스트 초기화
-      setFiles([]);
     }
   }, [postHistory]);
 
@@ -160,6 +117,7 @@ const ModalPostBankHistory = () => {
       overflow="auto"
     >
       <FlexDiv $position="relative" height="95%" overflow="auto">
+        {/* 헤더 (제목, 닫기 버튼) */}
         <FlexDiv
           $position="sticky"
           $top="0"
@@ -179,32 +137,28 @@ const ModalPostBankHistory = () => {
           </Div>
         </FlexDiv>
 
+        {/* 유형 선택 (수입/지출) */}
         <FlexDiv width="90%" $justifycontent="flex-start" height="50px">
           <FlexDiv>
             <Radio
               name="setHistoryType"
-              value={'입금'}
-              onClick={() => {
-                setHistoryType('income');
-                resetInfos();
-              }}
+              value={'수입'}
+              onClick={() => changeHistoryType('income')}
               defaultChecked
             />
-            <Label $margin="0 0 0 5px">입금</Label>
+            <Label $margin="0 0 0 5px">수입</Label>
           </FlexDiv>
           <FlexDiv $margin="0 10px">
             <Radio
               name="setHistoryType"
-              value={'출금'}
-              onClick={() => {
-                setHistoryType('outcome');
-                resetInfos();
-              }}
+              value={'지출'}
+              onClick={() => changeHistoryType('outcome')}
             />
-            <Label $margin="0 0 0 5px">출금</Label>
+            <Label $margin="0 0 0 5px">지출</Label>
           </FlexDiv>
         </FlexDiv>
 
+        {/* 사용일 입력란 */}
         <FlexDiv
           width="90%"
           $borderB={`1px solid ${theme.color.grey1}`}
@@ -215,6 +169,7 @@ const ModalPostBankHistory = () => {
             $padding="0"
             type="date"
             width="100%"
+            max={getTodayKST()}
             value={infos.dateUsed}
             onChange={(e: any) => setInfos((prev) => ({ ...prev, dateUsed: e.target.value }))}
           />
@@ -224,6 +179,7 @@ const ModalPostBankHistory = () => {
           <P fontSize="xs">영수증에 명시된 사용일을 적어주세요.</P>
         </Div>
 
+        {/* 제목 입력란 */}
         <FlexDiv
           width="90%"
           $margin="0 0 20px 0"
@@ -240,6 +196,7 @@ const ModalPostBankHistory = () => {
           />
         </FlexDiv>
 
+        {/* 내용 입력란 */}
         <FlexDiv
           color="bk"
           width="90%"
@@ -262,6 +219,7 @@ const ModalPostBankHistory = () => {
 
         {historyType === 'income' && (
           <>
+            {/* 수입액 입력란 */}
             <FlexDiv
               width="90%"
               $margin="20px 0 20px 0"
@@ -274,10 +232,10 @@ const ModalPostBankHistory = () => {
                 $padding="0"
                 placeholder="수입액을 입력하세요"
                 width="100%"
-                value={infos.income === '0' ? '' : infos.income}
-                onChange={(e: any) => {
-                  setInfos((prev) => ({ ...prev, income: e.target.value }));
-                }}
+                min={1}
+                step={1}
+                value={infos.amount}
+                onChange={(e: any) => setInfos((prev) => ({ ...prev, amount: e.target.value }))}
               />
             </FlexDiv>
           </>
@@ -315,8 +273,9 @@ const ModalPostBankHistory = () => {
                   <P>{selectedInfos.studentId}</P>
                 </FlexDiv>
               </FlexDiv>
-              {/* 학생 검색 테이블 */}
             </FlexDiv>
+
+            {/* 학생 검색 테이블 */}
             <FlexDiv width="100%">
               <StudentSearchTable />
             </FlexDiv>
@@ -334,13 +293,16 @@ const ModalPostBankHistory = () => {
                 $padding="0"
                 placeholder="지출액을 입력하세요"
                 width="100%"
-                value={infos.outcome === '0' ? '' : infos.outcome}
-                onChange={(e: any) => setInfos((prev) => ({ ...prev, outcome: e.target.value }))}
+                min={1}
+                step={1}
+                value={infos.amount}
+                onChange={(e: any) => setInfos((prev) => ({ ...prev, amount: e.target.value }))}
               />
             </FlexDiv>
           </>
         )}
 
+        {/* 증빙자료 첨부 */}
         <FlexDiv width="90%" direction="column">
           <FlexDiv width="100%" $justifycontent="flex-start" $margin="0 0 10px 0">
             <FlexDiv $margin="0 10px 0 0">
@@ -360,6 +322,7 @@ const ModalPostBankHistory = () => {
           </FlexDiv>
         </FlexDiv>
 
+        {/* 제출 버튼 */}
         <FlexDiv
           $position="relative"
           $zIndex={10000}
@@ -370,7 +333,12 @@ const ModalPostBankHistory = () => {
           $backgroundColor="bgColor"
           height="50px"
         >
-          <Button width="100%" height="100%" onClick={() => clickPostEvent()}>
+          <Button
+            width="100%"
+            height="100%"
+            disabled={isSubmitting}
+            onClick={() => clickPostEvent()}
+          >
             <P color="wh">제출</P>
           </Button>
         </FlexDiv>
