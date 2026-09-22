@@ -7,6 +7,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import DragNDrop from '../../components/common/DragNDrop';
+import { getTodayKST, toDateOnly } from '../../functions/bankHistoryFunctions';
 import useFetch from '../../hooks/useFetch';
 import { bankDetailDataInfo, fileIdList, tokenAccess } from '../../recoil/backState';
 import { menuId, refetch, selectedFile } from '../../recoil/frontState';
@@ -121,9 +122,9 @@ const BankSupportCreate = () => {
       return false;
     }
 
-    const today = new Date();
-    if (new Date(infos.dateUsed).toISOString().slice(0, 10) > today.toISOString().slice(0, 10)) {
-      alert(`${today.getMonth() + 1}월 ${today.getDate()}일 이전의 날짜를 입력해주세요`);
+    // YYYY-MM-DD 문자열은 사전순 비교가 곧 날짜 비교다
+    if (toDateOnly(infos.dateUsed) > getTodayKST()) {
+      alert('미래 날짜는 지출일로 입력할 수 없습니다');
       return false;
     }
 
@@ -226,7 +227,8 @@ const BankSupportCreate = () => {
             <Div width="100%" $padding="20px 20px 0 20px">
               <DateInput
                 width="100%"
-                value={infos.dateUsed?.split('T')[0]}
+                max={getTodayKST()}
+                value={toDateOnly(infos.dateUsed)}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setInfos((prev) => ({ ...prev, dateUsed: e.target.value }))
                 }
