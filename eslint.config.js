@@ -46,7 +46,6 @@ module.exports = [
       ...reactHooksPlugin.configs.recommended.rules,
 
       // 팀 결정: 위반이 많아 warn으로 낮춰 점진적으로 해소한다.
-      // handoff/ESLINT-PRETTIER-HANDOFF.md 5절 참고.
       'react-hooks/exhaustive-deps': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
       'react/no-array-index-key': 'warn',

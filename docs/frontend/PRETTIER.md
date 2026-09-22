@@ -118,10 +118,9 @@ coverage/
 package-lock.json
 ```
 
-Markdown, HTML, YAML은 **의도적으로 제외하지 않았다.** Biome은 이 포맷들을
-지원하지 않아 `docs/**`, `index.html`, `.github/workflows/*.yml`이 포매팅
-대상에서 빠졌었는데, Prettier는 이들도 함께 포맷한다 — Prettier를 택한 실익
-중 하나다.
+Markdown, HTML, YAML은 **의도적으로 제외하지 않았다.** `docs/**`, `index.html`,
+`.github/workflows/*.yml`도 포매팅 대상이다. styled-components 템플릿 리터럴 안의
+CSS도 함께 포맷된다.
 
 ---
 
@@ -154,19 +153,3 @@ CI(`.github/workflows/ci.yml`)는 PR마다 `lint` → `format:check` → `build`
 
 VSCode Marketplace에서 **ESLint** (`dbaeumer.vscode-eslint`)와
 **Prettier - Code formatter** (`esbenp.prettier-vscode`) 확장 설치가 필요하다.
-
----
-
-## Prettier가 Biome보다 나은 점
-
-Biome 검토 때 손실로 보고됐던 항목들이 Prettier에서는 해결된다.
-
-- **styled-components 템플릿 리터럴 내부 CSS를 포맷한다.** styled-components를
-  쓰는 파일 40여 개에 해당. Biome은 못 해서 "TS는 2칸인데 그 안 CSS는 4칸"이
-  되는 문제가 있었다.
-- **Markdown / HTML / YAML 지원.**
-- `react/display-name`, `react/no-unescaped-entities` 등 Biome에 없던 ESLint
-  규칙을 그대로 쓸 수 있다.
-
-대신 잃는 것: 도구 2개(ESLint+Prettier) 관리, `eslint-config-prettier` 접착제
-필요, 속도 (Biome은 130파일 64ms였다).
