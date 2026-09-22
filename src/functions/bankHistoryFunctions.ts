@@ -6,7 +6,7 @@ export interface BankHistoryMember {
   name?: string | null;
 }
 
-export interface BankHistoryForm {
+export interface BankHistoryFormValues {
   type: BankHistoryType;
   dateUsed: string;
   title: string;
@@ -31,7 +31,7 @@ export const toDateOnly = (dateUsed: string | null | undefined): string =>
   (dateUsed ?? '').split('T')[0];
 
 // 검증에 실패하면 사용자에게 보여줄 메시지를, 통과하면 null을 반환한다.
-export const validateBankHistory = (form: BankHistoryForm, today: string = getTodayKST()) => {
+export const validateBankHistory = (form: BankHistoryFormValues, today: string = getTodayKST()) => {
   const dateUsed = toDateOnly(form.dateUsed);
   const amountLabel = AMOUNT_LABEL[form.type];
 
@@ -46,7 +46,7 @@ export const validateBankHistory = (form: BankHistoryForm, today: string = getTo
   return null;
 };
 
-export const toBankHistoryPayload = (form: BankHistoryForm) => {
+export const toBankHistoryPayload = (form: BankHistoryFormValues) => {
   const title = form.title.trim();
   const details = form.details.trim();
   const amount = Number(form.amount);
@@ -66,3 +66,5 @@ export const toBankHistoryPayload = (form: BankHistoryForm) => {
     files: form.files,
   };
 };
+
+export type BankHistoryPayload = ReturnType<typeof toBankHistoryPayload>;
