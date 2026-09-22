@@ -141,15 +141,17 @@ CI(`.github/workflows/ci.yml`)는 PR마다 `lint` → `format:check` → `build`
 
 ## VSCode 설정 (팀원 공유)
 
-```json
-{
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-  }
-}
-```
+워크스페이스 설정은 저장소의 [`.vscode/settings.json`](../../.vscode/settings.json)에
+커밋돼 있어 저장소를 열면 자동으로 적용된다. 이 파일은 **어떤 도구로 포맷할지**만
+정한다. 들여쓰기 같은 포맷 규칙은 `.prettierrc`, 린트 규칙은 `eslint.config.js`가
+기준이므로 여기에 중복해 적지 않는다.
+
+- 저장 시 Prettier로 포맷하고, ESLint 자동 수정(`import/order` 정렬 포함)을 적용한다.
+- 포매터를 전역뿐 아니라 **언어별로도** Prettier로 지정한다. VSCode에서는 언어별
+  설정이 범위와 상관없이 일반 설정보다 우선하므로, 개인 설정에 언어별로 다른
+  포매터가 지정돼 있으면 전역 지정만으로는 덮어쓸 수 없기 때문이다.
+- 언어 목록은 CI의 `format:check`가 검사하는 범위(JS/TS, JSON, CSS, HTML, Markdown,
+  YAML)와 맞춘다. 검사 대상 확장자가 늘어나면 이 목록에도 추가한다.
 
 VSCode Marketplace에서 **ESLint** (`dbaeumer.vscode-eslint`)와
 **Prettier - Code formatter** (`esbenp.prettier-vscode`) 확장 설치가 필요하다.
