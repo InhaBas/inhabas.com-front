@@ -18,6 +18,12 @@ jobs:
 
       - run: npm ci --legacy-peer-deps
 
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
       - name: npm run build
         run: npm run build --legacy-peer-deps
         env:

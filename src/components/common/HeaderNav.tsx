@@ -1,873 +1,852 @@
-import { useEffect, useId, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { styled } from "styled-components";
+import { useEffect, useId, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { styled } from 'styled-components';
 
-import { GetRoleAuthorization } from "../../functions/authFunctions";
-
-import { media, theme } from "../../styles/theme";
-
-import useFetch from "../../hooks/useFetch";
+import { GetRoleAuthorization } from '../../functions/authFunctions';
+import useFetch from '../../hooks/useFetch';
 import {
-    headerNavInfo,
-    headerTitleInfo,
-    profileInfo,
-    signupCheck,
-    tokenAccess,
-    userRole,
-} from "../../recoil/backState";
-
-import { menuInterface } from "../../types/TypeCommon";
-
-import { failRefreshing, menuId } from "../../recoil/frontState";
-import { Div, FlexDiv } from "../../styles/assets/Div";
-import Img from "../../styles/assets/Img";
-import P from "../../styles/assets/P";
+  headerNavInfo,
+  headerTitleInfo,
+  profileInfo,
+  signupCheck,
+  tokenAccess,
+  userRole,
+} from '../../recoil/backState';
+import { failRefreshing, menuId } from '../../recoil/frontState';
+import { Div, FlexDiv } from '../../styles/assets/Div';
+import Img from '../../styles/assets/Img';
+import P from '../../styles/assets/P';
+import { media, theme } from '../../styles/theme';
+import { menuInterface } from '../../types/TypeCommon';
 
 const FixedDiv = styled(FlexDiv)`
-    position: fixed;
-    top: 0;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  position: fixed;
+  top: 0;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 `;
 
 const NavInner = styled(FlexDiv)`
-    width: 1170px;
+  width: 1170px;
+  max-width: 1170px;
+
+  ${media.desktop} {
+    width: 100%;
     max-width: 1170px;
+    padding: 0 24px;
+  }
 
-    ${media.desktop} {
-        width: 100%;
-        max-width: 1170px;
-        padding: 0 24px;
-    }
-
-    ${media.mobile} {
-        padding: 0 16px;
-    }
+  ${media.mobile} {
+    padding: 0 16px;
+  }
 `;
 
 const Logo = styled(Div)`
-    width: 200px;
-    height: 75px;
+  width: 200px;
+  height: 75px;
 
-    ${media.desktop} {
-        width: 170px;
-    }
+  ${media.desktop} {
+    width: 170px;
+  }
 
-    ${media.mobile} {
-        width: 150px;
-        height: 64px;
-    }
+  ${media.mobile} {
+    width: 150px;
+    height: 64px;
+  }
 `;
 
 const DesktopNav = styled(FlexDiv)`
-    ${media.tablet} {
-        display: none;
-    }
+  ${media.tablet} {
+    display: none;
+  }
 `;
 
 const MobileMenuButton = styled.button<{ $isScrolled: boolean }>`
-    display: none;
-    width: 40px;
-    height: 40px;
-    padding: 8px;
-    border: 0;
-    background: transparent;
-    color: ${({ $isScrolled }) => ($isScrolled ? theme.color.textColor : theme.color.wh)};
-    cursor: pointer;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
+  display: none;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  border: 0;
+  background: transparent;
+  color: ${({ $isScrolled }) => ($isScrolled ? theme.color.textColor : theme.color.wh)};
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 
-    span {
-        display: block;
-        width: 22px;
-        height: 2px;
-        border-radius: 2px;
-        background-color: currentColor;
-    }
+  span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 2px;
+    background-color: currentColor;
+  }
 
-    ${media.tablet} {
-        display: flex;
-    }
+  ${media.tablet} {
+    display: flex;
+  }
 `;
 
 const MobileMenuLayer = styled.div`
-    display: none;
+  display: none;
 
-    ${media.tablet} {
-        display: block;
-        position: fixed;
-        top: 73px;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 4;
-    }
+  ${media.tablet} {
+    display: block;
+    position: fixed;
+    top: 73px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 4;
+  }
 `;
 
 const MobileMenuBackdrop = styled.button`
-    position: absolute;
-    top: 0;
-    right: min(420px, 88vw);
-    bottom: 0;
-    left: 0;
-    width: auto;
-    height: 100%;
-    padding: 0;
-    border: 0;
-    background-color: rgba(0, 0, 0, 0.45);
-    cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: min(420px, 88vw);
+  bottom: 0;
+  left: 0;
+  width: auto;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  cursor: pointer;
 
-    ${media.mobile} {
-        right: min(360px, 88vw);
-    }
+  ${media.mobile} {
+    right: min(360px, 88vw);
+  }
 `;
 
 const MobileMenuPanel = styled.aside`
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: min(420px, 88vw);
-    height: 100%;
-    padding: 24px;
-    background-color: ${theme.color.wh};
-    overflow-y: auto;
-    overscroll-behavior: contain;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(420px, 88vw);
+  height: 100%;
+  padding: 24px;
+  background-color: ${theme.color.wh};
+  overflow-y: auto;
+  overscroll-behavior: contain;
 
-    ${media.mobile} {
-        width: min(360px, 88vw);
-        padding: 20px 16px;
-    }
+  ${media.mobile} {
+    width: min(360px, 88vw);
+    padding: 20px 16px;
+  }
 `;
 
 const MobileMenuHeader = styled(FlexDiv)`
-    width: 100%;
-    padding-bottom: 16px;
-    border-bottom: 1px solid ${theme.color.border};
-    flex-wrap: nowrap;
+  width: 100%;
+  padding-bottom: 16px;
+  border-bottom: 1px solid ${theme.color.border};
+  flex-wrap: nowrap;
 `;
 
 const MobileMenuTitle = styled(P)`
-    flex: 1;
-    width: auto;
-    color: ${theme.color.bk};
-    font-size: ${theme.fontSize.lg};
-    font-weight: 800;
-    letter-spacing: 1px;
+  flex: 1;
+  width: auto;
+  color: ${theme.color.bk};
+  font-size: ${theme.fontSize.lg};
+  font-weight: 800;
+  letter-spacing: 1px;
 `;
 
 const MobileMenuCloseButton = styled.button`
-    flex: 0 0 40px;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    border: 0;
-    border-radius: 50%;
-    background-color: transparent;
-    color: ${theme.color.bk};
-    font-size: 24px;
-    line-height: 1;
-    cursor: pointer;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  color: ${theme.color.bk};
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
 
-    &:hover,
-    &:focus-visible {
-        background-color: ${theme.color.border};
-    }
+  &:hover,
+  &:focus-visible {
+    background-color: ${theme.color.border};
+  }
 `;
 
 const MobileMenuGroup = styled.div`
-    width: 100%;
-    padding: 20px 0;
-    border-bottom: 1px solid ${theme.color.border};
-    white-space: normal;
+  width: 100%;
+  padding: 20px 0;
+  border-bottom: 1px solid ${theme.color.border};
+  white-space: normal;
 `;
 
 const MobileGroupName = styled(P)`
-    margin-bottom: 8px;
-    color: ${theme.color.textColor};
-    font-weight: 800;
-    letter-spacing: 1px;
-    white-space: normal;
-    overflow: visible;
+  margin-bottom: 8px;
+  color: ${theme.color.textColor};
+  font-weight: 800;
+  letter-spacing: 1px;
+  white-space: normal;
+  overflow: visible;
 `;
 
 const MobileMenuItem = styled.button`
-    display: block;
-    width: 100%;
-    padding: 11px 8px;
-    border: 0;
-    border-radius: 4px;
-    background-color: transparent;
-    color: ${theme.color.bk};
-    font-size: ${theme.fontSize.sm};
-    text-align: left;
-    cursor: pointer;
+  display: block;
+  width: 100%;
+  padding: 11px 8px;
+  border: 0;
+  border-radius: 4px;
+  background-color: transparent;
+  color: ${theme.color.bk};
+  font-size: ${theme.fontSize.sm};
+  text-align: left;
+  cursor: pointer;
 
-    &:hover,
-    &:focus-visible {
-        background-color: ${theme.color.bgColor};
-        color: ${theme.color.wh};
-    }
+  &:hover,
+  &:focus-visible {
+    background-color: ${theme.color.bgColor};
+    color: ${theme.color.wh};
+  }
 `;
 
 const MobileAccount = styled.div`
-    width: 100%;
-    padding-top: 20px;
-    white-space: normal;
+  width: 100%;
+  padding-top: 20px;
+  white-space: normal;
 `;
 
 const MobileProfileButton = styled.button`
-    display: flex;
-    align-items: center;
-    width: 100%;
-    gap: 12px;
-    padding: 8px;
-    border: 0;
-    border-radius: 4px;
-    background-color: transparent;
-    color: ${theme.color.bk};
-    font-size: ${theme.fontSize.sm};
-    text-align: left;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+  padding: 8px;
+  border: 0;
+  border-radius: 4px;
+  background-color: transparent;
+  color: ${theme.color.bk};
+  font-size: ${theme.fontSize.sm};
+  text-align: left;
+  cursor: pointer;
 
-    &:hover,
-    &:focus-visible {
-        background-color: ${theme.color.border};
-    }
+  &:hover,
+  &:focus-visible {
+    background-color: ${theme.color.border};
+  }
 `;
 
 const MobileAccountButton = styled(MobileMenuItem)`
-    margin-top: 8px;
-    color: ${theme.color.textColor};
-    font-weight: 800;
+  margin-top: 8px;
+  color: ${theme.color.textColor};
+  font-weight: 800;
 `;
 
 interface Group {
-    groupName: string;
-    id: number;
-    menuList: menuInterface[];
+  groupName: string;
+  id: number;
+  menuList: menuInterface[];
 }
 
 const HIDDEN_NAV_GROUPS = ['모임', '공모전'];
 const HIDDEN_BOARD_URLS = ['board/question', 'board/free', 'board/suggest', 'board/executive'];
 
 const HeaderNav = () => {
-    const navigate = useNavigate();
-    const { isAuthorizedOverSecretary, isAuthorizedOverBasic, isAuthorizedOverDeactivate } = GetRoleAuthorization();
-    const location = useLocation();
-    const [data, fetchData] = useFetch();
-    const [infoData, fetchInfoData] = useFetch();
-    const [signingUserData, fetchSigningUserData] = useFetch();
-    const [check, setCheck] = useRecoilState(signupCheck);
-    const [activeGroup, setActiveGroup] = useState(null);
-    const [activeMenu, setActiveMenu] = useState(null);
-    const [nav, setNav] = useRecoilState(headerNavInfo);
-    const [title, setTitle] = useRecoilState(headerTitleInfo);
-    const [info, setInfo] = useRecoilState(profileInfo);
-    const setRole = useSetRecoilState(userRole);
-    const [access, setAccess] = useRecoilState(tokenAccess);
-    const [scrollPosition, setScrollPosition] = useState(0);
-    const setCurrentMenuId = useSetRecoilState(menuId);
-    const pathNameInfo = location.pathname.substring(1).split("/");
-    const [isNotLogin, setIsNotLogin] = useRecoilState(failRefreshing);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const mobileMenuId = useId();
+  const navigate = useNavigate();
+  const { isAuthorizedOverSecretary, isAuthorizedOverBasic, isAuthorizedOverDeactivate } =
+    GetRoleAuthorization();
+  const location = useLocation();
+  const [data, fetchData] = useFetch();
+  const [infoData, fetchInfoData] = useFetch();
+  const [signingUserData, fetchSigningUserData] = useFetch();
+  const [check, setCheck] = useRecoilState(signupCheck);
+  const [activeGroup, setActiveGroup] = useState(null);
+  const [activeMenu, setActiveMenu] = useState(null);
+  const [nav, setNav] = useRecoilState(headerNavInfo);
+  const [title, setTitle] = useRecoilState(headerTitleInfo);
+  const [info, setInfo] = useRecoilState(profileInfo);
+  const setRole = useSetRecoilState(userRole);
+  const [access, setAccess] = useRecoilState(tokenAccess);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const setCurrentMenuId = useSetRecoilState(menuId);
+  const pathNameInfo = location.pathname.substring(1).split('/');
+  const [isNotLogin, setIsNotLogin] = useRecoilState(failRefreshing);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const mobileMenuId = useId();
 
-    let titleId = 0;
+  let titleId = 0;
 
-    const titleInfo = (pathName1: string, pathName2: string) => {
-        // case 분기 -> pathNameInfo[1] 번째 비교해서 또 분기
-        switch (pathName1) {
-            case "introduce":
-                titleId = 1;
-                break;
-            case "activity":
-                titleId = 2;
-                break;
-            case "honor":
-                titleId = 3;
-                break;
-            case "board":
-                // pathName2에 따라 분기
-                switch (pathName2) {
-                    case "notice":
-                        titleId = 4;
-                        break;
-                    case "free":
-                        titleId = 5;
-                        break;
-                    case "question":
-                        titleId = 6;
-                        break;
-                    case "suggest":
-                        titleId = 7;
-                        break;
-                    case "opensource":
-                        titleId = 8;
-                        break;
-                    case "executive":
-                        titleId = 9;
-                        break;
-                    case "alpha":
-                        titleId = 16;
-                        break;
-                    case "beta":
-                        titleId = 17;
-                        break;
-                    case "sponsor":
-                        titleId = 21;
-                        break;
-                    case "usage":
-                        titleId = 22;
-                        break;
-                    case "contest":
-                        titleId = 18;
-                        break;
-                    case "activity":
-                        titleId = 19;
-                        break;
-                    default: // 혹은 다른 값으로 설정
-                        // pathName1이 위의 case에 일치하지 않는 경우에 대한 처리
-                        titleId = 0;
-                        break;
-                }
-                break;
-            case "lecture":
-                titleId = 10;
-                break;
-            case "study":
-                titleId = 11;
-                break;
-            case "hobby":
-                titleId = 12;
-                break;
-            case "lecture-application":
-                titleId = 13;
-                break;
-            case "bank":
-                titleId = 15;
-                if (pathName2 === "support") {
-                    titleId = 14;
-                }
-                break;
+  const titleInfo = (pathName1: string, pathName2: string) => {
+    // case 분기 -> pathNameInfo[1] 번째 비교해서 또 분기
+    switch (pathName1) {
+      case 'introduce':
+        titleId = 1;
+        break;
+      case 'activity':
+        titleId = 2;
+        break;
+      case 'honor':
+        titleId = 3;
+        break;
+      case 'board':
+        // pathName2에 따라 분기
+        switch (pathName2) {
+          case 'notice':
+            titleId = 4;
+            break;
+          case 'free':
+            titleId = 5;
+            break;
+          case 'question':
+            titleId = 6;
+            break;
+          case 'suggest':
+            titleId = 7;
+            break;
+          case 'opensource':
+            titleId = 8;
+            break;
+          case 'executive':
+            titleId = 9;
+            break;
+          case 'alpha':
+            titleId = 16;
+            break;
+          case 'beta':
+            titleId = 17;
+            break;
+          case 'sponsor':
+            titleId = 21;
+            break;
+          case 'usage':
+            titleId = 22;
+            break;
+          case 'contest':
+            titleId = 18;
+            break;
+          case 'activity':
+            titleId = 19;
+            break;
+          default: // 혹은 다른 값으로 설정
+            // pathName1이 위의 case에 일치하지 않는 경우에 대한 처리
+            titleId = 0;
+            break;
         }
-        return titleId;
+        break;
+      case 'lecture':
+        titleId = 10;
+        break;
+      case 'study':
+        titleId = 11;
+        break;
+      case 'hobby':
+        titleId = 12;
+        break;
+      case 'lecture-application':
+        titleId = 13;
+        break;
+      case 'bank':
+        titleId = 15;
+        if (pathName2 === 'support') {
+          titleId = 14;
+        }
+        break;
+    }
+    return titleId;
+  };
+
+  const menuUrl = [
+    ['introduce', 'activity', 'honor'],
+    [
+      'board/notice',
+      'board/free',
+      'board/question',
+      'board/opensource',
+      'board/suggest',
+      'board/executive',
+    ],
+    ['lecture', 'lecture', 'lecture', 'lecture'],
+    ['bank/support', 'bank'],
+    ['board/alpha', 'board/beta'],
+    ['board/contest', 'board/activity'],
+    ['scholarship', 'board/sponsor', 'board/usage'],
+  ];
+
+  const movePage = (url: string) => {
+    navigate(`/${url}`);
+    setIsMobileMenuOpen(false);
+  };
+
+  const menuClickEvent = (url: string, givenName: string, givenDescription: string) => {
+    if (['lecture'].includes(url)) {
+      alert('사용할 수 없는 기능입니다.');
+      return;
+    } else if (
+      isNotLogin &&
+      ![
+        'board/opensource',
+        'board/sponsor',
+        'board/usage',
+        'board/contest',
+        'board/activity',
+        'activity',
+        'introduce',
+        'scholarship',
+        'login',
+      ]?.includes(url)
+    ) {
+      alert('로그인을 해주세요');
+      return;
+    } else {
+      navigate(`/${url}`);
+      setTitle({ ...title, name: givenName, description: givenDescription });
+      setIsMobileMenuOpen(false);
+    }
+  };
+
+  const logoutClickEvent = () => {
+    if (window.confirm('정말 로그아웃 하시겠습니까?')) {
+      setAccess('default');
+      setRole('logout');
+      document.cookie = 'ibas_refresh' + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;';
+      navigate('/');
+      setIsMobileMenuOpen(false);
+    }
+  };
+
+  // Scroll 위치를 감지
+  const updateScroll = () => {
+    setScrollPosition(window.scrollY || document.documentElement.scrollTop);
+  };
+
+  useEffect(() => {
+    const id = titleInfo(pathNameInfo[0], pathNameInfo[1]);
+    setCurrentMenuId(id);
+    fetchData('/menus', 'GET');
+  }, []);
+
+  // signup이 안된 경우 profile은 null 로, accessToken은 default로 초기화해주어야 함.
+  // 의존성을 access로 하면 check가 false일 때 실행되는 코드 때문에 무한호출 됨.
+  // access가 signing이 아니면서 access가 바뀔 때는 항상 실행해야함
+  useEffect(() => {
+    if (access !== 'signing') {
+      fetchSigningUserData('/signUp/check', 'GET', 'token');
+    }
+  }, [access]);
+
+  useEffect(() => {
+    if (signingUserData) {
+      setCheck(signingUserData.check);
+    }
+  }, [signingUserData]);
+
+  useEffect(() => {
+    if (check === true) {
+      fetchInfoData('/myInfo', 'GET', 'token');
+    } else if (check === false) {
+      setInfo(null);
+      // check 가 false라면 회원가입 진행중인 사람이라는 의미
+      setAccess('signing');
+    }
+  }, [check]);
+
+  useEffect(() => {
+    if (data && Object.keys(data).length !== 0) {
+      const newData = JSON.parse(JSON.stringify(data));
+      delete newData.change;
+
+      (Object.values(newData) as Group[]).forEach((group: Group, groupIdx: number) => {
+        if (group.menuList) {
+          group.menuList = group.menuList.map((menu: menuInterface, idx: number) => ({
+            ...menu,
+            url: (menuUrl[groupIdx] && menuUrl[groupIdx][idx]) || 'defaultUrl',
+          }));
+        }
+      });
+
+      setNav(newData);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (infoData) {
+      setInfo(infoData);
+      // 로그인 한 사람의 role을 저장시켜주기 위함
+      setRole(infoData.role);
+    }
+  }, [infoData]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', updateScroll);
+    return () => {
+      window.removeEventListener('scroll', updateScroll);
     };
+  }, []);
 
-    const menuUrl = [
-        ["introduce", "activity", "honor"],
-        ["board/notice", "board/free", "board/question", "board/opensource", "board/suggest", "board/executive"],
-        ["lecture", "lecture", "lecture", "lecture"],
-        ["bank/support", "bank"],
-        ["board/alpha", "board/beta"],
-        ["board/contest", "board/activity"],
-        ["scholarship", "board/sponsor", "board/usage"],
-    ];
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
 
-    const movePage = (url: string) => {
-        navigate(`/${url}`);
+  useEffect(() => {
+    const desktopMedia = window.matchMedia(
+      `(min-width: ${Number.parseInt(theme.breakpoints.tablet, 10) + 1}px)`,
+    );
+    const closeOnDesktop = (event: MediaQueryListEvent) => {
+      if (event.matches) {
         setIsMobileMenuOpen(false);
+      }
     };
 
-    const menuClickEvent = (url: string, givenName: string, givenDescription: string) => {
-        if (["lecture"].includes(url)) {
-            alert("사용할 수 없는 기능입니다.");
-            return;
-        } else if (
-            isNotLogin &&
-            ![
-                "board/opensource",
-                "board/sponsor",
-                "board/usage",
-                "board/contest",
-                "board/activity",
-                "activity",
-                "introduce",
-                "scholarship",
-                "login",
-            ]?.includes(url)
-        ) {
-            alert("로그인을 해주세요");
-            return;
-        } else {
-            navigate(`/${url}`);
-            setTitle({ ...title, name: givenName, description: givenDescription });
-            setIsMobileMenuOpen(false);
-        }
-    };
+    desktopMedia.addEventListener('change', closeOnDesktop);
+    return () => desktopMedia.removeEventListener('change', closeOnDesktop);
+  }, []);
 
-    const logoutClickEvent = () => {
-        if (window.confirm("정말 로그아웃 하시겠습니까?")) {
-            setAccess("default");
-            setRole("logout");
-            document.cookie = "ibas_refresh" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
-            navigate("/");
-            setIsMobileMenuOpen(false);
-        }
-    };
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      return;
+    }
 
-    // Scroll 위치를 감지
-    const updateScroll = () => {
-        setScrollPosition(window.scrollY || document.documentElement.scrollTop);
-    };
-
-    useEffect(() => {
-        const id = titleInfo(pathNameInfo[0], pathNameInfo[1]);
-        setCurrentMenuId(id);
-        fetchData("/menus", "GET");
-    }, []);
-
-    // signup이 안된 경우 profile은 null 로, accessToken은 default로 초기화해주어야 함.
-    // 의존성을 access로 하면 check가 false일 때 실행되는 코드 때문에 무한호출 됨.
-    // access가 signing이 아니면서 access가 바뀔 때는 항상 실행해야함
-    useEffect(() => {
-        if (access !== "signing") {
-            fetchSigningUserData("/signUp/check", "GET", "token");
-        }
-    }, [access]);
-
-    useEffect(() => {
-        if (signingUserData) {
-            setCheck(signingUserData.check);
-        }
-    }, [signingUserData]);
-
-    useEffect(() => {
-        if (check === true) {
-            fetchInfoData("/myInfo", "GET", "token");
-        } else if (check === false) {
-            setInfo(null);
-            // check 가 false라면 회원가입 진행중인 사람이라는 의미
-            setAccess("signing");
-        }
-    }, [check]);
-
-    useEffect(() => {
-        if (data && Object.keys(data).length !== 0) {
-            const newData = JSON.parse(JSON.stringify(data));
-            delete newData.change;
-
-            (Object.values(newData) as Group[]).forEach((group: Group, groupIdx: number) => {
-                if (group.menuList) {
-                    group.menuList = group.menuList.map((menu: menuInterface, idx: number) => ({
-                        ...menu,
-                        url: (menuUrl[groupIdx] && menuUrl[groupIdx][idx]) || "defaultUrl",
-                    }));
-                }
-            });
-
-            setNav(newData);
-        }
-    }, [data]);
-
-    useEffect(() => {
-        if (infoData) {
-            setInfo(infoData);
-            // 로그인 한 사람의 role을 저장시켜주기 위함
-            setRole(infoData.role);
-        }
-    }, [infoData]);
-
-    useEffect(() => {
-        window.addEventListener("scroll", updateScroll);
-        return () => {
-            window.removeEventListener("scroll", updateScroll);
-        };
-    }, []);
-
-    useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
         setIsMobileMenuOpen(false);
-    }, [location.pathname]);
+      }
+    };
 
-    useEffect(() => {
-        const desktopMedia = window.matchMedia(
-            `(min-width: ${Number.parseInt(theme.breakpoints.tablet, 10) + 1}px)`
-        );
-        const closeOnDesktop = (event: MediaQueryListEvent) => {
-            if (event.matches) {
-                setIsMobileMenuOpen(false);
-            }
-        };
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', closeOnEscape);
 
-        desktopMedia.addEventListener("change", closeOnDesktop);
-        return () => desktopMedia.removeEventListener("change", closeOnDesktop);
-    }, []);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [isMobileMenuOpen]);
 
-    useEffect(() => {
-        if (!isMobileMenuOpen) {
-            return;
-        }
-
-        const originalOverflow = document.body.style.overflow;
-        const closeOnEscape = (event: KeyboardEvent) => {
-            if (event.key === "Escape") {
-                setIsMobileMenuOpen(false);
-            }
-        };
-
-        document.body.style.overflow = "hidden";
-        window.addEventListener("keydown", closeOnEscape);
-
-        return () => {
-            document.body.style.overflow = originalOverflow;
-            window.removeEventListener("keydown", closeOnEscape);
-        };
-    }, [isMobileMenuOpen]);
-
-    return (
-        <>
-            <FixedDiv
-                $zIndex={3}
-                width="100%"
-                height="73px"
-                $backgroundColor={scrollPosition < 100 ? "none" : "wh"}
-                $borderB={`0.1px solid ${theme.color.whlayer}`}
-            >
-                <NavInner $justifycontent="space-between">
-                    <Logo $pointer onClick={() => movePage("")}>
-                        {scrollPosition < 100 ? (
-                            <Img src="/images/logo_white.png" />
-                        ) : (
-                            <Img src="/images/logo_purple.png" />
-                        )}
-                    </Logo>
-                    <DesktopNav>
-                        <FlexDiv>
-                            <FlexDiv>
-                                {nav &&
-                                    Object.values(nav).filter((item: any) => !HIDDEN_NAV_GROUPS.includes(item.groupName)).map((item: any, idx: number) => {
-                                        return (
-                                            <Div $position="relative" key={idx}>
-                                                <FlexDiv
-                                                    $pointer
-                                                    $margin="15px"
-                                                    onMouseEnter={() => setActiveGroup(item.groupName)}
-                                                >
-                                                    <Div $margin="0 5px" $top="22px">
-                                                        <P
-                                                            fontSize="sm"
-                                                            fontWeight={800}
-                                                            $letterSpacing="2px"
-                                                            color={scrollPosition < 100 ? "wh" : "textColor"}
-                                                        >
-                                                            {item.groupName}
-                                                        </P>
-                                                    </Div>
-                                                    <FlexDiv width="10px">
-                                                        {scrollPosition < 100 ? (
-                                                            <Img src="/images/chevron-down_white.svg" />
-                                                        ) : (
-                                                            <Img src="/images/chevron-down_purple.svg" />
-                                                        )}
-                                                    </FlexDiv>
-                                                </FlexDiv>
-                                                {activeGroup === item.groupName && (
-                                                    <Div
-                                                        $position="absolute"
-                                                        $margin="0 5px"
-                                                        $backgroundColor="wh"
-                                                        radius={3}
-                                                        width="220px"
-                                                        $padding="10px 0"
-                                                        onMouseLeave={() => setActiveGroup(null)}
-                                                        onClick={() => setActiveGroup(null)}
-                                                    >
-                                                        {item.menuList &&
-                                                            Object.values(item.menuList).filter((element: any) =>
-                                                                !HIDDEN_BOARD_URLS.includes(element.url)
-                                                            ).map(
-                                                                (element: any, idx: number) => {
-                                                                    if (
-                                                                        element.url === "board/executive" &&
-                                                                        isAuthorizedOverSecretary
-                                                                    ) {
-                                                                        return (
-                                                                            <Div
-                                                                                key={`menu${idx}`}
-                                                                                $padding="8px 20px"
-                                                                                width="100%"
-                                                                                $pointer
-                                                                                onMouseEnter={() =>
-                                                                                    setActiveMenu(element.name)
-                                                                                }
-                                                                                $backgroundColor={
-                                                                                    activeMenu === element.name
-                                                                                        ? "bgColor"
-                                                                                        : "wh"
-                                                                                }
-                                                                                onClick={() =>
-                                                                                    menuClickEvent(
-                                                                                        element.url,
-                                                                                        element.name,
-                                                                                        element.description
-                                                                                    )
-                                                                                }
-                                                                            >
-                                                                                <Div>
-                                                                                    <P
-                                                                                        fontSize="sm"
-                                                                                        $letterSpacing="2px"
-                                                                                        color={
-                                                                                            activeMenu === element.name
-                                                                                                ? "wh"
-                                                                                                : "bk"
-                                                                                        }
-                                                                                    >
-                                                                                        {element.name}
-                                                                                    </P>
-                                                                                </Div>
-                                                                            </Div>
-                                                                        );
-                                                                    } else if (element.url !== "board/executive") {
-                                                                        return (
-                                                                            <Div
-                                                                                $padding="8px 20px"
-                                                                                width="100%"
-                                                                                $pointer
-                                                                                key={`menu${idx}`}
-                                                                                onMouseEnter={() =>
-                                                                                    setActiveMenu(element.name)
-                                                                                }
-                                                                                $backgroundColor={
-                                                                                    activeMenu === element.name
-                                                                                        ? "bgColor"
-                                                                                        : "wh"
-                                                                                }
-                                                                                onClick={() =>
-                                                                                    menuClickEvent(
-                                                                                        element.url,
-                                                                                        element.name,
-                                                                                        element.description
-                                                                                    )
-                                                                                }
-                                                                            >
-                                                                                <Div>
-                                                                                    <P
-                                                                                        fontSize="sm"
-                                                                                        $letterSpacing="2px"
-                                                                                        color={
-                                                                                            activeMenu === element.name
-                                                                                                ? "wh"
-                                                                                                : "bk"
-                                                                                        }
-                                                                                    >
-                                                                                        {element.name}
-                                                                                    </P>
-                                                                                </Div>
-                                                                            </Div>
-                                                                        );
-                                                                    }
-                                                                    return null; // element.url === "board/executive" && !isAuthorizedOverSecretary 인 경우
-                                                                }
-                                                            )}
-                                                    </Div>
-                                                )}
-                                            </Div>
-                                        );
-                                    })}
+  return (
+    <>
+      <FixedDiv
+        $zIndex={3}
+        width="100%"
+        height="73px"
+        $backgroundColor={scrollPosition < 100 ? 'none' : 'wh'}
+        $borderB={`0.1px solid ${theme.color.whlayer}`}
+      >
+        <NavInner $justifycontent="space-between">
+          <Logo $pointer onClick={() => movePage('')}>
+            {scrollPosition < 100 ? (
+              <Img src="/images/logo_white.png" />
+            ) : (
+              <Img src="/images/logo_purple.png" />
+            )}
+          </Logo>
+          <DesktopNav>
+            <FlexDiv>
+              <FlexDiv>
+                {nav &&
+                  Object.values(nav)
+                    .filter((item: any) => !HIDDEN_NAV_GROUPS.includes(item.groupName))
+                    .map((item: any, idx: number) => {
+                      return (
+                        <Div $position="relative" key={idx}>
+                          <FlexDiv
+                            $pointer
+                            $margin="15px"
+                            onMouseEnter={() => setActiveGroup(item.groupName)}
+                          >
+                            <Div $margin="0 5px" $top="22px">
+                              <P
+                                fontSize="sm"
+                                fontWeight={800}
+                                $letterSpacing="2px"
+                                color={scrollPosition < 100 ? 'wh' : 'textColor'}
+                              >
+                                {item.groupName}
+                              </P>
+                            </Div>
+                            <FlexDiv width="10px">
+                              {scrollPosition < 100 ? (
+                                <Img src="/images/chevron-down_white.svg" />
+                              ) : (
+                                <Img src="/images/chevron-down_purple.svg" />
+                              )}
                             </FlexDiv>
-                            {access === "default" || access === "signing" ? (
-                                <FlexDiv $pointer $margin="15px" onClick={() => movePage("login")}>
-                                    <Div $margin="0 5px">
-                                        <P
-                                            fontSize="sm"
-                                            fontWeight={800}
-                                            $letterSpacing="1px"
-                                            color={scrollPosition < 100 ? "wh" : "textColor"}
+                          </FlexDiv>
+                          {activeGroup === item.groupName && (
+                            <Div
+                              $position="absolute"
+                              $margin="0 5px"
+                              $backgroundColor="wh"
+                              radius={3}
+                              width="220px"
+                              $padding="10px 0"
+                              onMouseLeave={() => setActiveGroup(null)}
+                              onClick={() => setActiveGroup(null)}
+                            >
+                              {item.menuList &&
+                                Object.values(item.menuList)
+                                  .filter(
+                                    (element: any) => !HIDDEN_BOARD_URLS.includes(element.url),
+                                  )
+                                  .map((element: any, idx: number) => {
+                                    if (
+                                      element.url === 'board/executive' &&
+                                      isAuthorizedOverSecretary
+                                    ) {
+                                      return (
+                                        <Div
+                                          key={`menu${idx}`}
+                                          $padding="8px 20px"
+                                          width="100%"
+                                          $pointer
+                                          onMouseEnter={() => setActiveMenu(element.name)}
+                                          $backgroundColor={
+                                            activeMenu === element.name ? 'bgColor' : 'wh'
+                                          }
+                                          onClick={() =>
+                                            menuClickEvent(
+                                              element.url,
+                                              element.name,
+                                              element.description,
+                                            )
+                                          }
                                         >
-                                            LOG IN
-                                        </P>
-                                    </Div>
-                                    <FlexDiv width="15px">
-                                        <Img src="/images/login_white.svg" />
-                                    </FlexDiv>
-                                </FlexDiv>
-                            ) : (
-                                <FlexDiv $pointer $margin="15px" onClick={() => logoutClickEvent()}>
-                                    <Div $margin="0 5px">
-                                        <P
-                                            fontSize="sm"
-                                            fontWeight={800}
-                                            $letterSpacing="1px"
-                                            color={scrollPosition < 100 ? "wh" : "textColor"}
+                                          <Div>
+                                            <P
+                                              fontSize="sm"
+                                              $letterSpacing="2px"
+                                              color={activeMenu === element.name ? 'wh' : 'bk'}
+                                            >
+                                              {element.name}
+                                            </P>
+                                          </Div>
+                                        </Div>
+                                      );
+                                    } else if (element.url !== 'board/executive') {
+                                      return (
+                                        <Div
+                                          $padding="8px 20px"
+                                          width="100%"
+                                          $pointer
+                                          key={`menu${idx}`}
+                                          onMouseEnter={() => setActiveMenu(element.name)}
+                                          $backgroundColor={
+                                            activeMenu === element.name ? 'bgColor' : 'wh'
+                                          }
+                                          onClick={() =>
+                                            menuClickEvent(
+                                              element.url,
+                                              element.name,
+                                              element.description,
+                                            )
+                                          }
                                         >
-                                            LOG OUT
-                                        </P>
-                                    </Div>
-                                    <FlexDiv width="15px">
-                                        <Img src="/images/logout_white.svg" />
-                                    </FlexDiv>
-                                </FlexDiv>
-                            )}
-                        </FlexDiv>
-                        {/* 로그인 프로필 사진 */}
-                        {access !== "default" && access !== "signing" && (
-                            <FlexDiv $margin="15px 9px" onClick={() => movePage("myInfo")}>
-                                <FlexDiv
-                                    width="35px"
-                                    height="35px"
-                                    $border="2px solid"
-                                    $borderColor={
-                                        isAuthorizedOverBasic
-                                            ? "success"
-                                            : isAuthorizedOverDeactivate
-                                            ? "yellow"
-                                            : "red"
+                                          <Div>
+                                            <P
+                                              fontSize="sm"
+                                              $letterSpacing="2px"
+                                              color={activeMenu === element.name ? 'wh' : 'bk'}
+                                            >
+                                              {element.name}
+                                            </P>
+                                          </Div>
+                                        </Div>
+                                      );
                                     }
-                                    radius={100}
-                                    overflow="hidden"
-                                >
-                                    <Img
-                                        src={info?.picture}
-                                        $objectFit="cover"
-                                        alt="현재 브라우저에서 지원하지 않는 형태 입니다. "
-                                    ></Img>
-                                </FlexDiv>
-                                <Div $margin="0 10px" $pointer>
-                                    <P
-                                        fontSize="sm"
-                                        fontWeight={600}
-                                        $letterSpacing="1.5px"
-                                        color={scrollPosition < 100 ? "wh" : "textColor"}
-                                    >
-                                        {info?.name}
-                                    </P>
-                                </Div>
-                                {/* 종 주석 처리 */}
-                                {/* <FlexDiv $pointer width="15px">
+                                    return null; // element.url === "board/executive" && !isAuthorizedOverSecretary 인 경우
+                                  })}
+                            </Div>
+                          )}
+                        </Div>
+                      );
+                    })}
+              </FlexDiv>
+              {access === 'default' || access === 'signing' ? (
+                <FlexDiv $pointer $margin="15px" onClick={() => movePage('login')}>
+                  <Div $margin="0 5px">
+                    <P
+                      fontSize="sm"
+                      fontWeight={800}
+                      $letterSpacing="1px"
+                      color={scrollPosition < 100 ? 'wh' : 'textColor'}
+                    >
+                      LOG IN
+                    </P>
+                  </Div>
+                  <FlexDiv width="15px">
+                    <Img src="/images/login_white.svg" />
+                  </FlexDiv>
+                </FlexDiv>
+              ) : (
+                <FlexDiv $pointer $margin="15px" onClick={() => logoutClickEvent()}>
+                  <Div $margin="0 5px">
+                    <P
+                      fontSize="sm"
+                      fontWeight={800}
+                      $letterSpacing="1px"
+                      color={scrollPosition < 100 ? 'wh' : 'textColor'}
+                    >
+                      LOG OUT
+                    </P>
+                  </Div>
+                  <FlexDiv width="15px">
+                    <Img src="/images/logout_white.svg" />
+                  </FlexDiv>
+                </FlexDiv>
+              )}
+            </FlexDiv>
+            {/* 로그인 프로필 사진 */}
+            {access !== 'default' && access !== 'signing' && (
+              <FlexDiv $margin="15px 9px" onClick={() => movePage('myInfo')}>
+                <FlexDiv
+                  width="35px"
+                  height="35px"
+                  $border="2px solid"
+                  $borderColor={
+                    isAuthorizedOverBasic
+                      ? 'success'
+                      : isAuthorizedOverDeactivate
+                        ? 'yellow'
+                        : 'red'
+                  }
+                  radius={100}
+                  overflow="hidden"
+                >
+                  <Img
+                    src={info?.picture}
+                    $objectFit="cover"
+                    alt="현재 브라우저에서 지원하지 않는 형태 입니다. "
+                  ></Img>
+                </FlexDiv>
+                <Div $margin="0 10px" $pointer>
+                  <P
+                    fontSize="sm"
+                    fontWeight={600}
+                    $letterSpacing="1.5px"
+                    color={scrollPosition < 100 ? 'wh' : 'textColor'}
+                  >
+                    {info?.name}
+                  </P>
+                </Div>
+                {/* 종 주석 처리 */}
+                {/* <FlexDiv $pointer width="15px">
                                     {scrollPosition < 100 ? (
                                         <Img src="/images/bell_white.svg" />
                                     ) : (
                                         <Img src="/images/bell_purple.svg" />
                                     )}
                                 </FlexDiv> */}
-                            </FlexDiv>
-                        )}
-                    </DesktopNav>
-                    <MobileMenuButton
-                        type="button"
-                        $isScrolled={scrollPosition >= 100}
-                        aria-label="메뉴 열기"
-                        aria-expanded={isMobileMenuOpen}
-                        aria-controls={mobileMenuId}
-                        onClick={() => setIsMobileMenuOpen(true)}
-                    >
-                        <span />
-                        <span />
-                        <span />
-                    </MobileMenuButton>
-                </NavInner>
-            </FixedDiv>
-            {isMobileMenuOpen && (
-                <MobileMenuLayer>
-                    <MobileMenuBackdrop
-                        type="button"
-                        aria-label="메뉴 배경을 눌러 닫기"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                    />
-                    <MobileMenuPanel id={mobileMenuId} aria-label="모바일 메뉴">
-                        <MobileMenuHeader $justifycontent="space-between">
-                            <MobileMenuTitle>MENU</MobileMenuTitle>
-                            <MobileMenuCloseButton
-                                type="button"
-                                aria-label="메뉴 닫기"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                                ×
-                            </MobileMenuCloseButton>
-                        </MobileMenuHeader>
-                        {nav &&
-                            Object.values(nav)
-                                .filter((item: any) => !HIDDEN_NAV_GROUPS.includes(item.groupName))
-                                .map((item: any, idx: number) => (
-                                    <MobileMenuGroup key={`mobileGroup${idx}`}>
-                                        <MobileGroupName>{item.groupName}</MobileGroupName>
-                                        {item.menuList &&
-                                            Object.values(item.menuList)
-                                                .filter((element: any) => !HIDDEN_BOARD_URLS.includes(element.url))
-                                                .map((element: any, menuIdx: number) => {
-                                                    if (
-                                                        element.url === "board/executive" &&
-                                                        isAuthorizedOverSecretary
-                                                    ) {
-                                                        return (
-                                                            <MobileMenuItem
-                                                                type="button"
-                                                                key={`mobileMenu${menuIdx}`}
-                                                                onClick={() =>
-                                                                    menuClickEvent(
-                                                                        element.url,
-                                                                        element.name,
-                                                                        element.description
-                                                                    )
-                                                                }
-                                                            >
-                                                                {element.name}
-                                                            </MobileMenuItem>
-                                                        );
-                                                    } else if (element.url !== "board/executive") {
-                                                        return (
-                                                            <MobileMenuItem
-                                                                type="button"
-                                                                key={`mobileMenu${menuIdx}`}
-                                                                onClick={() =>
-                                                                    menuClickEvent(
-                                                                        element.url,
-                                                                        element.name,
-                                                                        element.description
-                                                                    )
-                                                                }
-                                                            >
-                                                                {element.name}
-                                                            </MobileMenuItem>
-                                                        );
-                                                    }
-                                                    return null;
-                                                })}
-                                    </MobileMenuGroup>
-                                ))}
-                        <MobileAccount>
-                            {access !== "default" && access !== "signing" && (
-                                <MobileProfileButton type="button" onClick={() => movePage("myInfo")}>
-                                    <FlexDiv
-                                        width="35px"
-                                        height="35px"
-                                        $border="2px solid"
-                                        $borderColor={
-                                            isAuthorizedOverBasic
-                                                ? "success"
-                                                : isAuthorizedOverDeactivate
-                                                ? "yellow"
-                                                : "red"
-                                        }
-                                        radius={100}
-                                        overflow="hidden"
-                                    >
-                                        <Img
-                                            src={info?.picture}
-                                            $objectFit="cover"
-                                            alt="현재 브라우저에서 지원하지 않는 형태 입니다. "
-                                        />
-                                    </FlexDiv>
-                                    <span>{info?.name}</span>
-                                </MobileProfileButton>
-                            )}
-                            {access === "default" || access === "signing" ? (
-                                <MobileAccountButton type="button" onClick={() => movePage("login")}>
-                                    LOG IN
-                                </MobileAccountButton>
-                            ) : (
-                                <MobileAccountButton type="button" onClick={() => logoutClickEvent()}>
-                                    LOG OUT
-                                </MobileAccountButton>
-                            )}
-                        </MobileAccount>
-                    </MobileMenuPanel>
-                </MobileMenuLayer>
+              </FlexDiv>
             )}
-        </>
-    );
+          </DesktopNav>
+          <MobileMenuButton
+            type="button"
+            $isScrolled={scrollPosition >= 100}
+            aria-label="메뉴 열기"
+            aria-expanded={isMobileMenuOpen}
+            aria-controls={mobileMenuId}
+            onClick={() => setIsMobileMenuOpen(true)}
+          >
+            <span />
+            <span />
+            <span />
+          </MobileMenuButton>
+        </NavInner>
+      </FixedDiv>
+      {isMobileMenuOpen && (
+        <MobileMenuLayer>
+          <MobileMenuBackdrop
+            type="button"
+            aria-label="메뉴 배경을 눌러 닫기"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          <MobileMenuPanel id={mobileMenuId} aria-label="모바일 메뉴">
+            <MobileMenuHeader $justifycontent="space-between">
+              <MobileMenuTitle>MENU</MobileMenuTitle>
+              <MobileMenuCloseButton
+                type="button"
+                aria-label="메뉴 닫기"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                ×
+              </MobileMenuCloseButton>
+            </MobileMenuHeader>
+            {nav &&
+              Object.values(nav)
+                .filter((item: any) => !HIDDEN_NAV_GROUPS.includes(item.groupName))
+                .map((item: any, idx: number) => (
+                  <MobileMenuGroup key={`mobileGroup${idx}`}>
+                    <MobileGroupName>{item.groupName}</MobileGroupName>
+                    {item.menuList &&
+                      Object.values(item.menuList)
+                        .filter((element: any) => !HIDDEN_BOARD_URLS.includes(element.url))
+                        .map((element: any, menuIdx: number) => {
+                          if (element.url === 'board/executive' && isAuthorizedOverSecretary) {
+                            return (
+                              <MobileMenuItem
+                                type="button"
+                                key={`mobileMenu${menuIdx}`}
+                                onClick={() =>
+                                  menuClickEvent(element.url, element.name, element.description)
+                                }
+                              >
+                                {element.name}
+                              </MobileMenuItem>
+                            );
+                          } else if (element.url !== 'board/executive') {
+                            return (
+                              <MobileMenuItem
+                                type="button"
+                                key={`mobileMenu${menuIdx}`}
+                                onClick={() =>
+                                  menuClickEvent(element.url, element.name, element.description)
+                                }
+                              >
+                                {element.name}
+                              </MobileMenuItem>
+                            );
+                          }
+                          return null;
+                        })}
+                  </MobileMenuGroup>
+                ))}
+            <MobileAccount>
+              {access !== 'default' && access !== 'signing' && (
+                <MobileProfileButton type="button" onClick={() => movePage('myInfo')}>
+                  <FlexDiv
+                    width="35px"
+                    height="35px"
+                    $border="2px solid"
+                    $borderColor={
+                      isAuthorizedOverBasic
+                        ? 'success'
+                        : isAuthorizedOverDeactivate
+                          ? 'yellow'
+                          : 'red'
+                    }
+                    radius={100}
+                    overflow="hidden"
+                  >
+                    <Img
+                      src={info?.picture}
+                      $objectFit="cover"
+                      alt="현재 브라우저에서 지원하지 않는 형태 입니다. "
+                    />
+                  </FlexDiv>
+                  <span>{info?.name}</span>
+                </MobileProfileButton>
+              )}
+              {access === 'default' || access === 'signing' ? (
+                <MobileAccountButton type="button" onClick={() => movePage('login')}>
+                  LOG IN
+                </MobileAccountButton>
+              ) : (
+                <MobileAccountButton type="button" onClick={() => logoutClickEvent()}>
+                  LOG OUT
+                </MobileAccountButton>
+              )}
+            </MobileAccount>
+          </MobileMenuPanel>
+        </MobileMenuLayer>
+      )}
+    </>
+  );
 };
 
 export default HeaderNav;

@@ -1,177 +1,175 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
+import styled from 'styled-components';
 
-import { useRecoilState } from "recoil";
-import { selectedStudentInfos } from "../../recoil/frontState";
-
-import styled from "styled-components";
-import A from "../../styles/assets/A";
-import { Div, FlexDiv } from "../../styles/assets/Div";
-import Img from "../../styles/assets/Img";
-import { TextInput } from "../../styles/assets/Input";
-import P from "../../styles/assets/P";
-import { media, theme } from "../../styles/theme";
-
-import useFetch from "../../hooks/useFetch";
+import useFetch from '../../hooks/useFetch';
+import { selectedStudentInfos } from '../../recoil/frontState';
+import A from '../../styles/assets/A';
+import { Div, FlexDiv } from '../../styles/assets/Div';
+import Img from '../../styles/assets/Img';
+import { TextInput } from '../../styles/assets/Input';
+import P from '../../styles/assets/P';
+import { media, theme } from '../../styles/theme';
 
 export interface searchedMemberInterface {
-    name: string;
-    memberId: number;
-    studentId: string;
-    phoneNumber: string;
-    memberType: string;
-    generation: number;
-    major: string;
-    role: string;
+  name: string;
+  memberId: number;
+  studentId: string;
+  phoneNumber: string;
+  memberType: string;
+  generation: number;
+  major: string;
+  role: string;
 }
 
 const SearchContainer = styled(FlexDiv)`
-    min-width: 0;
+  min-width: 0;
 
-    ${media.mobile} {
-        width: 100%;
-    }
+  ${media.mobile} {
+    width: 100%;
+  }
 `;
 
 const SearchTableScroll = styled.div`
-    width: 100%;
-    height: 180px;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
+  width: 100%;
+  height: 180px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 `;
 
 const SearchTable = styled.div`
-    width: max-content;
-    min-width: 390px;
+  width: max-content;
+  min-width: 390px;
 `;
 
 const SearchRow = styled(FlexDiv)`
-    flex-wrap: nowrap;
+  flex-wrap: nowrap;
 `;
 
 const TableHover = styled(SearchRow)`
-    &:hover {
-        background-color: ${theme.color.tableHo};
-    }
+  &:hover {
+    background-color: ${theme.color.tableHo};
+  }
 `;
 
 // 컴포넌트 재사용 시 placeholder 변수로 받아서 사용
 const StudentSearchTable = () => {
-    // 상태 변수 선언 및 초기화
-    const [searchTerm, setSearchTerm] = useState(""); // 검색어를 관리하는 상태 변수
-    const [selectedStudent, setSelectedStudent] = useRecoilState(selectedStudentInfos); // 선택된 학생 정보를 관리하는 Recoil 상태 변수
+  // 상태 변수 선언 및 초기화
+  const [searchTerm, setSearchTerm] = useState(''); // 검색어를 관리하는 상태 변수
+  const [selectedStudent, setSelectedStudent] = useRecoilState(selectedStudentInfos); // 선택된 학생 정보를 관리하는 Recoil 상태 변수
 
-    const [studentInfoList, fetchStudentInfoList] = useFetch();
-    const [studentInfos, setNotGraduatedStudents] = useState([]);
+  const [studentInfoList, fetchStudentInfoList] = useFetch();
+  const [studentInfos, setNotGraduatedStudents] = useState([]);
 
-    useEffect(() => {
-        fetchStudentInfoList(`/members/notGraduated?page=${0}&size=${9999}`, "GET", "token");
-    }, []);
+  useEffect(() => {
+    fetchStudentInfoList(`/members/notGraduated?page=${0}&size=${9999}`, 'GET', 'token');
+  }, []);
 
-    useEffect(() => {
-        setNotGraduatedStudents(studentInfoList?.data);
-    }, [studentInfoList]);
+  useEffect(() => {
+    setNotGraduatedStudents(studentInfoList?.data);
+  }, [studentInfoList]);
 
-    // 학생 선택 시 실행되는 함수
-    const chooseStudent = (studentInfo: any) => {
-        setSelectedStudent(studentInfo); // 선택된 학생 정보 업데이트
-    };
+  // 학생 선택 시 실행되는 함수
+  const chooseStudent = (studentInfo: any) => {
+    setSelectedStudent(studentInfo); // 선택된 학생 정보 업데이트
+  };
 
-    const filteredResults = studentInfos?.filter((item: any) =>
-        item?.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  const filteredResults = studentInfos?.filter((item: any) =>
+    item?.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
-    // 학생 정보 테이블의 헤더
-    const headerInfo = ["학과", "이름", "학번"];
-    // 각 열의 최소 너비
-    const widthList = [150, 120, 120];
+  // 학생 정보 테이블의 헤더
+  const headerInfo = ['학과', '이름', '학번'];
+  // 각 열의 최소 너비
+  const widthList = [150, 120, 120];
 
-    return (
-        <>
-            <SearchContainer width="90%">
-                {/* 검색 입력란 */}
-                <FlexDiv width="100%">
-                    <TextInput
-                        placeholder="회비를 사용한 부원을 검색 후 아래에서 클릭해주세요"
-                        width="100%"
-                        value={searchTerm}
-                        onChange={(e: any) => setSearchTerm(e.target.value)}
-                    />
-                </FlexDiv>
-                {studentInfos?.length === 0 ? (
-                    <FlexDiv width="100%" height="100%">
-                        <FlexDiv width="10%">
-                            <Img src="/images/loading.svg" />
-                        </FlexDiv>
+  return (
+    <>
+      <SearchContainer width="90%">
+        {/* 검색 입력란 */}
+        <FlexDiv width="100%">
+          <TextInput
+            placeholder="회비를 사용한 부원을 검색 후 아래에서 클릭해주세요"
+            width="100%"
+            value={searchTerm}
+            onChange={(e: any) => setSearchTerm(e.target.value)}
+          />
+        </FlexDiv>
+        {studentInfos?.length === 0 ? (
+          <FlexDiv width="100%" height="100%">
+            <FlexDiv width="10%">
+              <Img src="/images/loading.svg" />
+            </FlexDiv>
+          </FlexDiv>
+        ) : (
+          <>
+            <SearchTableScroll>
+              <SearchTable>
+                <SearchRow
+                  width="100%"
+                  height="45px"
+                  $borderB={`1px solid ${theme.color.tableBorder}`}
+                  $justifycontent="space-between"
+                >
+                  {/* 테이블 헤더 */}
+                  {headerInfo.map((item, idx) => (
+                    <FlexDiv key={`headerInfo${idx}`} width={`${widthList[idx]}px`}>
+                      <P $center fontWeight={700}>
+                        {item}
+                      </P>
                     </FlexDiv>
-                ) : (
-                    <>
-                        <SearchTableScroll>
-                            <SearchTable>
-                                <SearchRow
-                                    width="100%"
-                                    height="45px"
-                                    $borderB={`1px solid ${theme.color.tableBorder}`}
-                                    $justifycontent="space-between"
-                                >
-                                    {/* 테이블 헤더 */}
-                                    {headerInfo.map((item, idx) => (
-                                        <FlexDiv key={`headerInfo${idx}`} width={`${widthList[idx]}px`}>
-                                            <P $center fontWeight={700}>
-                                                {item}
-                                            </P>
-                                        </FlexDiv>
-                                    ))}
-                                </SearchRow>
-                                <Div width="100%">
-                                    {/* 검색 결과 테이블 내용 */}
-                                    {filteredResults?.map((element: searchedMemberInterface, idx: number) => (
-                                        <TableHover
-                                            key={`contentItem${idx}`}
-                                            width="100%"
-                                            height="45px"
-                                            $borderT={`1px solid ${theme.color.grey1}`}
-                                            $justifycontent="space-between"
-                                            $backgroundColor={
-                                                selectedStudent.studentId === element?.studentId ? "tableHo" : "wh"
-                                            }
-                                            $pointer
-                                            onClick={() => chooseStudent(element)}
-                                        >
-                                            {/* 테이블 셀 */}
-                                            <FlexDiv
-                                                key={`itemValue0${idx}`}
-                                                width={`${widthList[0]}px`}
-                                                $padding="10px"
-                                                height="100%"
-                                            >
-                                                <A $center>{element?.major}</A>
-                                            </FlexDiv>
-                                            <FlexDiv
-                                                key={`itemValue1${idx}`}
-                                                width={`${widthList[1]}px`}
-                                                $padding="10px"
-                                                height="100%"
-                                            >
-                                                <A $center>{element?.name}</A>
-                                            </FlexDiv>
-                                            <FlexDiv
-                                                key={`itemValue2${idx}`}
-                                                width={`${widthList[2]}px`}
-                                                $padding="10px"
-                                                height="100%"
-                                            >
-                                                <A $center>{element?.studentId}</A>
-                                            </FlexDiv>
-                                        </TableHover>
-                                    ))}
-                                </Div>
-                            </SearchTable>
-                        </SearchTableScroll>
-                    </>
-                )}
-            </SearchContainer>
-        </>
-    );
+                  ))}
+                </SearchRow>
+                <Div width="100%">
+                  {/* 검색 결과 테이블 내용 */}
+                  {filteredResults?.map((element: searchedMemberInterface, idx: number) => (
+                    <TableHover
+                      key={`contentItem${idx}`}
+                      width="100%"
+                      height="45px"
+                      $borderT={`1px solid ${theme.color.grey1}`}
+                      $justifycontent="space-between"
+                      $backgroundColor={
+                        selectedStudent.studentId === element?.studentId ? 'tableHo' : 'wh'
+                      }
+                      $pointer
+                      onClick={() => chooseStudent(element)}
+                    >
+                      {/* 테이블 셀 */}
+                      <FlexDiv
+                        key={`itemValue0${idx}`}
+                        width={`${widthList[0]}px`}
+                        $padding="10px"
+                        height="100%"
+                      >
+                        <A $center>{element?.major}</A>
+                      </FlexDiv>
+                      <FlexDiv
+                        key={`itemValue1${idx}`}
+                        width={`${widthList[1]}px`}
+                        $padding="10px"
+                        height="100%"
+                      >
+                        <A $center>{element?.name}</A>
+                      </FlexDiv>
+                      <FlexDiv
+                        key={`itemValue2${idx}`}
+                        width={`${widthList[2]}px`}
+                        $padding="10px"
+                        height="100%"
+                      >
+                        <A $center>{element?.studentId}</A>
+                      </FlexDiv>
+                    </TableHover>
+                  ))}
+                </Div>
+              </SearchTable>
+            </SearchTableScroll>
+          </>
+        )}
+      </SearchContainer>
+    </>
+  );
 };
 
 export default StudentSearchTable;

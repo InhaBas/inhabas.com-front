@@ -1,7 +1,7 @@
 ---
 name: ✨ 기능 개발
 about: 새로운 기능을 개발할 때 작성해 주세요
-title: "[FEAT] "
+title: '[FEAT] '
 labels: feat
 assignees: ''
 ---
@@ -20,9 +20,9 @@ assignees: ''
 
 ## 작업 항목
 
-- [ ] 
-- [ ] 
-- [ ] 
+- [ ]
+- [ ]
+- [ ]
 
 ## 참고 자료
 

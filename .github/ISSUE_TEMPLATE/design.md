@@ -1,7 +1,7 @@
 ---
 name: 💄 디자인 / UI
 about: UI 변경, 스타일 수정, 반응형 작업 등 디자인 관련 작업
-title: "[DESIGN] "
+title: '[DESIGN] '
 labels: design
 assignees: ''
 ---
@@ -25,9 +25,9 @@ assignees: ''
 
 ## 작업 항목
 
-- [ ] 
-- [ ] 
-- [ ] 
+- [ ]
+- [ ]
+- [ ]
 
 ## 체크포인트
 

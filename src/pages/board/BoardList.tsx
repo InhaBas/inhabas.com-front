@@ -1,266 +1,267 @@
-import { Suspense, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
-import styled from "styled-components";
+import { Suspense, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import styled from 'styled-components';
 
-import useFetch from "../../hooks/useFetch";
-
+import BoardNavigate from '../../components/board/BoardNavigate';
+import BoardSearch from '../../components/board/BoardSearch';
+import Loading from '../../components/common/Loading';
+import NavigateTable from '../../components/common/NavigateTable';
+import Pagination from '../../components/common/Pagination';
+import { GetRoleAuthorization } from '../../functions/authFunctions';
+import { DateFunction } from '../../functions/dateFunction';
+import useFetch from '../../hooks/useFetch';
 import {
-    boardListDataInfo,
-    boardListPinnedDataInfo,
-    contestListDataInfo,
-    tokenAccess,
-    totalPageInfo,
-} from "../../recoil/backState";
-
-import { boardListInterface } from "../../types/TypeBoard";
-
-import { DateFunction } from "../../functions/dateFunction";
-
-import A from "../../styles/assets/A";
-import Button from "../../styles/assets/Button";
-import { Container, Div, FlexDiv } from "../../styles/assets/Div";
-import Img from "../../styles/assets/Img";
-
-import { GetRoleAuthorization } from "../../functions/authFunctions";
-import { contestOrder } from "../../recoil/frontState";
-import Loading from "../../components/common/Loading";
-import NavigateTable from "../../components/common/NavigateTable";
-import Pagination from "../../components/common/Pagination";
-import BoardNavigate from "../../components/board/BoardNavigate";
-import BoardSearch from "../../components/board/BoardSearch";
-import Contest from "../activity/Contest";
-import { media } from "../../styles/theme";
+  boardListDataInfo,
+  boardListPinnedDataInfo,
+  contestListDataInfo,
+  tokenAccess,
+  totalPageInfo,
+} from '../../recoil/backState';
+import { contestOrder } from '../../recoil/frontState';
+import A from '../../styles/assets/A';
+import Button from '../../styles/assets/Button';
+import { Container, Div, FlexDiv } from '../../styles/assets/Div';
+import Img from '../../styles/assets/Img';
+import { media } from '../../styles/theme';
+import { boardListInterface } from '../../types/TypeBoard';
+import Contest from '../activity/Contest';
 
 const StickyDiv = styled(Div)`
-    position: sticky;
-    top: 50px;
-    flex: 0 0 auto;
-    width: 293px;
+  position: sticky;
+  top: 50px;
+  flex: 0 0 auto;
+  width: 293px;
 
-    ${media.tablet} {
-        position: static;
-        top: auto;
-        width: 100%;
-        padding: 0;
-        margin-bottom: 30px;
-    }
+  ${media.tablet} {
+    position: static;
+    top: auto;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 30px;
+  }
 `;
 
 const BoardContainer = styled(Container)`
-    flex-wrap: nowrap;
+  flex-wrap: nowrap;
 
-    ${media.tablet} {
-        flex-direction: column;
-    }
+  ${media.tablet} {
+    flex-direction: column;
+  }
 `;
 
 const BoardContent = styled(Div)`
-    flex: 1 1 auto;
-    min-width: 0;
-    width: calc(100% - 293px);
-    padding: 0 15px;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: calc(100% - 293px);
+  padding: 0 15px;
 
-    ${media.tablet} {
-        width: 100%;
-        padding: 0;
-    }
+  ${media.tablet} {
+    width: 100%;
+    padding: 0;
+  }
 `;
 
 const BoardList = () => {
-    const headerInfo = ["no.", "", "제목", "작성자", "작성일"];
-    const widthList = [45, 0, 450, 120, 120];
+  const headerInfo = ['no.', '', '제목', '작성자', '작성일'];
+  const widthList = [45, 0, 450, 120, 120];
 
-    const { formatDateDay } = DateFunction();
+  const { formatDateDay } = DateFunction();
 
-    const location = useLocation();
-    const navigate = useNavigate();
-    const url = location.pathname.split("/")[2];
-    const access = useRecoilValue(tokenAccess);
-    const [boardList, setBoardList] = useRecoilState(boardListDataInfo);
-    const [boardPinnedList, setBoardPinnedList] = useRecoilState(boardListPinnedDataInfo);
-    const [boardListData, fetchBoardListData] = useFetch();
-    const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
-    const [contestListData, setContestListData] = useRecoilState(contestListDataInfo);
-    const [contestOrderBy, setContestOrderBy] = useRecoilState(contestOrder);
-    const [isLoading, setIsLoading] = useState(true);
-    const { isAuthorizedOverSecretary, isAuthorizedOverDeactivate, isAuthorizedOverBasic, isAuthorizedOverExecutives } =
-        GetRoleAuthorization();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const url = location.pathname.split('/')[2];
+  const access = useRecoilValue(tokenAccess);
+  const [boardList, setBoardList] = useRecoilState(boardListDataInfo);
+  const [boardPinnedList, setBoardPinnedList] = useRecoilState(boardListPinnedDataInfo);
+  const [boardListData, fetchBoardListData] = useFetch();
+  const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
+  const [contestListData, setContestListData] = useRecoilState(contestListDataInfo);
+  const [contestOrderBy, setContestOrderBy] = useRecoilState(contestOrder);
+  const [isLoading, setIsLoading] = useState(true);
+  const {
+    isAuthorizedOverSecretary,
+    isAuthorizedOverDeactivate,
+    isAuthorizedOverBasic,
+    isAuthorizedOverExecutives,
+  } = GetRoleAuthorization();
 
-    let fetchUrl: string;
-    if (url === "alpha") {
-        fetchUrl = "/project/alpha";
-    } else if (url === "beta") {
-        fetchUrl = "/project/beta";
-    } else if (url === "sponsor") {
-        fetchUrl = "/scholarship/sponsor";
-    } else if (url === "usage") {
-        fetchUrl = "/scholarship/usage";
-    } else if (url === "opensource") {
-        fetchUrl = "/board/storage";
-    } else if (url === "contest") {
-        fetchUrl = "/contest/contest?size=4";
-    } else if (url === "activity") {
-        fetchUrl = "/contest/activity?size=4";
-    } else {
-        fetchUrl = `/board/${url}`;
+  let fetchUrl: string;
+  if (url === 'alpha') {
+    fetchUrl = '/project/alpha';
+  } else if (url === 'beta') {
+    fetchUrl = '/project/beta';
+  } else if (url === 'sponsor') {
+    fetchUrl = '/scholarship/sponsor';
+  } else if (url === 'usage') {
+    fetchUrl = '/scholarship/usage';
+  } else if (url === 'opensource') {
+    fetchUrl = '/board/storage';
+  } else if (url === 'contest') {
+    fetchUrl = '/contest/contest?size=4';
+  } else if (url === 'activity') {
+    fetchUrl = '/contest/activity?size=4';
+  } else {
+    fetchUrl = `/board/${url}`;
+  }
+
+  const checkWritingAuthorization = () => {
+    // 총무
+    if (['sponsor', 'usage', 'notice', 'executive'].includes(url) && isAuthorizedOverSecretary) {
+      return true;
     }
+    // 비활동 회원
+    else if (['free', 'question', 'suggest'].includes(url) && isAuthorizedOverDeactivate) {
+      return true;
+    }
+    // 활동 회원
+    else if (['opensource', 'contest', 'alpha', 'beta'].includes(url) && isAuthorizedOverBasic) {
+      return true;
+    }
+    // 회장단
+    else if (['notice'].includes(url) && isAuthorizedOverExecutives) {
+      return true;
+    }
+    return false;
+  };
 
-    const checkWritingAuthorization = () => {
-        // 총무
-        if (["sponsor", "usage", "notice", "executive"].includes(url) && isAuthorizedOverSecretary) {
-            return true;
-        }
-        // 비활동 회원
-        else if (["free", "question", "suggest"].includes(url) && isAuthorizedOverDeactivate) {
-            return true;
-        }
-        // 활동 회원
-        else if (["opensource", "contest", "alpha", "beta"].includes(url) && isAuthorizedOverBasic) {
-            return true;
-        }
-        // 회장단
-        else if (["notice"].includes(url) && isAuthorizedOverExecutives) {
-            return true;
-        }
-        return false;
-    };
+  // url 바뀔 때마다 해당 table fetch 할 수 있도록
+  useEffect(() => {
+    setIsLoading(true);
+    if (['opensource', 'usage', 'sponsor'].includes(url)) {
+      fetchBoardListData(`${fetchUrl}`, 'GET');
+    } else if (['contest', 'activity'].includes(url)) {
+      fetchBoardListData(`${fetchUrl}${contestOrderBy}`, 'GET');
+    } else {
+      fetchBoardListData(`${fetchUrl}`, 'GET', 'token');
+    }
+  }, [url, access, contestOrderBy]);
 
-    // url 바뀔 때마다 해당 table fetch 할 수 있도록
-    useEffect(() => {
-        setIsLoading(true);
-        if (["opensource", "usage", "sponsor"].includes(url)) {
-            fetchBoardListData(`${fetchUrl}`, "GET");
-        } else if (["contest", "activity"].includes(url)) {
-            fetchBoardListData(`${fetchUrl}${contestOrderBy}`, "GET");
-        } else {
-            fetchBoardListData(`${fetchUrl}`, "GET", "token");
-        }
-    }, [url, access, contestOrderBy]);
+  useEffect(() => {
+    if (['contest', 'activity'].includes(url)) {
+      if (boardListData) {
+        setIsLoading(false);
+        setContestListData(boardListData?.data);
+        setTotalPage(boardListData.pageInfo.totalPages);
+      }
+    } else {
+      if (boardListData) {
+        const contents = boardListData.data.map((item: boardListInterface, idx: number) => ({
+          number: boardListData.pageInfo.pageNumber * boardListData.pageInfo.pageSize + idx + 1,
+          id: item.id,
+          title: item.title,
+          writerName: item.writerName,
+          dateCreated: formatDateDay({ date: item.dateCreated }),
+          isPinned: item.isPinned,
+        }));
+        const pinnedContents = boardListData.pinnedData?.map(
+          (item: boardListInterface, idx: number) => ({
+            id: item.id,
+            title: item.title,
+            writerName: item.writerName,
+            dateCreated: formatDateDay({ date: item.dateCreated }),
+            isPinned: item.isPinned,
+          }),
+        );
+        setBoardPinnedList(pinnedContents);
+        setBoardList(contents);
+        setTotalPage(boardListData.pageInfo.totalPages);
+        setIsLoading(false);
+      }
+    }
+  }, [boardListData]);
 
-    useEffect(() => {
-        if (["contest", "activity"].includes(url)) {
-            if (boardListData) {
-                setIsLoading(false);
-                setContestListData(boardListData?.data);
-                setTotalPage(boardListData.pageInfo.totalPages);
-            }
-        } else {
-            if (boardListData) {
-                const contents = boardListData.data.map((item: boardListInterface, idx: number) => ({
-                    number: boardListData.pageInfo.pageNumber * boardListData.pageInfo.pageSize + idx + 1,
-                    id: item.id,
-                    title: item.title,
-                    writerName: item.writerName,
-                    dateCreated: formatDateDay({ date: item.dateCreated }),
-                    isPinned: item.isPinned,
-                }));
-                const pinnedContents = boardListData.pinnedData?.map((item: boardListInterface, idx: number) => ({
-                    id: item.id,
-                    title: item.title,
-                    writerName: item.writerName,
-                    dateCreated: formatDateDay({ date: item.dateCreated }),
-                    isPinned: item.isPinned,
-                }));
-                setBoardPinnedList(pinnedContents);
-                setBoardList(contents);
-                setTotalPage(boardListData.pageInfo.totalPages);
-                setIsLoading(false);
-            }
-        }
-    }, [boardListData]);
+  useEffect(() => {
+    setBoardList([]);
+    setContestListData([]);
+  }, [url]);
 
-    useEffect(() => {
-        setBoardList([]);
-        setContestListData([]);
-    }, [url]);
+  useEffect(() => {
+    setContestOrderBy('&orderBy=ALL');
+  }, [url]);
 
-    useEffect(() => {
-        setContestOrderBy("&orderBy=ALL");
-    }, [url]);
-
-    return (
-        <>
-            {isLoading ? (
-                <FlexDiv width="100%" height="100vh">
-                    <Loading />
-                </FlexDiv>
-            ) : (
-                <BoardContainer $alignitems="start">
-                    <StickyDiv $padding="0 15px">
-                        <Div width="100%" $margin="0 0 30px 0">
-                            <BoardSearch />
-                        </Div>
-                        {url !== "sponsor" && url !== "usage" && (
-                            <Div width="100%">
-                                <BoardNavigate />
-                            </Div>
-                        )}
-                    </StickyDiv>
-                    <BoardContent>
-                        <Suspense fallback={<Img src="/images/loading.svg" />}>
-                            {["contest", "activity"].includes(url) ? (
-                                <Contest />
-                            ) : (
-                                <NavigateTable
-                                    width={widthList}
-                                    header={headerInfo}
-                                    contents={boardList}
-                                    pinnedContents={boardPinnedList}
-                                    url="detail"
-                                />
-                            )}
-                        </Suspense>
-                        {/* 공모전 게시판의 게시글 작성은 Contest 컴포넌트에서 따로 작성 */}
-                        {checkWritingAuthorization() && contestListData.length === 0 && (
-                            <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">
-                                <Button
-                                    display="flex"
-                                    $backgroundColor="bgColor"
-                                    $margin="0 10px 0 0"
-                                    $padding="12px 15px"
-                                    $borderRadius={30}
-                                    $HBackgroundColor="bgColorHo"
-                                    onClick={() => {
-                                        navigate(`/board/${url}/create`);
-                                    }}
-                                >
-                                    <FlexDiv height="15px">
-                                        <Div width="12px" height="12px" $margin="0 10px 0 0">
-                                            <Img src="/images/plus_white.svg" />
-                                        </Div>
-                                    </FlexDiv>
-                                    <Div $pointer height="15px">
-                                        <A color="wh" fontSize="sm" $hoverColor="wh">
-                                            게시글 작성
-                                        </A>
-                                    </Div>
-                                </Button>
-                            </FlexDiv>
-                        )}
-                        {/* 게시판 */}
-                        {boardList && boardList.length !== 0 && (
-                            <Pagination
-                                totalPage={totalPage}
-                                fetchUrl={`${fetchUrl}`}
-                                token
-                                paginationFetch={fetchBoardListData}
-                            />
-                        )}
-                        {/* 공모전 */}
-                        {contestListData && contestListData.length !== 0 && (
-                            <Pagination
-                                totalPage={totalPage}
-                                fetchUrl={`/contest/${url}?${contestOrderBy}`}
-                                paginationFetch={fetchBoardListData}
-                                size={4}
-                            />
-                        )}
-                    </BoardContent>
-                </BoardContainer>
+  return (
+    <>
+      {isLoading ? (
+        <FlexDiv width="100%" height="100vh">
+          <Loading />
+        </FlexDiv>
+      ) : (
+        <BoardContainer $alignitems="start">
+          <StickyDiv $padding="0 15px">
+            <Div width="100%" $margin="0 0 30px 0">
+              <BoardSearch />
+            </Div>
+            {url !== 'sponsor' && url !== 'usage' && (
+              <Div width="100%">
+                <BoardNavigate />
+              </Div>
             )}
-        </>
-    );
+          </StickyDiv>
+          <BoardContent>
+            <Suspense fallback={<Img src="/images/loading.svg" />}>
+              {['contest', 'activity'].includes(url) ? (
+                <Contest />
+              ) : (
+                <NavigateTable
+                  width={widthList}
+                  header={headerInfo}
+                  contents={boardList}
+                  pinnedContents={boardPinnedList}
+                  url="detail"
+                />
+              )}
+            </Suspense>
+            {/* 공모전 게시판의 게시글 작성은 Contest 컴포넌트에서 따로 작성 */}
+            {checkWritingAuthorization() && contestListData.length === 0 && (
+              <FlexDiv width="100%" $justifycontent="end" $margin="20px 0 0 0">
+                <Button
+                  display="flex"
+                  $backgroundColor="bgColor"
+                  $margin="0 10px 0 0"
+                  $padding="12px 15px"
+                  $borderRadius={30}
+                  $HBackgroundColor="bgColorHo"
+                  onClick={() => {
+                    navigate(`/board/${url}/create`);
+                  }}
+                >
+                  <FlexDiv height="15px">
+                    <Div width="12px" height="12px" $margin="0 10px 0 0">
+                      <Img src="/images/plus_white.svg" />
+                    </Div>
+                  </FlexDiv>
+                  <Div $pointer height="15px">
+                    <A color="wh" fontSize="sm" $hoverColor="wh">
+                      게시글 작성
+                    </A>
+                  </Div>
+                </Button>
+              </FlexDiv>
+            )}
+            {/* 게시판 */}
+            {boardList && boardList.length !== 0 && (
+              <Pagination
+                totalPage={totalPage}
+                fetchUrl={`${fetchUrl}`}
+                token
+                paginationFetch={fetchBoardListData}
+              />
+            )}
+            {/* 공모전 */}
+            {contestListData && contestListData.length !== 0 && (
+              <Pagination
+                totalPage={totalPage}
+                fetchUrl={`/contest/${url}?${contestOrderBy}`}
+                paginationFetch={fetchBoardListData}
+                size={4}
+              />
+            )}
+          </BoardContent>
+        </BoardContainer>
+      )}
+    </>
+  );
 };
 
 export default BoardList;

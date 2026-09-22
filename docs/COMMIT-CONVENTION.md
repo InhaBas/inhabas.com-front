@@ -33,18 +33,18 @@ resolves: #561
 
 프로젝트 히스토리를 기반으로 정리한 prefix입니다.
 
-| prefix | 설명 | 예시 |
-|--------|------|------|
-| `feat` | 새로운 기능 추가 | `feat: 첨부파일 다운로드 기능 추가` |
-| `fix` | 버그 수정 | `fix: 회계내역 UI 깨지는 현상 해결` |
-| `design` | UI · 스타일 변경 (기능 변경 없음) | `design: 버튼 간격 및 색상 조정` |
-| `refactor` | 코드 구조 개선 (기능 변경 없음) | `refactor: useFetch 제네릭 타입 적용` |
-| `docs` | 문서 추가 · 수정 | `docs: 라우팅 구조 문서 업데이트` |
-| `chore` | 빌드 설정, 패키지, 환경 변경 | `chore: CRA → Vite 마이그레이션` |
-| `style` | 포매팅, 세미콜론 등 코드 스타일만 변경 | `style: Prettier 포매팅 일괄 적용` |
-| `test` | 테스트 추가 · 수정 | `test: BoardList 렌더링 테스트 추가` |
-| `ci` | GitHub Actions · CI/CD 설정 변경 | `ci: 배포 워크플로우 경로 수정` |
-| `revert` | 이전 커밋 되돌리기 | `revert: "feat: 검색 기능 추가" 롤백` |
+| prefix     | 설명                                   | 예시                                  |
+| ---------- | -------------------------------------- | ------------------------------------- |
+| `feat`     | 새로운 기능 추가                       | `feat: 첨부파일 다운로드 기능 추가`   |
+| `fix`      | 버그 수정                              | `fix: 회계내역 UI 깨지는 현상 해결`   |
+| `design`   | UI · 스타일 변경 (기능 변경 없음)      | `design: 버튼 간격 및 색상 조정`      |
+| `refactor` | 코드 구조 개선 (기능 변경 없음)        | `refactor: useFetch 제네릭 타입 적용` |
+| `docs`     | 문서 추가 · 수정                       | `docs: 라우팅 구조 문서 업데이트`     |
+| `chore`    | 빌드 설정, 패키지, 환경 변경           | `chore: CRA → Vite 마이그레이션`      |
+| `style`    | 포매팅, 세미콜론 등 코드 스타일만 변경 | `style: Prettier 포매팅 일괄 적용`    |
+| `test`     | 테스트 추가 · 수정                     | `test: BoardList 렌더링 테스트 추가`  |
+| `ci`       | GitHub Actions · CI/CD 설정 변경       | `ci: 배포 워크플로우 경로 수정`       |
+| `revert`   | 이전 커밋 되돌리기                     | `revert: "feat: 검색 기능 추가" 롤백` |
 
 > **`comment` prefix는 더 이상 사용하지 않습니다.**  
 > 주석 추가/제거는 `chore` 또는 `refactor`로 작성합니다.

@@ -1,120 +1,121 @@
-import { atom } from "recoil";
-import { modalInterface } from "../types/TypeCommon";
+import { atom } from 'recoil';
+
+import { modalInterface } from '../types/TypeCommon';
 
 // common
 export const refetch = atom({
-    key: "refetch",
-    default: false,
+  key: 'refetch',
+  default: false,
 });
 
 export const checkedList = atom({
-    key: "checkedList",
-    default: [] as Number[],
+  key: 'checkedList',
+  default: [] as number[],
 });
 
 export const _checkedList = atom({
-    key: "_checkedList",
-    default: [] as Number[],
+  key: '_checkedList',
+  default: [] as number[],
 });
 
 export const __checkedList = atom({
-    key: "__checkedList",
-    default: [] as Number[],
+  key: '__checkedList',
+  default: [] as number[],
 });
 
 export const checkOne = atom({
-    key: "checkOne",
-    default: 0,
+  key: 'checkOne',
+  default: 0,
 });
 
 export const menuId = atom({
-    key: "menuId",
-    default: 0,
+  key: 'menuId',
+  default: 0,
 });
 
 // headerTitle
 export const menuInfo = atom({
-    key: "menuInfo",
-    default: 0,
+  key: 'menuInfo',
+  default: 0,
 });
 
 // login
 export const relogin = atom({
-    key: "relogin",
-    default: false,
+  key: 'relogin',
+  default: false,
 });
 
 export const majorSelected = atom({
-    key: "majorSelected",
-    default: { college: "", major: "" },
+  key: 'majorSelected',
+  default: { college: '', major: '' },
 });
 
 // modal
 export const modalInfo = atom<modalInterface>({
-    key: "modalInfoState",
-    default: {
-        type: "",
-        content: "",
-    },
+  key: 'modalInfoState',
+  default: {
+    type: '',
+    content: '',
+  },
 });
 
 export const modalOpen = atom({
-    key: "modalOpenState",
-    default: false,
+  key: 'modalOpenState',
+  default: false,
 });
 
 // dragNdrop
 export const selectedFile = atom<any[]>({
-    key: "selectedFile",
-    default: [],
+  key: 'selectedFile',
+  default: [],
 });
 
 // bank
 export const selectedStudentInfos = atom({
-    key: "selectedStudentInfos",
-    default: { name: "", major: "", studentId: "", memberId: "" },
+  key: 'selectedStudentInfos',
+  default: { name: '', major: '', studentId: '', memberId: '' },
 });
 
 export const bankSupportRejectReasonInfo = atom({
-    key: "bankSupportRejectReasonInfo",
-    default: "",
+  key: 'bankSupportRejectReasonInfo',
+  default: '',
 });
 
 // useFetch
 export const failRefreshing = atom({
-    key: "failRefreshing",
-    default: false,
+  key: 'failRefreshing',
+  default: false,
 });
 
 // carousel
 export const carouselOpen = atom({
-    key: "carouselOpenState",
-    default: false,
+  key: 'carouselOpenState',
+  default: false,
 });
 
 export const carouselInitialState = atom({
-    key: "carouselInitialState",
-    default: 0,
+  key: 'carouselInitialState',
+  default: 0,
 });
 
 // contest
 export const contestOrder = atom({
-    key: "contestOrder",
-    default: "&orderBy=ALL",
+  key: 'contestOrder',
+  default: '&orderBy=ALL',
 });
 
 // myInfo
 export const myAcceptUserState = atom({
-    key: "myAcceptUserState",
-    default: false,
+  key: 'myAcceptUserState',
+  default: false,
 });
 
 export const mySetGraduateState = atom({
-    key: "mySetGraduateState",
-    default: false,
+  key: 'mySetGraduateState',
+  default: false,
 });
 
 export const mySetUndergraduateState = atom({
-    key: "mySetUndergraduateState",
-    default: false,
+  key: 'mySetUndergraduateState',
+  default: false,
 });

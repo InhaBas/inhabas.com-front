@@ -10,33 +10,33 @@
 
 ### 있는 것
 
-| 항목 | 내용 |
-|------|------|
-| viewport meta | `index.html`에 `width=device-width, initial-scale=1` 적용됨 |
-| `FlexDiv` + `flex-wrap` | 레이아웃 기본 단위, wrap 속성 있음 |
-| `Container` 80% 폭 | 유일한 유동 래퍼 |
-| Honor 슬라이더 | react-slick `responsive` (1024px, 1440px 분기) |
+| 항목                    | 내용                                                        |
+| ----------------------- | ----------------------------------------------------------- |
+| viewport meta           | `index.html`에 `width=device-width, initial-scale=1` 적용됨 |
+| `FlexDiv` + `flex-wrap` | 레이아웃 기본 단위, wrap 속성 있음                          |
+| `Container` 80% 폭      | 유일한 유동 래퍼                                            |
+| Honor 슬라이더          | react-slick `responsive` (1024px, 1440px 분기)              |
 
 ### 없는 것
 
-| 항목 | 영향 |
-|------|------|
-| `@media` 쿼리 | **전체 코드베이스 0건** — 반응형 미적용 상태 |
-| `theme.ts` breakpoints | 브레이크포인트 상수 없음 |
-| 모바일 네비게이션 | 햄버거 버튼, 드로어 없음 |
-| 상대 단위 타이포 | `rem`/`clamp` 거의 없고 전부 `px` |
-| CSS Grid | 미사용 |
+| 항목                   | 영향                                         |
+| ---------------------- | -------------------------------------------- |
+| `@media` 쿼리          | **전체 코드베이스 0건** — 반응형 미적용 상태 |
+| `theme.ts` breakpoints | 브레이크포인트 상수 없음                     |
+| 모바일 네비게이션      | 햄버거 버튼, 드로어 없음                     |
+| 상대 단위 타이포       | `rem`/`clamp` 거의 없고 전부 `px`            |
+| CSS Grid               | 미사용                                       |
 
 ### 주요 고정값 (변경 필요)
 
-| px 값 | 사용처 |
-|-------|--------|
-| `1170px` | 헤더 내부 콘텐츠 최대 너비 |
-| `800px` | `DetailContainer` (상세 페이지) |
-| `423px` | 서브페이지 헤더 높이 |
-| `360px` | 활동·강의 카드 너비 |
-| `350px` | 메인 로고, 푸터 컬럼 |
-| `263px` | 게시판·강의 사이드 네비 |
+| px 값    | 사용처                          |
+| -------- | ------------------------------- |
+| `1170px` | 헤더 내부 콘텐츠 최대 너비      |
+| `800px`  | `DetailContainer` (상세 페이지) |
+| `423px`  | 서브페이지 헤더 높이            |
+| `360px`  | 활동·강의 카드 너비             |
+| `350px`  | 메인 로고, 푸터 컬럼            |
+| `263px`  | 게시판·강의 사이드 네비         |
 
 > **현재는 1170px 기준 데스크톱 단일 레이아웃**입니다. 768px 이하 모바일에서 가로 스크롤 또는 레이아웃 깨짐이 발생합니다.
 
@@ -67,24 +67,24 @@ wide    : 1280px ~          (현재 기준 화면, 1170px 콘텐츠 폭)
 // src/styles/theme.ts
 
 export const breakpoints = {
-    mobile: '767px',
-    tablet: '1023px',
-    desktop: '1279px',
+  mobile: '767px',
+  tablet: '1023px',
+  desktop: '1279px',
 } as const;
 
 // styled-components 내에서 사용하는 media helper
 export const media = {
-    mobile: `@media (max-width: ${breakpoints.mobile})`,
-    tablet: `@media (max-width: ${breakpoints.tablet})`,
-    desktop: `@media (max-width: ${breakpoints.desktop})`,
-    tabletOnly: `@media (min-width: 768px) and (max-width: ${breakpoints.tablet})`,
+  mobile: `@media (max-width: ${breakpoints.mobile})`,
+  tablet: `@media (max-width: ${breakpoints.tablet})`,
+  desktop: `@media (max-width: ${breakpoints.desktop})`,
+  tabletOnly: `@media (min-width: 768px) and (max-width: ${breakpoints.tablet})`,
 } as const;
 
 export const theme: DefaultTheme = {
-    color,
-    fontSize,
-    breakpoints,
-    media,
+  color,
+  fontSize,
+  breakpoints,
+  media,
 };
 ```
 
@@ -98,7 +98,7 @@ import { theme } from '../styles/theme';
 type Theme = typeof theme;
 
 declare module 'styled-components' {
-    export interface DefaultTheme extends Theme {}
+  export interface DefaultTheme extends Theme {}
 }
 ```
 
@@ -109,16 +109,16 @@ import styled from 'styled-components';
 import { media } from '../../styles/theme';
 
 const Wrapper = styled.div`
-    width: 1170px;
+  width: 1170px;
 
-    ${media.tablet} {
-        width: 100%;
-        padding: 0 24px;
-    }
+  ${media.tablet} {
+    width: 100%;
+    padding: 0 24px;
+  }
 
-    ${media.mobile} {
-        padding: 0 16px;
-    }
+  ${media.mobile} {
+    padding: 0 16px;
+  }
 `;
 ```
 
@@ -151,46 +151,46 @@ HeaderNav는 모든 페이지에 고정되는 가장 중요한 컴포넌트입�
 ```typescript
 // 1. 모바일용 햄버거 버튼 추가
 const HamburgerButton = styled.button`
-    display: none;
+  display: none;
 
-    ${media.mobile} {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
+  ${media.mobile} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
 `;
 
 // 2. 데스크톱 메뉴는 모바일에서 숨기기
 const NavMenu = styled.nav`
-    display: flex;
+  display: flex;
 
-    ${media.mobile} {
-        display: none;
-    }
+  ${media.mobile} {
+    display: none;
+  }
 `;
 
 // 3. 드로어 (모바일 전용 슬라이드 메뉴)
 const Drawer = styled.div<{ $isOpen: boolean }>`
-    display: none;
+  display: none;
 
-    ${media.mobile} {
-        display: block;
-        position: fixed;
-        top: 73px;
-        left: 0;
-        width: 100%;
-        height: calc(100vh - 73px);
-        background: white;
-        transform: translateX(${({ $isOpen }) => ($isOpen ? '0' : '-100%')});
-        transition: transform 0.3s ease;
-        overflow-y: auto;
-        z-index: 999;
-    }
+  ${media.mobile} {
+    display: block;
+    position: fixed;
+    top: 73px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 73px);
+    background: white;
+    transform: translateX(${({ $isOpen }) => ($isOpen ? '0' : '-100%')});
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    z-index: 999;
+  }
 `;
 ```
 
@@ -219,37 +219,37 @@ const Drawer = styled.div<{ $isOpen: boolean }>`
 ```typescript
 // BoardLayout — flex-direction 변경
 const BoardLayout = styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: 24px;
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
 
-    ${media.tablet} {
-        flex-direction: column;
-    }
+  ${media.tablet} {
+    flex-direction: column;
+  }
 `;
 
 // 사이드 네비 — 태블릿에서 접기/펼치기
 const SideNav = styled.div<{ $isCollapsed: boolean }>`
-    width: 263px;
-    flex-shrink: 0;
+  width: 263px;
+  flex-shrink: 0;
 
-    ${media.tablet} {
-        width: 100%;
-        display: ${({ $isCollapsed }) => ($isCollapsed ? 'none' : 'block')};
-    }
+  ${media.tablet} {
+    width: 100%;
+    display: ${({ $isCollapsed }) => ($isCollapsed ? 'none' : 'block')};
+  }
 `;
 
 // 모바일 — 가로 스크롤 탭으로 전환
 const MobileNavTabs = styled.div`
-    display: none;
+  display: none;
 
-    ${media.mobile} {
-        display: flex;
-        overflow-x: auto;
-        gap: 8px;
-        padding: 8px 0;
-        -webkit-overflow-scrolling: touch;
-    }
+  ${media.mobile} {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding: 8px 0;
+    -webkit-overflow-scrolling: touch;
+  }
 `;
 ```
 
@@ -268,13 +268,13 @@ const widthList = [45, 0, 450, 120, 120];
 
 ```typescript
 const TableWrapper = styled.div`
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 
-    ${media.mobile} {
-        font-size: 13px;
-    }
+  ${media.mobile} {
+    font-size: 13px;
+  }
 `;
 ```
 
@@ -285,27 +285,27 @@ const TableWrapper = styled.div`
 ```typescript
 // 모바일에서 테이블 행 → 카드로 변환
 const TableRow = styled.tr`
-    ${media.mobile} {
-        display: block;
-        border: 1px solid #eee;
-        border-radius: 8px;
-        margin-bottom: 12px;
-        padding: 12px;
-    }
+  ${media.mobile} {
+    display: block;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    padding: 12px;
+  }
 `;
 
 const TableCell = styled.td<{ $label: string }>`
-    ${media.mobile} {
-        display: flex;
-        justify-content: space-between;
-        padding: 4px 0;
+  ${media.mobile} {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
 
-        &::before {
-            content: attr(data-label);
-            font-weight: bold;
-            margin-right: 8px;
-        }
+    &::before {
+      content: attr(data-label);
+      font-weight: bold;
+      margin-right: 8px;
     }
+  }
 `;
 ```
 
@@ -321,32 +321,32 @@ const TableCell = styled.td<{ $label: string }>`
 // src/styles/assets/Div.ts 수정
 
 export const Container = styled.div`
-    width: 80%;
-    max-width: 1170px;
-    margin: 0 auto;
+  width: 80%;
+  max-width: 1170px;
+  margin: 0 auto;
 
-    ${media.tablet} {
-        width: 90%;
-    }
+  ${media.tablet} {
+    width: 90%;
+  }
 
-    ${media.mobile} {
-        width: 100%;
-        padding: 0 16px;
-    }
+  ${media.mobile} {
+    width: 100%;
+    padding: 0 16px;
+  }
 `;
 
 export const DetailContainer = styled.div`
-    width: 800px;
-    margin: 0 auto;
+  width: 800px;
+  margin: 0 auto;
 
-    ${media.tablet} {
-        width: 90%;
-    }
+  ${media.tablet} {
+    width: 90%;
+  }
 
-    ${media.mobile} {
-        width: 100%;
-        padding: 0 16px;
-    }
+  ${media.mobile} {
+    width: 100%;
+    padding: 0 16px;
+  }
 `;
 ```
 
@@ -357,13 +357,13 @@ export const DetailContainer = styled.div`
 // 목표: 화면 크기에 따라 자동 조절
 
 const CardGrid = styled.div`
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
 
-    ${media.mobile} {
-        grid-template-columns: 1fr;
-    }
+  ${media.mobile} {
+    grid-template-columns: 1fr;
+  }
 `;
 ```
 
@@ -376,28 +376,28 @@ const CardGrid = styled.div`
 ```typescript
 // 현재
 const ModalInner = styled.div`
-    width: 600px;
-    height: 500px;
+  width: 600px;
+  height: 500px;
 `;
 
 // 수정
 const ModalInner = styled.div`
-    width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
+  width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
 
-    ${media.tablet} {
-        width: 90vw;
-    }
+  ${media.tablet} {
+    width: 90vw;
+  }
 
-    ${media.mobile} {
-        width: 100vw;
-        max-height: 85vh;
-        border-radius: 16px 16px 0 0;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-    }
+  ${media.mobile} {
+    width: 100vw;
+    max-height: 85vh;
+    border-radius: 16px 16px 0 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+  }
 `;
 ```
 
@@ -448,13 +448,13 @@ const ModalInner = styled.div`
 
 반응형 작업 후 아래 환경에서 검증합니다.
 
-| 환경 | 해상도 |
-|------|--------|
-| 모바일 (iPhone SE) | 375 × 667 |
-| 모바일 (iPhone 14) | 390 × 844 |
-| 태블릿 (iPad) | 768 × 1024 |
-| 태블릿 가로 (iPad) | 1024 × 768 |
-| 데스크톱 | 1280 × 800 이상 |
+| 환경               | 해상도          |
+| ------------------ | --------------- |
+| 모바일 (iPhone SE) | 375 × 667       |
+| 모바일 (iPhone 14) | 390 × 844       |
+| 태블릿 (iPad)      | 768 × 1024      |
+| 태블릿 가로 (iPad) | 1024 × 768      |
+| 데스크톱           | 1280 × 800 이상 |
 
 **Chrome DevTools** → Toggle Device Toolbar (`Ctrl+Shift+M` / `Cmd+Shift+M`)로 빠르게 확인 가능합니다.
 
