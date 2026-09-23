@@ -98,7 +98,7 @@ const Radio = styled.input.attrs({ type: 'radio' })<InputStyle>`
   border: 1px solid ${(props) => props.theme.color.grey3};
   border-radius: 50%;
 
-  &:hover {
+  &:not(:disabled):hover {
     cursor: pointer;
     border: 2px solid ${(props) => props.theme.color.bgColor};
   }
@@ -106,6 +106,10 @@ const Radio = styled.input.attrs({ type: 'radio' })<InputStyle>`
   &:checked {
     background: center url('/images/radio_purple.svg') no-repeat;
     border: none;
+  }
+
+  &:disabled {
+    opacity: 0.5;
   }
 `;
 
