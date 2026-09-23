@@ -47,7 +47,6 @@ const ModalUpdateBankHistory = () => {
       setFileSelected(receipts);
       // 다시 불러와도 파일 ID가 중복으로 쌓이지 않도록 덮어쓴다
       setFileIdList(receipts.map((receipt: any) => receipt.id));
-      setReload(true);
 
       setInitialValues({
         type,
@@ -58,6 +57,13 @@ const ModalUpdateBankHistory = () => {
       });
     }
   }, [historyInfo]);
+
+  // DragNDrop은 refetch가 true로 바뀔 때 selectedFile로 미리보기를 만든다.
+  // 폼(DragNDrop)이 마운트되기 전에 true로 바꾸면 Bank 목록이 먼저 false로 되돌려 미리보기가 안 나오므로,
+  // 폼이 마운트된 뒤에 바꾼다 (자식 effect가 부모 effect보다 먼저 실행된다).
+  useEffect(() => {
+    if (initialValues) setReload(true);
+  }, [initialValues]);
 
   const updateBankHistory = (payload: BankHistoryPayload) =>
     fetchUpdateHistory(`/budget/history/${modalContent.content}`, 'POST', 'token', payload);
