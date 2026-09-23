@@ -4,7 +4,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { BankHistoryPayload, BankHistoryType } from '../../../functions/bankHistoryFunctions';
 import useFetch from '../../../hooks/useFetch';
 import { fileIdList, tokenAccess } from '../../../recoil/backState';
-import { modalInfo, modalOpen, refetch, selectedFile } from '../../../recoil/frontState';
+import { modalInfo, modalOpen, refetch } from '../../../recoil/frontState';
 import BankHistoryForm, { BankHistoryFormInitialValues } from '../../budget/BankHistoryForm';
 
 const ModalUpdateBankHistory = () => {
@@ -13,7 +13,6 @@ const ModalUpdateBankHistory = () => {
   const accessToken = useRecoilValue(tokenAccess);
   const setReload = useSetRecoilState(refetch);
   const setFileIdList = useSetRecoilState(fileIdList);
-  const setFileSelected = useSetRecoilState(selectedFile);
 
   const [historyInfo, fetchGetHistory] = useFetch();
   const [updateHistory, fetchUpdateHistory] = useFetch();
@@ -21,7 +20,6 @@ const ModalUpdateBankHistory = () => {
   const [initialValues, setInitialValues] = useState<BankHistoryFormInitialValues | null>(null);
 
   useEffect(() => {
-    setFileSelected([]);
     fetchGetHistory(`/budget/history/${modalContent.content}`, 'GET', 'token');
   }, [accessToken]);
 
@@ -29,9 +27,8 @@ const ModalUpdateBankHistory = () => {
     if (historyInfo) {
       const type: BankHistoryType = historyInfo.income === 0 ? 'outcome' : 'income';
 
-      // 첨부 파일은 DragNDrop과 공유하는 전역 상태라서 폼 마운트 전에 채워 둔다
+      // 제출할 파일 ID는 DragNDrop과 공유하는 전역 상태라서 폼 마운트 전에 채워 둔다
       const receipts = historyInfo.receipts ?? [];
-      setFileSelected(receipts);
       // 다시 불러와도 파일 ID가 중복으로 쌓이지 않도록 덮어쓴다
       setFileIdList(receipts.map((receipt: any) => receipt.id));
 
@@ -46,16 +43,10 @@ const ModalUpdateBankHistory = () => {
           studentId: historyInfo.memberStudentIdReceived ?? '',
           name: historyInfo.memberNameReceived ?? '',
         },
+        receipts,
       });
     }
   }, [historyInfo]);
-
-  // DragNDrop은 refetch가 true로 바뀔 때 selectedFile로 미리보기를 만든다.
-  // 폼(DragNDrop)이 마운트되기 전에 true로 바꾸면 Bank 목록이 먼저 false로 되돌려 미리보기가 안 나오므로,
-  // 폼이 마운트된 뒤에 바꾼다 (자식 effect가 부모 effect보다 먼저 실행된다).
-  useEffect(() => {
-    if (initialValues) setReload(true);
-  }, [initialValues]);
 
   const updateBankHistory = (payload: BankHistoryPayload) =>
     fetchUpdateHistory(`/budget/history/${modalContent.content}`, 'POST', 'token', payload);

@@ -20,7 +20,7 @@ import Img from '../../styles/assets/Img';
 import { Input, Label, Radio } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { theme } from '../../styles/theme';
-import DragNDrop from '../common/DragNDrop';
+import DragNDrop, { UploadedFile } from '../common/DragNDrop';
 
 const EMPTY_MEMBER: BankHistoryMember = { memberId: '', studentId: '', name: '' };
 
@@ -32,6 +32,8 @@ export interface BankHistoryFormInitialValues {
   amount: string;
   // 회비를 사용한 부원 (지출에만 해당)
   member: BankHistoryMember;
+  // 이미 첨부되어 있는 증빙자료
+  receipts: UploadedFile[];
 }
 
 export const EMPTY_BANK_HISTORY: BankHistoryFormInitialValues = {
@@ -41,6 +43,7 @@ export const EMPTY_BANK_HISTORY: BankHistoryFormInitialValues = {
   details: '',
   amount: '',
   member: EMPTY_MEMBER,
+  receipts: [],
 };
 
 interface BankHistoryFormProps {
@@ -52,8 +55,8 @@ interface BankHistoryFormProps {
 }
 
 // 회계 내역 추가/수정 모달이 공유하는 입력 폼.
-// 첨부 파일(fileIdList, selectedFile)은 DragNDrop과 공유하는 전역 상태라서,
-// 초기값이 필요하면 폼을 마운트하기 전에 래퍼가 채워 둔다.
+// 제출할 파일 ID(fileIdList)는 DragNDrop과 공유하는 전역 상태라서,
+// 기존 증빙자료가 있으면 폼을 마운트하기 전에 래퍼가 채워 둔다.
 const BankHistoryForm = ({
   heading,
   initialValues,
@@ -368,7 +371,12 @@ const BankHistoryForm = ({
             </FlexDiv>
           </FlexDiv>
           <FlexDiv width="100%">
-            <DragNDrop fileFetch menuId={currentMenuId} onlyImg />
+            <DragNDrop
+              fileFetch
+              menuId={currentMenuId}
+              onlyImg
+              initialFiles={initialValues.receipts}
+            />
           </FlexDiv>
         </FlexDiv>
 
