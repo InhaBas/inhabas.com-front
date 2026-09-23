@@ -13,12 +13,47 @@ import { Input } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
 
+// 이미 서버에 올라가 있는 파일 (수정 시 기존 첨부)
+export interface UploadedFile {
+  id: string;
+  name: string;
+  url: string;
+  type?: string;
+}
+
 interface DragNDropProps {
   single?: boolean;
   onlyImg?: boolean;
   fileFetch?: boolean;
   menuId?: number;
+  // 마운트 시 미리보기로 보여줄 기존 파일
+  initialFiles?: UploadedFile[];
 }
+
+interface Preview {
+  url: string;
+  name: string;
+  width: string;
+  height: string;
+  id?: string;
+}
+
+const isImageFile = (file: { type?: string }): boolean => {
+  const acceptedImageTypes: string[] = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+  return !!file && acceptedImageTypes.includes(file.type ?? '');
+};
+
+const toUploadedPreview = (file: UploadedFile): Preview => {
+  const size = isImageFile(file) ? '100%' : '60%';
+
+  return {
+    url: isImageFile(file) ? file.url : '/images/attachment_grey.svg',
+    name: file.name,
+    width: size,
+    height: size,
+    id: file.id,
+  };
+};
 
 const ScrollFlexDiv = styled(FlexDiv)`
   display: flex;
@@ -86,10 +121,10 @@ const PreviewName = styled(P).attrs({ $whiteSpace: 'normal' })`
   overflow-wrap: anywhere;
 `;
 
-const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => {
-  const [previews, setPreviews] = useState<
-    { url: string; name: string; width: string; height: string }[]
-  >([]);
+const DragNDrop = ({ single, onlyImg, fileFetch, initialFiles }: DragNDropProps) => {
+  const [previews, setPreviews] = useState<Preview[]>(() =>
+    (initialFiles ?? []).map(toUploadedPreview),
+  );
   const [hover, setHover] = useState<number | null>(null);
   const [fileSelected, setFileSelected] = useRecoilState(selectedFile);
   const [fileData, fetchFileData] = useFetch();
@@ -97,11 +132,6 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
   const [currentMenuId, setCurrentMenuId] = useRecoilState(menuId);
   const location = useLocation();
   const [loading, setLoading] = useState<boolean>(false); // 로딩 상태 추가
-
-  const isImageFile = (file: File): boolean => {
-    const acceptedImageTypes: string[] = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-    return file && acceptedImageTypes.includes(file.type);
-  };
 
   const isOtherFile = (file: File): boolean => {
     const acceptedTypes: string[] = [
@@ -341,22 +371,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ single, onlyImg, fileFetch }) => 
   useEffect(() => {
     if (fileSelected.length !== 0 && reload === true) {
       setReload(false);
-      const fileList = fileSelected;
-      fileList.forEach((item) => {
-        const url = isImageFile(item) ? item.url : '/images/attachment_grey.svg';
-        const size = isImageFile(item) ? '100%' : '60%';
-        setPreviews((prevPreviews) => [
-          ...prevPreviews,
-
-          {
-            url: url,
-            name: item.name,
-            width: size,
-            height: size,
-            id: item.id, // 파일 객체에 ID 추가
-          },
-        ]);
-      });
+      setPreviews((prevPreviews) => [...prevPreviews, ...fileSelected.map(toUploadedPreview)]);
     }
   }, [reload]);
 
