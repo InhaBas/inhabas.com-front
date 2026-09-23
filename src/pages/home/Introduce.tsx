@@ -388,6 +388,10 @@ const StaffList = styled(FlexDiv)`
   }
 `;
 
+const StaffCards = styled(FlexDiv)`
+  column-gap: 20px;
+`;
+
 const Introduce = () => {
   const pageData = [
     {
@@ -745,7 +749,7 @@ const Introduce = () => {
             $alignitems="start"
             overflow="auto"
           >
-            <FlexDiv $margin="0 20px 50px 0" $justifycontent="space-between" $alignitems="start">
+            <StaffCards $margin="0 20px 50px 0" $justifycontent="start" $alignitems="start">
               {staff &&
                 staff.length !== 0 &&
                 staff.map((element: staffInterface) => (
@@ -793,7 +797,7 @@ const Introduce = () => {
                     </FlexDiv>
                   </Div>
                 ))}
-            </FlexDiv>
+            </StaffCards>
           </StaffList>
         </AboutContent>
       </AboutSection>
