@@ -18,6 +18,9 @@ import { media } from '../../styles/theme';
 import { supportListInterface } from '../../types/TypeBank';
 
 const SupportPage = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
   min-width: 0;
 
   &,
