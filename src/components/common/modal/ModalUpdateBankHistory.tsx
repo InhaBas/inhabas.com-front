@@ -4,13 +4,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { BankHistoryPayload, BankHistoryType } from '../../../functions/bankHistoryFunctions';
 import useFetch from '../../../hooks/useFetch';
 import { fileIdList, tokenAccess } from '../../../recoil/backState';
-import {
-  modalInfo,
-  modalOpen,
-  refetch,
-  selectedFile,
-  selectedStudentInfos,
-} from '../../../recoil/frontState';
+import { modalInfo, modalOpen, refetch } from '../../../recoil/frontState';
 import BankHistoryForm, { BankHistoryFormInitialValues } from '../../budget/BankHistoryForm';
 
 const ModalUpdateBankHistory = () => {
@@ -18,9 +12,7 @@ const ModalUpdateBankHistory = () => {
   const modalContent = useRecoilValue(modalInfo)!;
   const accessToken = useRecoilValue(tokenAccess);
   const setReload = useSetRecoilState(refetch);
-  const setSelectedInfos = useSetRecoilState(selectedStudentInfos);
   const setFileIdList = useSetRecoilState(fileIdList);
-  const setFileSelected = useSetRecoilState(selectedFile);
 
   const [historyInfo, fetchGetHistory] = useFetch();
   const [updateHistory, fetchUpdateHistory] = useFetch();
@@ -28,7 +20,6 @@ const ModalUpdateBankHistory = () => {
   const [initialValues, setInitialValues] = useState<BankHistoryFormInitialValues | null>(null);
 
   useEffect(() => {
-    setFileSelected([]);
     fetchGetHistory(`/budget/history/${modalContent.content}`, 'GET', 'token');
   }, [accessToken]);
 
@@ -36,18 +27,10 @@ const ModalUpdateBankHistory = () => {
     if (historyInfo) {
       const type: BankHistoryType = historyInfo.income === 0 ? 'outcome' : 'income';
 
-      // 부원과 첨부 파일은 폼 하위 컴포넌트가 공유하는 전역 상태라서 폼 마운트 전에 채워 둔다
-      setSelectedInfos((prev) => ({
-        ...prev,
-        memberId: historyInfo.memberIdReceived ?? '',
-        name: historyInfo.memberNameReceived ?? '',
-        studentId: historyInfo.memberStudentIdReceived ?? '',
-      }));
+      // 제출할 파일 ID는 DragNDrop과 공유하는 전역 상태라서 폼 마운트 전에 채워 둔다
       const receipts = historyInfo.receipts ?? [];
-      setFileSelected(receipts);
       // 다시 불러와도 파일 ID가 중복으로 쌓이지 않도록 덮어쓴다
       setFileIdList(receipts.map((receipt: any) => receipt.id));
-      setReload(true);
 
       setInitialValues({
         type,
@@ -55,6 +38,12 @@ const ModalUpdateBankHistory = () => {
         title: historyInfo.title ?? '',
         details: historyInfo.details ?? '',
         amount: String(type === 'income' ? historyInfo.income : historyInfo.outcome),
+        member: {
+          memberId: historyInfo.memberIdReceived ?? '',
+          studentId: historyInfo.memberStudentIdReceived ?? '',
+          name: historyInfo.memberNameReceived ?? '',
+        },
+        receipts,
       });
     }
   }, [historyInfo]);

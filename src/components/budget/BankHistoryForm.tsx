@@ -3,6 +3,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import StudentSearchTable from './StudentSearchTable';
 import {
+  BankHistoryMember,
   BankHistoryPayload,
   BankHistoryType,
   getTodayKST,
@@ -11,7 +12,7 @@ import {
   validateBankHistory,
 } from '../../functions/bankHistoryFunctions';
 import { fileIdList } from '../../recoil/backState';
-import { menuId, modalOpen, selectedFile, selectedStudentInfos } from '../../recoil/frontState';
+import { menuId, modalOpen, selectedFile } from '../../recoil/frontState';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import { H2 } from '../../styles/assets/H';
@@ -19,9 +20,9 @@ import Img from '../../styles/assets/Img';
 import { Input, Label, Radio } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { theme } from '../../styles/theme';
-import DragNDrop from '../common/DragNDrop';
+import DragNDrop, { UploadedFile } from '../common/DragNDrop';
 
-const EMPTY_STUDENT = { name: '', major: '', studentId: '', memberId: '' };
+const EMPTY_MEMBER: BankHistoryMember = { memberId: '', studentId: '', name: '' };
 
 export interface BankHistoryFormInitialValues {
   type: BankHistoryType;
@@ -29,6 +30,10 @@ export interface BankHistoryFormInitialValues {
   title: string;
   details: string;
   amount: string;
+  // 회비를 사용한 부원 (지출에만 해당)
+  member: BankHistoryMember;
+  // 이미 첨부되어 있는 증빙자료
+  receipts: UploadedFile[];
 }
 
 export const EMPTY_BANK_HISTORY: BankHistoryFormInitialValues = {
@@ -37,6 +42,8 @@ export const EMPTY_BANK_HISTORY: BankHistoryFormInitialValues = {
   title: '',
   details: '',
   amount: '',
+  member: EMPTY_MEMBER,
+  receipts: [],
 };
 
 interface BankHistoryFormProps {
@@ -48,8 +55,8 @@ interface BankHistoryFormProps {
 }
 
 // 회계 내역 추가/수정 모달이 공유하는 입력 폼.
-// 부원(selectedStudentInfos)과 첨부 파일(fileIdList, selectedFile)은 StudentSearchTable, DragNDrop과
-// 공유하는 전역 상태라서, 초기값이 필요하면 폼을 마운트하기 전에 래퍼가 채워 둔다.
+// 제출할 파일 ID(fileIdList)는 DragNDrop과 공유하는 전역 상태라서,
+// 기존 증빙자료가 있으면 폼을 마운트하기 전에 래퍼가 채워 둔다.
 const BankHistoryForm = ({
   heading,
   initialValues,
@@ -58,11 +65,11 @@ const BankHistoryForm = ({
 }: BankHistoryFormProps) => {
   const setOpen = useSetRecoilState(modalOpen);
   const currentMenuId = useRecoilValue(menuId);
-  const [selectedInfos, setSelectedInfos] = useRecoilState(selectedStudentInfos);
   const [files, setFiles] = useRecoilState(fileIdList);
   const setFileSelected = useSetRecoilState(selectedFile);
 
   const [historyType, setHistoryType] = useState<BankHistoryType>(initialValues.type);
+  const [member, setMember] = useState<BankHistoryMember>(initialValues.member);
   const [infos, setInfos] = useState({
     dateUsed: toDateOnly(initialValues.dateUsed),
     title: initialValues.title,
@@ -72,10 +79,9 @@ const BankHistoryForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isSubmittingRef = useRef(false);
 
-  // 모달이 어떤 방식으로 닫히든 다음에 열리는 폼에 이전 부원/첨부 파일이 남지 않도록 초기화
+  // 모달이 어떤 방식으로 닫히든 다음에 열리는 폼에 이전 첨부 파일이 남지 않도록 초기화
   useEffect(() => {
     return () => {
-      setSelectedInfos(EMPTY_STUDENT);
       setFiles([]);
       setFileSelected([]);
     };
@@ -91,7 +97,7 @@ const BankHistoryForm = ({
     setHistoryType(type);
     setInfos((prev) => ({ ...prev, amount: '' }));
     if (type === 'income') {
-      setSelectedInfos(EMPTY_STUDENT);
+      setMember(EMPTY_MEMBER);
     }
   };
 
@@ -101,7 +107,7 @@ const BankHistoryForm = ({
     const form = {
       type: historyType,
       ...infos,
-      member: selectedInfos,
+      member,
       files,
     };
 
@@ -293,7 +299,7 @@ const BankHistoryForm = ({
                   <P>이름:</P>
                 </FlexDiv>
                 <FlexDiv $margin="0 0 0 5px">
-                  <P>{selectedInfos.name}</P>
+                  <P>{member.name}</P>
                 </FlexDiv>
               </FlexDiv>
               <FlexDiv
@@ -307,14 +313,19 @@ const BankHistoryForm = ({
                   <P>학번:</P>
                 </FlexDiv>
                 <FlexDiv $margin="0 0 0 5px">
-                  <P>{selectedInfos.studentId}</P>
+                  <P>{member.studentId}</P>
                 </FlexDiv>
               </FlexDiv>
             </FlexDiv>
 
             {/* 학생 검색 테이블 */}
             <FlexDiv width="100%">
-              <StudentSearchTable />
+              <StudentSearchTable
+                selectedStudentId={member.studentId}
+                onSelect={({ memberId, studentId, name }) =>
+                  setMember({ memberId, studentId, name })
+                }
+              />
             </FlexDiv>
 
             {/* 지출액 입력란 */}
@@ -360,7 +371,12 @@ const BankHistoryForm = ({
             </FlexDiv>
           </FlexDiv>
           <FlexDiv width="100%">
-            <DragNDrop fileFetch menuId={currentMenuId} onlyImg />
+            <DragNDrop
+              fileFetch
+              menuId={currentMenuId}
+              onlyImg
+              initialFiles={initialValues.receipts}
+            />
           </FlexDiv>
         </FlexDiv>
 

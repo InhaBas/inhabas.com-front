@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import useFetch from '../../hooks/useFetch';
-import { selectedStudentInfos } from '../../recoil/frontState';
 import A from '../../styles/assets/A';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
@@ -52,11 +50,16 @@ const TableHover = styled(SearchRow)`
   }
 `;
 
+interface StudentSearchTableProps {
+  // 선택된 부원의 학번 (해당 행을 강조 표시)
+  selectedStudentId?: string | number | null;
+  onSelect: (student: searchedMemberInterface) => void;
+}
+
 // 컴포넌트 재사용 시 placeholder 변수로 받아서 사용
-const StudentSearchTable = () => {
+const StudentSearchTable = ({ selectedStudentId, onSelect }: StudentSearchTableProps) => {
   // 상태 변수 선언 및 초기화
   const [searchTerm, setSearchTerm] = useState(''); // 검색어를 관리하는 상태 변수
-  const [selectedStudent, setSelectedStudent] = useRecoilState(selectedStudentInfos); // 선택된 학생 정보를 관리하는 Recoil 상태 변수
 
   const [studentInfoList, fetchStudentInfoList] = useFetch();
   const [studentInfos, setNotGraduatedStudents] = useState([]);
@@ -68,11 +71,6 @@ const StudentSearchTable = () => {
   useEffect(() => {
     setNotGraduatedStudents(studentInfoList?.data);
   }, [studentInfoList]);
-
-  // 학생 선택 시 실행되는 함수
-  const chooseStudent = (studentInfo: any) => {
-    setSelectedStudent(studentInfo); // 선택된 학생 정보 업데이트
-  };
 
   const filteredResults = studentInfos?.filter((item: any) =>
     item?.name.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -129,11 +127,9 @@ const StudentSearchTable = () => {
                       height="45px"
                       $borderT={`1px solid ${theme.color.grey1}`}
                       $justifycontent="space-between"
-                      $backgroundColor={
-                        selectedStudent.studentId === element?.studentId ? 'tableHo' : 'wh'
-                      }
+                      $backgroundColor={selectedStudentId === element?.studentId ? 'tableHo' : 'wh'}
                       $pointer
-                      onClick={() => chooseStudent(element)}
+                      onClick={() => onSelect(element)}
                     >
                       {/* 테이블 셀 */}
                       <FlexDiv
