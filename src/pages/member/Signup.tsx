@@ -35,14 +35,18 @@ const HrSect = styled.div`
 `;
 
 const SignupPage = styled(FlexDiv)`
+  height: auto;
+  min-height: 100vh;
+
   ${media.mobile} {
-    height: auto;
-    min-height: 100vh;
     align-items: flex-start;
   }
 `;
 
 const SignupPanel = styled(FlexDiv)`
+  height: auto;
+  min-height: 80vh;
+
   ${media.desktop} {
     width: max(33%, 420px);
   }
@@ -54,7 +58,6 @@ const SignupPanel = styled(FlexDiv)`
 
   ${media.mobile} {
     width: 100%;
-    height: auto;
     min-height: 100vh;
     margin: 0;
     padding: 32px 20px;
@@ -126,6 +129,10 @@ const NextButton = styled(Button)`
 `;
 
 const SignupBackground = styled(Div)`
+  align-self: stretch;
+  height: auto;
+  min-height: 100vh;
+
   ${media.desktop} {
     width: calc(100% - max(33%, 420px));
   }

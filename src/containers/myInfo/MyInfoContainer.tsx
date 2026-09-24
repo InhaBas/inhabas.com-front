@@ -34,6 +34,27 @@ const InfoTable = styled(Div)`
   }
 `;
 
+const InfoLabel = styled(FlexDiv)`
+  flex-shrink: 0;
+  width: 150px;
+
+  ${media.tablet} {
+    width: 100px;
+  }
+
+  ${media.mobile} {
+    width: 80px;
+    white-space: nowrap;
+
+    && {
+      padding-right: 8px !important;
+      padding-left: 8px !important;
+    }
+  }
+`;
+
+const InfoActions = styled(FlexDiv)``;
+
 const InfoRow = styled(FlexDiv)`
   box-sizing: border-box;
   min-width: 0;
@@ -45,6 +66,10 @@ const InfoRow = styled(FlexDiv)`
     min-width: 0 !important;
   }
 
+  > div {
+    flex-wrap: nowrap;
+  }
+
   ${media.tablet} {
     height: auto !important;
     min-height: 45px;
@@ -52,6 +77,11 @@ const InfoRow = styled(FlexDiv)`
     > div,
     > div > div {
       padding: 10px 16px !important;
+    }
+
+    > div:has(> ${InfoLabel}),
+    > ${InfoActions} {
+      padding: 0 !important;
     }
   }
 
@@ -176,10 +206,14 @@ const MyInfoContainer = () => {
               $backgroundColor="wh"
             >
               <FlexDiv>
-                <FlexDiv $minWidth={`${widthList[0]}px`} $padding="10px 40px">
+                <InfoLabel $padding="10px 40px">
                   <P fontWeight={900}>이름</P>
-                </FlexDiv>
-                <FlexDiv $minWidth={`${widthList[1]}px`} $padding="10px 40px">
+                </InfoLabel>
+                <FlexDiv
+                  $minWidth={`${widthList[1]}px`}
+                  $padding="10px 40px"
+                  $justifycontent="start"
+                >
                   <P>{info?.name}</P>
                 </FlexDiv>
               </FlexDiv>
@@ -197,10 +231,10 @@ const MyInfoContainer = () => {
               $justifycontent="start"
               $backgroundColor="wh"
             >
-              <FlexDiv $minWidth={`${widthList[0]}px`} $padding="10px 40px">
+              <InfoLabel $padding="10px 40px">
                 <P fontWeight={900}>학번</P>
-              </FlexDiv>
-              <FlexDiv $minWidth={`${widthList[1]}px`} $padding="10px 40px">
+              </InfoLabel>
+              <FlexDiv $minWidth={`${widthList[1]}px`} $padding="10px 40px" $justifycontent="start">
                 <P>{info?.studentId}</P>
               </FlexDiv>
             </InfoRow>
@@ -212,10 +246,14 @@ const MyInfoContainer = () => {
               $backgroundColor="wh"
             >
               <FlexDiv>
-                <FlexDiv $minWidth={`${widthList[0]}px`} $padding="10px 40px">
+                <InfoLabel $padding="10px 40px">
                   <P fontWeight={900}>학과</P>
-                </FlexDiv>
-                <FlexDiv $minWidth={`${widthList[1]}px`} $padding="10px 40px">
+                </InfoLabel>
+                <FlexDiv
+                  $minWidth={`${widthList[1]}px`}
+                  $padding="10px 40px"
+                  $justifycontent="start"
+                >
                   <P>{info?.major}</P>
                 </FlexDiv>
               </FlexDiv>
@@ -232,10 +270,10 @@ const MyInfoContainer = () => {
               $justifycontent="start"
               $backgroundColor="wh"
             >
-              <FlexDiv $minWidth={`${widthList[0]}px`} $padding="10px 40px">
+              <InfoLabel $padding="10px 40px">
                 <P fontWeight={900}>이메일</P>
-              </FlexDiv>
-              <FlexDiv $minWidth={`${widthList[1]}px`} $padding="10px 40px">
+              </InfoLabel>
+              <FlexDiv $minWidth={`${widthList[1]}px`} $padding="10px 40px" $justifycontent="start">
                 <P>{info?.email}</P>
               </FlexDiv>
             </InfoRow>
@@ -247,10 +285,14 @@ const MyInfoContainer = () => {
               $backgroundColor="wh"
             >
               <FlexDiv>
-                <FlexDiv $minWidth={`${widthList[0]}px`} $padding="10px 40px">
+                <InfoLabel $padding="10px 40px">
                   <P fontWeight={900}>전화번호</P>
-                </FlexDiv>
-                <FlexDiv $minWidth={`${widthList[1]}px`} $padding="10px 40px">
+                </InfoLabel>
+                <FlexDiv
+                  $minWidth={`${widthList[1]}px`}
+                  $padding="10px 40px"
+                  $justifycontent="start"
+                >
                   <P>{info?.phoneNumber}</P>
                 </FlexDiv>
               </FlexDiv>
@@ -268,15 +310,19 @@ const MyInfoContainer = () => {
               $backgroundColor="wh"
             >
               <FlexDiv>
-                <FlexDiv $minWidth={`${widthList[0]}px`} $padding="10px 40px">
+                <InfoLabel $padding="10px 40px">
                   <P fontWeight={900}>권한</P>
-                </FlexDiv>
-                <FlexDiv $minWidth={`${widthList[1]}px`} $padding="10px 40px">
+                </InfoLabel>
+                <FlexDiv
+                  $minWidth={`${widthList[1]}px`}
+                  $padding="10px 40px"
+                  $justifycontent="start"
+                >
                   <P>{auth}</P>
                 </FlexDiv>
               </FlexDiv>
 
-              <FlexDiv>
+              <InfoActions>
                 {(info?.role === 'CHIEF' || info?.role === 'VICE_CHIEF') && (
                   <FlexDiv
                     onClick={() => navigate('/staff/manage')}
@@ -298,7 +344,7 @@ const MyInfoContainer = () => {
                     <P color="grey2">졸업 하셨나요?</P>
                   </FlexDiv>
                 )}
-              </FlexDiv>
+              </InfoActions>
             </InfoRow>
             <InfoRow
               width="100%"
@@ -308,10 +354,14 @@ const MyInfoContainer = () => {
               $backgroundColor="wh"
             >
               <FlexDiv>
-                <FlexDiv $minWidth={`${widthList[0]}px`} $padding="10px 40px">
+                <InfoLabel $padding="10px 40px">
                   <P fontWeight={900}>자기소개</P>
-                </FlexDiv>
-                <FlexDiv $minWidth={`${widthList[1]}px`} $padding="10px 40px">
+                </InfoLabel>
+                <FlexDiv
+                  $minWidth={`${widthList[1]}px`}
+                  $padding="10px 40px"
+                  $justifycontent="start"
+                >
                   {info?.introduce?.length === 0 ? (
                     <P color="grey2">아직 자기 소개를 작성하지 않았습니다.</P>
                   ) : (
