@@ -390,6 +390,14 @@ const StaffList = styled(FlexDiv)`
 
 const StaffCards = styled(FlexDiv)`
   column-gap: 20px;
+
+  ${media.mobile} {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 130px);
+    justify-content: center;
+    width: 100%;
+    margin-right: 0;
+  }
 `;
 
 const Introduce = () => {
