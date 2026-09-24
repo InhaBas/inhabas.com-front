@@ -43,10 +43,17 @@ const InfoLabel = styled(FlexDiv)`
   }
 
   ${media.mobile} {
-    flex-shrink: 1;
-    width: auto;
+    width: 80px;
+    white-space: nowrap;
+
+    && {
+      padding-right: 8px !important;
+      padding-left: 8px !important;
+    }
   }
 `;
+
+const InfoActions = styled(FlexDiv)``;
 
 const InfoRow = styled(FlexDiv)`
   box-sizing: border-box;
@@ -71,20 +78,15 @@ const InfoRow = styled(FlexDiv)`
     > div > div {
       padding: 10px 16px !important;
     }
-  }
 
-  ${media.tabletOnly} {
-    > div:has(> ${InfoLabel}) {
+    > div:has(> ${InfoLabel}),
+    > ${InfoActions} {
       padding: 0 !important;
     }
   }
 
   ${media.mobile} {
     align-items: stretch;
-
-    > div {
-      flex-wrap: wrap;
-    }
 
     > div,
     > div > div {
@@ -320,7 +322,7 @@ const MyInfoContainer = () => {
                 </FlexDiv>
               </FlexDiv>
 
-              <FlexDiv>
+              <InfoActions>
                 {(info?.role === 'CHIEF' || info?.role === 'VICE_CHIEF') && (
                   <FlexDiv
                     onClick={() => navigate('/staff/manage')}
@@ -342,7 +344,7 @@ const MyInfoContainer = () => {
                     <P color="grey2">졸업 하셨나요?</P>
                   </FlexDiv>
                 )}
-              </FlexDiv>
+              </InfoActions>
             </InfoRow>
             <InfoRow
               width="100%"
