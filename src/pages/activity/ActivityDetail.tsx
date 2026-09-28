@@ -221,7 +221,7 @@ const ActivityDetail = () => {
               <ImageGallery>
                 {detail?.images?.slice(0, 3)?.map(({ id, url }, idx) => (
                   <Button key={id} onClick={() => handleCarousel(idx)}>
-                    <GalleryImage $pointer>
+                    <GalleryImage>
                       <Img src={url} $HFilter="brightness(80%)" />
                     </GalleryImage>
                   </Button>
@@ -233,7 +233,7 @@ const ActivityDetail = () => {
                     $HFilter="brightness(2)"
                     onClick={() => handleCarousel(0)}
                   >
-                    <GalleryImage $backgroundColor="bklayer">
+                    <GalleryImage>
                       <Img src={detail.images[3].url} $filter="brightness(10%)" />
                     </GalleryImage>
                     <FlexDiv $position="absolute" $top="0" width="200px" height="200px">
