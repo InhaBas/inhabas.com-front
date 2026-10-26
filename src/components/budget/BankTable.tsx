@@ -214,11 +214,11 @@ const BankTable = () => {
         </TableActions>
       )}
 
-      {/* <FlexDiv width="100%">
-                <Div $padding="10px 20px" $backgroundColor="bgColor" radius={50}>
-                    <P color="wh"> 잔액 : ₩ {String(bankBalance)?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} </P>
-                </Div>
-            </FlexDiv> */}
+      <FlexDiv width="100%">
+        <Div $padding="10px 20px" $backgroundColor="bgColor" radius={50}>
+          <P color="wh">잔액 : ₩ {String(bankBalance)?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</P>
+        </Div>
+      </FlexDiv>
     </>
   );
 };
