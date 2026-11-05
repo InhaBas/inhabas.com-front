@@ -27,13 +27,6 @@ git checkout -b <type>/<slug> upstream/main
 
 예: `fix/bank-balance-display`, `chore/typescript-5.9`
 
-완료 기준:
-
-```bash
-git rev-parse --abbrev-ref HEAD | grep -qE '^(feat|fix|design|refactor|docs|chore|style|test|ci|revert)/[a-z0-9]+([-.][a-z0-9]+)*$'
-git merge-base --is-ancestor upstream/main HEAD
-```
-
 ## 동기화
 
 ```bash
