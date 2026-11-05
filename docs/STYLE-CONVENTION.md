@@ -123,9 +123,4 @@ import { Wrapper } from './BoardList.styles';
 
 주요 prefix: `feat`, `fix`, `design`, `refactor`, `docs`, `chore`, `style`, `test`, `ci`, `revert`
 
-**브랜치 네이밍:**
-
-```
-feat/<기능명>      fix/<버그명>      refactor/<대상>
-docs/<대상>        chore/<대상>      design/<대상>
-```
+**브랜치 네이밍:** [브랜치 규칙](../.claude/rules/branching.md)

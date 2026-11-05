@@ -34,7 +34,7 @@ resolves: #
 
 ## 체크리스트
 
-- [ ] `upstream/dev` 기준으로 브랜치를 만들었다
+- [ ] [브랜치 규칙](../.claude/rules/branching.md)을 지켰다
 - [ ] 빌드가 정상적으로 된다 (`npm run build`)
 - [ ] ESLint 에러가 없다 (`npm run lint`)
 - [ ] Prettier 포매팅이 적용되었다 (`npm run format`)
