@@ -46,12 +46,6 @@ resolves: #561
 - 명령형 어투로 쓴다. (`추가`, `수정`, `제거`, `개선`)
 - type은 소문자 전체 이름을 쓴다. (`feat` — `Feat`·`feature`가 아니다)
 
-완료 기준:
-
-```bash
-git log -1 --format=%s | grep -qE '^(feat|fix|design|refactor|docs|chore|style|test|ci|revert): .+[^.]$'
-```
-
 ## 본문 (선택)
 
 - 제목 아래 빈 줄 하나를 띄우고 쓴다.
@@ -66,28 +60,6 @@ see also: #559, #557    # 관련 이슈 참고
 ```
 
 이슈 번호는 footer로만 연결한다. 히스토리에 남아 있는 `[feat/#67] feat: 대댓글 UI 추가` 형식은 구 컨벤션이다.
-
-## WIP 커밋
-
-작업 중에는 `WIP: 회원 테이블 UI 작업 중` 같은 임시 커밋을 써도 된다. PR을 올리기 전에 squash해서 정리한다.
-
-```bash
-git rebase -i upstream/main
-```
-
-에디터에서 각 커밋 앞의 키워드를 바꾼다.
-
-- `pick`: 커밋 유지
-- `squash`: 바로 위 커밋에 합치고 메시지도 합치기
-- `fixup`: 합치되 메시지는 버리기 (WIP 메시지 제거에 편하다)
-
-정리하면 히스토리가 바뀌므로 force push한다.
-
-```bash
-git push origin <branch> --force-with-lease
-```
-
-`--force-with-lease`는 다른 사람이 이미 push한 내용이 있으면 덮어쓰지 않는다.
 
 ## PR 제목
 
