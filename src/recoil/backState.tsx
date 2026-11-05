@@ -26,12 +26,6 @@ import {
   policyInterface,
 } from '../types/TypeCommon';
 
-//headerNav
-export const headerNavInfo = atom({
-  key: 'headerNavInfo',
-  default: {},
-});
-
 //headerTitle
 export const headerTitleInfo = atom<menuInterface>({
   key: 'headerTitleInfo',

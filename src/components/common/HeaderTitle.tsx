@@ -5,7 +5,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
 import useFetch from '../../hooks/useFetch';
-import { headerNavInfo, headerTitleInfo, tokenAccess } from '../../recoil/backState';
+import { headerTitleInfo, tokenAccess } from '../../recoil/backState';
 import { menuInfo } from '../../recoil/frontState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import { H1 } from '../../styles/assets/H';
@@ -95,7 +95,6 @@ const HeaderTitle = () => {
   const location = useLocation();
   const pathNameInfo = location.pathname.substring(1).split('/');
   const [title, setTitle] = useRecoilState(headerTitleInfo);
-  const nav = useRecoilValue(headerNavInfo);
   const accessToken = useRecoilValue(tokenAccess);
   const navigate = useNavigate();
 
