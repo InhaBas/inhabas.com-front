@@ -17,16 +17,20 @@
 
 ```bash
 git fetch upstream
-git checkout -b <type>/<이슈번호>-<slug> upstream/main
+git checkout -b <type>/<slug> upstream/main
 ```
 
 - `<type>`: `feat` `fix` `design` `refactor` `docs` `chore` `style` `test` `ci` `revert`
-- `<이슈번호>`: 연결된 이슈가 있으면 필수. 번호를 모르면 `gh issue list`로 찾고, 그래도 못 찾으면 사용자에게 묻는다. 이슈가 없는 작업만 `<type>/<slug>`로 만든다.
 - `<slug>`: 영어 kebab-case 2~4 단어.
 
-예: `feat/573-recruitment-schedule-notice`, `chore/typescript-5.9`
+예: `fix/bank-balance-display`, `chore/typescript-5.9`
 
-완료 기준: `git rev-parse --abbrev-ref HEAD`가 위 형식이고, `git merge-base --is-ancestor upstream/main HEAD`가 성공한다.
+완료 기준:
+
+```bash
+git rev-parse --abbrev-ref HEAD | grep -qE '^(feat|fix|design|refactor|docs|chore|style|test|ci|revert)/[a-z0-9]+([-.][a-z0-9]+)*$'
+git merge-base --is-ancestor upstream/main HEAD
+```
 
 ## main에 체크아웃된 상태라면
 
