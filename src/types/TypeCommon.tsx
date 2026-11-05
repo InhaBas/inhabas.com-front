@@ -8,6 +8,20 @@ export interface menuInterface {
   url?: string;
 }
 
+export interface navMenuInterface extends menuInterface {
+  url: string;
+  /** 네비게이션바 노출 여부. false여도 라우트 자체는 살아있다 */
+  visible: boolean;
+}
+
+export interface menuGroupInterface {
+  id: number;
+  groupName: string;
+  /** 그룹 전체의 네비게이션바 노출 여부 */
+  visible: boolean;
+  menuList: navMenuInterface[];
+}
+
 // bottom
 export interface chiefInterface {
   name: string;
