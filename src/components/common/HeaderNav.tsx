@@ -3,10 +3,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { styled } from 'styled-components';
 
+import { NAV_MENU_GROUPS } from '../../constants/navMenu';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
 import useFetch from '../../hooks/useFetch';
 import {
-  headerNavInfo,
   headerTitleInfo,
   profileInfo,
   signupCheck,
@@ -18,7 +18,7 @@ import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-import { menuInterface } from '../../types/TypeCommon';
+import { menuGroupInterface, navMenuInterface } from '../../types/TypeCommon';
 
 const FixedDiv = styled(FlexDiv)`
   position: fixed;
@@ -239,27 +239,25 @@ const MobileAccountButton = styled(MobileMenuItem)`
   font-weight: 800;
 `;
 
-interface Group {
-  groupName: string;
-  id: number;
-  menuList: menuInterface[];
-}
-
-const HIDDEN_NAV_GROUPS = ['모임', '공모전'];
-const HIDDEN_BOARD_URLS = ['board/question', 'board/free', 'board/suggest', 'board/executive'];
+// 노출 여부는 NAV_MENU_GROUPS의 각 노드가 visible 필드로 직접 들고 있다.
+// 보이는 메뉴가 하나도 없는 그룹은 빈 드롭다운이 되므로 함께 걸러낸다.
+const VISIBLE_NAV_GROUPS: menuGroupInterface[] = NAV_MENU_GROUPS.filter((group) => group.visible)
+  .map((group) => ({
+    ...group,
+    menuList: group.menuList.filter((menu) => menu.visible),
+  }))
+  .filter((group) => group.menuList.length > 0);
 
 const HeaderNav = () => {
   const navigate = useNavigate();
   const { isAuthorizedOverSecretary, isAuthorizedOverBasic, isAuthorizedOverDeactivate } =
     GetRoleAuthorization();
   const location = useLocation();
-  const [data, fetchData] = useFetch();
   const [infoData, fetchInfoData] = useFetch();
   const [signingUserData, fetchSigningUserData] = useFetch();
   const [check, setCheck] = useRecoilState(signupCheck);
-  const [activeGroup, setActiveGroup] = useState(null);
-  const [activeMenu, setActiveMenu] = useState(null);
-  const [nav, setNav] = useRecoilState(headerNavInfo);
+  const [activeGroup, setActiveGroup] = useState<string | null>(null);
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [title, setTitle] = useRecoilState(headerTitleInfo);
   const [info, setInfo] = useRecoilState(profileInfo);
   const setRole = useSetRecoilState(userRole);
@@ -352,23 +350,6 @@ const HeaderNav = () => {
     return titleId;
   };
 
-  const menuUrl = [
-    ['introduce', 'activity', 'honor'],
-    [
-      'board/notice',
-      'board/free',
-      'board/question',
-      'board/opensource',
-      'board/suggest',
-      'board/executive',
-    ],
-    ['lecture', 'lecture', 'lecture', 'lecture'],
-    ['bank/support', 'bank'],
-    ['board/alpha', 'board/beta'],
-    ['board/contest', 'board/activity'],
-    ['scholarship', 'board/sponsor', 'board/usage'],
-  ];
-
   const movePage = (url: string) => {
     navigate(`/${url}`);
     setIsMobileMenuOpen(false);
@@ -419,7 +400,6 @@ const HeaderNav = () => {
   useEffect(() => {
     const id = titleInfo(pathNameInfo[0], pathNameInfo[1]);
     setCurrentMenuId(id);
-    fetchData('/menus', 'GET');
   }, []);
 
   // signup이 안된 경우 profile은 null 로, accessToken은 default로 초기화해주어야 함.
@@ -446,24 +426,6 @@ const HeaderNav = () => {
       setAccess('signing');
     }
   }, [check]);
-
-  useEffect(() => {
-    if (data && Object.keys(data).length !== 0) {
-      const newData = JSON.parse(JSON.stringify(data));
-      delete newData.change;
-
-      (Object.values(newData) as Group[]).forEach((group: Group, groupIdx: number) => {
-        if (group.menuList) {
-          group.menuList = group.menuList.map((menu: menuInterface, idx: number) => ({
-            ...menu,
-            url: (menuUrl[groupIdx] && menuUrl[groupIdx][idx]) || 'defaultUrl',
-          }));
-        }
-      });
-
-      setNav(newData);
-    }
-  }, [data]);
 
   useEffect(() => {
     if (infoData) {
@@ -539,123 +501,69 @@ const HeaderNav = () => {
           <DesktopNav>
             <FlexDiv>
               <FlexDiv>
-                {nav &&
-                  Object.values(nav)
-                    .filter((item: any) => !HIDDEN_NAV_GROUPS.includes(item.groupName))
-                    .map((item: any, idx: number) => {
-                      return (
-                        <Div $position="relative" key={idx}>
-                          <FlexDiv
+                {VISIBLE_NAV_GROUPS.map((item: menuGroupInterface) => (
+                  <Div $position="relative" key={item.id}>
+                    <FlexDiv
+                      $pointer
+                      $margin="15px"
+                      onMouseEnter={() => setActiveGroup(item.groupName)}
+                    >
+                      <Div $margin="0 5px" $top="22px">
+                        <P
+                          fontSize="sm"
+                          fontWeight={800}
+                          $letterSpacing="2px"
+                          color={scrollPosition < 100 ? 'wh' : 'textColor'}
+                        >
+                          {item.groupName}
+                        </P>
+                      </Div>
+                      <FlexDiv width="10px">
+                        {scrollPosition < 100 ? (
+                          <Img src="/images/chevron-down_white.svg" />
+                        ) : (
+                          <Img src="/images/chevron-down_purple.svg" />
+                        )}
+                      </FlexDiv>
+                    </FlexDiv>
+                    {activeGroup === item.groupName && (
+                      <Div
+                        $position="absolute"
+                        $margin="0 5px"
+                        $backgroundColor="wh"
+                        radius={3}
+                        width="220px"
+                        $padding="10px 0"
+                        onMouseLeave={() => setActiveGroup(null)}
+                        onClick={() => setActiveGroup(null)}
+                      >
+                        {item.menuList.map((element: navMenuInterface) => (
+                          <Div
+                            key={element.menuId}
+                            $padding="8px 20px"
+                            width="100%"
                             $pointer
-                            $margin="15px"
-                            onMouseEnter={() => setActiveGroup(item.groupName)}
+                            onMouseEnter={() => setActiveMenu(element.name)}
+                            $backgroundColor={activeMenu === element.name ? 'bgColor' : 'wh'}
+                            onClick={() =>
+                              menuClickEvent(element.url, element.name, element.description)
+                            }
                           >
-                            <Div $margin="0 5px" $top="22px">
+                            <Div>
                               <P
                                 fontSize="sm"
-                                fontWeight={800}
                                 $letterSpacing="2px"
-                                color={scrollPosition < 100 ? 'wh' : 'textColor'}
+                                color={activeMenu === element.name ? 'wh' : 'bk'}
                               >
-                                {item.groupName}
+                                {element.name}
                               </P>
                             </Div>
-                            <FlexDiv width="10px">
-                              {scrollPosition < 100 ? (
-                                <Img src="/images/chevron-down_white.svg" />
-                              ) : (
-                                <Img src="/images/chevron-down_purple.svg" />
-                              )}
-                            </FlexDiv>
-                          </FlexDiv>
-                          {activeGroup === item.groupName && (
-                            <Div
-                              $position="absolute"
-                              $margin="0 5px"
-                              $backgroundColor="wh"
-                              radius={3}
-                              width="220px"
-                              $padding="10px 0"
-                              onMouseLeave={() => setActiveGroup(null)}
-                              onClick={() => setActiveGroup(null)}
-                            >
-                              {item.menuList &&
-                                Object.values(item.menuList)
-                                  .filter(
-                                    (element: any) => !HIDDEN_BOARD_URLS.includes(element.url),
-                                  )
-                                  .map((element: any, idx: number) => {
-                                    if (
-                                      element.url === 'board/executive' &&
-                                      isAuthorizedOverSecretary
-                                    ) {
-                                      return (
-                                        <Div
-                                          key={`menu${idx}`}
-                                          $padding="8px 20px"
-                                          width="100%"
-                                          $pointer
-                                          onMouseEnter={() => setActiveMenu(element.name)}
-                                          $backgroundColor={
-                                            activeMenu === element.name ? 'bgColor' : 'wh'
-                                          }
-                                          onClick={() =>
-                                            menuClickEvent(
-                                              element.url,
-                                              element.name,
-                                              element.description,
-                                            )
-                                          }
-                                        >
-                                          <Div>
-                                            <P
-                                              fontSize="sm"
-                                              $letterSpacing="2px"
-                                              color={activeMenu === element.name ? 'wh' : 'bk'}
-                                            >
-                                              {element.name}
-                                            </P>
-                                          </Div>
-                                        </Div>
-                                      );
-                                    } else if (element.url !== 'board/executive') {
-                                      return (
-                                        <Div
-                                          $padding="8px 20px"
-                                          width="100%"
-                                          $pointer
-                                          key={`menu${idx}`}
-                                          onMouseEnter={() => setActiveMenu(element.name)}
-                                          $backgroundColor={
-                                            activeMenu === element.name ? 'bgColor' : 'wh'
-                                          }
-                                          onClick={() =>
-                                            menuClickEvent(
-                                              element.url,
-                                              element.name,
-                                              element.description,
-                                            )
-                                          }
-                                        >
-                                          <Div>
-                                            <P
-                                              fontSize="sm"
-                                              $letterSpacing="2px"
-                                              color={activeMenu === element.name ? 'wh' : 'bk'}
-                                            >
-                                              {element.name}
-                                            </P>
-                                          </Div>
-                                        </Div>
-                                      );
-                                    }
-                                    return null; // element.url === "board/executive" && !isAuthorizedOverSecretary 인 경우
-                                  })}
-                            </Div>
-                          )}
-                        </Div>
-                      );
-                    })}
+                          </Div>
+                        ))}
+                      </Div>
+                    )}
+                  </Div>
+                ))}
               </FlexDiv>
               {access === 'default' || access === 'signing' ? (
                 <FlexDiv $pointer $margin="15px" onClick={() => movePage('login')}>
@@ -767,45 +675,20 @@ const HeaderNav = () => {
                 ×
               </MobileMenuCloseButton>
             </MobileMenuHeader>
-            {nav &&
-              Object.values(nav)
-                .filter((item: any) => !HIDDEN_NAV_GROUPS.includes(item.groupName))
-                .map((item: any, idx: number) => (
-                  <MobileMenuGroup key={`mobileGroup${idx}`}>
-                    <MobileGroupName>{item.groupName}</MobileGroupName>
-                    {item.menuList &&
-                      Object.values(item.menuList)
-                        .filter((element: any) => !HIDDEN_BOARD_URLS.includes(element.url))
-                        .map((element: any, menuIdx: number) => {
-                          if (element.url === 'board/executive' && isAuthorizedOverSecretary) {
-                            return (
-                              <MobileMenuItem
-                                type="button"
-                                key={`mobileMenu${menuIdx}`}
-                                onClick={() =>
-                                  menuClickEvent(element.url, element.name, element.description)
-                                }
-                              >
-                                {element.name}
-                              </MobileMenuItem>
-                            );
-                          } else if (element.url !== 'board/executive') {
-                            return (
-                              <MobileMenuItem
-                                type="button"
-                                key={`mobileMenu${menuIdx}`}
-                                onClick={() =>
-                                  menuClickEvent(element.url, element.name, element.description)
-                                }
-                              >
-                                {element.name}
-                              </MobileMenuItem>
-                            );
-                          }
-                          return null;
-                        })}
-                  </MobileMenuGroup>
+            {VISIBLE_NAV_GROUPS.map((item: menuGroupInterface) => (
+              <MobileMenuGroup key={`mobileGroup${item.id}`}>
+                <MobileGroupName>{item.groupName}</MobileGroupName>
+                {item.menuList.map((element: navMenuInterface) => (
+                  <MobileMenuItem
+                    type="button"
+                    key={`mobileMenu${element.menuId}`}
+                    onClick={() => menuClickEvent(element.url, element.name, element.description)}
+                  >
+                    {element.name}
+                  </MobileMenuItem>
                 ))}
+              </MobileMenuGroup>
+            ))}
             <MobileAccount>
               {access !== 'default' && access !== 'signing' && (
                 <MobileProfileButton type="button" onClick={() => movePage('myInfo')}>
