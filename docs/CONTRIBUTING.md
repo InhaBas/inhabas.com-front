@@ -2,9 +2,9 @@
 
 이 문서는 inhabas.com-front 프로젝트에 기여하는 방법을 설명합니다.
 
-> 📚 **관련 문서**: [브랜치 규칙](../.claude/rules/branching.md) | [스타일 컨벤션](./STYLE-CONVENTION.md) | [커밋 컨벤션](./COMMIT-CONVENTION.md) | [Merge 가이드](./COMMITER-INSTRUCTION.md)
+> 📚 **관련 문서**: [브랜치 규칙](../.claude/rules/branching.md) | [스타일 컨벤션](./STYLE-CONVENTION.md) | [커밋 메시지 규칙](../.claude/rules/commits.md) | [Merge 가이드](./COMMITER-INSTRUCTION.md)
 
-브랜치 구조, 네이밍, 분기 기준, PR 대상, 동기화, 머지 후 정리는 [브랜치 규칙](../.claude/rules/branching.md) 한 곳에서 관리합니다.
+브랜치 규칙은 [브랜치 규칙](../.claude/rules/branching.md), 커밋·PR·Merge 메시지 규칙은 [커밋 메시지 규칙](../.claude/rules/commits.md) 한 곳에서 관리합니다.
 
 ---
 
@@ -25,11 +25,10 @@ git add .
 git commit -m "feat: 게시판 검색 기능 추가"
 ```
 
-커밋 메시지 규칙은 [커밋 컨벤션](./COMMIT-CONVENTION.md)을 참고하세요.
+커밋 메시지 규칙은 [커밋 메시지 규칙](../.claude/rules/commits.md)을 참고하세요.
 
 ### 4. PR 생성
 
-- PR 제목은 커밋 컨벤션을 따릅니다.
 - PR 본문에 변경 내용과 테스트 방법을 간략히 작성합니다.
 - 코드 리뷰를 받고 승인이 나면 Merge합니다.
 

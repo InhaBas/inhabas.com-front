@@ -1,6 +1,8 @@
 # Merge 가이드
 
-PR을 Merge할 때의 절차, 커밋 컨벤션, WIP 커밋 처리 방법을 설명합니다.
+PR을 Merge할 때 GitHub에서 밟는 절차를 설명합니다.
+
+커밋·Merge 메시지 형식은 [커밋 메시지 규칙](../.claude/rules/commits.md)에서 관리합니다.
 
 ---
 
@@ -15,12 +17,9 @@ PR을 Merge할 때의 절차, 커밋 컨벤션, WIP 커밋 처리 방법을 설�
 
 ---
 
-## WIP 커밋 처리
+## WIP 커밋 정리 방법
 
-`WIP: 임시 저장`, `fix: 오타`, `wip` 같은 커밋이 `main`에 그대로 남으면 히스토리가 지저분해집니다.  
-이를 방지하기 위해 **PR을 올리기 전** 로컬에서 커밋을 정리합니다.
-
-### 방법: `git rebase -i`로 커밋 정리 (PR 전)
+`git rebase -i`로 WIP 커밋을 squash합니다.
 
 ```bash
 # dev 기준으로 만든 브랜치에서, dev 이후 커밋을 정리
@@ -62,16 +61,7 @@ WIP 커밋이 남아있는데 rebase 정리가 번거롭다면, **GitHub에서 S
 | 브랜치의 커밋이 하나의 기능 단위일 것   | 여러 기능이 섞인 브랜치를 Squash하면 히스토리 추적이 어려워짐         |
 | Squash 커밋 메시지를 명확하게 작성할 것 | 개별 커밋 메시지가 사라지므로 하나의 메시지가 변경 전체를 설명해야 함 |
 
-```
-# Squash merge 커밋 메시지 예시
-feat: 게시판 목록 및 검색 기능 추가
-
-- 게시판 목록 컴포넌트 구현
-- 키워드 검색 필터 추가
-- 페이지네이션 연동
-
-resolves: #72
-```
+Squash 커밋 메시지도 [커밋 메시지 규칙](../.claude/rules/commits.md)의 형식을 따릅니다.
 
 ---
 
@@ -91,27 +81,7 @@ PR 하단에서 **Create a merge commit** 을 선택합니다.
 
 ![modify title and body](images/commitor-instruction03-modify-title-body.png)
 
-Merge 커밋 메시지 형식:
-
-```
-Merge pull request #643 from haewonwon/feat/573-recruitment-schedule-notice
-
-feat: 신입부원 모집 일정 메인 안내 추가
-
-- 메인 배너에 모집 일정 컴포넌트 추가
-- 모집 기간이 아닐 때 안내 문구 표시
-
-resolves: #573
-see also: #572
-```
-
-| 항목   | 내용                                                                                                 |
-| ------ | ---------------------------------------------------------------------------------------------------- |
-| 제목   | GitHub 기본값(`Merge pull request #<번호> from <소유자>/<브랜치>`) 유지                              |
-| 본문   | 첫 줄은 [커밋 컨벤션](./COMMIT-CONVENTION.md)의 `<type>: 제목`, 아래에 변경 사항을 `-` 목록으로 나열 |
-| footer | `resolves: #이슈번호` (관련 이슈가 있는 경우)                                                        |
-
-`dev → main` Merge는 본문 첫 줄을 `chore: #<PR 번호> 변경을 main에 반영`으로 작성합니다.
+커밋 제목·본문은 [커밋 메시지 규칙](../.claude/rules/commits.md#merge-커밋)을 따릅니다.
 
 ---
 
