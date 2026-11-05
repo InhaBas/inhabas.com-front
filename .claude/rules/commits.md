@@ -72,7 +72,7 @@ see also: #559, #557    # 관련 이슈 참고
 작업 중에는 `WIP: 회원 테이블 UI 작업 중` 같은 임시 커밋을 써도 된다. PR을 올리기 전에 squash해서 정리한다.
 
 ```bash
-git rebase -i upstream/dev
+git rebase -i upstream/main
 ```
 
 ## PR 제목
@@ -83,7 +83,6 @@ git rebase -i upstream/dev
 
 - 제목: GitHub 기본값 `Merge pull request #<번호> from <소유자>/<브랜치>`를 그대로 둔다.
 - 본문 첫 줄: 위 커밋 형식의 `<type>: 제목`.
-- `dev → main` Merge는 본문 첫 줄을 `chore: #<PR 번호> 변경을 main에 반영`으로 쓴다.
 
 ```
 Merge pull request #643 from haewonwon/feat/573-recruitment-schedule-notice

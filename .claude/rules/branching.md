@@ -4,11 +4,12 @@
 
 ## 브랜치 구조
 
-| 브랜치          | 역할                                                    |
-| --------------- | ------------------------------------------------------- |
-| `upstream/main` | 프로덕션 배포. 메인테이너가 dev를 머지할 때만 움직인다. |
-| `upstream/dev`  | 개발 통합. 모든 작업 브랜치의 분기 기준이자 PR 대상.    |
-| `origin/*`      | 내 fork. push는 여기로 한다.                            |
+| 브랜치          | 역할                                                     |
+| --------------- | -------------------------------------------------------- |
+| `upstream/main` | 유일한 운영 브랜치. 작업 브랜치의 분기 기준이자 PR 대상. |
+| `origin/*`      | 내 fork. push는 여기로 한다.                             |
+
+`dev` 브랜치는 테스트 서버와 함께 운영을 중단했다. 분기 기준과 PR 대상은 모두 `upstream/main`이다.
 
 최초 1회: `git remote add upstream https://github.com/InhaBas/inhabas.com-front.git`
 
@@ -16,7 +17,7 @@
 
 ```bash
 git fetch upstream
-git checkout -b <type>/<이슈번호>-<slug> upstream/dev
+git checkout -b <type>/<이슈번호>-<slug> upstream/main
 ```
 
 - `<type>`: `feat` `fix` `design` `refactor` `docs` `chore` `style` `test` `ci` `revert`
@@ -25,9 +26,9 @@ git checkout -b <type>/<이슈번호>-<slug> upstream/dev
 
 예: `feat/573-recruitment-schedule-notice`, `chore/typescript-5.9`
 
-완료 기준: `git rev-parse --abbrev-ref HEAD`가 위 형식이고, `git merge-base --is-ancestor upstream/dev HEAD`가 성공한다.
+완료 기준: `git rev-parse --abbrev-ref HEAD`가 위 형식이고, `git merge-base --is-ancestor upstream/main HEAD`가 성공한다.
 
-## main·dev에 체크아웃된 상태라면
+## main에 체크아웃된 상태라면
 
 파일을 수정하기 전에 위 규칙으로 작업 브랜치를 먼저 만든다. 이미 수정했다면 `git stash` → 브랜치 생성 → `git stash pop`.
 
@@ -35,7 +36,7 @@ git checkout -b <type>/<이슈번호>-<slug> upstream/dev
 
 ```bash
 git fetch upstream
-git rebase upstream/dev
+git rebase upstream/main
 ```
 
 merge 대신 rebase를 쓴다. 불필요한 머지 커밋이 남지 않는다.
@@ -44,7 +45,7 @@ merge 대신 rebase를 쓴다. 불필요한 머지 커밋이 남지 않는다.
 
 ```bash
 git push origin <branch>
-gh pr create --repo InhaBas/inhabas.com-front --base dev
+gh pr create --repo InhaBas/inhabas.com-front --base main
 ```
 
 머지 후 브랜치를 지운다.

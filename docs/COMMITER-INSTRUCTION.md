@@ -6,14 +6,9 @@ PR을 Merge할 때 GitHub에서 밟는 절차를 설명합니다.
 
 ---
 
-## 브랜치별 Merge 전략
+## Merge 전략
 
-| PR 경로         | 권장 방식        | 이유                                    |
-| --------------- | ---------------- | --------------------------------------- |
-| `feature → dev` | **Merge Commit** | 개별 커밋 히스토리 보존                 |
-| `dev → main`    | **Merge Commit** | Squash 사용 시 커밋 중복 표시 문제 발생 |
-
-> ⚠️ `dev → main`에서 Squash merge를 사용하면, 이후 `feature → dev` PR을 올릴 때 이미 main에 머지된 커밋들이 변경 사항으로 중복 표시되는 문제가 발생합니다. Merge Commit을 유지하면 이 문제를 방지할 수 있습니다.
+모든 PR은 작업 브랜치 → `upstream/main` 한 경로뿐입니다. **Merge Commit**을 사용해 개별 커밋 히스토리를 보존합니다.
 
 ---
 
@@ -22,8 +17,8 @@ PR을 Merge할 때 GitHub에서 밟는 절차를 설명합니다.
 `git rebase -i`로 WIP 커밋을 squash합니다.
 
 ```bash
-# dev 기준으로 만든 브랜치에서, dev 이후 커밋을 정리
-git rebase -i upstream/dev
+# main 기준으로 만든 브랜치에서, main 이후 커밋을 정리
+git rebase -i upstream/main
 ```
 
 에디터가 열리면 WIP 커밋을 정리합니다.
@@ -57,7 +52,6 @@ WIP 커밋이 남아있는데 rebase 정리가 번거롭다면, **GitHub에서 S
 
 | 조건                                    | 이유                                                                  |
 | --------------------------------------- | --------------------------------------------------------------------- |
-| `feature → dev` PR일 것                 | `dev → main`에서 Squash 사용 시 커밋 중복 문제 발생                   |
 | 브랜치의 커밋이 하나의 기능 단위일 것   | 여러 기능이 섞인 브랜치를 Squash하면 히스토리 추적이 어려워짐         |
 | Squash 커밋 메시지를 명확하게 작성할 것 | 개별 커밋 메시지가 사라지므로 하나의 메시지가 변경 전체를 설명해야 함 |
 
@@ -92,9 +86,7 @@ PR 하단에서 **Create a merge commit** 을 선택합니다.
         ↓
 PR 올리기 전 git rebase -i 로 정리  ← 권장
         ↓
-feature → dev  :  Merge Commit
-        ↓
-dev → main     :  Merge Commit  (Squash 사용 금지)
+작업 브랜치 → main  :  Merge Commit
 ```
 
 - Merge 권한이 있는 Maintainer만 Merge를 진행합니다.
