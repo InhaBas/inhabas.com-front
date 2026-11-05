@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
 import { bankListDataInfo } from '../../recoil/backState';
@@ -59,7 +59,7 @@ const BankSupportTable = () => {
   const headerInfo = ['no.', '제목', '작성자', '작성일', '상태'];
   const widthList = [45, 500, 120, 120, 120];
 
-  const [bankList, setBankList] = useRecoilState(bankListDataInfo);
+  const bankList = useRecoilValue(bankListDataInfo);
 
   const movePage = (idx: number) => {
     navigate(`/bank/support/detail/${idx}`);

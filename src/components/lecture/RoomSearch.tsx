@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import Button from '../../styles/assets/Button';
-import { Div, FlexDiv } from '../../styles/assets/Div';
+import { Div } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { SearchInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';

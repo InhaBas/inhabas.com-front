@@ -21,7 +21,7 @@ const ModalBankHistoryDetail = () => {
   const modalInfos = useRecoilValue(modalInfo);
   const accessToken = useRecoilValue(tokenAccess);
   const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
-  const [carouselInitial, setCarouselInitial] = useRecoilState(carouselInitialState);
+  const setCarouselInitial = useSetRecoilState(carouselInitialState);
 
   const [data, fetchData] = useFetch();
 

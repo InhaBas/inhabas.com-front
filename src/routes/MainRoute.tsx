@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import { GetRoleAuthorization } from '../functions/authFunctions';
 import Activity from '../pages/activity/Activity';
@@ -10,7 +10,7 @@ import BankSupportCreate from '../pages/budget/BankSupportCreate';
 import BankSupportDetail from '../pages/budget/BankSupportDetail';
 
 const MainRoute = () => {
-  const { isAccessible, isAuthorizedOverDeactivate } = GetRoleAuthorization();
+  const { isAccessible } = GetRoleAuthorization();
 
   return (
     <Routes>

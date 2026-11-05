@@ -141,38 +141,6 @@ const StyledSlider = styled(Slider)`
   }
 `;
 
-const ArrowButton = styled(Div)`
-  position: absolute;
-  top: 50%;
-  z-index: 2;
-  background-color: #4611a7;
-  padding: 10px;
-  cursor: pointer;
-  transform: translateY(-50%);
-`;
-
-const NextArrow = (props: any) => {
-  const { onClick } = props;
-  return (
-    <ArrowButton $right="20px" onClick={onClick}>
-      <Div width="22px" height="22px">
-        <Img src="/images/arrow-right_white.svg" />
-      </Div>
-    </ArrowButton>
-  );
-};
-
-const PrevArrow = (props: any) => {
-  const { onClick } = props;
-  return (
-    <ArrowButton $left="20px" onClick={onClick}>
-      <Div width="22px" height="22px">
-        <Img src="/images/arrow-left_white.svg" />
-      </Div>
-    </ArrowButton>
-  );
-};
-
 const Carousel: React.FC<carouselInterface> = ({ images }) => {
   const sliderRef = useRef<any>(null);
   const setIsCarouselOpen = useSetRecoilState(carouselOpen);
@@ -194,8 +162,6 @@ const Carousel: React.FC<carouselInterface> = ({ images }) => {
     infinite: true,
     slidesToShow: 1,
     slidesToScroll: 1,
-    // prevArrow: <PrevArrow />,
-    // nextArrow: <NextArrow />,
     swipeToSlide: true,
     initialSlide: carouselInitial,
     afterChange: (index: number) => setCurrentSlide(index),

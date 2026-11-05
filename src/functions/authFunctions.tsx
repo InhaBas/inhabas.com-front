@@ -5,7 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { userRole } from '../recoil/backState';
 import { failRefreshing } from '../recoil/frontState';
 
-export interface AuthorizationInterface {
+interface AuthorizationInterface {
   authorization:
     | 'OverVice'
     | 'OverExecutives'

@@ -1,7 +1,7 @@
 import { jwtDecode } from 'jwt-decode';
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import Carousel from '../../components/common/Carousel';
@@ -187,7 +187,7 @@ const ContestDetail = () => {
   const navigate = useNavigate();
 
   const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
-  const [carouselInitial, setCarouselInitial] = useRecoilState(carouselInitialState);
+  const setCarouselInitial = useSetRecoilState(carouselInitialState);
 
   const [deleteData, deleteDataFetch] = useFetch();
 

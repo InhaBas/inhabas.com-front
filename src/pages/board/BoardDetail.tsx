@@ -1,7 +1,7 @@
 import { jwtDecode } from 'jwt-decode';
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import Carousel from '../../components/common/Carousel';
@@ -146,7 +146,7 @@ const BoardDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const access = useRecoilValue(tokenAccess);
   const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
-  const [carouselInitial, setCarouselInitial] = useRecoilState(carouselInitialState);
+  const setCarouselInitial = useSetRecoilState(carouselInitialState);
 
   const pathNameInfo = location.pathname.substring(1).split('/');
 
@@ -254,10 +254,6 @@ const BoardDetail = () => {
         }
     }
     return menuId;
-  };
-
-  const openWindow = (url: string) => {
-    window.open(url);
   };
 
   // Carousel을 렌더링할지 여부를 결정하는 함수

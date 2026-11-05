@@ -1,7 +1,7 @@
 import { jwtDecode } from 'jwt-decode';
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import Carousel from '../../components/common/Carousel';
@@ -110,7 +110,7 @@ const ActivityDetail = () => {
   const [detailData, detailDataFetch] = useFetch();
   const menuId = 2;
   const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
-  const [carouselInitial, setCarouselInitial] = useRecoilState(carouselInitialState);
+  const setCarouselInitial = useSetRecoilState(carouselInitialState);
   const [deleteData, deleteDataFetch] = useFetch();
   const access = useRecoilValue(tokenAccess);
   const { isAuthorizedOverVice, isAuthorizedOverDeactivate } = GetRoleAuthorization();

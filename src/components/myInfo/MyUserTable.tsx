@@ -93,8 +93,8 @@ const MyUserTable = () => {
   const [roleValue, setRoleValue] = useState('');
   const [typeValue, setTypeValue] = useState('');
   const [CategoryValue, setCategoryValue] = useState('');
-  const [roleChangeData, fetchRoleChangeData] = useFetch();
-  const [typeChangeData, fetchTypeChangeData] = useFetch();
+  const [, fetchRoleChangeData] = useFetch();
+  const [, fetchTypeChangeData] = useFetch();
   const [reload, setReload] = useState(false);
   const access = useRecoilValue(tokenAccess);
   const [searchValue, setSearchValue] = useState(''); // 검색어

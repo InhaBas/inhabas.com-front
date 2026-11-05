@@ -5,12 +5,7 @@ import styled from 'styled-components';
 
 import { DateFunction } from '../../functions/dateFunction';
 import useFetch from '../../hooks/useFetch';
-import {
-  boardListDataInfo,
-  boardListPinnedDataInfo,
-  tokenAccess,
-  totalPageInfo,
-} from '../../recoil/backState';
+import { boardListDataInfo, tokenAccess, totalPageInfo } from '../../recoil/backState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
@@ -52,7 +47,6 @@ const MyBoardTable = () => {
 
   const access = useRecoilValue(tokenAccess);
   const [boardList, setBoardList] = useRecoilState(boardListDataInfo);
-  const [boardPinnedList, setBoardPinnedList] = useRecoilState(boardListPinnedDataInfo);
   const [boardListData, fetchBoardListData] = useFetch();
   const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
   const [isLoading, setIsLoading] = useState(true);
@@ -64,7 +58,7 @@ const MyBoardTable = () => {
 
   useEffect(() => {
     if (boardListData) {
-      const contents = boardListData.data.map((item: MyBoardInterface, idx: number) => ({
+      const contents = boardListData.data.map((item: MyBoardInterface) => ({
         type: item.menuName,
         title: item.title,
         dateCreated: formatDateDay({ date: item.dateCreated }),

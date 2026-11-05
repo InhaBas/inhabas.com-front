@@ -1,4 +1,3 @@
-import { MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 
@@ -47,7 +46,7 @@ const TableCell = styled(FlexDiv)`
 const RoomTable = () => {
   const navigate = useNavigate();
 
-  const clickEvent = (ev: MouseEvent, name: string) => {
+  const clickEvent = () => {
     navigate('/lecture/room/detail');
   };
 
@@ -107,7 +106,7 @@ const RoomTable = () => {
               height="45px"
               $borderT={`1px solid ${theme.color.grey1}`}
               $justifycontent="space-between"
-              onClick={(e: MouseEvent) => clickEvent(e, 'ss')}
+              onClick={() => clickEvent()}
               $backgroundColor="wh"
               $pointer
             >

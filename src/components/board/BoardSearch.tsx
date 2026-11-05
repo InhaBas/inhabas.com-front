@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
@@ -55,8 +55,6 @@ const SearchButton = styled(Button)`
 `;
 
 const BoardSearch = () => {
-  const inputRef = useRef<HTMLInputElement>(null);
-
   const location = useLocation();
   const url = location.pathname.split('/')[2];
 
@@ -66,7 +64,6 @@ const BoardSearch = () => {
   const [boardListData, fetchBoardListData] = useFetch();
   const setTotalPage = useSetRecoilState(totalPageInfo);
   const setBoardPinnedList = useSetRecoilState(boardListPinnedDataInfo);
-  const [isLoading, setIsLoading] = useState(true);
   const [searchValue, setSearchValue] = useState(''); // 검색어
   const setContestListData = useSetRecoilState(contestListDataInfo);
 
@@ -99,13 +96,10 @@ const BoardSearch = () => {
     if (searchValue.trim() !== '') {
       if (['usage', 'sponsor'].includes(url)) {
         fetchBoardListData(`${fetchUrl}?search=${searchValue}&page=0&size=15`, 'GET');
-        setIsLoading(true);
       } else if (['contest', 'activity'].includes(url)) {
         fetchBoardListData(`${fetchUrl}?search=${searchValue}&page=0&size=4&orderBy=ALL`, 'GET');
-        setIsLoading(true);
       } else {
         fetchBoardListData(`${fetchUrl}?search=${searchValue}&page=0&size=15`, 'GET', 'token');
-        setIsLoading(true);
       }
     }
   };
@@ -120,7 +114,6 @@ const BoardSearch = () => {
   useEffect(() => {
     if (['contest', 'activity'].includes(url)) {
       if (boardListData) {
-        setIsLoading(false);
         setContestListData(boardListData?.data);
         setTotalPage(boardListData.pageInfo.totalPages);
       }
@@ -134,19 +127,16 @@ const BoardSearch = () => {
           dateCreated: formatDateDay({ date: item.dateCreated }),
           isPinned: item.isPinned,
         }));
-        const pinnedContents = boardListData.pinnedData?.map(
-          (item: boardListInterface, idx: number) => ({
-            id: item.id,
-            title: item.title,
-            writerName: item.writerName,
-            dateCreated: formatDateDay({ date: item.dateCreated }),
-            isPinned: item.isPinned,
-          }),
-        );
+        const pinnedContents = boardListData.pinnedData?.map((item: boardListInterface) => ({
+          id: item.id,
+          title: item.title,
+          writerName: item.writerName,
+          dateCreated: formatDateDay({ date: item.dateCreated }),
+          isPinned: item.isPinned,
+        }));
         setBoardPinnedList(pinnedContents);
         setBoardList(contents);
         setTotalPage(boardListData.pageInfo.totalPages);
-        setIsLoading(false);
       }
     }
   }, [boardListData]);

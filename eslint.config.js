@@ -49,7 +49,19 @@ module.exports = [
       'react-hooks/exhaustive-deps': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
       'react/no-array-index-key': 'warn',
-      '@typescript-eslint/no-unused-vars': 'warn',
+
+      // 미사용 변수는 전건 해소했으므로 error로 올려 재유입을 CI에서 막는다.
+      // `_` 접두어는 의도적으로 쓰지 않는 인자/구조분해 잔여물의 탈출구다.
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          args: 'after-used',
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
+      ],
 
       // eslint-plugin-react-hooks v7의 recommended는 React Compiler 대비 규칙
       // (set-state-in-effect 79건, immutability 9건, purity 1건)까지 포함한다.

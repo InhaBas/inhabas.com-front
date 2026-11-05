@@ -144,7 +144,7 @@ const BankSupportDetail = () => {
   const setModalInfo = useSetRecoilState(modalInfo);
   const [reload, setReload] = useRecoilState(refetch);
   const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
-  const [carouselInitial, setCarouselInitial] = useRecoilState(carouselInitialState);
+  const setCarouselInitial = useSetRecoilState(carouselInitialState);
 
   const { isSecretary } = GetRoleAuthorization();
 
