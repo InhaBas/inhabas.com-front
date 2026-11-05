@@ -15,6 +15,8 @@
 
 ## 브랜치 만들기
 
+파일을 수정하기 전에 브랜치를 먼저 만든다.
+
 ```bash
 git fetch upstream
 git checkout -b <type>/<slug> upstream/main
@@ -31,10 +33,6 @@ git checkout -b <type>/<slug> upstream/main
 git rev-parse --abbrev-ref HEAD | grep -qE '^(feat|fix|design|refactor|docs|chore|style|test|ci|revert)/[a-z0-9]+([-.][a-z0-9]+)*$'
 git merge-base --is-ancestor upstream/main HEAD
 ```
-
-## main에 체크아웃된 상태라면
-
-파일을 수정하기 전에 위 규칙으로 작업 브랜치를 먼저 만든다. 이미 수정했다면 `git stash` → 브랜치 생성 → `git stash pop`.
 
 ## 동기화
 
