@@ -75,6 +75,20 @@ see also: #559, #557    # 관련 이슈 참고
 git rebase -i upstream/main
 ```
 
+에디터에서 각 커밋 앞의 키워드를 바꾼다.
+
+- `pick`: 커밋 유지
+- `squash`: 바로 위 커밋에 합치고 메시지도 합치기
+- `fixup`: 합치되 메시지는 버리기 (WIP 메시지 제거에 편하다)
+
+정리하면 히스토리가 바뀌므로 force push한다.
+
+```bash
+git push origin <branch> --force-with-lease
+```
+
+`--force-with-lease`는 다른 사람이 이미 push한 내용이 있으면 덮어쓰지 않는다.
+
 ## PR 제목
 
 커밋 제목과 같은 형식으로 쓴다.

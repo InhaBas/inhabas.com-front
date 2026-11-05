@@ -52,6 +52,8 @@ git push origin <branch>
 gh pr create --repo InhaBas/inhabas.com-front --base main
 ```
 
+머지는 머지 권한이 있는 메인테이너만 하고, **Merge Commit**으로 개별 커밋 히스토리를 보존한다. Squash merge는 브랜치의 커밋이 하나의 기능 단위이고, 그 하나의 메시지가 변경 전체를 설명할 때만 쓴다.
+
 머지 후 브랜치를 지운다.
 
 ```bash

@@ -2,7 +2,7 @@
 
 이 문서는 inhabas.com-front 프로젝트에 기여하는 방법을 설명합니다.
 
-> 📚 **관련 문서**: [브랜치 규칙](../.claude/rules/branching.md) | [스타일 컨벤션](./STYLE-CONVENTION.md) | [커밋 메시지 규칙](../.claude/rules/commits.md) | [Merge 가이드](./COMMITER-INSTRUCTION.md)
+> 📚 **관련 문서**: [브랜치 규칙](../.claude/rules/branching.md) | [스타일 컨벤션](./STYLE-CONVENTION.md) | [커밋 메시지 규칙](../.claude/rules/commits.md)
 
 브랜치 규칙은 [브랜치 규칙](../.claude/rules/branching.md), 커밋·PR·Merge 메시지 규칙은 [커밋 메시지 규칙](../.claude/rules/commits.md) 한 곳에서 관리합니다.
 
