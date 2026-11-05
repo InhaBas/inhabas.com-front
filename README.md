@@ -29,7 +29,7 @@ IBAS 개발팀은 동아리의 활동과 비전을 온라인에 효과적으로 
 
 IBAS Project는 코드 품질과 가독성을 유지하기 위해 일관된 스타일 규약을 따르고 있습니다. 기여하기 전 아래 문서를 참고해주세요.
 
-[STYLE-CONVENTION.md](STYLE-CONVENTION.md)
+[STYLE-CONVENTION.md](docs/STYLE-CONVENTION.md)
 
 ### IBAS에 기여하기
 
@@ -37,13 +37,13 @@ IBAS에 소속된 회원이라면 누구든지 이 프로젝트에 기여할 수
 
 아래 기여 가이드라인을 확인하고 기여해주세요.
 
-1. PR올리는 경우
+1. 기여 절차
 
-   [CONTRIBUTING.md](CONTRIBUTING.md)
+   [CONTRIBUTING.md](docs/CONTRIBUTING.md)
 
-2. PR Merge 하는 경우
+2. 브랜치 · 커밋 규칙
 
-   [COMMITER-INSTRUCTION.md](COMMITER-INSTRUCTION.md)
+   [branching.md](.claude/rules/branching.md) · [commits.md](.claude/rules/commits.md)
 
 ## Contributor Wall of Fame
 

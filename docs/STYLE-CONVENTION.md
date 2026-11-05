@@ -115,17 +115,7 @@ import { Wrapper } from './BoardList.styles';
 
 ---
 
-## 커밋 컨벤션 · 브랜치 네이밍
+## 커밋 · 브랜치
 
-자세한 내용은 [커밋 컨벤션 문서](./COMMIT-CONVENTION.md)를 참고하세요.
-
-**형식:** `<type>: <한국어 제목>`
-
-주요 prefix: `feat`, `fix`, `design`, `refactor`, `docs`, `chore`, `style`, `test`, `ci`, `revert`
-
-**브랜치 네이밍:**
-
-```
-feat/<기능명>      fix/<버그명>      refactor/<대상>
-docs/<대상>        chore/<대상>      design/<대상>
-```
+- 커밋 메시지: [커밋 메시지 규칙](../.claude/rules/commits.md)
+- 브랜치: [브랜치 규칙](../.claude/rules/branching.md)
