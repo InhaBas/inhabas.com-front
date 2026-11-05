@@ -49,7 +49,15 @@ module.exports = [
       'react-hooks/exhaustive-deps': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
       'react/no-array-index-key': 'warn',
-      '@typescript-eslint/no-unused-vars': 'warn',
+
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
 
       // eslint-plugin-react-hooks v7의 recommended는 React Compiler 대비 규칙
       // (set-state-in-effect 79건, immutability 9건, purity 1건)까지 포함한다.

@@ -1,6 +1,6 @@
 import { useEffect, useId, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { styled } from 'styled-components';
 
 import { NAV_MENU_GROUPS } from '../../constants/navMenu';
@@ -250,8 +250,7 @@ const VISIBLE_NAV_GROUPS: menuGroupInterface[] = NAV_MENU_GROUPS.filter((group) 
 
 const HeaderNav = () => {
   const navigate = useNavigate();
-  const { isAuthorizedOverSecretary, isAuthorizedOverBasic, isAuthorizedOverDeactivate } =
-    GetRoleAuthorization();
+  const { isAuthorizedOverBasic, isAuthorizedOverDeactivate } = GetRoleAuthorization();
   const location = useLocation();
   const [infoData, fetchInfoData] = useFetch();
   const [signingUserData, fetchSigningUserData] = useFetch();
@@ -265,7 +264,7 @@ const HeaderNav = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const setCurrentMenuId = useSetRecoilState(menuId);
   const pathNameInfo = location.pathname.substring(1).split('/');
-  const [isNotLogin, setIsNotLogin] = useRecoilState(failRefreshing);
+  const isNotLogin = useRecoilValue(failRefreshing);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuId = useId();
 

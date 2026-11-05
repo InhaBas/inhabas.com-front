@@ -483,7 +483,7 @@ const Introduce = () => {
     if (historyInfoData) {
       let prevYear = ''; // 이전 연도를 기록하기 위한 변수
       const historyInfoArray: [string, historyInterface][] = Object.entries(historyInfoData);
-      const content = historyInfoArray.map(([key, value]) => {
+      const content = historyInfoArray.map(([, value]) => {
         // 현재 아이템의 연도 추출
         const currentYear = value.dateHistory.split('-')[0];
         // 이전 연도와 현재 아이템의 연도가 다를 경우에만 연도를 할당
@@ -517,7 +517,7 @@ const Introduce = () => {
       const staffInfoArray: [string, staffInterface][] = Object.entries(staffInfoData);
 
       // 배열을 가공하여 contents 배열 생성
-      const contents = staffInfoArray.map(([key, value]) => ({
+      const contents = staffInfoArray.map(([, value]) => ({
         name: value.name,
         studentId: value.studentId.substring(2, 4),
         major: value.major,

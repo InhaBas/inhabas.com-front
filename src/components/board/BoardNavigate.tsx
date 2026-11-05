@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import { GetRoleAuthorization } from '../../functions/authFunctions';
 import useFetch from '../../hooks/useFetch';
 import { boardMenuInfo } from '../../recoil/backState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
@@ -54,7 +53,6 @@ const BoardNavigate = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const url = location.pathname.split('/')[2];
-  const { isAuthorizedOverSecretary } = GetRoleAuthorization();
 
   const movePageEvent = (url: string) => {
     navigate(`${url}`);

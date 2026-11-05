@@ -54,7 +54,7 @@ const MyCommentTable = () => {
 
   useEffect(() => {
     if (commentListData) {
-      const contents = commentListData.data.map((item: myCommentInterface, idx: number) => ({
+      const contents = commentListData.data.map((item: myCommentInterface) => ({
         id: item.id,
         menuId: item.menuId,
         menuType: item.menuType,

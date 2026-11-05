@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import useFetch from '../../../hooks/useFetch';
@@ -19,7 +19,6 @@ const ModalChangeImg = () => {
   };
 
   const [data, fetchData] = useFetch();
-  const inputRef = useRef<HTMLInputElement>(null);
 
   // 이름 수정 fetch
   const changeImg = () => {

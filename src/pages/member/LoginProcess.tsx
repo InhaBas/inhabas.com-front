@@ -10,7 +10,7 @@ import Img from '../../styles/assets/Img';
 const LoginProcess = () => {
   const navigate = useNavigate();
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [access, setAccess] = useRecoilState(tokenAccess);
   const setProfile = useSetRecoilState(userImage);
   const accessToken = String(searchParams.get('accessToken'));

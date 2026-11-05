@@ -99,7 +99,7 @@ const BankTable = () => {
     }
   }, [deleteHistory]);
 
-  const clickPostEvent = (ev: MouseEvent, name: string, content: string) => {
+  const clickPostEvent = () => {
     setOpen(true);
     setModalInfo({ type: 'bankHistoryPost' });
   };
@@ -202,13 +202,7 @@ const BankTable = () => {
           $padding="0 20px 10px 0"
           $margin="0 20px 0 0"
         >
-          <FlexDiv
-            width="20px"
-            height="20px"
-            radius={50}
-            onClick={(e: MouseEvent) => clickPostEvent(e, 'ss', '')}
-            $pointer
-          >
+          <FlexDiv width="20px" height="20px" radius={50} onClick={() => clickPostEvent()} $pointer>
             <Img src="/images/plus_grey.svg" />
           </FlexDiv>
         </TableActions>

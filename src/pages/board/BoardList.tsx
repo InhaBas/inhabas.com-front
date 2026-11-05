@@ -154,15 +154,13 @@ const BoardList = () => {
           dateCreated: formatDateDay({ date: item.dateCreated }),
           isPinned: item.isPinned,
         }));
-        const pinnedContents = boardListData.pinnedData?.map(
-          (item: boardListInterface, idx: number) => ({
-            id: item.id,
-            title: item.title,
-            writerName: item.writerName,
-            dateCreated: formatDateDay({ date: item.dateCreated }),
-            isPinned: item.isPinned,
-          }),
-        );
+        const pinnedContents = boardListData.pinnedData?.map((item: boardListInterface) => ({
+          id: item.id,
+          title: item.title,
+          writerName: item.writerName,
+          dateCreated: formatDateDay({ date: item.dateCreated }),
+          isPinned: item.isPinned,
+        }));
         setBoardPinnedList(pinnedContents);
         setBoardList(contents);
         setTotalPage(boardListData.pageInfo.totalPages);

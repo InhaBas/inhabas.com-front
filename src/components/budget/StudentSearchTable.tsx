@@ -9,7 +9,7 @@ import { TextInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
 
-export interface searchedMemberInterface {
+interface searchedMemberInterface {
   name: string;
   memberId: number;
   studentId: string;

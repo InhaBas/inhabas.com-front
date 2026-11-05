@@ -6,7 +6,7 @@ export interface BankHistoryMember {
   name?: string | null;
 }
 
-export interface BankHistoryFormValues {
+interface BankHistoryFormValues {
   type: BankHistoryType;
   dateUsed: string;
   title: string;

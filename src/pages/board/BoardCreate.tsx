@@ -113,11 +113,10 @@ const BoardCreate = () => {
   const [pinValue, setPinValue] = useState('');
   const [postData, postFetchData] = useFetch();
   const [getData, getFetchData] = useFetch();
-  const [files, setFiles] = useRecoilState(selectedFile);
+  const files = useRecoilValue(selectedFile);
   const [update, setUpdate] = useState('create');
   const [detail, setDetail] = useRecoilState(boardDetailData);
   const setSelectedFile = useSetRecoilState(selectedFile);
-  const fileSelected = useRecoilValue(selectedFile);
   const currentMenuId = useRecoilValue(menuId);
   const [fileId, setFileList] = useRecoilState(fileIdList);
   const setReload = useSetRecoilState(refetch);

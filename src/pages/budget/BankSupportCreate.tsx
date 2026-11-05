@@ -49,14 +49,12 @@ const BankSupportCreate = () => {
   const navigate = useNavigate();
   const paramID = useParams().id;
   const currentMenuId = useRecoilValue(menuId);
-  const [isLoading, setIsLoading] = useState(true);
   const [update, setUpdate] = useState('create');
   const [getData, getFetchData] = useFetch();
   const [files, setFiles] = useRecoilState(fileIdList);
-  const [detail, setDetail] = useRecoilState(bankDetailDataInfo);
+  const setDetail = useSetRecoilState(bankDetailDataInfo);
   const access = useRecoilValue(tokenAccess);
   const setSelectedFile = useSetRecoilState(selectedFile);
-  const [fileId, setFileList] = useRecoilState(fileIdList);
   const setReload = useSetRecoilState(refetch);
 
   const [infos, setInfos] = useState({
@@ -71,8 +69,6 @@ const BankSupportCreate = () => {
   useEffect(() => {
     if (paramID) {
       setUpdate('update');
-    } else {
-      setIsLoading(false);
     }
   }, []);
 
@@ -93,8 +89,6 @@ const BankSupportCreate = () => {
         outcome: getData.outcome,
         account: getData.account,
       }));
-
-      setIsLoading(false);
 
       // DragNDrop update 설정
       const files = [...getData.receipts.map((item: supportDetailInterface) => item)];

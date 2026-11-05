@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import BankTable from '../../components/budget/BankTable';
@@ -67,24 +67,10 @@ const BankHeader = styled(FlexDiv)`
   }
 `;
 
-export interface bankHistoryInterface {
-  id?: number;
-  dateUsed: string;
-  dateCreated: string;
-  dateUpdated: string;
-  title: string;
-  income: string;
-  outcome: string;
-  memberStudentIdReceived: string;
-  memberNameReceived: string;
-  memberStudentIdInCharge: string;
-  memberNameInCharge: string;
-}
-
 const Bank = () => {
   const [bankHistoryData, fetchBankHistoryData] = useFetch();
   const [bankHistory, setBankHistory] = useRecoilState(bankHistoryInfo);
-  const [bankBalance, setBankBalance] = useRecoilState(bankBalanceInfo);
+  const setBankBalance = useSetRecoilState(bankBalanceInfo);
   const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
   const accessToken = useRecoilValue(tokenAccess);
   const [reload, setReload] = useRecoilState(refetch);

@@ -79,7 +79,7 @@ const MyApplication = () => {
   const [application, setApplication] = useRecoilState(applicationInfo);
   const [answer, setAnswer] = useRecoilState(applicationAnswerInfo);
   const setTitle = useSetRecoilState(headerTitleInfo);
-  const [passFailData, fetchPassFailData] = useFetch();
+  const [, fetchPassFailData] = useFetch();
   const [isLoading, setIsLoading] = useState(true);
 
   // pass/fail Fetch

@@ -1,12 +1,10 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import useFetch from '../../hooks/useFetch';
-import { headerTitleInfo, tokenAccess } from '../../recoil/backState';
-import { menuInfo } from '../../recoil/frontState';
+import { headerTitleInfo } from '../../recoil/backState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import { H1 } from '../../styles/assets/H';
 import P from '../../styles/assets/P';
@@ -91,12 +89,9 @@ const TitleDescription = styled(P)`
 
 const HeaderTitle = () => {
   const [titleData, fetchTitleData] = useFetch();
-  const menuId = useRecoilValue(menuInfo);
   const location = useLocation();
   const pathNameInfo = location.pathname.substring(1).split('/');
   const [title, setTitle] = useRecoilState(headerTitleInfo);
-  const accessToken = useRecoilValue(tokenAccess);
-  const navigate = useNavigate();
 
   let titleId = 0;
 

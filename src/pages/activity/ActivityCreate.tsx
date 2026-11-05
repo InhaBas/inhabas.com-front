@@ -55,7 +55,7 @@ const ActivityCreate = () => {
   const [getData, getFetchData] = useFetch();
   const setSelectedFile = useSetRecoilState(selectedFile);
   const [fileId, setFileList] = useRecoilState(fileIdList);
-  const [files, setFiles] = useRecoilState(selectedFile);
+  const files = useRecoilValue(selectedFile);
   const [detail, setDetail] = useState<ActivityDetailInterface | null>(null);
   const currentMenuId = useRecoilValue(menuId);
   const setReload = useSetRecoilState(refetch);

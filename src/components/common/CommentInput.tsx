@@ -46,7 +46,7 @@ const CommentSubmitButton = styled(Button)`
 `;
 
 const CommentInput = (props: commentPropsInterface) => {
-  const { boardId, menuId, boardType, parentId } = props;
+  const { boardId, menuId, parentId } = props;
   const [commentInput, setCommentInput] = useState('');
   const [postComment, fetchPostComment] = useFetch();
   const setReload = useSetRecoilState(refetch);

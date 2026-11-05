@@ -78,10 +78,6 @@ export const Modal = () => {
 
   const modalType = useRecoilValue(modalInfo);
 
-  const closeModal = () => {
-    setOpen(false);
-  };
-
   const clickBackground = (e: CustomMouseEvent) => {
     if (e.target === backgroundRef.current) {
       setOpen(false);

@@ -1,11 +1,9 @@
-import { MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
-import { theme } from '../../styles/theme';
 import { media } from '../../styles/theme';
 
 const CardList = styled.div`
@@ -106,13 +104,12 @@ const LectureMetaItem = styled.div`
 const LectureCard = () => {
   const navigate = useNavigate();
 
-  const clickEvent = (ev: MouseEvent, name: string) => {
-    // const event = ev.target
+  const clickEvent = () => {
     navigate('/lecture/detail');
   };
   return (
     <CardList>
-      <Card onClick={(e: MouseEvent) => clickEvent(e, 'ss')}>
+      <Card onClick={() => clickEvent()}>
         <CardImage>
           <Img src="/images/board-name-img.jpg" />
         </CardImage>

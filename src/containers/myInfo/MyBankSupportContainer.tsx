@@ -66,7 +66,7 @@ const MyBankSupportContainer = () => {
   const access = useRecoilValue(tokenAccess);
   const [bankList, setBankList] = useRecoilState(bankListDataInfo);
   const [bankListData, fetchBankListData] = useFetch();
-  const [statusValue, setStatusValue] = useState('');
+  const [statusValue] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
 
@@ -81,7 +81,7 @@ const MyBankSupportContainer = () => {
 
   useEffect(() => {
     if (bankListData) {
-      const contents = bankListData.data.map((item: MySupportInterface, idx: number) => ({
+      const contents = bankListData.data.map((item: MySupportInterface) => ({
         status:
           item.status === 'PENDING'
             ? '승인 대기'
