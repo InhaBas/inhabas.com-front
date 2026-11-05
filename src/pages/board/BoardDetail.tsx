@@ -12,7 +12,6 @@ import TextViewer from '../../components/common/TextViewer';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
 import { DateFunction } from '../../functions/dateFunction';
 import useFetch from '../../hooks/useFetch';
-import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { boardDetailData, tokenAccess } from '../../recoil/backState';
 import { carouselInitialState, carouselOpen } from '../../recoil/frontState';
