@@ -46,20 +46,11 @@ resolves: #561
 - 명령형 어투로 쓴다. (`추가`, `수정`, `제거`, `개선`)
 - type은 소문자 전체 이름을 쓴다. (`feat` — `Feat`·`feature`가 아니다)
 
-## 본문 (선택)
+## 본문과 footer (선택)
 
-- 제목 아래 빈 줄 하나를 띄우고 쓴다.
 - **무엇을**, **왜** 바꿨는지 쓴다.
 - 각 항목은 `-`로 시작한다.
-
-## footer (선택)
-
-```
-resolves: #561          # 이슈 자동 닫기
-see also: #559, #557    # 관련 이슈 참고
-```
-
-이슈 번호는 footer로만 연결한다. 히스토리에 남아 있는 `[feat/#67] feat: 대댓글 UI 추가` 형식은 구 컨벤션이다.
+- 이슈 번호는 footer `resolves: #561`로만 연결한다.
 
 ## PR 제목
 
@@ -71,12 +62,7 @@ see also: #559, #557    # 관련 이슈 참고
 - 본문 첫 줄: 위 커밋 형식의 `<type>: 제목`.
 
 ```
-Merge pull request #643 from haewonwon/feat/573-recruitment-schedule-notice
+Merge pull request #659 from jacobjiwoo/chore/remove-unused-deps
 
-feat: 신입부원 모집 일정 메인 안내 추가
-
-- 메인 배너에 모집 일정 컴포넌트 추가
-- 모집 기간이 아닐 때 안내 문구 표시
-
-resolves: #573
+chore: 사용하지 않는 의존성 10개 제거
 ```
