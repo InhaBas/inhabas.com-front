@@ -6,6 +6,7 @@ const reactPlugin = require('eslint-plugin-react');
 const reactHooksPlugin = require('eslint-plugin-react-hooks');
 const importPlugin = require('eslint-plugin-import');
 const eslintConfigPrettier = require('eslint-config-prettier');
+const pluginQuery = require('@tanstack/eslint-plugin-query');
 
 module.exports = [
   {
@@ -109,6 +110,83 @@ module.exports = [
       'react/prop-types': 'off',
       'react/react-in-jsx-scope': 'off',
     },
+  },
+  ...pluginQuery.configs['flat/recommended'],
+  {
+    // useFetch는 동결했다. 새 코드는 TanStack Query를 쓴다
+    files: ['**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/hooks/useFetch'],
+              message: 'TanStack Query를 쓴다. src/queries/queryClient.ts 참고',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // 전환 전 파일. 전환 PR은 자기 파일을 이 목록에서 뺀다. 목록 길이가 진행률이다
+    files: [
+      'src/components/board/BoardNavigate.tsx',
+      'src/components/board/BoardSearch.tsx',
+      'src/components/budget/BankTable.tsx',
+      'src/components/budget/StudentSearchTable.tsx',
+      'src/components/common/Bottom.tsx',
+      'src/components/common/CommentInput.tsx',
+      'src/components/common/CommentList.tsx',
+      'src/components/common/DragNDrop.tsx',
+      'src/components/common/HeaderNav.tsx',
+      'src/components/common/HeaderTitle.tsx',
+      'src/components/common/modal/ModalBankHistoryDetail.tsx',
+      'src/components/common/modal/ModalBankSupportReject.tsx',
+      'src/components/common/modal/ModalChangeImg.tsx',
+      'src/components/common/modal/ModalChangeIntro.tsx',
+      'src/components/common/modal/ModalChangeName.tsx',
+      'src/components/common/modal/ModalChangeNumber.tsx',
+      'src/components/common/modal/ModalChangeType.tsx',
+      'src/components/common/modal/ModalHistory.tsx',
+      'src/components/common/modal/ModalMajor.tsx',
+      'src/components/common/modal/ModalPostBankHistory.tsx',
+      'src/components/common/modal/ModalScholarshipHistory.tsx',
+      'src/components/common/modal/ModalUpdateBankHistory.tsx',
+      'src/components/myInfo/MyBoardTable.tsx',
+      'src/components/myInfo/MyChangeNameUserTable.tsx',
+      'src/components/myInfo/MyCommentTable.tsx',
+      'src/components/myInfo/MyGraduateUserTable.tsx',
+      'src/components/myInfo/MyNewUserTable.tsx',
+      'src/components/myInfo/MyUserTable.tsx',
+      'src/components/scholarship/ChangesContent.tsx',
+      'src/containers/myInfo/MyBankSupportContainer.tsx',
+      'src/containers/myInfo/MyInfoContainer.tsx',
+      'src/containers/myInfo/MyStaffRuleContainter.tsx',
+      'src/containers/myInfo/MyStaffScheduleInfo.tsx',
+      'src/pages/activity/Activity.tsx',
+      'src/pages/activity/ActivityCreate.tsx',
+      'src/pages/activity/ActivityDetail.tsx',
+      'src/pages/activity/ContestCreate.tsx',
+      'src/pages/activity/ContestDetail.tsx',
+      'src/pages/board/BoardCreate.tsx',
+      'src/pages/board/BoardDetail.tsx',
+      'src/pages/board/BoardList.tsx',
+      'src/pages/budget/Bank.tsx',
+      'src/pages/budget/BankSupport.tsx',
+      'src/pages/budget/BankSupportCreate.tsx',
+      'src/pages/budget/BankSupportDetail.tsx',
+      'src/pages/home/Honor.tsx',
+      'src/pages/home/Introduce.tsx',
+      'src/pages/member/LoginProcess.tsx',
+      'src/pages/member/Rule.tsx',
+      'src/pages/member/Signup.tsx',
+      'src/pages/member/SignupQuestion.tsx',
+      'src/pages/myInfo/MyApplication.tsx',
+      'src/pages/scholarship/Scholarship.tsx',
+    ],
+    rules: { 'no-restricted-imports': 'off' },
   },
   eslintConfigPrettier,
 ];
