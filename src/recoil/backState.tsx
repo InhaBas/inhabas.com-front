@@ -1,7 +1,6 @@
 import { atom } from 'recoil';
 
 import { getAccessToken, setAccessToken, subscribeAccessToken } from '../api/token';
-import { historyInterface, honorDataInterface, staffInterface } from '../types/ibas/TypeIBAS';
 import {
   answersInterface,
   majorInterface,
@@ -20,7 +19,6 @@ import {
 import { supportDetailInterface } from '../types/TypeBank';
 import { boardDetailInterface, boardMenuInterface } from '../types/TypeBoard';
 import {
-  chiefInterface,
   commentListInterface,
   menuInterface,
   myCommentInterface,
@@ -34,12 +32,6 @@ export const headerTitleInfo = atom<menuInterface>({
     name: '',
     description: '',
   },
-});
-
-//bottom
-export const chiefInfo = atom<chiefInterface | null>({
-  key: 'chiefInfo',
-  default: null,
 });
 
 // common
@@ -191,22 +183,6 @@ export const signupCheck = atom<boolean | null>({
   default: null,
 });
 
-// introduce
-export const historyInfo = atom<historyInterface[] | null>({
-  key: 'historyInfo',
-  default: null,
-});
-
-export const oneHistoryInfo = atom<historyInterface | null>({
-  key: 'oneHistoryInfo',
-  default: null,
-});
-
-export const staffInfo = atom<staffInterface[] | null>({
-  key: 'staffInfo',
-  default: null,
-});
-
 //board
 export const boardMenuInfo = atom<boardMenuInterface[] | []>({
   key: 'boardMenuInfo',
@@ -278,11 +254,5 @@ export const bankListDataInfo = atom({
 
 export const bankDetailDataInfo = atom<supportDetailInterface | null>({
   key: 'bankDetailDataInfo',
-  default: null,
-});
-
-// honor
-export const honorDataInfo = atom<honorDataInterface | null>({
-  key: 'honorDataInfo',
   default: null,
 });
