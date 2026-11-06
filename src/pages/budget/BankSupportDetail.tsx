@@ -1,5 +1,6 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
@@ -7,15 +8,9 @@ import styled from 'styled-components';
 import Carousel from '../../components/common/Carousel';
 import Loading from '../../components/common/Loading';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
-import useFetch from '../../hooks/useFetch';
-import { bankDetailDataInfo, tokenAccess } from '../../recoil/backState';
-import {
-  carouselInitialState,
-  carouselOpen,
-  modalInfo,
-  modalOpen,
-  refetch,
-} from '../../recoil/frontState';
+import { bankSupportMutations, bankSupportQueries } from '../../queries/bankSupport';
+import { tokenAccess } from '../../recoil/backState';
+import { carouselInitialState, carouselOpen, modalInfo, modalOpen } from '../../recoil/frontState';
 import Button from '../../styles/assets/Button';
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import { H2 } from '../../styles/assets/H';
@@ -132,17 +127,18 @@ const BankSupportDetail = () => {
   const applicationId = location.pathname.split('/')[4];
   const access = useRecoilValue(tokenAccess);
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [detailData, detailDataFetch] = useFetch();
-  const [deleteData, deleteDataFetch] = useFetch();
-  const [statusData, fetchSetStatusData] = useFetch();
+  const { data: detail, isFetching } = useQuery(bankSupportQueries.detail({ id: applicationId }));
+  const deleteMutation = useMutation(bankSupportMutations.delete());
+  const statusMutation = useMutation(bankSupportMutations.updateStatus());
+  /*
+    상태를 바꾼 뒤 상세를 다시 받는 동안에도 상태 변경 버튼을 막는다. 옛 화면은 이때 본문을 스피너로 가려 누를 수 없었다.
+    막지 않으면 재조회가 끝나기 전에 같은 상태 변경을 한 번 더 보낼 수 있다
+  */
+  const isChangingStatus = statusMutation.isPending || isFetching;
   const [hovered, setHovered] = useState(false);
   const [hovered2, setHovered2] = useState(false);
-  const [detail, setDetail] = useRecoilState(bankDetailDataInfo);
-  const [statusInfo, setStatusInfo] = useState('');
   const setOpen = useSetRecoilState(modalOpen);
   const setModalInfo = useSetRecoilState(modalInfo);
-  const [reload, setReload] = useRecoilState(refetch);
   const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
   const setCarouselInitial = useSetRecoilState(carouselInitialState);
 
@@ -164,71 +160,50 @@ const BankSupportDetail = () => {
   };
 
   const deleteDetail = () => {
+    if (deleteMutation.isPending) return;
     if (window.confirm('정말 철회 하시겠습니까?')) {
-      setIsLoading(true);
-      deleteDataFetch(`/budget/application/${applicationId}`, 'DELETE', 'token');
+      deleteMutation.mutate(
+        { id: applicationId },
+        {
+          onSuccess: () => {
+            alert('게시글이 삭제 되었습니다');
+            navigate(`/bank/support`);
+          },
+        },
+      );
     }
   };
 
-  const makeStatusApproved = () => {
-    const statusData = { status: 'APPROVED' };
-    setIsLoading(true);
-    fetchSetStatusData(`/budget/application/${applicationId}/status`, 'PUT', 'token', statusData);
-    setStatusInfo('승인 완료');
+  // 승인 완료·지급 완료. 거절은 모달(ModalBankSupportReject)이 같은 뮤테이션으로 한다
+  const changeStatus = (status: 'APPROVED' | 'COMPLETED', statusInfo: string) => {
+    if (isChangingStatus) return;
+    statusMutation.mutate(
+      { id: applicationId, body: { status } },
+      {
+        onSuccess: () => {
+          alert(`'${statusInfo}' 처리 되었습니다. `);
+        },
+      },
+    );
   };
 
-  const makeStatusCompeleted = () => {
-    const statusData = { status: 'COMPLETED' };
-    setIsLoading(true);
-    fetchSetStatusData(`/budget/application/${applicationId}/status`, 'PUT', 'token', statusData);
-    setStatusInfo('지급 완료');
-  };
+  const makeStatusApproved = () => changeStatus('APPROVED', '승인 완료');
+
+  const makeStatusCompeleted = () => changeStatus('COMPLETED', '지급 완료');
 
   const openModal = () => {
     setOpen(true);
     setModalInfo({ type: 'bankSupportStatus' });
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    detailDataFetch(`/budget/application/${applicationId}`, 'GET', 'token');
-    setReload(false);
-  }, [access, reload]);
-
-  useEffect(() => {
-    if (detailData) {
-      setDetail(detailData);
-      setIsLoading(false);
-    }
-    return () => setDetail(null);
-  }, [detailData]);
-
-  useEffect(() => {
-    if (deleteData) {
-      alert('게시글이 삭제 되었습니다');
-      setIsLoading(false);
-      navigate(`/bank/support`);
-    }
-    return () => setDetail(null);
-  }, [deleteData]);
-
-  useEffect(() => {
-    if (statusData) {
-      alert(`'${statusInfo}' 처리 되었습니다. `);
-      setStatusInfo('');
-      setIsLoading(false);
-      setReload(true); // 데이터 갱신을 위해 리로드 설정
-    }
-  }, [statusData]);
-
   return (
     <>
-      {isLoading ? (
+      {!detail ? (
         <FlexDiv width="100%" height="100vh">
           <Loading />
         </FlexDiv>
       ) : isCarouselOpen ? (
-        <Carousel images={detail?.receipts?.map((image) => image.url) || []} />
+        <Carousel images={detail.receipts.map((image) => image.url)} />
       ) : (
         <SupportDetailPage width="100%" $border={`1px solid ${theme.color.grey1}`}>
           <Container>
@@ -237,11 +212,11 @@ const BankSupportDetail = () => {
                 width="100%"
                 radius={3}
                 $backgroundColor={
-                  detail?.status === 'COMPLETED'
+                  detail.status === 'COMPLETED'
                     ? 'primary'
-                    : detail?.status === 'APPROVED'
+                    : detail.status === 'APPROVED'
                       ? 'green'
-                      : detail?.status === 'REJECTED'
+                      : detail.status === 'REJECTED'
                         ? 'danger'
                         : 'grey1'
                 }
@@ -251,20 +226,20 @@ const BankSupportDetail = () => {
                 <Div>
                   <StatusMessage
                     color={
-                      detail?.status === 'COMPLETED'
+                      detail.status === 'COMPLETED'
                         ? 'TextPrimary'
-                        : detail?.status === 'APPROVED'
+                        : detail.status === 'APPROVED'
                           ? 'TextGreen'
-                          : detail?.status === 'REJECTED'
+                          : detail.status === 'REJECTED'
                             ? 'TextDanger'
                             : 'bk'
                     }
                   >
-                    {detail?.status === 'COMPLETED'
+                    {detail.status === 'COMPLETED'
                       ? '지급 완료'
-                      : detail?.status === 'APPROVED'
+                      : detail.status === 'APPROVED'
                         ? '승인 완료'
-                        : detail?.status === 'REJECTED'
+                        : detail.status === 'REJECTED'
                           ? `승인 거절 (사유: ${detail.rejectReason})`
                           : '승인 대기'}
                   </StatusMessage>
@@ -288,7 +263,7 @@ const BankSupportDetail = () => {
                   </FlexDiv>
                   <Div>
                     <MetaText color="grey4" fontSize="sm">
-                      By {detail?.applicantName} |
+                      By {detail.applicantName} |
                     </MetaText>
                   </Div>
                   <FlexDiv width="12px" $margin="0 5px ">
@@ -296,13 +271,13 @@ const BankSupportDetail = () => {
                   </FlexDiv>
                   <Div>
                     <MetaText color="grey4" fontSize="sm">
-                      {detail?.dateCreated.split('T')[0]}
+                      {detail.dateCreated.split('T')[0]}
                     </MetaText>
                   </Div>
                 </MetaInfo>
                 <Div $padding="20px">
                   <DetailTitle fontSize="xl" $lineHeight={1.8} fontWeight={800}>
-                    {detail?.title}
+                    {detail.title}
                   </DetailTitle>
                 </Div>
               </Div>
@@ -324,7 +299,7 @@ const BankSupportDetail = () => {
                   </Div>
                 </FlexDiv>
                 <Div $padding="20px">
-                  <DetailValue $lineHeight={1.5}>{detail?.dateUsed.split('T')[0]}</DetailValue>
+                  <DetailValue $lineHeight={1.5}>{detail.dateUsed.split('T')[0]}</DetailValue>
                 </Div>
               </Div>
 
@@ -346,7 +321,7 @@ const BankSupportDetail = () => {
                   </Div>
                 </FlexDiv>
                 <Div $padding="20px">
-                  <DetailValue $lineHeight={1.5}>{detail?.details}</DetailValue>
+                  <DetailValue $lineHeight={1.5}>{detail.details}</DetailValue>
                 </Div>
               </Div>
 
@@ -368,7 +343,7 @@ const BankSupportDetail = () => {
                   </Div>
                 </FlexDiv>
                 <Div $padding="20px">
-                  <DetailValue $lineHeight={1.5}>{detail?.outcome}</DetailValue>
+                  <DetailValue $lineHeight={1.5}>{detail.outcome}</DetailValue>
                 </Div>
               </Div>
 
@@ -390,7 +365,7 @@ const BankSupportDetail = () => {
                   </Div>
                 </FlexDiv>
                 <Div $padding="20px">
-                  <DetailValue $lineHeight={1.5}>{detail?.applicantName}</DetailValue>
+                  <DetailValue $lineHeight={1.5}>{detail.applicantName}</DetailValue>
                 </Div>
               </Div>
               <Div
@@ -411,7 +386,7 @@ const BankSupportDetail = () => {
                   </Div>
                 </FlexDiv>
                 <Div $padding="20px">
-                  <DetailValue $lineHeight={1.5}>{detail?.account}</DetailValue>
+                  <DetailValue $lineHeight={1.5}>{detail.account}</DetailValue>
                 </Div>
               </Div>
 
@@ -433,7 +408,7 @@ const BankSupportDetail = () => {
                   </Div>
                 </FlexDiv>
                 <ScrollFlexDiv width="100%" $padding="20px">
-                  {detail?.receipts.map((image, idx) => (
+                  {detail.receipts.map((image, idx) => (
                     <Div
                       key={`supportImage${idx}`}
                       $pointer
@@ -448,7 +423,7 @@ const BankSupportDetail = () => {
                 </ScrollFlexDiv>
               </Div>
             </Div>
-            {detail?.status === 'PENDING' && detail?.applicantId === userId && (
+            {detail.status === 'PENDING' && detail.applicantId === userId && (
               <DetailActions width="100%" $justifycontent="end">
                 <Button
                   display="flex"
@@ -474,6 +449,7 @@ const BankSupportDetail = () => {
                   $padding="12px 15px"
                   $borderRadius={30}
                   $HBackgroundColor="red"
+                  disabled={deleteMutation.isPending}
                   onClick={() => deleteDetail()}
                 >
                   <Div width="12px" $margin="0 10px 0 0">
@@ -487,7 +463,7 @@ const BankSupportDetail = () => {
                 </Button>
               </DetailActions>
             )}
-            {isSecretary && detail?.status === 'PENDING' && (
+            {isSecretary && detail.status === 'PENDING' && (
               <DecisionActions width="100%">
                 <Button
                   width="300px"
@@ -498,6 +474,7 @@ const BankSupportDetail = () => {
                   border={`1px solid ${theme.color.success}`}
                   onMouseEnter={() => setHovered(true)}
                   onMouseLeave={() => setHovered(false)}
+                  disabled={isChangingStatus}
                   onClick={() => makeStatusApproved()}
                 >
                   <FlexDiv width="100%">
@@ -528,7 +505,7 @@ const BankSupportDetail = () => {
                 </Button>
               </DecisionActions>
             )}
-            {isSecretary && detail?.status === 'APPROVED' && (
+            {isSecretary && detail.status === 'APPROVED' && (
               <DecisionActions width="100%">
                 <Button
                   width="300px"
@@ -539,6 +516,7 @@ const BankSupportDetail = () => {
                   border={`1px solid ${theme.color.blue}`}
                   onMouseEnter={() => setHovered(true)}
                   onMouseLeave={() => setHovered(false)}
+                  disabled={isChangingStatus}
                   onClick={() => makeStatusCompeleted()}
                 >
                   <FlexDiv width="100%">

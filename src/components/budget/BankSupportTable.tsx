@@ -1,8 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-import { bankListDataInfo } from '../../recoil/backState';
 import A from '../../styles/assets/A';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import P from '../../styles/assets/P';
@@ -53,13 +51,21 @@ const StatusText = styled(P)`
   }
 `;
 
-const BankSupportTable = () => {
+// 표의 한 줄. 앞의 다섯 값이 열 순서대로 그려진다
+export interface BankSupportRow {
+  number: number;
+  title: string;
+  applicantName: string;
+  dateCreated: string;
+  status: string;
+  id: number;
+}
+
+const BankSupportTable = ({ bankList }: { bankList: BankSupportRow[] }) => {
   const navigate = useNavigate();
 
   const headerInfo = ['no.', '제목', '작성자', '작성일', '상태'];
   const widthList = [45, 500, 120, 120, 120];
-
-  const bankList = useRecoilValue(bankListDataInfo);
 
   const movePage = (idx: number) => {
     navigate(`/bank/support/detail/${idx}`);
@@ -85,7 +91,7 @@ const BankSupportTable = () => {
             ))}
           </TableRow>
           {bankList.length !== 0 ? (
-            bankList.map((element: object, idx: number) => (
+            bankList.map((element, idx) => (
               <TableRow
                 key={`contentItem${idx}`}
                 width="100%"
@@ -102,7 +108,7 @@ const BankSupportTable = () => {
                       width={`${widthList[idx]}px`}
                       $padding="10px"
                       $justifycontent={idx === 1 ? 'start' : 'center'}
-                      onClick={() => idx === 1 && movePage((element as { id: number }).id)}
+                      onClick={() => idx === 1 && movePage(element.id)}
                       $pointer={idx === 1 ? true : false}
                     >
                       {idx === 4 ? (

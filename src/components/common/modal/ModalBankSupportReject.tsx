@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
-import useFetch from '../../../hooks/useFetch';
-import { bankSupportRejectReasonInfo, modalOpen, refetch } from '../../../recoil/frontState';
+import { bankSupportMutations } from '../../../queries/bankSupport';
+import { bankSupportRejectReasonInfo, modalOpen } from '../../../recoil/frontState';
 import Button from '../../../styles/assets/Button';
 import { Div, FlexDiv } from '../../../styles/assets/Div';
 import { H2 } from '../../../styles/assets/H';
@@ -20,26 +20,23 @@ const ModalBankSupportReject = () => {
   };
 
   const [infos, setInfos] = useRecoilState(bankSupportRejectReasonInfo);
-  const [statusData, fetchSetStatusData] = useFetch();
+  const statusMutation = useMutation(bankSupportMutations.updateStatus());
   const applicationId = location.pathname.split('/')[4];
-  const [statusInfo, setStatusInfo] = useState('');
-  const setReload = useSetRecoilState(refetch);
 
+  // 성공하면 상세(BankSupportDetail)가 뮤테이션 팩토리의 무효화로 다시 조회된다
   const makeStatusRejected = () => {
-    const statusData = { status: 'REJECTED', rejectReason: infos };
-    // setIsLoading(true);
-    fetchSetStatusData(`/budget/application/${applicationId}/status`, 'PUT', 'token', statusData);
-    setStatusInfo('승인 거절');
+    if (statusMutation.isPending) return;
+    statusMutation.mutate(
+      { id: applicationId, body: { status: 'REJECTED', rejectReason: infos } },
+      {
+        onSuccess: () => {
+          alert(`'승인 거절' 처리 되었습니다. `);
+          setOpen(false);
+        },
+      },
+    );
   };
 
-  useEffect(() => {
-    if (statusData) {
-      alert(`'${statusInfo}' 처리 되었습니다. `);
-      setStatusInfo('');
-      setOpen(false);
-      setReload(true);
-    }
-  }, [statusData]);
   return (
     <FlexDiv
       width="44%"
@@ -79,6 +76,7 @@ const ModalBankSupportReject = () => {
             $borderRadius={3}
             width="100%"
             height="40px"
+            disabled={statusMutation.isPending}
             onClick={() => makeStatusRejected()}
           >
             <P color="wh" fontWeight={400}>

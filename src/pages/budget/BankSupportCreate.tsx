@@ -1,6 +1,7 @@
 import '@toast-ui/editor/dist/theme/toastui-editor-dark.css';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
@@ -8,16 +9,16 @@ import styled from 'styled-components';
 
 import DragNDrop from '../../components/common/DragNDrop';
 import { getTodayKST, toDateOnly } from '../../functions/bankHistoryFunctions';
-import useFetch from '../../hooks/useFetch';
-import { bankDetailDataInfo, fileIdList, tokenAccess } from '../../recoil/backState';
-import { menuId, refetch, selectedFile } from '../../recoil/frontState';
+import { bankSupportMutations, bankSupportQueries } from '../../queries/bankSupport';
+import { fileIdList } from '../../recoil/backState';
+import { menuId, selectedFile } from '../../recoil/frontState';
 import Button from '../../styles/assets/Button';
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import { DateInput, TextInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media } from '../../styles/theme';
 import { theme } from '../../styles/theme';
-import { supportDetailInterface } from '../../types/TypeBank';
+import { saveSupportInterface } from '../../types/TypeBank';
 
 const SupportFormPage = styled(FlexDiv)`
   min-width: 0;
@@ -49,13 +50,26 @@ const BankSupportCreate = () => {
   const navigate = useNavigate();
   const paramID = useParams().id;
   const currentMenuId = useRecoilValue(menuId);
-  const [update, setUpdate] = useState('create');
-  const [getData, getFetchData] = useFetch();
+  const update = paramID ? 'update' : 'create';
   const [files, setFiles] = useRecoilState(fileIdList);
-  const setDetail = useSetRecoilState(bankDetailDataInfo);
-  const access = useRecoilValue(tokenAccess);
   const setSelectedFile = useSetRecoilState(selectedFile);
-  const setReload = useSetRecoilState(refetch);
+
+  const {
+    data: detailData,
+    isFetchedAfterMount,
+    isSuccess,
+  } = useQuery({
+    ...bankSupportQueries.detail({ id: paramID ?? '' }),
+    enabled: update === 'update',
+  });
+  /*
+    상세 화면에서 넘어오면 같은 키의 캐시가 남아 있어 마운트하자마자 데이터가 보인다.
+    옛 화면처럼 이 화면에서 새로 받은 응답으로 폼을 채운다. 이 화면의 조회가 실패하면 남은 캐시로 채우지 않는다
+  */
+  const detail = isFetchedAfterMount && isSuccess ? detailData : undefined;
+  const createMutation = useMutation(bankSupportMutations.create());
+  const updateMutation = useMutation(bankSupportMutations.update());
+  const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
   const [infos, setInfos] = useState({
     title: '',
@@ -64,46 +78,27 @@ const BankSupportCreate = () => {
     outcome: 0,
     account: '',
   });
-  const [postSupport, fetchPostSupport] = useFetch();
 
+  // 폼 초기값: 불러온 신청 내용과 기존 증빙자료를 편집할 값으로 복사한다
   useEffect(() => {
-    if (paramID) {
-      setUpdate('update');
-    }
-  }, []);
-
-  useEffect(() => {
-    if (update === 'update') {
-      getFetchData(`/budget/application/${paramID}`, 'GET', 'token');
-    }
-  }, [update, access]);
-
-  useEffect(() => {
-    if (getData) {
-      setDetail(getData);
+    if (detail) {
       setInfos((prev) => ({
         ...prev,
-        title: getData.title,
-        details: getData.details,
-        dateUsed: getData.dateUsed,
-        outcome: getData.outcome,
-        account: getData.account,
+        title: detail.title,
+        details: detail.details,
+        dateUsed: detail.dateUsed,
+        outcome: detail.outcome,
+        account: detail.account,
       }));
-
-      // DragNDrop update 설정
-      const files = [...getData.receipts.map((item: supportDetailInterface) => item)];
-      setSelectedFile(files);
-      const fileIds = [...getData.receipts.map((item: supportDetailInterface) => item.id)];
-      setFiles(fileIds);
-      // DragNDrop reload true일 때만 불러온 파일들 렌더링 할 있음
-      setReload(true);
+      setSelectedFile(detail.receipts);
+      setFiles(detail.receipts.map((item) => item.id));
     }
-    return () => {
-      setDetail(null);
-      // DragNDrop fileList 초기화
-      setFiles([]);
-    };
-  }, [getData]);
+  }, [detail]);
+
+  // DragNDrop fileList 초기화
+  useEffect(() => {
+    return () => setFiles([]);
+  }, []);
 
   const checkIsCompletedContents = () => {
     if (infos.title === '') {
@@ -146,13 +141,14 @@ const BankSupportCreate = () => {
   };
 
   const clickPostEvent = () => {
+    if (isSubmitting) return;
     // 필요한 정보가 다 채워졌는지 확인
     if (checkIsCompletedContents() === false) {
       return;
     }
 
     // 파일 담기
-    const inputData = {
+    const inputData: saveSupportInterface = {
       dateUsed: infos.dateUsed.includes('T') ? infos.dateUsed : `${infos.dateUsed}T00:00:00`,
       title: infos.title,
       details: infos.details,
@@ -160,22 +156,20 @@ const BankSupportCreate = () => {
       account: infos.account,
       files: files,
     };
-    {
-      update === 'create'
-        ? fetchPostSupport('/budget/application', 'POST', 'token', inputData)
-        : fetchPostSupport(`/budget/application/${paramID}`, 'POST', 'token', inputData);
+    const mutateOptions = {
+      onSuccess: () => {
+        alert('예산 지원 신청이 정상적으로 등록되었습니다.');
+        setFiles([]);
+        navigate(`/bank/support`);
+      },
+    };
+    if (update === 'create') {
+      createMutation.mutate(inputData, mutateOptions);
+    } else if (paramID) {
+      updateMutation.mutate({ id: paramID, body: inputData }, mutateOptions);
     }
     console.log(inputData);
   };
-
-  useEffect(() => {
-    if (postSupport) {
-      alert('예산 지원 신청이 정상적으로 등록되었습니다.');
-      // setReload(true);
-      setFiles([]);
-      navigate(`/bank/support`);
-    }
-  }, [postSupport]);
 
   return (
     <SupportFormPage width="100%">
@@ -338,7 +332,14 @@ const BankSupportCreate = () => {
             </FlexDiv>
             <Div width="100%" $padding="20px">
               <Div width="100%" $padding="20px">
-                <DragNDrop fileFetch menuId={currentMenuId} onlyImg />
+                {/* 수정 화면은 기존 증빙자료를 불러오면 다시 마운트해 미리보기를 그린다. 옛 화면처럼 불러오는 동안에도 폼을 보여 준다 */}
+                <DragNDrop
+                  key={detail ? 'loaded' : 'empty'}
+                  fileFetch
+                  menuId={currentMenuId}
+                  onlyImg
+                  initialFiles={update === 'update' ? (detail?.receipts ?? []) : undefined}
+                />
               </Div>
             </Div>
           </Div>
@@ -350,6 +351,7 @@ const BankSupportCreate = () => {
               $borderRadius={2}
               $padding="15px 30px"
               width="400px"
+              disabled={isSubmitting}
               onClick={() => clickPostEvent()}
             >
               {update === 'create' ? <P color="wh">작성하기</P> : <P color="wh">수정하기</P>}
