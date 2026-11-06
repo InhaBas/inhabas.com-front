@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
-import { userRole } from '../recoil/backState';
+import { useMyRole } from '../queries/myInfo';
 import { failRefreshing } from '../recoil/frontState';
 
 interface AuthorizationInterface {
@@ -16,14 +16,14 @@ interface AuthorizationInterface {
     | 'Secretary';
 }
 
-// userRole 상태값을 가져와서 필요한 변수들을 계산하여 내보냅니다.
+// 내 role(useMyRole)을 가져와서 필요한 변수들을 계산하여 내보냅니다.
 export const GetRoleAuthorization = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
   const isNotLogin = useRecoilValue(failRefreshing);
 
-  const role = useRecoilValue(userRole);
+  const role = useMyRole();
   const isAuthorizedOverVice = ['CHIEF', 'VICE_CHIEF'].includes(role);
   const isAuthorizedOverExecutives = ['CHIEF', 'VICE_CHIEF', 'EXECUTIVES'].includes(role);
   const isAuthorizedOverSecretary = ['CHIEF', 'VICE_CHIEF', 'EXECUTIVES', 'SECRETARY'].includes(

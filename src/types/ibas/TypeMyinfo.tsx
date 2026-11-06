@@ -88,3 +88,17 @@ export interface MySupportInterface {
   dateChecked: string;
   dateDeposited: string;
 }
+
+// PUT /myInfo/detail 요청 (백엔드 ProfileDetailDto). 바꿀 필드만 보낸다
+export interface updateMyInfoDetailInterface {
+  major?: string;
+  grade?: number;
+  phoneNumber?: string;
+  type?: string;
+}
+
+// PUT /myInfo/intro 요청 (백엔드 ProfileIntroDto)
+export interface updateMyInfoIntroInterface {
+  introduce?: string;
+  isHOF?: boolean;
+}

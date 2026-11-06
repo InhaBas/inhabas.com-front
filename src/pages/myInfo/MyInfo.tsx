@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import Loading from '../../components/common/Loading';
@@ -10,7 +10,7 @@ import MyInfoContainer from '../../containers/myInfo/MyInfoContainer';
 import MyLectureContainer from '../../containers/myInfo/MyLectureContainer';
 import MyManageLectureContainer from '../../containers/myInfo/MyManageLectureContainer';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
-import { profileInfo } from '../../recoil/backState';
+import { useMyInfo } from '../../queries/myInfo';
 import { modalInfo, modalOpen } from '../../recoil/frontState';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
@@ -153,7 +153,7 @@ const MyInfo = () => {
   ];
 
   const [clicked, setclicked] = useState(4);
-  const info = useRecoilValue(profileInfo);
+  const info = useMyInfo();
 
   const movePageEvent = (url: string) => {
     navigate(`/${url}`);

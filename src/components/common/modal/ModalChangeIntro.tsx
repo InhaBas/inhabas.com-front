@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useMutation } from '@tanstack/react-query';
+import { useRef } from 'react';
+import { useSetRecoilState } from 'recoil';
 
-import useFetch from '../../../hooks/useFetch';
-import { profileInfo } from '../../../recoil/backState';
-import { modalOpen, refetch } from '../../../recoil/frontState';
+import { myInfoMutations, useMyInfo } from '../../../queries/myInfo';
+import { modalOpen } from '../../../recoil/frontState';
 import Button from '../../../styles/assets/Button';
 import { Div, FlexDiv } from '../../../styles/assets/Div';
 import { H2 } from '../../../styles/assets/H';
@@ -18,11 +18,10 @@ const ModalChangeIntro = () => {
     setOpen(false);
   };
 
-  const [data, fetchData] = useFetch();
-  const setReload = useSetRecoilState(refetch);
+  const updateMutation = useMutation(myInfoMutations.updateIntro());
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const checkRef = useRef<HTMLInputElement>(null);
-  const info = useRecoilValue(profileInfo);
+  const info = useMyInfo();
 
   /* 자기소개 수정 fetch */
   const changeIntro = () => {
@@ -31,18 +30,14 @@ const ModalChangeIntro = () => {
       isHOF: checkRef.current?.checked,
     };
     if (inputData.introduce !== '') {
-      fetchData('/myInfo/intro', 'PUT', 'token', inputData);
+      updateMutation.mutate(inputData, {
+        onSuccess: () => {
+          alert('자기소개가 정상적으로 수정되었습니다.');
+          setOpen(false);
+        },
+      });
     }
   };
-
-  useEffect(() => {
-    if (data) {
-      alert('자기소개가 정상적으로 수정되었습니다.');
-      setReload(true);
-
-      setOpen(false);
-    }
-  }, [data]);
 
   return (
     <FlexDiv
@@ -110,6 +105,7 @@ const ModalChangeIntro = () => {
             $borderRadius={3}
             width="100%"
             height="40px"
+            disabled={updateMutation.isPending}
             onClick={() => changeIntro()}
           >
             <P color="wh" fontWeight={400}>

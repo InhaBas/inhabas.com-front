@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import useFetch from '../../../hooks/useFetch';
-import { majorInfo } from '../../../recoil/backState';
-import { majorSelected, modalInfo, modalOpen, refetch } from '../../../recoil/frontState';
+import { myInfoMutations } from '../../../queries/myInfo';
+import { signUpQueries } from '../../../queries/signUp';
+import { majorSelected, modalInfo, modalOpen } from '../../../recoil/frontState';
 import Button from '../../../styles/assets/Button';
 import { Div, FlexDiv } from '../../../styles/assets/Div';
 import { H2 } from '../../../styles/assets/H';
@@ -63,12 +64,6 @@ const MajorList = styled(Div)`
   height: 170px !important;
 `;
 
-interface MajorItem {
-  id?: number;
-  college: string;
-  major: string;
-}
-
 const ModalMajor = () => {
   const setOpen = useSetRecoilState(modalOpen);
 
@@ -79,11 +74,11 @@ const ModalMajor = () => {
   const headerInfo = ['학교명', '학과명', '단과대학'];
 
   const modalType = useRecoilValue(modalInfo);
-  const [data, fetchData] = useFetch();
-  const [changeData, fetchChangeData] = useFetch();
-  const [major, setMajor] = useRecoilState<MajorItem[]>(majorInfo);
+  // 전공 정보. 회원가입(type 'major')과 내정보(type 'changeMajor')가 함께 쓴다
+  const { data: majorList } = useQuery(signUpQueries.majorList());
+  const major = majorList ?? [];
+  const changeMutation = useMutation(myInfoMutations.updateDetail());
   const [selectedTable, setSelectedTable] = useRecoilState(majorSelected);
-  const setReload = useSetRecoilState(refetch);
 
   /* 
     selectedTable을 이용해서 사용자가 선택한 전공을 모달 밖에서도 볼 수 있게 만듦 
@@ -99,49 +94,14 @@ const ModalMajor = () => {
       major: selectedTable.major,
     };
     if (inputData.major !== '') {
-      fetchChangeData('/myInfo/detail', 'PUT', 'token', inputData);
+      changeMutation.mutate(inputData, {
+        onSuccess: () => {
+          alert('전공 정상적으로 수정되었습니다.');
+          setOpen(false);
+        },
+      });
     }
   };
-
-  useEffect(() => {
-    if (changeData) {
-      alert('전공 정상적으로 수정되었습니다.');
-      setReload(true);
-
-      setOpen(false);
-    }
-  }, [changeData]);
-
-  /*
-        전공 정보 받기 위한 api
-    */
-  useEffect(() => {
-    fetchData('/signUp/majorInfo', 'GET');
-    return () => {
-      setMajor([]);
-    };
-  }, []);
-
-  // 전공 정보 fetch data handling
-  useEffect(() => {
-    const handleData = () => {
-      if (data) {
-        let newData = { ...data };
-        delete newData.change;
-
-        const tmpContents: MajorItem[] = [];
-        (Object.values(newData) as MajorItem[]).forEach((element: MajorItem) => {
-          tmpContents.push({
-            college: element.college,
-            major: element.major,
-          });
-        });
-        setMajor(tmpContents);
-      }
-    };
-
-    handleData();
-  }, [data]);
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -255,6 +215,7 @@ const ModalMajor = () => {
               width="150px"
               height="40px"
               $margin="15px 0 0 0"
+              disabled={changeMutation.isPending}
               onClick={() => changeMajor()}
             >
               <P color="wh" fontWeight={400}>

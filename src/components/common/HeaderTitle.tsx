@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-import useFetch from '../../hooks/useFetch';
+import { menuQueries } from '../../queries/menu';
 import { headerTitleInfo } from '../../recoil/backState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import { H1 } from '../../styles/assets/H';
@@ -88,10 +88,10 @@ const TitleDescription = styled(P)`
 `;
 
 const HeaderTitle = () => {
-  const [titleData, fetchTitleData] = useFetch();
   const location = useLocation();
   const pathNameInfo = location.pathname.substring(1).split('/');
-  const [title, setTitle] = useRecoilState(headerTitleInfo);
+  // 페이지가 직접 정한 제목(회원 관리·관리자 페이지 등 staff 경로). 있으면 메뉴 제목 대신 쓴다
+  const overrideTitle = useRecoilValue(headerTitleInfo);
 
   let titleId = 0;
 
@@ -174,46 +174,30 @@ const HeaderTitle = () => {
     return titleId;
   };
 
-  useEffect(() => {
-    const id = titleInfo(pathNameInfo[0], pathNameInfo[1]);
-    if ((title.name === null || title.name === '') && pathNameInfo[0] !== 'staff') {
-      fetchTitleData(`/menu/${id}`, 'GET');
-    }
-  }, []);
-
-  useEffect(() => {
-    const id = titleInfo(pathNameInfo[0], pathNameInfo[1]);
-    // 이전 titleId와 새로운 titleId가 다를 때에만 fetchTitleData 호출
-
-    if (pathNameInfo[0] !== 'staff') {
-      fetchTitleData(`/menu/${id}`, 'GET');
-    }
-  }, [pathNameInfo[0], pathNameInfo[1]]); // pathNameInfo와 titleId가 변경될 때마다 useEffect가 실행되도록 함
-
-  useEffect(() => {
-    if (titleData) {
-      setTitle(titleData);
-    }
-    return () => setTitle({ name: '', description: '' });
-  }, [titleData]);
+  // staff 경로는 메뉴 제목을 요청하지 않고 페이지가 정한 제목을 쓴다
+  const { data: menuTitle } = useQuery({
+    ...menuQueries.detail({ id: titleInfo(pathNameInfo[0], pathNameInfo[1]) }),
+    enabled: pathNameInfo[0] !== 'staff',
+    // 경로가 바뀌어 새 제목을 받는 동안 이전 제목을 그대로 보여 주던 옛 동작을 보존한다
+    placeholderData: keepPreviousData,
+  });
+  const title = overrideTitle.name ? overrideTitle : menuTitle;
 
   return (
     <>
       <HeaderHDiv $zIndex={2} width="100%" $backgroundColor="bklayer" direction="column">
-        {title && (
-          <TitleContent>
-            <Div $margin="0 0 20px 0">
-              <TitleName color="wh" fontWeight={700} fontSize="xxxl">
-                {title.name}
-              </TitleName>
-            </Div>
-            <Div>
-              <TitleDescription color="grey3" fontWeight={300} fontSize="lg">
-                {title.description}
-              </TitleDescription>
-            </Div>
-          </TitleContent>
-        )}
+        <TitleContent>
+          <Div $margin="0 0 20px 0">
+            <TitleName color="wh" fontWeight={700} fontSize="xxxl">
+              {title?.name}
+            </TitleName>
+          </Div>
+          <Div>
+            <TitleDescription color="grey3" fontWeight={300} fontSize="lg">
+              {title?.description}
+            </TitleDescription>
+          </Div>
+        </TitleContent>
       </HeaderHDiv>
       <HeaderImgDiv width="100%" />
     </>
