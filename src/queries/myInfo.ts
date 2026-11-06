@@ -1,10 +1,14 @@
 import { mutationOptions, queryOptions, useQuery } from '@tanstack/react-query';
 import { useRecoilValue } from 'recoil';
 
+import { keepPreviousPage } from './keepPreviousPage';
 import { queryClient } from './queryClient';
 import { signUpQueries } from './signUp';
 import {
+  getMyBoardList,
+  getMyCommentList,
   getMyInfo,
+  MyInfoListParams,
   requestMyInfoNameChange,
   updateMyInfoDetail,
   updateMyInfoIntro,
@@ -22,6 +26,19 @@ export const myInfoQueries = {
     queryOptions({
       queryKey: [...myInfoQueries.all(), 'detail'],
       queryFn: getMyInfo,
+    }),
+  // 내 정보 화면의 내가 쓴 글·댓글 목록. 페이지를 넘기는 동안 이전 목록을 보여 주던 옛 화면 동작을 보존한다
+  boardList: (params: MyInfoListParams) =>
+    queryOptions({
+      queryKey: [...myInfoQueries.all(), 'boards', params],
+      queryFn: () => getMyBoardList(params),
+      placeholderData: keepPreviousPage(params),
+    }),
+  commentList: (params: MyInfoListParams) =>
+    queryOptions({
+      queryKey: [...myInfoQueries.all(), 'comments', params],
+      queryFn: () => getMyCommentList(params),
+      placeholderData: keepPreviousPage(params),
     }),
 };
 

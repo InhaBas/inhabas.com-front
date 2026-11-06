@@ -58,6 +58,16 @@ export interface paginationPropsInterface {
   paginationFetch: any;
 }
 
+// file
+// 백엔드 FileDownloadDto (파일 업로드 응답, 게시글 상세의 images·otherFiles)
+export interface fileDownloadInterface {
+  id: string;
+  name: string;
+  url: string;
+  size: number;
+  type: string;
+}
+
 // comment
 export interface commentListInterface {
   id: number;
