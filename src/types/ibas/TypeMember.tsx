@@ -23,3 +23,8 @@ export interface majorInterface {
   college: string;
   major: string;
 }
+
+// GET /signUp/check 응답. 회원가입을 마쳤으면 true
+export interface signUpCheckInterface {
+  check: boolean;
+}

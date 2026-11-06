@@ -73,6 +73,12 @@ export const userImage = atom({
   default: '',
 });
 
+// 이 화면에서 로그아웃 버튼을 눌렀는지. useMyRole()이 'logout'을 돌려주는 데 쓴다
+export const loggedOut = atom<boolean>({
+  key: 'loggedOut',
+  default: false,
+});
+
 // 숫자로 role 설정하려 했으나, 직관적인 코드를 위해 string 값으로 지정
 export const userRole = atom({
   key: 'userRole',
