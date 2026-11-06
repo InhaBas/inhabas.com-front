@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import Loading from '../../components/common/Loading';
-import useFetch from '../../hooks/useFetch';
-import { policyInfo } from '../../recoil/backState';
+import { policyQueries } from '../../queries/policy';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import { H2 } from '../../styles/assets/H';
@@ -93,33 +91,19 @@ const RuleBackground = styled(Div)`
 
 const Rule = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
+  // 라우트가 rule/:id라 id는 항상 있다
+  const { id = '' } = useParams();
 
   const movePage = () => {
     navigate('/');
   };
 
-  const [policyData, policyFetchData] = useFetch();
-  const [policy, setPolicy] = useRecoilState(policyInfo);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // 정책 api 불러오기
-  useEffect(() => {
-    setIsLoading(true);
-    policyFetchData(`/policy/${id}`, 'GET');
-    setPolicy(null);
-  }, [id]);
-
-  useEffect(() => {
-    if (policyData) {
-      setPolicy(policyData);
-      setIsLoading(false);
-    }
-  }, [policyData]);
+  // 정책 api 불러오기. id가 바뀌면 새 응답이 올 때까지 다시 로딩을 보여 준다
+  const { data: policy } = useQuery(policyQueries.detail({ id }));
 
   return (
     <>
-      {isLoading ? (
+      {!policy ? (
         <FlexDiv width="100%" height="100vh">
           <Loading />
         </FlexDiv>
@@ -139,7 +123,7 @@ const Rule = () => {
               </RuleLogo>
               <FlexDiv>
                 <RuleTitle fontSize="xxl" fontWeight={700}>
-                  {policy?.title}
+                  {policy.title}
                 </RuleTitle>
               </FlexDiv>
 
@@ -147,15 +131,13 @@ const Rule = () => {
             </RuleHeader>
 
             <RuleBody width="100%" height="85%" overflow="auto">
-              {policy && (
-                <div>
-                  <P
-                    $whiteSpace="pre-wrap"
-                    $lineHeight={2.8}
-                    dangerouslySetInnerHTML={{ __html: policy?.content }}
-                  />
-                </div>
-              )}
+              <div>
+                <P
+                  $whiteSpace="pre-wrap"
+                  $lineHeight={2.8}
+                  dangerouslySetInnerHTML={{ __html: policy.content }}
+                />
+              </div>
 
               <FlexDiv width="100%" $margin="50px 0 0 0">
                 <Button
