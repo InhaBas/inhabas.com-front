@@ -22,7 +22,8 @@ export const createSignUpProfile = (body: signUpInterface) =>
 export const getSignUpQuestionnaires = () =>
   request<questionnariesInterface[]>('/signUp/questionnaires');
 
-export const getSignUpAnswers = () => request<answersInterface[]>('/signUp/answers', { auth: true });
+export const getSignUpAnswers = () =>
+  request<answersInterface[]>('/signUp/answers', { auth: true });
 
 // 답변 임시저장(200 빈 본문)
 export const createSignUpAnswers = (body: answersInterface[]) =>
