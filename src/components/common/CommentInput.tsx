@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useMutation } from '@tanstack/react-query';
+import { useState } from 'react';
 import { styled } from 'styled-components';
 
-import useFetch from '../../hooks/useFetch';
-import { refetch } from '../../recoil/frontState';
+import { commentMutations } from '../../queries/comment';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
@@ -48,8 +47,7 @@ const CommentSubmitButton = styled(Button)`
 const CommentInput = (props: commentPropsInterface) => {
   const { boardId, menuId, parentId } = props;
   const [commentInput, setCommentInput] = useState('');
-  const [postComment, fetchPostComment] = useFetch();
-  const setReload = useSetRecoilState(refetch);
+  const createMutation = useMutation(commentMutations.create());
 
   const checkCommentInput = () => {
     if (commentInput === '') {
@@ -61,6 +59,7 @@ const CommentInput = (props: commentPropsInterface) => {
   };
 
   const clickPostEvent = () => {
+    if (createMutation.isPending) return;
     if (checkCommentInput() === false) {
       return;
     }
@@ -69,13 +68,12 @@ const CommentInput = (props: commentPropsInterface) => {
       content: commentInput,
     };
 
-    fetchPostComment(`/board/${menuId}/${boardId}/comment`, 'POST', 'token', inputData);
+    // 댓글 목록 재조회는 뮤테이션의 무효화가 맡는다
+    createMutation.mutate(
+      { menuId, boardId, body: inputData },
+      { onSuccess: () => setCommentInput('') },
+    );
   };
-
-  useEffect(() => {
-    setReload(true);
-    setCommentInput('');
-  }, [postComment]);
 
   return (
     <>
@@ -103,6 +101,7 @@ const CommentInput = (props: commentPropsInterface) => {
           $borderRadius={50}
           $padding="15px 40px"
           $HBackgroundColor="bgColorHo"
+          disabled={createMutation.isPending}
           onClick={() => clickPostEvent()}
         >
           <P color="wh" fontSize="sm" $letterSpacing="1px">

@@ -1,15 +1,14 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
-import { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useState } from 'react';
+import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
 import CommentInput from './CommentInput';
-import Loading from './Loading';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
 import { DateFunction } from '../../functions/dateFunction';
-import useFetch from '../../hooks/useFetch';
-import { commentInfo, tokenAccess } from '../../recoil/backState';
-import { refetch } from '../../recoil/frontState';
+import { commentMutations, commentQueries } from '../../queries/comment';
+import { tokenAccess } from '../../recoil/backState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { TextArea } from '../../styles/assets/Input';
@@ -150,19 +149,18 @@ const CommentList = (props: commentPropsInterface) => {
   const { boardId, menuId, token } = props;
   const { formatDateMinute } = DateFunction();
   const { isAuthorizedOverVice, isAuthorizedOverDeactivate } = GetRoleAuthorization();
-  const [commentData, fetchCommentData] = useFetch();
-  const [commentDeleteData, fetchCommentDeleteData] = useFetch();
-  const [comment, setComment] = useRecoilState(commentInfo);
-  const [updating, setUpdating] = useState('nothing');
+  // 공개 게시판(token === false)은 토큰 없이 조회한다
+  const { data: commentData } = useQuery(
+    commentQueries.list({ menuId, boardId, auth: token !== false }),
+  );
+  const updateMutation = useMutation(commentMutations.update());
+  const deleteMutation = useMutation(commentMutations.delete());
   const [commentInput, setCommentInput] = useState('');
-  const [putComment, fetchPutComment] = useFetch();
-  const [reload, setReload] = useRecoilState(refetch);
   const [showCommentInputId, setShowCommentInputId] = useState<number | null>(null);
   const [isCommentInputVisible, setCommentInputVisible] = useState(false);
   const access = useRecoilValue(tokenAccess);
   // 수정 중인 댓글의 ID를 추적하는 상태
   const [editingCommentId, setEditingCommentId] = useState<number>();
-  const [isLoading, setIsLoading] = useState<null | boolean>(null);
 
   let decoded: tokenInterface | undefined;
   if (access !== 'default') {
@@ -205,7 +203,7 @@ const CommentList = (props: commentPropsInterface) => {
       return;
     }
     setEditingCommentId(id);
-    const editingComment = findCommentById(id, comment);
+    const editingComment = commentData && findCommentById(id, commentData);
     if (editingComment) {
       setCommentInput(editingComment.content);
     }
@@ -223,48 +221,39 @@ const CommentList = (props: commentPropsInterface) => {
     return true;
   };
 
+  // 수정·삭제 중에는 댓글 내용을 그대로 두고 트리거(등록·삭제)만 막는다
+  const isMutating = updateMutation.isPending || deleteMutation.isPending;
+
   const updateComment = (id: number) => {
+    if (isMutating) return;
     if (checkCommentInput() === false) {
       return;
     }
-    const inputData = {
-      content: commentInput,
-    };
 
-    fetchPutComment(`/comment/${id}`, 'PUT', 'token', inputData);
-    setIsLoading(true);
-    setCommentInput('');
+    updateMutation.mutate(
+      { id, content: commentInput, menuId, boardId },
+      {
+        onSuccess: () => {
+          setCommentInput('');
+          setEditingCommentId(-1);
+        },
+      },
+    );
   };
 
   const deleteComment = (id: number) => {
+    if (isMutating) return;
     if (window.confirm('댓글을 정말로 삭제하시겠습니까?')) {
-      fetchCommentDeleteData(`/comment/${id}`, 'DELETE', 'token');
-      setIsLoading(true);
+      deleteMutation.mutate(
+        { id, menuId, boardId },
+        {
+          onSuccess: () => {
+            setEditingCommentId(-1);
+          },
+        },
+      );
     }
   };
-
-  useEffect(() => {
-    if (token === false) {
-      fetchCommentData(`/board/${menuId}/${boardId}/comments`, 'GET');
-    } else {
-      fetchCommentData(`/board/${menuId}/${boardId}/comments`, 'GET', 'token');
-    }
-    setUpdating('nothing');
-    setEditingCommentId(-1);
-    return setComment([]);
-  }, [commentDeleteData, putComment]);
-
-  useEffect(() => {
-    if (reload) {
-      if (token === false) {
-        fetchCommentData(`/board/${menuId}/${boardId}/comments`, 'GET');
-      } else {
-        fetchCommentData(`/board/${menuId}/${boardId}/comments`, 'GET', 'token');
-      }
-      setUpdating('nothing');
-      setReload(false);
-    }
-  }, [reload]);
 
   // 댓글 데이터를 트리 구조로 변환하는 함수
   const convertToCommentTree = (
@@ -368,7 +357,7 @@ const CommentList = (props: commentPropsInterface) => {
                       <FlexDiv>
                         {userId === comment.writer.id && (
                           <FlexDiv>
-                            {updating === 'nothing' && !isEditing(comment.id) ? (
+                            {!isEditing(comment.id) ? (
                               <FlexDiv
                                 $margin="0 0 0 15px"
                                 $pointer
@@ -386,7 +375,7 @@ const CommentList = (props: commentPropsInterface) => {
                             ) : (
                               <FlexDiv
                                 $margin="0 0 0 15px"
-                                $pointer
+                                $pointer={!isMutating}
                                 onClick={() => updateComment(comment?.id)}
                               >
                                 <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
@@ -404,7 +393,7 @@ const CommentList = (props: commentPropsInterface) => {
                         {(userId === comment.writer.id || isAuthorizedOverVice) && (
                           <FlexDiv
                             $margin="0 0 0 15px"
-                            $pointer
+                            $pointer={!isMutating}
                             onClick={() => deleteComment(comment?.id)}
                           >
                             <FlexDiv width="13px" height="13px" $margin="0 5px 0 0">
@@ -439,11 +428,7 @@ const CommentList = (props: commentPropsInterface) => {
             </ParentPreview>
           )}
 
-          {isLoading && editingCommentId === comment.id ? (
-            <FlexDiv width="100%" height="100px">
-              <Loading />
-            </FlexDiv>
-          ) : isEditing(comment.id) ? (
+          {isEditing(comment.id) ? (
             <Div $margin="15px 0" width="100%">
               <EditingTextArea
                 width="100%"
@@ -481,18 +466,8 @@ const CommentList = (props: commentPropsInterface) => {
     ));
   };
 
-  useEffect(() => {
-    if (commentData) {
-      const convertedComments = convertToCommentTree(commentData);
-      setComment(convertedComments);
-    }
-  }, [commentData]);
-
-  useEffect(() => {
-    setIsLoading(false);
-  }, [comment]);
-
-  return <>{comment && renderCommentsRecursively(Object.values(comment), 0)}</>;
+  // 옛 화면처럼 첫 조회 중에는 아무것도 그리지 않는다
+  return <>{commentData && renderCommentsRecursively(convertToCommentTree(commentData), 0)}</>;
 };
 
 export default CommentList;

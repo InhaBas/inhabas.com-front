@@ -1,17 +1,17 @@
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import ContestInfo from '../../components/activity/ContestInfo';
 import Dropdown from '../../components/common/Dropdown';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
-import { contestListDataInfo } from '../../recoil/backState';
 import { contestOrder } from '../../recoil/frontState';
 import A from '../../styles/assets/A';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { media } from '../../styles/theme';
+import { contestListInterface } from '../../types/TypeBoard';
 
 const ContestContainer = styled.div`
   position: relative;
@@ -58,8 +58,7 @@ const ContestAction = styled.div`
   margin: 40px 0 10px;
 `;
 
-const Contest = () => {
-  const infos = useRecoilValue(contestListDataInfo);
+const Contest = ({ contests: infos }: { contests: contestListInterface[] }) => {
   const [order, setOrder] = useRecoilState(contestOrder);
   const { isAuthorizedOverBasic } = GetRoleAuthorization();
 
@@ -78,7 +77,7 @@ const Contest = () => {
       </ContestToolbar>
       {infos && infos.length > 0 ? (
         <ContestGrid>
-          {infos.map((info: any) => (
+          {infos.map((info) => (
             <ContestInfo key={info.id} info={info} />
           ))}
         </ContestGrid>

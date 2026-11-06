@@ -10,13 +10,7 @@ import {
   userInterface,
 } from '../types/ibas/TypeMyinfo';
 import { supportDetailInterface } from '../types/TypeBank';
-import { boardDetailInterface, boardMenuInterface } from '../types/TypeBoard';
-import {
-  commentListInterface,
-  menuInterface,
-  myCommentInterface,
-  policyInterface,
-} from '../types/TypeCommon';
+import { menuInterface, policyInterface } from '../types/TypeCommon';
 
 // headerTitle: 페이지가 직접 정한 제목만 담는다(staff 경로). 비어 있으면 HeaderTitle이 메뉴 제목을 쓴다
 export const headerTitleInfo = atom<menuInterface>({
@@ -138,43 +132,6 @@ export const applicationAnswerInfo = atom<applicationAnswersInterface[] | null>(
 export const scheduleInfo = atom<scheduleInterface | null>({
   key: 'scheduleInfo',
   default: null,
-});
-
-//board
-export const boardMenuInfo = atom<boardMenuInterface[] | []>({
-  key: 'boardMenuInfo',
-  default: [],
-});
-
-export const boardListDataInfo = atom({
-  key: 'boardListDataInfo',
-  default: [],
-});
-
-export const boardListPinnedDataInfo = atom({
-  key: 'boardListPinnedDataInfo',
-  default: [],
-});
-
-export const boardDetailData = atom<boardDetailInterface | null>({
-  key: 'boardDetailData',
-  default: null,
-});
-
-export const contestListDataInfo = atom<any[]>({
-  key: 'contestListDataInfo',
-  default: [],
-});
-
-// comment
-export const commentInfo = atom<commentListInterface[] | []>({
-  key: 'commentInfo',
-  default: [],
-});
-
-export const myCommentsInfo = atom<myCommentInterface[] | []>({
-  key: 'myCommentsInfo',
-  default: [],
 });
 
 //lectureRoom

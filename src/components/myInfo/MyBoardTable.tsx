@@ -1,15 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
 import { DateFunction } from '../../functions/dateFunction';
-import useFetch from '../../hooks/useFetch';
-import { boardListDataInfo, tokenAccess, totalPageInfo } from '../../recoil/backState';
+import { myInfoQueries } from '../../queries/myInfo';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-import { MyBoardInterface } from '../../types/ibas/TypeMyinfo';
 import Loading from '../common/Loading';
 import Pagination from '../common/Pagination';
 
@@ -45,36 +43,22 @@ const MyBoardTable = () => {
   const { formatDateDay } = DateFunction();
   const navigate = useNavigate();
 
-  const access = useRecoilValue(tokenAccess);
-  const [boardList, setBoardList] = useRecoilState(boardListDataInfo);
-  const [boardListData, fetchBoardListData] = useFetch();
-  const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
-  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const { data: boardListData } = useQuery(myInfoQueries.boardList({ page, size: 7 }));
 
-  useEffect(() => {
-    fetchBoardListData(`/myInfo/boards?page=0&size=7`, 'GET', 'token');
-    setIsLoading(true);
-  }, [access]);
+  const boardList =
+    boardListData?.data.map((item) => ({
+      type: item.menuName,
+      title: item.title,
+      dateCreated: formatDateDay({ date: item.dateCreated }),
 
-  useEffect(() => {
-    if (boardListData) {
-      const contents = boardListData.data.map((item: MyBoardInterface) => ({
-        type: item.menuName,
-        title: item.title,
-        dateCreated: formatDateDay({ date: item.dateCreated }),
+      id: item.id,
+      menuType: item.menuType === 'STORAGE' ? 'opensource' : item.menuType.toLowerCase(),
+    })) ?? [];
 
-        id: item.id,
-        menuType: item.menuType === 'STORAGE' ? 'opensource' : item.menuType.toLowerCase(),
-      }));
-
-      setBoardList(contents);
-      setTotalPage(boardListData.pageInfo.totalPages);
-      setIsLoading(false);
-    }
-  }, [boardListData]);
   return (
     <>
-      {isLoading ? (
+      {!boardListData ? (
         <FlexDiv width="100%" height="30vh">
           <Loading />
         </FlexDiv>
@@ -162,13 +146,11 @@ const MyBoardTable = () => {
               )}
             </Div>
           </TableScroll>
-          {boardList && boardList.length !== 0 && (
+          {boardList.length !== 0 && (
             <Pagination
-              totalPage={totalPage}
-              fetchUrl={`/myInfo/boards`}
-              token
-              paginationFetch={fetchBoardListData}
-              size={7}
+              currentPage={page}
+              totalPage={boardListData.pageInfo.totalPages}
+              onPageChange={setPage}
             />
           )}
         </>

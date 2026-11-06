@@ -1,14 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import styled from 'styled-components';
 
-import useFetch from '../../hooks/useFetch';
-import { myCommentsInfo } from '../../recoil/backState';
+import { myInfoQueries } from '../../queries/myInfo';
 import A from '../../styles/assets/A';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-import { myCommentInterface } from '../../types/TypeCommon';
 import Loading from '../common/Loading';
 import Pagination from '../common/Pagination';
 
@@ -42,36 +40,24 @@ const MyCommentTable = () => {
   const headerInfo = ['게시판 유형', '댓글 내용', '작성일'];
   const widthList = [15, 65, 15];
 
-  const [commentList, setCommentList] = useRecoilState(myCommentsInfo);
-  const [commentListData, fetchCommentListData] = useFetch();
-  const [totalPage, setTotalPage] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const { data: commentListData } = useQuery(myInfoQueries.commentList({ page, size: 7 }));
 
-  useEffect(() => {
-    fetchCommentListData('/myInfo/comments?page=0&size=7', 'GET', 'token');
-    setIsLoading(true);
-  }, []);
-
-  useEffect(() => {
-    if (commentListData) {
-      const contents = commentListData.data.map((item: myCommentInterface) => ({
-        id: item.id,
-        menuId: item.menuId,
-        menuType: item.menuType,
-        menuName: item.menuName,
-        content: item.content,
-        dateCreated: item.dateCreated.split('T')[0],
-        isDeleted: item.isDeleted,
-      }));
-      setCommentList(contents);
-      setTotalPage(commentListData.pageInfo.totalPages);
-      setIsLoading(false);
-    }
-  }, [commentListData]);
+  // 아래 표는 Object.values(element).slice(3, 6)으로 menuName·content·dateCreated를 꺼내므로 키 순서를 바꾸지 않는다
+  const commentList =
+    commentListData?.data.map((item) => ({
+      id: item.id,
+      menuId: item.menuId,
+      menuType: item.menuType,
+      menuName: item.menuName,
+      content: item.content,
+      dateCreated: item.dateCreated.split('T')[0],
+      isDeleted: item.isDeleted,
+    })) ?? [];
 
   return (
     <>
-      {isLoading ? (
+      {!commentListData ? (
         <FlexDiv width="100%" height="30vh">
           <Loading />
         </FlexDiv>
@@ -164,13 +150,11 @@ const MyCommentTable = () => {
               )}
 
               {/* <Pagination /> */}
-              {commentList && commentList.length !== 0 && (
+              {commentList.length !== 0 && (
                 <Pagination
-                  totalPage={totalPage}
-                  fetchUrl={`/myInfo/comments`}
-                  token
-                  paginationFetch={fetchCommentListData}
-                  size={7}
+                  currentPage={page}
+                  totalPage={commentListData.pageInfo.totalPages}
+                  onPageChange={setPage}
                 />
               )}
             </Div>

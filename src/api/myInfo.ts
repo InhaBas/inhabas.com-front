@@ -1,9 +1,11 @@
 import { request } from './client';
 import {
+  MyBoardInterface,
   profileInterface,
   updateMyInfoDetailInterface,
   updateMyInfoIntroInterface,
 } from '../types/ibas/TypeMyinfo';
+import { myCommentInterface, pagedResponseInterface } from '../types/TypeCommon';
 
 export const getMyInfo = () => request<profileInterface>('/myInfo', { auth: true });
 
@@ -22,3 +24,20 @@ export const updateMyInfoPicture = (body: FormData) =>
 // 본문은 옛 화면 그대로 입력값 문자열 하나를 JSON으로 보낸다(객체로 감싸지 않는다)
 export const requestMyInfoNameChange = (name: string | undefined) =>
   request<null>('/myInfo/name', { method: 'PUT', auth: true, body: name });
+
+export interface MyInfoListParams {
+  page: number; // 1부터 센다
+  size: number;
+}
+
+export const getMyBoardList = ({ page, size }: MyInfoListParams) =>
+  request<pagedResponseInterface<MyBoardInterface>>(
+    `/myInfo/boards?page=${page - 1}&size=${size}`,
+    { auth: true },
+  );
+
+export const getMyCommentList = ({ page, size }: MyInfoListParams) =>
+  request<pagedResponseInterface<myCommentInterface>>(
+    `/myInfo/comments?page=${page - 1}&size=${size}`,
+    { auth: true },
+  );
