@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
@@ -6,15 +7,15 @@ import styled from 'styled-components';
 import DragNDrop from '../../components/common/DragNDrop';
 import Loading from '../../components/common/Loading';
 import TextEditor from '../../components/common/TextEditor';
-import useFetch from '../../hooks/useFetch';
+import { clubActivityMutations, clubQueries } from '../../queries/club';
 import { fileIdList } from '../../recoil/backState';
-import { menuId, refetch, selectedFile } from '../../recoil/frontState';
+import { menuId, selectedFile } from '../../recoil/frontState';
 import Button from '../../styles/assets/Button';
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import { TextInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-import { ActivityDetailInterface } from '../../types/ibas/TypeIBAS';
+import { fileDownloadInterface } from '../../types/TypeCommon';
 
 const TitleTextInput = styled(TextInput)`
   border-radius: 5px;
@@ -50,26 +51,39 @@ const ActivityCreate = () => {
   const paramID = useParams().id;
   const inputRef = useRef<any[]>([]);
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [postData, postFetchData] = useFetch();
-  const [getData, getFetchData] = useFetch();
+  const update = paramID ? 'update' : 'create';
   const setSelectedFile = useSetRecoilState(selectedFile);
   const [fileId, setFileList] = useRecoilState(fileIdList);
   const files = useRecoilValue(selectedFile);
-  const [detail, setDetail] = useState<ActivityDetailInterface | null>(null);
   const currentMenuId = useRecoilValue(menuId);
-  const setReload = useSetRecoilState(refetch);
 
-  const [update, setUpdate] = useState('create');
-  const [existingImageFiles, setExistingImageFiles] = useState<File[]>([]);
+  // 옛 화면 그대로 수정 화면은 토큰과 함께 조회한다
+  const { data: detailData, isFetchedAfterMount } = useQuery({
+    ...clubQueries.activityDetail({ id: paramID ?? '', auth: true }),
+    enabled: update === 'update',
+  });
+  // 옛 화면처럼 이 화면에서 새로 받은 응답이 올 때까지 스피너를 보이고, 그 응답으로 폼을 채운다
+  const detail = isFetchedAfterMount ? detailData : undefined;
+  const createMutation = useMutation(clubActivityMutations.create());
+  const updateMutation = useMutation(clubActivityMutations.update());
+  const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
-  const checkImageFileExists = (files: File[]) => {
+  // 기존 첨부(이미지 → 그 밖의 파일 순서). DragNDrop 미리보기와 fileIdList의 순서가 같아야 미리보기를 지울 때 맞는 id가 빠진다
+  const existingFiles: fileDownloadInterface[] = detail
+    ? [...detail.images, ...detail.otherFiles]
+    : [];
+  const existingImageFiles = existingFiles.filter((file) =>
+    ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'].includes(file.type),
+  );
+
+  const checkImageFileExists = (files: { type: string }[]) => {
     return files.some((file) =>
       ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'].includes(file.type),
     );
   };
 
   const sendInput = () => {
+    if (isSubmitting) return;
     if (inputRef.current[0].value === '') {
       alert('제목을 입력해주세요');
       return;
@@ -111,67 +125,37 @@ const ActivityCreate = () => {
       formData.append('files', file);
     });
 
-    if (update === 'update') {
-      postFetchData(`/club/activity/${paramID}`, 'POST', 'token', inputData);
+    const mutateOptions = {
+      onSuccess: () => {
+        alert(
+          update === 'update' ? '글이 정상적으로 수정되었습니다' : '글이 정상적으로 등록되었습니다',
+        );
+        navigate(`/activity`);
+      },
+    };
+    if (update === 'update' && paramID) {
+      updateMutation.mutate({ id: paramID, body: inputData }, mutateOptions);
     } else {
-      postFetchData(`/club/activity`, 'POST', 'token', inputData);
+      createMutation.mutate(inputData, mutateOptions);
     }
   };
 
+  // 폼 초기값: 불러온 기존 첨부를 편집할 파일 목록으로 복사한다
   useEffect(() => {
-    if (paramID) {
-      setUpdate('update');
-    } else {
-      setIsLoading(false);
+    if (detail) {
+      setSelectedFile(existingFiles);
+      setFileList(existingFiles.map((file) => file.id));
     }
-  }, [paramID]);
+  }, [detail]);
 
+  // DragNDrop fileList 초기화
   useEffect(() => {
-    if (update === 'update') {
-      getFetchData(`/club/activity/${paramID}`, 'GET', 'token');
-    }
-  }, [update, paramID]);
-
-  useEffect(() => {
-    if (postData) {
-      alert(
-        update === 'update' ? '글이 정상적으로 수정되었습니다' : '글이 정상적으로 등록되었습니다',
-      );
-      navigate(`/activity`);
-    }
-  }, [postData, update, navigate]);
-
-  useEffect(() => {
-    if (getData) {
-      setDetail(getData);
-      setIsLoading(false);
-
-      const allFiles = [
-        ...getData.images.map((item: any) => item),
-        ...getData.otherFiles.map((item: any) => item),
-      ];
-      const imageFiles = allFiles.filter((file: File) =>
-        ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'].includes(file.type),
-      );
-      setExistingImageFiles(imageFiles);
-
-      setSelectedFile(allFiles);
-      const fileIds = [
-        ...getData.images.map((item: any) => item?.id),
-        ...getData.otherFiles.map((item: any) => item?.id),
-      ];
-      setFileList(fileIds);
-      setReload(true);
-    }
-    return () => {
-      setDetail(null);
-      setFileList([]);
-    };
-  }, [getData, setSelectedFile, setFileList, setReload]);
+    return () => setFileList([]);
+  }, []);
 
   return (
     <FlexDiv width="100%" $border={`1px solid ${theme.color.grey1}`}>
-      {isLoading ? (
+      {update === 'update' && !detail ? (
         <FlexDiv width="100%" height="100vh">
           <Loading />
         </FlexDiv>
@@ -193,7 +177,11 @@ const ActivityCreate = () => {
                   />
                 </Div>
 
-                <DragNDrop fileFetch menuId={currentMenuId} />
+                <DragNDrop
+                  fileFetch
+                  menuId={currentMenuId}
+                  initialFiles={update === 'update' ? existingFiles : undefined}
+                />
               </Div>
               <Div width="100%" $padding="20px">
                 <TextEditor
@@ -209,6 +197,7 @@ const ActivityCreate = () => {
                 $HBackgroundColor="bgColorHo"
                 $borderRadius={2}
                 $padding="15px 30px"
+                disabled={isSubmitting}
                 onClick={sendInput}
               >
                 <P color="wh">{update === 'update' ? '수정하기' : '작성하기'}</P>

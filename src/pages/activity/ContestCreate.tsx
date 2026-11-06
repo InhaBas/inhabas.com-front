@@ -1,21 +1,25 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
+import { ContestType } from '../../api/contest';
 import DragNDrop from '../../components/common/DragNDrop';
 import Loading from '../../components/common/Loading';
 import TextEditor from '../../components/common/TextEditor';
 import { DateFunction } from '../../functions/dateFunction';
-import useFetch from '../../hooks/useFetch';
+import { contestMutations, contestQueries } from '../../queries/contest';
 import { fileIdList } from '../../recoil/backState';
-import { menuId, refetch, selectedFile } from '../../recoil/frontState';
+import { menuId, selectedFile } from '../../recoil/frontState';
 import Button from '../../styles/assets/Button';
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { DateInput, Label, Radio, TextInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
+import { saveContestInterface } from '../../types/TypeBoard';
+import { fileDownloadInterface } from '../../types/TypeCommon';
 
 const FormContent = styled(Div)`
   &,
@@ -87,66 +91,43 @@ const SubmitButton = styled(Button)`
   }
 `;
 
-interface contestDetailInterface {
-  contestFieldId: number | null;
-  title: string;
-  topic: string;
-  association: string;
-  dateContestStart: string;
-  dateContestEnd: string;
-  content: string;
-  thumbnail: [
-    {
-      id: string;
-      name: string;
-      url: string;
-      size: number;
-      type: string;
-    },
-  ];
-
-  id: number;
-  dday: number;
-  // D-day: number;
-}
-
 const ContestCreate = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const url = location.pathname.split('/')[2];
+  // 라우트가 /board/contest/... 와 /board/activity/... 둘뿐이다
+  const url = location.pathname.split('/')[2] as ContestType;
   const paramID = useParams().id;
 
   const inputRef = useRef<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [postData, postFetchData] = useFetch();
-  const [getData, getFetchData] = useFetch();
   const [fileId, setFileList] = useRecoilState(fileIdList);
-  const [update, setUpdate] = useState('create');
-  const [detail, setDetail] = useState<contestDetailInterface | null>(null);
+  const update = paramID ? 'update' : 'create';
   const [files, setSelectedFile] = useRecoilState(selectedFile);
   const currentMenuId = useRecoilValue(menuId);
-  const setReload = useSetRecoilState(refetch);
-  const [contestType, setContestType] = useState<number | null>(null);
+  // 고르기 전에는 수정 화면이면 불러온 종류를 쓴다(옛 화면은 불러온 값을 이 state에 복사했다)
+  const [pickedContestType, setContestType] = useState<number | null>(null);
   const { formatDateT, formatDateDay } = DateFunction();
 
   const today = formatDateT();
 
-  useEffect(() => {
-    if (paramID) {
-      setUpdate('update');
-    } else {
-      setIsLoading(false);
-    }
-  }, []);
+  // 옛 화면 그대로 수정 화면은 토큰과 함께 조회한다
+  const { data: detailData, isFetchedAfterMount } = useQuery({
+    ...contestQueries.detail({ contestType: url, id: paramID ?? '', auth: true }),
+    enabled: update === 'update',
+  });
+  // 옛 화면처럼 이 화면에서 새로 받은 응답이 올 때까지 스피너를 보이고, 그 응답으로 폼을 채운다
+  const detail = isFetchedAfterMount ? detailData : undefined;
+  const contestType = pickedContestType ?? detail?.contestFieldId ?? null;
+  const createMutation = useMutation(contestMutations.create());
+  const updateMutation = useMutation(contestMutations.update());
+  const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
-  let fetchUrl = '';
-  if (url === 'contest') {
-    fetchUrl = '/contest/contest';
-  } else if (url === 'activity') {
-    fetchUrl = '/contest/activity';
-  }
+  // 기존 첨부(이미지 → 그 밖의 파일 순서). DragNDrop 미리보기와 fileIdList의 순서가 같아야 미리보기를 지울 때 맞는 id가 빠진다
+  const existingFiles: fileDownloadInterface[] = detail
+    ? [...detail.images, ...detail.otherFiles]
+    : [];
 
   const sendInput = () => {
+    if (isSubmitting) return;
     let check = true;
 
     if (check && inputRef.current[0].value === '') {
@@ -193,8 +174,7 @@ const ContestCreate = () => {
     }
 
     if (check) {
-      setIsLoading(true); // 로딩 상태 설정
-      const inputData = {
+      const inputData: saveContestInterface = {
         contestFieldId: contestType === 1 ? '1' : contestType === 2 ? '2' : null,
         title: inputRef.current[0].value,
         topic: inputRef.current[1].value,
@@ -204,58 +184,36 @@ const ContestCreate = () => {
         content: inputRef.current[5].getInstance().getMarkdown(),
         files: fileId,
       };
+      const mutateOptions = {
+        onSuccess: () => {
+          alert('글이 정상적으로 등록되었습니다');
+          navigate(`/board/${url}`);
+        },
+      };
       if (update === 'create') {
-        postFetchData(`${fetchUrl}`, 'POST', 'token', inputData);
-      } else if (update === 'update') {
-        postFetchData(`${fetchUrl}/${paramID}`, 'POST', 'token', inputData);
+        createMutation.mutate({ contestType: url, body: inputData }, mutateOptions);
+      } else if (paramID) {
+        updateMutation.mutate({ contestType: url, id: paramID, body: inputData }, mutateOptions);
       }
     }
   };
 
+  // 폼 초기값: 불러온 기존 첨부를 편집할 파일 목록으로 복사한다
   useEffect(() => {
-    if (postData) {
-      setIsLoading(false); // 로딩 상태 해제
-      alert('글이 정상적으로 등록되었습니다');
-      navigate(`/board/${url}`);
+    if (detail) {
+      setSelectedFile(existingFiles);
+      setFileList(existingFiles.map((file) => file.id));
     }
-  }, [postData]);
+  }, [detail]);
 
+  // DragNDrop fileList 초기화
   useEffect(() => {
-    if (update === 'update') {
-      getFetchData(`${fetchUrl}/${paramID}`, 'GET', 'token');
-    }
-  }, [update]);
-
-  useEffect(() => {
-    if (getData) {
-      setDetail(getData);
-      setContestType(getData.contestFieldId);
-      setIsLoading(false);
-
-      // DragNDrop update 설정
-      const files = [
-        ...getData.images.map((item: contestDetailInterface | null) => item),
-        ...getData.otherFiles.map((item: contestDetailInterface | null) => item),
-      ];
-      setSelectedFile(files);
-      const fileIds = [
-        ...getData.images.map((item: contestDetailInterface | null) => item?.id),
-        ...getData.otherFiles.map((item: contestDetailInterface | null) => item?.id),
-      ];
-      setFileList(fileIds);
-      // DragNDrop reload true일 때만 불러온 파일들 렌더링 할 있음
-      setReload(true);
-    }
-    return () => {
-      setDetail(null);
-      // DragNDrop fileList 초기화
-      setFileList([]);
-    };
-  }, [getData]);
+    return () => setFileList([]);
+  }, []);
 
   return (
     <FlexDiv width="100%">
-      {isLoading ? (
+      {update === 'update' && !detail ? (
         <FlexDiv width="100%" height="100vh">
           <Loading />
         </FlexDiv>
@@ -479,7 +437,11 @@ const ContestCreate = () => {
                 </Div>
               </FileUploadTitle>
               <Div width="100%" $padding="20px">
-                <DragNDrop fileFetch menuId={currentMenuId} />
+                <DragNDrop
+                  fileFetch
+                  menuId={currentMenuId}
+                  initialFiles={update === 'update' ? existingFiles : undefined}
+                />
               </Div>
             </Div>
 
@@ -508,6 +470,7 @@ const ContestCreate = () => {
                 $HBackgroundColor="bgColorHo"
                 $borderRadius={2}
                 $padding="15px 30px"
+                disabled={isSubmitting}
                 onClick={() => sendInput()}
               >
                 {update === 'create' ? <P color="wh">작성하기</P> : <P color="wh">수정하기</P>}
