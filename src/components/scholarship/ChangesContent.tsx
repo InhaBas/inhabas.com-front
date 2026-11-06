@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { GetRoleAuthorization } from '../../functions/authFunctions';
-import useFetch from '../../hooks/useFetch';
+import { scholarshipMutations } from '../../queries/scholarship';
 import { userRole } from '../../recoil/backState';
-import { modalInfo, modalOpen, refetch } from '../../recoil/frontState';
+import { modalInfo, modalOpen } from '../../recoil/frontState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
@@ -64,15 +64,22 @@ const ChangesContent = ({ changesContent }: { changesContent: scholarshipHistory
   const { isAuthorizedOverVice } = GetRoleAuthorization();
   const role = useRecoilValue(userRole);
 
-  const [deleteChange, fetchDeleteChange] = useFetch();
+  const deleteMutation = useMutation(scholarshipMutations.deleteHistory());
 
   const setOpen = useSetRecoilState(modalOpen);
-  const setReload = useSetRecoilState(refetch);
   const setModalInfo = useSetRecoilState(modalInfo);
 
-  const clickDeleteEvent = (id: string) => {
+  const clickDeleteEvent = (id: number) => {
+    if (deleteMutation.isPending) return;
     if (window.confirm('정말로 삭제하시겠습니까?')) {
-      fetchDeleteChange(`/scholarship/history/${id}`, 'DELETE', 'token');
+      deleteMutation.mutate(
+        { id },
+        {
+          onSuccess: () => {
+            alert('연혁 삭제가 완료되었습니다.');
+          },
+        },
+      );
     }
   };
 
@@ -81,13 +88,6 @@ const ChangesContent = ({ changesContent }: { changesContent: scholarshipHistory
 
     setModalInfo({ type: 'scholarshipUpdate', content: id });
   };
-
-  useEffect(() => {
-    if (deleteChange) {
-      alert('연혁 삭제가 완료되었습니다.');
-      setReload(true);
-    }
-  }, [deleteChange]);
 
   return (
     <>
@@ -127,7 +127,11 @@ const ChangesContent = ({ changesContent }: { changesContent: scholarshipHistory
                       >
                         <Img src="/images/pencil_grey.svg" />
                       </FlexDiv>
-                      <FlexDiv width="15px" $pointer onClick={() => clickDeleteEvent(String(id))}>
+                      <FlexDiv
+                        width="15px"
+                        $pointer={!deleteMutation.isPending}
+                        onClick={() => clickDeleteEvent(id)}
+                      >
                         <Img src="/images/trash_grey.svg" />
                       </FlexDiv>
                     </HistoryActions>

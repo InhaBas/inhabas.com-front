@@ -1,19 +1,22 @@
-import { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import ChangesContent from '../../components/scholarship/ChangesContent';
 import ScholarshipDetailList from '../../components/scholarship/ScholarshipDetailList';
 import SeeMoreButton from '../../components/scholarship/SeeMoreButton';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
-import useFetch from '../../hooks/useFetch';
+import { scholarshipQueries } from '../../queries/scholarship';
 import { userRole } from '../../recoil/backState';
-import { modalInfo, modalOpen, refetch } from '../../recoil/frontState';
+import { modalInfo, modalOpen } from '../../recoil/frontState';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
 import { media } from '../../styles/theme';
+import { scholarshipBoardInterface } from '../../types/ibas/TypeIBAS';
+import { pagedResponseInterface } from '../../types/TypeCommon';
 
 const ScholarshipSection = styled(Div)`
   min-height: 100vh;
@@ -214,31 +217,71 @@ const ThanksCard = styled(FlexDiv)`
   }
 `;
 
+type DetailListItem = { id: string; date: string; content: string };
+
+// 후원 내용을 작성 연도별로 묶는다. select에 넘기므로 참조가 바뀌지 않게 모듈 수준에 둔다
+const groupSponsorByYear = ({ data }: pagedResponseInterface<scholarshipBoardInterface>) => {
+  const parsedData: { [key: string]: DetailListItem[] } = {};
+
+  data?.forEach(({ id, dateCreated, title }) => {
+    const createdYear = dateCreated?.substring(0, 4);
+
+    if (Object.prototype.hasOwnProperty.call(parsedData, createdYear)) {
+      parsedData[createdYear]?.push({
+        date: dateCreated?.substring(5, 10), // 'MM-DD' 형식으로 추출
+        content: title,
+        id: String(id),
+      });
+    } else {
+      parsedData[createdYear] = [
+        {
+          date: dateCreated?.substring(5, 10), // 'MM-DD' 형식으로 추출
+          content: title,
+          id: String(id),
+        },
+      ];
+    }
+  });
+
+  return {
+    byYear: parsedData,
+    years: Object.keys(parsedData).sort((a, b) => Number(a) - Number(b)),
+  };
+};
+
+const toUsageList = ({ data }: pagedResponseInterface<scholarshipBoardInterface>) =>
+  data?.map(({ dateCreated, title, id }) => ({
+    date: dateCreated?.substring(5, 10),
+    content: title,
+    id: String(id),
+  }));
+
 const Scholarship = () => {
   const { isAuthorizedOverSecretary } = GetRoleAuthorization();
   const role = useRecoilValue(userRole);
 
-  const [changesContentData, fetchChangesContentData] = useFetch();
-  const [scholarshipUsageData, fetchScholarshipUsageData] = useFetch();
-  const [scholarshipSponsorData, fetchScholarshipSponsorData] = useFetch();
+  const { data: changesContent } = useQuery(scholarshipQueries.historyList());
+  const { data: scholarshipSponsor } = useQuery({
+    ...scholarshipQueries.boardList({ boardType: 'SPONSOR', page: 1, size: 9999 }),
+    select: groupSponsorByYear,
+  });
+  const { data: scholarshipUsage } = useQuery({
+    ...scholarshipQueries.boardList({ boardType: 'USAGE', page: 1, size: 3 }),
+    select: toUsageList,
+  });
 
-  const [changesContent, setChangesContent] = useState([]);
-  const [scholarshipUsage, setScholarshipUsage] = useState([]);
-  const [scholarshipSponsor, setScholarshipSponsor] = useState<{
-    [key: string]: { date: string; content: string; id: string }[];
-  }>({});
+  const sponsorYears = scholarshipSponsor?.years;
+  // 연도 버튼을 누르기 전에는 첫 연도(가장 이른 연도)를 보여 준다
+  const [clickedYear, setClickedYear] = useState<string>();
+  const selectedYear = clickedYear ?? sponsorYears?.[0];
 
-  const [sponsorYears, setSponsorYears] = useState<string[]>([]);
-  const [selectedYear, setSelectedYear] = useState('');
-
-  const [reload, setReload] = useRecoilState(refetch);
   const setOpen = useSetRecoilState(modalOpen);
   const setModalInfo = useSetRecoilState(modalInfo);
 
   const titleFontSize = '42px';
 
   const handleYearButtonClick = (year: string) => {
-    setSelectedYear(year);
+    setClickedYear(year);
   };
 
   const clickPostEvent = (ev: MouseEvent, name: string, selectedIdx: string) => {
@@ -246,68 +289,6 @@ const Scholarship = () => {
 
     setModalInfo({ type: 'scholarshipPost', content: String(selectedIdx) });
   };
-
-  // 연혁 useEffect
-  useEffect(() => {
-    fetchChangesContentData(`/scholarship/histories`, 'GET');
-    setReload(false);
-  }, [reload]);
-
-  useEffect(() => {
-    if (changesContentData) {
-      setChangesContent(Object?.values(changesContentData));
-    }
-  }, [changesContentData]);
-
-  // 후원내용 useEffect
-  useEffect(() => {
-    fetchScholarshipSponsorData(`/scholarship/SPONSOR?page=0&size=9999`, 'GET');
-  }, []);
-
-  useEffect(() => {
-    const parsedData: { [key: string]: { id: string; date: string; content: string }[] } = {};
-
-    scholarshipSponsorData?.data?.forEach(
-      ({ id, dateCreated, title }: { id: number; dateCreated: string; title: string }) => {
-        const createdYear = dateCreated?.substring(0, 4);
-
-        if (Object.prototype.hasOwnProperty.call(parsedData, createdYear)) {
-          parsedData[createdYear]?.push({
-            date: dateCreated?.substring(5, 10), // 'MM-DD' 형식으로 추출
-            content: title,
-            id: String(id),
-          });
-        } else {
-          parsedData[createdYear] = [
-            {
-              date: dateCreated?.substring(5, 10), // 'MM-DD' 형식으로 추출
-              content: title,
-              id: String(id),
-            },
-          ];
-        }
-      },
-    );
-
-    setScholarshipSponsor(parsedData);
-    setSponsorYears(Object?.keys(parsedData)?.sort((a, b) => Number(a) - Number(b)));
-  }, [scholarshipSponsorData]);
-
-  // 사용 내역 useEffect
-  useEffect(() => {
-    fetchScholarshipUsageData(`/scholarship/USAGE?page=0&size=3`, 'GET');
-  }, []);
-
-  useEffect(() => {
-    setScholarshipUsage(scholarshipUsageData?.data);
-  }, [scholarshipUsageData]);
-
-  // 후원 연도 처음 설정
-  useEffect(() => {
-    if (sponsorYears) {
-      setSelectedYear(sponsorYears[0]); // 가장 최신 연도
-    }
-  }, [sponsorYears]);
 
   return (
     <>
@@ -407,7 +388,7 @@ const Scholarship = () => {
             )}
             <Div $margin="30px 0 0 15px" $borderL="grey solid 2px">
               <Div $position="relative" $left="-7.5px" $top="-10px">
-                <ChangesContent changesContent={changesContent} />
+                <ChangesContent changesContent={changesContent ?? []} />
               </Div>
             </Div>
             <Div
@@ -469,7 +450,7 @@ const Scholarship = () => {
               {/* 자세한 내용들 */}
               <Div width="100%" height="65%">
                 <ScholarshipDetailList
-                  contents={scholarshipSponsor[selectedYear]}
+                  contents={(selectedYear && scholarshipSponsor?.byYear[selectedYear]) || []}
                   mainUrl="/board/sponsor/detail"
                 />
               </Div>
@@ -514,21 +495,7 @@ const Scholarship = () => {
               {/* 자세한 내용들 */}
               <Div width="100%" height="65%">
                 <ScholarshipDetailList
-                  contents={scholarshipUsage?.map(
-                    ({
-                      dateCreated,
-                      title,
-                      id,
-                    }: {
-                      dateCreated: string;
-                      title: string;
-                      id: number;
-                    }) => ({
-                      date: dateCreated?.substring(5, 10),
-                      content: title,
-                      id: String(id),
-                    }),
-                  )}
+                  contents={scholarshipUsage ?? []}
                   mainUrl="/board/usage/detail"
                 />
               </Div>

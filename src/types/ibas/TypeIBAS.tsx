@@ -35,6 +35,22 @@ export interface scholarshipHistoryInterface {
   }[];
 }
 
+// POST /scholarship/history, PUT /scholarship/history/{id} 본문. dateHistory는 yyyy-MM-ddTHH:mm:ss
+export interface saveScholarshipHistoryInterface {
+  title: string;
+  dateHistory: string;
+}
+
+// GET /scholarship/{SPONSOR|USAGE} 목록 항목 (백엔드 ScholarshipBoardDto)
+export interface scholarshipBoardInterface {
+  id: number;
+  title: string;
+  writerId: number;
+  writerName: string;
+  dateCreated: string;
+  dateUpdated: string;
+}
+
 export interface scholarshipDetailListInterface {
   contents: {
     date: string;
