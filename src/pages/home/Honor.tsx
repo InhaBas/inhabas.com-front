@@ -1,15 +1,13 @@
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import Slider from 'react-slick';
-import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import HeaderNav from '../../components/common/HeaderNav';
 import HonorSlide from '../../components/common/HonorSlide';
 import Loading from '../../components/common/Loading';
-import useFetch from '../../hooks/useFetch';
-import { honorDataInfo } from '../../recoil/backState';
+import { memberQueries } from '../../queries/member';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import { H1 } from '../../styles/assets/H';
 import Img from '../../styles/assets/Img';
@@ -141,21 +139,7 @@ const Honor = () => {
     ],
   };
 
-  const [honorData, fetchHonorData] = useFetch();
-  const [honor, setHonor] = useRecoilState(honorDataInfo);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    fetchHonorData('/members/hof', 'GET', 'token');
-    setIsLoading(true);
-  }, []);
-
-  useEffect(() => {
-    if (honorData) {
-      setHonor(honorData);
-      setIsLoading(false);
-    }
-  }, [honorData]);
+  const { data: honor } = useQuery(memberQueries.hallOfFameList());
 
   return (
     <>
@@ -192,11 +176,11 @@ const Honor = () => {
             </FlexDiv>
             <HonorList width="100%" $margin="80px 0 0 0">
               <>
-                {isLoading ? (
+                {!honor ? (
                   <FlexDiv width="100%" height="50vh">
                     <Loading />
                   </FlexDiv>
-                ) : honor && Object.values(honor).length === 0 ? (
+                ) : honor.length === 0 ? (
                   <FlexDiv width="100%" height="50vh">
                     <Div>
                       <P color="wh" fontSize="xl">
@@ -204,16 +188,13 @@ const Honor = () => {
                       </P>
                     </Div>
                   </FlexDiv>
-                ) : honor && Object.values(honor).length <= 3 ? (
-                  Object.values(honor).map((cont, index) => (
-                    <HonorSlide key={index} honors={cont} small={true} />
-                  ))
+                ) : honor.length <= 3 ? (
+                  honor.map((cont, index) => <HonorSlide key={index} honors={cont} small={true} />)
                 ) : (
                   <StyledSlider {...settings}>
-                    {honor &&
-                      Object.values(honor).map((cont, index) => (
-                        <HonorSlide key={index} honors={cont} />
-                      ))}
+                    {honor.map((cont, index) => (
+                      <HonorSlide key={index} honors={cont} />
+                    ))}
                   </StyledSlider>
                 )}
               </>

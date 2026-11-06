@@ -1,10 +1,8 @@
-import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
 import { styled } from 'styled-components';
 
-import useFetch from '../../hooks/useFetch';
-import { chiefInfo } from '../../recoil/backState';
+import { memberQueries } from '../../queries/member';
 import A from '../../styles/assets/A';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
@@ -137,19 +135,8 @@ const Bottom = () => {
     navigate(`/rule/${id}`);
   };
 
-  const [chiefData, chiefFetchData] = useFetch();
-  const [chief, setChief] = useRecoilState(chiefInfo);
-
-  // 회장 정보 불러오는 api
-  useEffect(() => {
-    chiefFetchData('/member/chief', 'GET');
-  }, []);
-
-  useEffect(() => {
-    if (chiefData) {
-      setChief(chiefData);
-    }
-  }, [chiefData]);
+  // 회장 연락처. 원래 로딩 표시가 없어 불러오기 전에는 빈칸으로 둔다
+  const { data: chief } = useQuery(memberQueries.chief());
 
   return (
     <>

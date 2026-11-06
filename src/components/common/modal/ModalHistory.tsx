@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useRef } from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import useFetch from '../../../hooks/useFetch';
-import { oneHistoryInfo } from '../../../recoil/backState';
-import { modalInfo, modalOpen, refetch } from '../../../recoil/frontState';
+import { clubMutations, clubQueries } from '../../../queries/club';
+import { modalInfo, modalOpen } from '../../../recoil/frontState';
 import Button from '../../../styles/assets/Button';
 import { Div, FlexDiv } from '../../../styles/assets/Div';
 import { H2 } from '../../../styles/assets/H';
@@ -18,12 +18,27 @@ const ModalHistory = () => {
     setOpen(false);
   };
 
-  const [data, fetchData] = useFetch();
   const inputRef = useRef<any[]>([]);
   const modalData = useRecoilValue(modalInfo);
-  const [historyInfoData, fetchHistoryInfoData] = useFetch();
-  const [history, setHistory] = useRecoilState(oneHistoryInfo);
-  const setReload = useSetRecoilState(refetch);
+  const isPut = modalData.type === 'historyPut';
+  const historyId = Number(modalData.content);
+  // 수정할 때만 단일 연혁을 불러온다. 원래 로딩 표시가 없어 불러오기 전에는 빈 입력칸을 보여 준다
+  const { data: historyData } = useQuery({
+    ...clubQueries.historyDetail({ id: historyId }),
+    enabled: isPut,
+  });
+  const history = historyData && {
+    ...historyData,
+    dateHistory: historyData.dateHistory.split('T')[0],
+  };
+  const createMutation = useMutation(clubMutations.createHistory());
+  const updateMutation = useMutation(clubMutations.updateHistory());
+  const isPending = createMutation.isPending || updateMutation.isPending;
+
+  const onSaved = () => {
+    alert('연혁이 정상적으로 등록되었습니다.');
+    setOpen(false);
+  };
 
   // 연혁 등록 fetch
   const addHistory = () => {
@@ -46,45 +61,12 @@ const ModalHistory = () => {
         dateHistory: inputRef.current[0].value + 'T00:00:00',
       };
       if (modalData.type === 'historyPost') {
-        fetchData('/club/history', 'POST', 'token', inputData);
-      } else if (modalData.type === 'historyPut') {
-        fetchData(`/club/history/${history?.id}`, 'PUT', 'token', inputData);
+        createMutation.mutate(inputData, { onSuccess: onSaved });
+      } else if (isPut) {
+        updateMutation.mutate({ id: historyId, body: inputData }, { onSuccess: onSaved });
       }
     }
   };
-
-  // 연혁 등록 data가 있다면
-  useEffect(() => {
-    if (data) {
-      alert('연혁이 정상적으로 등록되었습니다.');
-      setOpen(false);
-      setReload(true);
-    }
-  }, [data]);
-
-  // 단일 연혁 가져오기
-  useEffect(() => {
-    if (modalData.type === 'historyPut') {
-      fetchHistoryInfoData(`/club/history/${modalData.content}`, 'GET');
-    }
-  }, []);
-
-  // 단일 연혁 data가 있다면
-  useEffect(() => {
-    if (historyInfoData) {
-      const content = {
-        id: historyInfoData.id,
-        title: historyInfoData.title,
-        content: historyInfoData.content,
-        dateHistory: historyInfoData.dateHistory.split('T')[0],
-      };
-
-      setHistory(content);
-    }
-    return () => {
-      setHistory(null);
-    };
-  }, [historyInfoData]);
 
   return (
     <FlexDiv
@@ -153,6 +135,7 @@ const ModalHistory = () => {
             $borderRadius={3}
             width="100%"
             height="40px"
+            disabled={isPending}
             onClick={() => addHistory()}
           >
             {modalData.type === 'historyPost' ? (

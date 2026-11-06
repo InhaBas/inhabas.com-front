@@ -1,14 +1,15 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import HeaderNav from '../../components/common/HeaderNav';
 import Loading from '../../components/common/Loading';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
 import { ConvertLabel } from '../../functions/convertLabelFunctions';
-import useFetch from '../../hooks/useFetch';
-import { historyInfo, staffInfo } from '../../recoil/backState';
-import { modalInfo, modalOpen, refetch } from '../../recoil/frontState';
+import { clubMutations, clubQueries } from '../../queries/club';
+import { memberQueries } from '../../queries/member';
+import { modalInfo, modalOpen } from '../../recoil/frontState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import { H1 } from '../../styles/assets/H';
 import Img from '../../styles/assets/Img';
@@ -400,6 +401,28 @@ const StaffCards = styled(FlexDiv)`
   }
 `;
 
+// 연혁을 날짜만 남기고, 같은 연도의 첫 항목에만 연도를 붙인다.
+// select에 넘기므로 참조가 바뀌지 않게 모듈 수준에 둔다
+const toTimeline = (histories: historyInterface[]): historyInterface[] => {
+  let prevYear = ''; // 이전 연도를 기록하기 위한 변수
+  return histories.map((value) => {
+    // 현재 아이템의 연도 추출
+    const currentYear = value.dateHistory.split('-')[0];
+    // 이전 연도와 현재 아이템의 연도가 다를 경우에만 연도를 할당
+    const year = prevYear !== currentYear ? currentYear : '';
+    // 이전 연도 업데이트
+    prevYear = currentYear;
+
+    return {
+      id: value.id,
+      title: value.title,
+      content: value.content,
+      dateHistory: value.dateHistory.split('T')[0],
+      year: year, // 현재 아이템의 연도 할당
+    };
+  });
+};
+
 const Introduce = () => {
   const pageData = [
     {
@@ -437,13 +460,9 @@ const Introduce = () => {
   const setOpen = useSetRecoilState(modalOpen);
   const setModalInfo = useSetRecoilState(modalInfo);
   const [page, setPage] = useState(0);
-  const [historyInfoData, setHistoryInfoData] = useFetch();
-  const [history, setHistory] = useRecoilState(historyInfo);
-  const [deleteHistoryData, fetchDeleteHistoryData] = useFetch();
-  const [staffInfoData, setStaffInfoData] = useFetch();
-  const [staff, setStaff] = useRecoilState(staffInfo);
-  const [reload, setReload] = useRecoilState(refetch);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: history } = useQuery({ ...clubQueries.historyList(), select: toTimeline });
+  const deleteMutation = useMutation(clubMutations.deleteHistory());
+  const { data: staffData } = useQuery(memberQueries.executiveList());
 
   const careerEvent = (clicked: number) => {
     setPage(clicked);
@@ -456,8 +475,9 @@ const Introduce = () => {
   };
 
   const deleteHistory = (id: number) => {
+    if (deleteMutation.isPending) return;
     if (window.confirm('정말 삭제 하시겠습니까?')) {
-      fetchDeleteHistoryData(`/club/history/${id}`, 'DELETE', 'token');
+      deleteMutation.mutate({ id });
     }
   };
 
@@ -465,69 +485,13 @@ const Introduce = () => {
     setPage(0);
   }, []);
 
-  // 연혁 get fetch ( 처음 페이지 렌더링 시 )
-  useEffect(() => {
-    setIsLoading(true);
-    setHistoryInfoData('/club/histories', 'GET');
-  }, []);
-
-  // 연혁 get fetch ( 추가, 수정, 삭제 시 )
-  useEffect(() => {
-    if (reload || deleteHistoryData) {
-      setHistoryInfoData('/club/histories', 'GET');
-      setReload(false);
-    }
-  }, [reload, deleteHistoryData]);
-
-  useEffect(() => {
-    if (historyInfoData) {
-      let prevYear = ''; // 이전 연도를 기록하기 위한 변수
-      const historyInfoArray: [string, historyInterface][] = Object.entries(historyInfoData);
-      const content = historyInfoArray.map(([, value]) => {
-        // 현재 아이템의 연도 추출
-        const currentYear = value.dateHistory.split('-')[0];
-        // 이전 연도와 현재 아이템의 연도가 다를 경우에만 연도를 할당
-        const year = prevYear !== currentYear ? currentYear : '';
-        // 이전 연도 업데이트
-        prevYear = currentYear;
-
-        return {
-          id: value.id,
-          title: value.title,
-          content: value.content,
-          dateHistory: value.dateHistory.split('T')[0],
-          year: year, // 현재 아이템의 연도 할당
-        };
-      });
-
-      setHistory(content);
-      setIsLoading(false);
-    }
-  }, [historyInfoData]);
-
-  // 운영진 fetch
-  useEffect(() => {
-    setStaffInfoData('/members/executive', 'GET');
-  }, []);
-
-  // 운영진 data set
-  useEffect(() => {
-    if (staffInfoData) {
-      // 객체를 배열로 변환
-      const staffInfoArray: [string, staffInterface][] = Object.entries(staffInfoData);
-
-      // 배열을 가공하여 contents 배열 생성
-      const contents = staffInfoArray.map(([, value]) => ({
-        name: value.name,
-        studentId: value.studentId.substring(2, 4),
-        major: value.major,
-        role: convertRoleLabel(value.role),
-        picture: value.picture,
-      }));
-
-      setStaff(contents);
-    }
-  }, [staffInfoData]);
+  const staff = staffData?.map((value) => ({
+    name: value.name,
+    studentId: value.studentId.substring(2, 4),
+    major: value.major,
+    role: convertRoleLabel(value.role),
+    picture: value.picture,
+  }));
 
   return (
     <>
@@ -620,7 +584,7 @@ const Introduce = () => {
         </SectionContent>
       </IntroduceSection>
       <IntroduceSection width="100%" height="100vh">
-        {isLoading ? (
+        {!history ? (
           <FlexDiv width="100%" height="100vh">
             <Loading />
           </FlexDiv>
@@ -661,9 +625,8 @@ const Introduce = () => {
               $left="10%"
               overflow="auto"
             >
-              {history &&
-                history.length !== 0 &&
-                Object.values(history).map((element: historyInterface) => (
+              {history.length !== 0 &&
+                history.map((element: historyInterface) => (
                   <TimelineRow key={element.id} width="100%" $alignitems="start">
                     <TimelineYear $padding="50px" width="200px">
                       <P color="grey1" fontSize="xxl">
@@ -703,7 +666,7 @@ const Introduce = () => {
                               <FlexDiv width="100%" $justifycontent="end" $margin="0 0 10px 0">
                                 <Div
                                   width="15px"
-                                  $pointer
+                                  $pointer={!deleteMutation.isPending}
                                   onClick={() => deleteHistory(element.id)}
                                 >
                                   <Img src="/images/trash_white.svg" />
