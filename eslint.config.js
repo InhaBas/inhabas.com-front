@@ -138,7 +138,6 @@ module.exports = [
       'src/components/budget/StudentSearchTable.tsx',
       'src/components/common/CommentInput.tsx',
       'src/components/common/CommentList.tsx',
-      'src/components/common/DragNDrop.tsx',
       'src/components/common/modal/ModalBankHistoryDetail.tsx',
       'src/components/common/modal/ModalBankSupportReject.tsx',
       'src/components/common/modal/ModalPostBankHistory.tsx',

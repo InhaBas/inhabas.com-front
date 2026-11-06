@@ -54,14 +54,26 @@ const NavigationButton = styled(FlexDiv)`
 `;
 
 const Pagination = (props: paginationPropsInterface) => {
-  const { totalPage, fetchUrl, search, size, token, paginationFetch } = props;
-
-  const [currentPage, setCurrentPage] = useState(1);
+  const { totalPage } = props;
+  // 과도기: onPageChange를 받으면 새 방식(부모가 page를 들고 조회한다), 아니면 옛 방식(paginationFetch로 직접 요청한다).
+  // 옛 방식은 회원 관리 표 PR에서 지운다
+  const [legacyPage, setLegacyPage] = useState(1);
   const [pageChange, setPageChange] = useState(false);
   const [leftHovered, setLeftHovered] = useState(false);
   const [rightHovered, setRightHovered] = useState(false);
   const [allLeftHovered, setAllLeftHovered] = useState(false);
   const [allRightHovered, setAllRightHovered] = useState(false);
+
+  const currentPage = props.onPageChange !== undefined ? props.currentPage : legacyPage;
+
+  const goToPage = (page: number) => {
+    if (props.onPageChange !== undefined) {
+      props.onPageChange(page);
+    } else {
+      setLegacyPage(page);
+      setPageChange(true);
+    }
+  };
 
   const makePageNum = () => {
     const startPage = Math.max(1, currentPage - 2); // 현재 페이지를 중앙에 위치시키기 위한 조정
@@ -70,10 +82,7 @@ const Pagination = (props: paginationPropsInterface) => {
     for (let i = startPage; i < startPage + 5 && i <= totalPage; i++) {
       pageNumList.push(
         <PageButton
-          onClick={() => {
-            setCurrentPage(i);
-            setPageChange(true);
-          }}
+          onClick={() => goToPage(i)}
           key={`page${i}`}
           display="flex"
           $pointer
@@ -93,16 +102,20 @@ const Pagination = (props: paginationPropsInterface) => {
     return pageNumList;
   };
 
+  // 옛 방식 전용. 새 방식에서는 legacyPage를 쓰지 않고, 1페이지 복귀는 부모가 명시적으로 한다
   useEffect(() => {
-    setCurrentPage(1);
+    setLegacyPage(1);
   }, [totalPage]);
 
+  // 옛 방식 전용. 새 방식에서는 pageChange가 켜지지 않는다
   useEffect(() => {
+    if (props.onPageChange !== undefined) return;
+    const { fetchUrl, search, size, token, paginationFetch } = props;
     let paginationFetchUrl = fetchUrl;
     if (!paginationFetchUrl.includes('?')) {
-      paginationFetchUrl += `?page=${currentPage - 1}`;
+      paginationFetchUrl += `?page=${legacyPage - 1}`;
     } else {
-      paginationFetchUrl += `&page=${currentPage - 1}`;
+      paginationFetchUrl += `&page=${legacyPage - 1}`;
     }
     if (size !== undefined) {
       paginationFetchUrl += `&size=${size}`;
@@ -133,8 +146,7 @@ const Pagination = (props: paginationPropsInterface) => {
             onMouseLeave={() => setAllLeftHovered(false)}
             onClick={() => {
               if (currentPage !== 1) {
-                setCurrentPage(1);
-                setPageChange(true);
+                goToPage(1);
               }
             }}
             $pointer
@@ -159,8 +171,7 @@ const Pagination = (props: paginationPropsInterface) => {
             onMouseLeave={() => setLeftHovered(false)}
             onClick={() => {
               if (currentPage !== 1) {
-                setCurrentPage(currentPage - 1);
-                setPageChange(true);
+                goToPage(currentPage - 1);
               }
             }}
             $pointer
@@ -191,8 +202,7 @@ const Pagination = (props: paginationPropsInterface) => {
             onMouseLeave={() => setRightHovered(false)}
             onClick={() => {
               if (currentPage !== totalPage) {
-                setCurrentPage(currentPage + 1);
-                setPageChange(true);
+                goToPage(currentPage + 1);
               }
             }}
             $pointer
@@ -215,10 +225,7 @@ const Pagination = (props: paginationPropsInterface) => {
           <NavigationButtonWrapper
             onMouseEnter={() => setAllRightHovered(true)}
             onMouseLeave={() => setAllRightHovered(false)}
-            onClick={() => {
-              setCurrentPage(totalPage);
-              setPageChange(true);
-            }}
+            onClick={() => goToPage(totalPage)}
             $pointer
           >
             <NavigationButton

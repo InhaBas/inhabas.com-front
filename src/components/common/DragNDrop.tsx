@@ -1,10 +1,11 @@
+import { useMutation } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import Loading from './Loading';
-import useFetch from '../../hooks/useFetch';
+import { fileMutations } from '../../queries/file';
 import { fileIdList } from '../../recoil/backState';
 import { menuId, refetch, selectedFile } from '../../recoil/frontState';
 import { Div, FlexDiv, InputLabel } from '../../styles/assets/Div';
@@ -26,7 +27,9 @@ interface DragNDropProps {
   onlyImg?: boolean;
   fileFetch?: boolean;
   menuId?: number;
-  // 마운트 시 미리보기로 보여줄 기존 파일
+  // 마운트 시 미리보기로 보여줄 기존 파일.
+  // 과도기: 이 prop이 없으면 옛 방식대로 refetch 신호가 켜질 때 selectedFile을 미리보기로 그린다.
+  // 옛 방식은 예산 신청 PR에서 지운다
   initialFiles?: UploadedFile[];
 }
 
@@ -127,7 +130,7 @@ const DragNDrop = ({ single, onlyImg, fileFetch, initialFiles }: DragNDropProps)
   );
   const [hover, setHover] = useState<number | null>(null);
   const [fileSelected, setFileSelected] = useRecoilState(selectedFile);
-  const [fileData, fetchFileData] = useFetch();
+  const uploadMutation = useMutation(fileMutations.upload());
   const [fileId, setFileIdList] = useRecoilState(fileIdList);
   const [currentMenuId, setCurrentMenuId] = useRecoilState(menuId);
   const location = useLocation();
@@ -238,6 +241,22 @@ const DragNDrop = ({ single, onlyImg, fileFetch, initialFiles }: DragNDropProps)
     return file.size > maxSizeInBytes;
   };
 
+  // 파일마다 요청을 하나씩 보낸다. mutate의 콜백은 마지막 호출에만 불리므로 파일마다 결과를 받도록 mutateAsync를 쓴다.
+  // 실패 alert는 공통 handleApiError가 띄운다
+  const uploadFile = (file: File) => {
+    setLoading(true); // 로딩 시작
+    const formData = new FormData();
+    formData.append('file', file);
+    uploadMutation
+      .mutateAsync({ menuId: currentMenuId, body: formData })
+      .then((uploaded) => {
+        // 파일이 업로드되면 fileId를 추가
+        setFileIdList((prevFileList) => [...prevFileList, uploaded.id]);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false)); // 로딩 종료
+  };
+
   const handleFileChange = (files: FileList | null): void => {
     if (files) {
       const fileList = Array.from(files);
@@ -288,17 +307,7 @@ const DragNDrop = ({ single, onlyImg, fileFetch, initialFiles }: DragNDropProps)
             reader.readAsDataURL(file);
 
             if (fileFetch) {
-              setLoading(true); // 로딩 시작
-              // fetch 요청을 각 파일마다 발생
-              const previewsFormData = new FormData();
-              previewsFormData.append('file', file); // 파일을 FormData에 추가
-              fetchFileData(
-                `/file/upload/${currentMenuId}`,
-                'POST',
-                'token',
-                previewsFormData,
-                true,
-              ).finally(() => setLoading(false)); // 로딩 종료
+              uploadFile(file);
             }
           } else {
             if (isOtherFile(file)) {
@@ -311,17 +320,7 @@ const DragNDrop = ({ single, onlyImg, fileFetch, initialFiles }: DragNDropProps)
               setPreviews((prevPreviews) => [...prevPreviews, newPreview]);
 
               if (fileFetch) {
-                setLoading(true); // 로딩 시작
-                // fetch 요청을 각 파일마다 발생
-                const previewsFormData = new FormData();
-                previewsFormData.append('file', file); // 파일을 FormData에 추가
-                fetchFileData(
-                  `/file/upload/${currentMenuId}`,
-                  'POST',
-                  'token',
-                  previewsFormData,
-                  true,
-                ).finally(() => setLoading(false)); // 로딩 종료
+                uploadFile(file);
               }
             } else {
               alert('업로드할 수 있는 확장자 파일이 아닙니다.');
@@ -359,19 +358,20 @@ const DragNDrop = ({ single, onlyImg, fileFetch, initialFiles }: DragNDropProps)
     setFileSelected(updatedFileSelected); // 변경된 파일 목록으로 상태 업데이트
   };
 
-  useEffect(() => {
-    if (fileData) {
-      // 파일이 업로드되면 fileId를 추가
-      setFileIdList((prevFileList) => [...prevFileList, fileData.id]);
-    }
-  }, [fileData]);
-
   const [reload, setReload] = useRecoilState(refetch);
 
+  /*
+    옛 방식 전용. initialFiles를 받으면 마운트할 때 이미 그렸으므로 refetch 신호를 보지 않는다.
+    기존 첨부가 없어도 신호는 끈다. 옛 화면에서는 켜진 채 남은 신호를 댓글 목록(CommentList)이 꺼 줬는데,
+    댓글 목록이 더는 이 신호를 보지 않아서, 남겨 두면 회계 내역·예산 신청 상세가 마운트할 때 요청이 한 번 더 나간다
+  */
   useEffect(() => {
-    if (fileSelected.length !== 0 && reload === true) {
+    if (initialFiles !== undefined) return;
+    if (reload === true) {
       setReload(false);
-      setPreviews((prevPreviews) => [...prevPreviews, ...fileSelected.map(toUploadedPreview)]);
+      if (fileSelected.length !== 0) {
+        setPreviews((prevPreviews) => [...prevPreviews, ...fileSelected.map(toUploadedPreview)]);
+      }
     }
   }, [reload]);
 
