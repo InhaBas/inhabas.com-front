@@ -1,3 +1,5 @@
+import { fileDownloadInterface } from '../TypeCommon';
+
 // introduce
 export interface staffInterface {
   name: string;
@@ -75,41 +77,33 @@ export interface honorDataInterface {
 
 // activity
 
+// 백엔드 ClubActivityDto
 export interface ActivityInterface {
   id: number;
   title: string;
+  writerId: number;
   writerName: string;
   dateCreated: string;
   dateUpdated: string;
-  thumbnail: {
-    id: string;
-    name: string;
-    url: string;
-    size: number;
-    type: string;
-  } | null;
+  thumbnail: fileDownloadInterface | null;
 }
 
+// 백엔드 ClubActivityDetailDto
 export interface ActivityDetailInterface {
-  id: string;
+  id: number;
   title: string;
   content: string;
-  writerId: string;
+  writerId: number;
   writerName: string;
   dateCreated: string;
   dateUpdated: string;
-  images: {
-    id: string;
-    name: string;
-    url: string;
-    size: number;
-    type: string;
-  }[];
-  otherFiles: {
-    id: string;
-    name: string;
-    url: string;
-    size: number;
-    type: string;
-  }[];
+  images: fileDownloadInterface[];
+  otherFiles: fileDownloadInterface[];
+}
+
+// 백엔드 SaveClubActivityDto
+export interface saveActivityInterface {
+  title: string;
+  content: string;
+  files: string[]; // 업로드한 파일 id. 1개 이상
 }
