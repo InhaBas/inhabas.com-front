@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
+import { refreshAccessTokenOnce } from '../queries/apiErrorEffects';
 import { tokenAccess } from '../recoil/backState';
-import { failRefreshing } from '../recoil/frontState';
 
 const alertInfos = ({ code, msg }: { code?: number; msg: string }) => {
   alert(`웹 팀에 문의해주세요. \n${code} : ${msg}`);
@@ -15,63 +15,7 @@ const useFetch = (): [
 ] => {
   const navigate = useNavigate();
   const [data, setData] = useState<any>(null);
-  const [access, setAccess] = useRecoilState(tokenAccess);
-  const setIsNotLogin = useSetRecoilState(failRefreshing);
-
-  const getCookie = (name: string) => {
-    let matches = document.cookie.match(
-      new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)'),
-    );
-    return matches ? decodeURIComponent(matches[1]) : undefined;
-  };
-
-  const refreshAccessToken = async () => {
-    // console.log("call refreshAccessToken");
-    try {
-      // console.log("try refresh");
-      const refreshToken = getCookie('ibas_refresh');
-
-      let res = await fetch(`${import.meta.env.VITE_API_URL}/token/refresh`, {
-        method: 'POST',
-        body: JSON.stringify({
-          refreshToken: refreshToken,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      if (res.ok) {
-        // console.log("success refresh");
-
-        const result = await res.json();
-        const newAccessToken = result.accessToken;
-        // console.log(newAccessToken);
-        setAccess(newAccessToken);
-        // console.log(access);
-      } else {
-        // console.log("fail refresh");
-        setIsNotLogin(true);
-
-        try {
-          // 에러 응답에서 오류 메시지 추출
-          const errorResponse = await res.json();
-          console.error(
-            'Network response was not ok. Error:',
-            errorResponse.message,
-            errorResponse.code,
-          );
-          // if (access !== 'default') {
-          //     alertInfos({ code: errorResponse.code, msg: errorResponse.message })
-          // }
-          setAccess('default');
-        } catch (error) {
-          console.error('Failed to parse error response:', error);
-        }
-      }
-    } catch (error) {
-      console.error('Error refreshing access token:', error);
-      setIsNotLogin(true);
-    }
-  };
+  const access = useRecoilValue(tokenAccess);
 
   const fetchData = async (
     url: string,
@@ -171,7 +115,9 @@ const useFetch = (): [
             errorResponse.code === 'A006' ||
             errorResponse.code === 'A007'
           ) {
-            await refreshAccessToken();
+            // 공통 refresh 흐름을 쓴다. 새 토큰은 저장소 → tokenAccess atom으로 전달되어
+            // access를 의존성으로 둔 화면이 다시 요청한다
+            await refreshAccessTokenOnce();
             return;
           }
 
