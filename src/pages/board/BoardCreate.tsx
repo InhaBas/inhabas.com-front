@@ -1,23 +1,24 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import { saveBoardInterface } from '../../api/board';
 import DragNDrop from '../../components/common/DragNDrop';
 import Dropdown from '../../components/common/Dropdown';
 import Loading from '../../components/common/Loading';
 import TextEditor from '../../components/common/TextEditor';
-import useFetch from '../../hooks/useFetch';
-import { boardDetailData, fileIdList, tokenAccess } from '../../recoil/backState';
-import { menuId, refetch, selectedFile } from '../../recoil/frontState';
+import { boardMutations, boardQueries } from '../../queries/board';
+import { fileIdList, tokenAccess } from '../../recoil/backState';
+import { menuId, selectedFile } from '../../recoil/frontState';
 import Button from '../../styles/assets/Button';
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { DateInput, TextInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-import { boardDetailInterface } from '../../types/TypeBoard';
 import { tokenInterface } from '../../types/TypeCommon';
 
 const PolicyNotice = styled(FlexDiv)`
@@ -109,17 +110,26 @@ const BoardCreate = () => {
   const paramID = useParams().id;
 
   const inputRef = useRef<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [pinValue, setPinValue] = useState('');
-  const [postData, postFetchData] = useFetch();
-  const [getData, getFetchData] = useFetch();
   const files = useRecoilValue(selectedFile);
-  const [update, setUpdate] = useState('create');
-  const [detail, setDetail] = useRecoilState(boardDetailData);
+  const update = paramID ? 'update' : 'create';
   const setSelectedFile = useSetRecoilState(selectedFile);
   const currentMenuId = useRecoilValue(menuId);
   const [fileId, setFileList] = useRecoilState(fileIdList);
-  const setReload = useSetRecoilState(refetch);
+
+  // 수정 화면은 옛 화면 그대로 게시판 종류와 관계없이 토큰과 함께 조회한다
+  const { data: detailData, isFetchedAfterMount } = useQuery({
+    ...boardQueries.detail({ board: url, id: paramID ?? '', auth: true }),
+    enabled: update === 'update',
+  });
+  /*
+    상세 화면에서 넘어오면 같은 키의 캐시가 남아 있어 마운트하자마자 데이터가 보인다.
+    옛 화면처럼 이 화면에서 새로 받은 응답이 올 때까지 스피너를 보이고, 그 응답으로 폼을 채운다
+  */
+  const detail = isFetchedAfterMount ? detailData : undefined;
+  const createMutation = useMutation(boardMutations.create());
+  const updateMutation = useMutation(boardMutations.update());
+  const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
   const access = useRecoilValue(tokenAccess);
   let decoded: tokenInterface | undefined;
@@ -128,29 +138,6 @@ const BoardCreate = () => {
   }
   const userId = decoded?.memberId;
 
-  useEffect(() => {
-    if (paramID) {
-      setUpdate('update');
-    } else {
-      setIsLoading(false);
-    }
-  }, []);
-
-  let fetchUrl = '';
-  if (url === 'alpha') {
-    fetchUrl = '/project/alpha';
-  } else if (url === 'beta') {
-    fetchUrl = '/project/beta';
-  } else if (url === 'sponsor') {
-    fetchUrl = '/scholarship/sponsor';
-  } else if (url === 'usage') {
-    fetchUrl = '/scholarship/usage';
-  } else if (url === 'opensource') {
-    fetchUrl = '/board/storage';
-  } else {
-    fetchUrl = `/board/${url}`;
-  }
-
   // select 값 선택에 따른 state 변경 이벤트
   const handlePinChange = (value: string) => {
     // 선택된 값을 업데이트
@@ -158,6 +145,7 @@ const BoardCreate = () => {
   };
 
   const sendInput = () => {
+    if (isSubmitting) return;
     let check = true;
 
     if (check && inputRef.current[0].value === '') {
@@ -175,8 +163,7 @@ const BoardCreate = () => {
     }
 
     if (check) {
-      setIsLoading(true); // 로딩 상태 설정
-      const inputData = {
+      const inputData: saveBoardInterface = {
         title: inputRef.current[0].value,
         content: inputRef.current[1].getInstance().getMarkdown(),
         files: fileId,
@@ -193,57 +180,39 @@ const BoardCreate = () => {
         formdata.append('files', files[i]);
       }
 
+      const mutateOptions = {
+        onSuccess: () => {
+          alert('글이 정상적으로 등록되었습니다');
+          navigate(`/board/${url}`);
+        },
+      };
       if (update === 'create') {
-        postFetchData(`${fetchUrl}`, 'POST', 'token', inputData);
-      } else if (update === 'update') {
-        postFetchData(`${fetchUrl}/${paramID}`, 'POST', 'token', inputData);
+        createMutation.mutate({ board: url, body: inputData }, mutateOptions);
+      } else if (paramID) {
+        updateMutation.mutate({ board: url, id: paramID, body: inputData }, mutateOptions);
       }
     }
   };
 
+  // 기존 첨부(이미지 → 그 밖의 파일 순서). DragNDrop 미리보기와 fileIdList의 순서가 같아야 미리보기를 지울 때 맞는 id가 빠진다
+  const existingFiles = detail ? [...(detail.images ?? []), ...(detail.otherFiles ?? [])] : [];
+
+  // 폼 초기값: 불러온 기존 첨부를 편집할 파일 목록으로 복사한다
   useEffect(() => {
-    if (postData) {
-      setIsLoading(false); // 로딩 상태 해제
-      alert('글이 정상적으로 등록되었습니다');
-      navigate(`/board/${url}`);
+    if (detail) {
+      setSelectedFile(existingFiles);
+      setFileList(existingFiles.map((file) => file.id));
     }
-  }, [postData]);
+  }, [detail]);
+
+  // DragNDrop fileList 초기화
+  useEffect(() => {
+    return () => setFileList([]);
+  }, []);
 
   useEffect(() => {
-    if (update === 'update') {
-      getFetchData(`${fetchUrl}/${paramID}`, 'GET', 'token');
-    }
-  }, [update]);
-
-  useEffect(() => {
-    if (getData) {
-      setDetail(getData);
-      setIsLoading(false);
-
-      // DragNDrop update 설정
-      const files = [
-        ...getData.images.map((item: boardDetailInterface) => item),
-        ...getData.otherFiles.map((item: boardDetailInterface) => item),
-      ];
-      setSelectedFile(files);
-      const fileIds = [
-        ...getData.images.map((item: boardDetailInterface) => item.id),
-        ...getData.otherFiles.map((item: boardDetailInterface) => item.id),
-      ];
-      setFileList(fileIds);
-      // DragNDrop reload true일 때만 불러온 파일들 렌더링 할 있음
-      setReload(true);
-    }
-    return () => {
-      setDetail(null);
-      // DragNDrop fileList 초기화
-      setFileList([]);
-    };
-  }, [getData]);
-
-  useEffect(() => {
-    if (update === 'update') {
-      if (detail?.writerId !== userId) {
+    if (update === 'update' && detail) {
+      if (detail.writerId !== userId) {
         alert('본인이 작성한 글만 수정 가능합니다.');
         navigate(-1);
       }
@@ -252,7 +221,7 @@ const BoardCreate = () => {
 
   return (
     <FlexDiv width="100%">
-      {isLoading ? (
+      {update === 'update' && !detail ? (
         <FlexDiv width="100%" height="100vh">
           <Loading />
         </FlexDiv>
@@ -323,7 +292,11 @@ const BoardCreate = () => {
               )}
 
               <FormSection>
-                <DragNDrop fileFetch menuId={currentMenuId} />
+                <DragNDrop
+                  fileFetch
+                  menuId={currentMenuId}
+                  initialFiles={update === 'update' ? existingFiles : undefined}
+                />
               </FormSection>
               <FormSection>
                 <TextEditor
@@ -339,6 +312,7 @@ const BoardCreate = () => {
                 $HBackgroundColor="bgColorHo"
                 $borderRadius={2}
                 $padding="15px 30px"
+                disabled={isSubmitting}
                 onClick={() => sendInput()}
               >
                 {update === 'create' ? <P color="wh">작성하기</P> : <P color="wh">수정하기</P>}

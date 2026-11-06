@@ -1,15 +1,13 @@
-import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import useFetch from '../../hooks/useFetch';
-import { boardMenuInfo } from '../../recoil/backState';
+import { getBoardCountGroup } from '../../api/board';
+import { boardQueries } from '../../queries/board';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import P from '../../styles/assets/P';
 import { theme } from '../../styles/theme';
 import { media } from '../../styles/theme';
-import { boardMenuInterface } from '../../types/TypeBoard';
 
 const HIDDEN_BOARD_MENUS = ['질문게시판', '자유게시판', '건의사항', '회장단 게시판'];
 
@@ -58,31 +56,16 @@ const BoardNavigate = () => {
     navigate(`${url}`);
   };
 
-  const [menu, setMenu] = useRecoilState<boardMenuInterface[]>(boardMenuInfo);
-  const [menuData, fetchMenuData] = useFetch();
-
-  useEffect(() => {
-    if (url === 'alpha' || url === 'beta') {
-      fetchMenuData('/project/count', 'GET', 'token');
-    } else if (url === 'contest' || url === 'activity') {
-      fetchMenuData('/contest/count', 'GET', 'token');
-    } else {
-      fetchMenuData('/board/count', 'GET', 'token');
-    }
-  }, []);
+  // 게시판 종류에 맞는 글 수 API를 부른다. 게시판을 바꾸면 BoardList가 스피너를 그리는 동안 이 컴포넌트가
+  // 내려갔다 다시 올라오므로, 옛 화면처럼 게시판을 바꿀 때마다 한 번 조회한다
+  const { data: menuData } = useQuery(boardQueries.count({ group: getBoardCountGroup(url) }));
 
   // api 바뀌면 url 요소 추가하기
-  useEffect(() => {
-    if (menuData) {
-      const contents = Object.values(menuData).map((item: any) => ({
-        menuName: item.menuName,
-        count: item.count,
-        url: item.type === 'STORAGE' ? '/board/opensource' : `/board/${item.type.toLowerCase()}`,
-      }));
-      setMenu(contents);
-    }
-    return () => setMenu([]);
-  }, [menuData]);
+  const menu = menuData?.map((item) => ({
+    menuName: item.menuName,
+    count: item.count,
+    url: item.type === 'STORAGE' ? '/board/opensource' : `/board/${item.type.toLowerCase()}`,
+  }));
 
   return (
     <>
@@ -101,7 +84,7 @@ const BoardNavigate = () => {
           {menu &&
             menu
               .filter((item) => !HIDDEN_BOARD_MENUS.includes(item.menuName))
-              .map((item: any, idx: number) => {
+              .map((item, idx: number) => {
                 return (
                   <Div key={idx} width="100%">
                     <MenuRow

@@ -1,23 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
+import { useState } from 'react';
 import styled from 'styled-components';
 
-import { DateFunction } from '../../functions/dateFunction';
-import useFetch from '../../hooks/useFetch';
-import {
-  boardListDataInfo,
-  boardListPinnedDataInfo,
-  contestListDataInfo,
-  totalPageInfo,
-} from '../../recoil/backState';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { SearchInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-import { boardListInterface } from '../../types/TypeBoard';
 
 const SearchBox = styled(Div)`
   width: 263px;
@@ -54,37 +43,13 @@ const SearchButton = styled(Button)`
   flex: 0 0 53px;
 `;
 
-const BoardSearch = () => {
-  const location = useLocation();
-  const url = location.pathname.split('/')[2];
+interface BoardSearchProps {
+  // 검색어를 제출한다. 목록 조회는 부모가 검색어를 queryKey에 넣어 한다
+  onSearch: (term: string) => void;
+}
 
-  const { formatDateDay } = DateFunction();
-
-  const setBoardList = useSetRecoilState(boardListDataInfo);
-  const [boardListData, fetchBoardListData] = useFetch();
-  const setTotalPage = useSetRecoilState(totalPageInfo);
-  const setBoardPinnedList = useSetRecoilState(boardListPinnedDataInfo);
+const BoardSearch = ({ onSearch }: BoardSearchProps) => {
   const [searchValue, setSearchValue] = useState(''); // 검색어
-  const setContestListData = useSetRecoilState(contestListDataInfo);
-
-  let fetchUrl: string;
-  if (url === 'alpha') {
-    fetchUrl = '/project/alpha';
-  } else if (url === 'beta') {
-    fetchUrl = '/project/beta';
-  } else if (url === 'sponsor') {
-    fetchUrl = '/scholarship/sponsor';
-  } else if (url === 'usage') {
-    fetchUrl = '/scholarship/usage';
-  } else if (url === 'opensource') {
-    fetchUrl = '/board/storage';
-  } else if (url === 'contest') {
-    fetchUrl = '/contest/contest';
-  } else if (url === 'activity') {
-    fetchUrl = '/contest/activity';
-  } else {
-    fetchUrl = `/board/${url}`;
-  }
 
   // 검색어 변경 핸들러
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,15 +57,8 @@ const BoardSearch = () => {
   };
 
   const searchEvent = () => {
-    // 토큰 없이 fetch
     if (searchValue.trim() !== '') {
-      if (['usage', 'sponsor'].includes(url)) {
-        fetchBoardListData(`${fetchUrl}?search=${searchValue}&page=0&size=15`, 'GET');
-      } else if (['contest', 'activity'].includes(url)) {
-        fetchBoardListData(`${fetchUrl}?search=${searchValue}&page=0&size=4&orderBy=ALL`, 'GET');
-      } else {
-        fetchBoardListData(`${fetchUrl}?search=${searchValue}&page=0&size=15`, 'GET', 'token');
-      }
+      onSearch(searchValue);
     }
   };
 
@@ -110,36 +68,6 @@ const BoardSearch = () => {
       searchEvent();
     }
   };
-
-  useEffect(() => {
-    if (['contest', 'activity'].includes(url)) {
-      if (boardListData) {
-        setContestListData(boardListData?.data);
-        setTotalPage(boardListData.pageInfo.totalPages);
-      }
-    } else {
-      if (boardListData) {
-        const contents = boardListData.data.map((item: boardListInterface, idx: number) => ({
-          number: idx + 1,
-          id: item.id,
-          title: item.title,
-          writerName: item.writerName,
-          dateCreated: formatDateDay({ date: item.dateCreated }),
-          isPinned: item.isPinned,
-        }));
-        const pinnedContents = boardListData.pinnedData?.map((item: boardListInterface) => ({
-          id: item.id,
-          title: item.title,
-          writerName: item.writerName,
-          dateCreated: formatDateDay({ date: item.dateCreated }),
-          isPinned: item.isPinned,
-        }));
-        setBoardPinnedList(pinnedContents);
-        setBoardList(contents);
-        setTotalPage(boardListData.pageInfo.totalPages);
-      }
-    }
-  }, [boardListData]);
 
   return (
     <>

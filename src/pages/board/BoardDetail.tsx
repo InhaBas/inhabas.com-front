@@ -1,9 +1,11 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import { isPublicBoard } from '../../api/board';
 import Carousel from '../../components/common/Carousel';
 import CommentInput from '../../components/common/CommentInput';
 import CommentList from '../../components/common/CommentList';
@@ -11,9 +13,9 @@ import Loading from '../../components/common/Loading';
 import TextViewer from '../../components/common/TextViewer';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
 import { DateFunction } from '../../functions/dateFunction';
-import useFetch from '../../hooks/useFetch';
 import '@toast-ui/editor/dist/toastui-editor.css';
-import { boardDetailData, tokenAccess } from '../../recoil/backState';
+import { boardMutations, boardQueries } from '../../queries/board';
+import { tokenAccess } from '../../recoil/backState';
 import { carouselInitialState, carouselOpen } from '../../recoil/frontState';
 import A from '../../styles/assets/A';
 import Button from '../../styles/assets/Button';
@@ -139,10 +141,10 @@ const BoardDetail = () => {
 
   const { formatDateMinute } = DateFunction();
 
-  const [detail, setDetail] = useRecoilState(boardDetailData);
-  const [detailData, detailDataFetch] = useFetch();
-  const [deleteData, deleteDataFetch] = useFetch();
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: detail } = useQuery(
+    boardQueries.detail({ board: url, id: boardId, auth: !isPublicBoard(url) }),
+  );
+  const deleteMutation = useMutation(boardMutations.delete());
   const access = useRecoilValue(tokenAccess);
   const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
   const setCarouselInitial = useSetRecoilState(carouselInitialState);
@@ -154,21 +156,6 @@ const BoardDetail = () => {
     decoded = jwtDecode(access) as tokenInterface;
   }
   const userId = decoded?.memberId;
-
-  let fetchUrl: string;
-  if (url === 'alpha') {
-    fetchUrl = '/project/alpha';
-  } else if (url === 'beta') {
-    fetchUrl = '/project/beta';
-  } else if (url === 'sponsor') {
-    fetchUrl = '/scholarship/sponsor';
-  } else if (url === 'usage') {
-    fetchUrl = '/scholarship/usage';
-  } else if (url === 'opensource') {
-    fetchUrl = '/board/storage';
-  } else {
-    fetchUrl = `/board/${url}`;
-  }
 
   let menuId: number;
 
@@ -283,44 +270,28 @@ const BoardDetail = () => {
   }, []);
 
   const deleteDetail = () => {
+    if (deleteMutation.isPending) return;
     if (window.confirm('정말 삭제 하시겠습니까?')) {
-      setIsLoading(true);
-      deleteDataFetch(`${fetchUrl}/${boardId}`, 'DELETE', 'token');
+      deleteMutation.mutate(
+        { board: url, id: boardId },
+        {
+          onSuccess: () => {
+            alert('게시글이 삭제 되었습니다');
+            navigate(`/board/${url}`);
+          },
+        },
+      );
     }
   };
 
+  // 상세 화면을 떠나면 이미지 크게 보기를 닫는다
   useEffect(() => {
-    setIsLoading(true);
-    if (['opensource', 'usage', 'sponsor'].includes(url)) {
-      detailDataFetch(`${fetchUrl}/${boardId}`, 'GET');
-    } else {
-      detailDataFetch(`${fetchUrl}/${boardId}`, 'GET', 'token');
-    }
-  }, [access, url]);
-
-  useEffect(() => {
-    if (detailData) {
-      setDetail(detailData);
-      setIsLoading(false);
-    }
-    return () => {
-      setDetail(null);
-      setIsCarouselOpen(false);
-    };
-  }, [detailData]);
-
-  useEffect(() => {
-    if (deleteData) {
-      alert('게시글이 삭제 되었습니다');
-      setIsLoading(false);
-      navigate(`/board/${url}`);
-    }
-    return () => setDetail(null);
-  }, [deleteData]);
+    return () => setIsCarouselOpen(false);
+  }, []);
 
   return (
     <>
-      {isLoading ? (
+      {!detail ? (
         <FlexDiv width="100%" height="100vh">
           <Loading />
         </FlexDiv>
@@ -465,6 +436,7 @@ const BoardDetail = () => {
                     $padding="12px 15px"
                     $borderRadius={30}
                     $HBackgroundColor="red"
+                    disabled={deleteMutation.isPending}
                     onClick={() => deleteDetail()}
                   >
                     <Div width="12px" $margin="0 10px 0 0">

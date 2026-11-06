@@ -12,12 +12,6 @@ export interface boardListInterface {
   isPinned?: boolean;
 }
 
-export interface boardMenuInterface {
-  menuName: string;
-  count: string;
-  // boardType?: string;
-}
-
 // 백엔드 BoardCountDto (/board/count, /project/count, /contest/count)
 export interface boardCountInterface {
   menuId: number;
