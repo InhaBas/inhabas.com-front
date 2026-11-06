@@ -36,6 +36,19 @@ export interface policyInterface {
 }
 
 // pagination
+// 백엔드 PagedResponseDto. pageNumber는 0부터 센다
+export interface pageInfoInterface {
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+  totalElements: number;
+}
+
+export interface pagedResponseInterface<T> {
+  pageInfo: pageInfoInterface;
+  data: T[];
+}
+
 export interface paginationPropsInterface {
   totalPage: number;
   fetchUrl: string;
