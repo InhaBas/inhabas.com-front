@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import HeaderTitleLayout from './HeaderTitleLayout';
 import HeaderNav from '../components/common/HeaderNav';
+import Calendar from '../pages/calendar/Calendar';
 import Honor from '../pages/home/Honor';
 import Introduce from '../pages/home/Introduce';
 import Main from '../pages/home/Main';
@@ -18,6 +19,8 @@ const HeaderNavPage = () => {
         <Route path="/" element={<Main />} />
         <Route path="introduce" element={<Introduce />} />
         <Route path="honor" element={<Honor />} />
+        {/* 비로그인 공개. App.tsx 화이트리스트에도 있다 */}
+        <Route path="calendar" element={<Calendar />} />
 
         <Route path="myInfo" element={<MyInfo />} />
 

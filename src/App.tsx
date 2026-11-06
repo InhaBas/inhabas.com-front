@@ -38,6 +38,7 @@ const App = () => {
         'activity',
         'activity/detail',
         'introduce',
+        'calendar',
         'scholarship',
         'login',
       ]?.includes(url)
