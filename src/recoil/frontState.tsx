@@ -34,12 +34,6 @@ export const menuId = atom({
   default: 0,
 });
 
-// headerTitle
-export const menuInfo = atom({
-  key: 'menuInfo',
-  default: 0,
-});
-
 // login
 export const relogin = atom({
   key: 'relogin',

@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { useRef } from 'react';
 import { useSetRecoilState } from 'recoil';
 
-import useFetch from '../../../hooks/useFetch';
+import { myInfoMutations } from '../../../queries/myInfo';
 import { modalOpen } from '../../../recoil/frontState';
 import Button from '../../../styles/assets/Button';
 import { Div, FlexDiv } from '../../../styles/assets/Div';
@@ -17,23 +18,21 @@ const ModalChangeName = () => {
     setOpen(false);
   };
 
-  const [data, fetchData] = useFetch();
+  const nameMutation = useMutation(myInfoMutations.requestNameChange());
   const inputRef = useRef<HTMLInputElement>(null);
 
   // 이름 수정 fetch
   const changeName = () => {
     const inputData = inputRef.current?.value;
     if (inputData !== '') {
-      fetchData('/myInfo/name', 'PUT', 'token', inputData);
+      nameMutation.mutate(inputData, {
+        onSuccess: () => {
+          alert('이름 수정이 정상적으로 요청 되었습니다.');
+          setOpen(false);
+        },
+      });
     }
   };
-
-  useEffect(() => {
-    if (data) {
-      alert('이름 수정이 정상적으로 요청 되었습니다.');
-      setOpen(false);
-    }
-  }, [data]);
 
   return (
     <FlexDiv
@@ -85,6 +84,7 @@ const ModalChangeName = () => {
             $borderRadius={3}
             width="100%"
             height="40px"
+            disabled={nameMutation.isPending}
             onClick={() => changeName()}
           >
             <P color="wh" fontWeight={400}>

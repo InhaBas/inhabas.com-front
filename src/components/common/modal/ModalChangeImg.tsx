@@ -1,7 +1,8 @@
+import { useMutation } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
-import useFetch from '../../../hooks/useFetch';
+import { myInfoMutations } from '../../../queries/myInfo';
 import { modalOpen, selectedFile } from '../../../recoil/frontState';
 import Button from '../../../styles/assets/Button';
 import { Div, FlexDiv } from '../../../styles/assets/Div';
@@ -18,7 +19,7 @@ const ModalChangeImg = () => {
     setOpen(false);
   };
 
-  const [data, fetchData] = useFetch();
+  const pictureMutation = useMutation(myInfoMutations.updatePicture());
 
   // 이름 수정 fetch
   const changeImg = () => {
@@ -26,19 +27,21 @@ const ModalChangeImg = () => {
     inputFormData.append('picture', files[0]);
 
     if (inputFormData) {
-      fetchData('/myInfo/picture', 'POST', 'token', inputFormData, true);
+      pictureMutation.mutate(inputFormData, {
+        onSuccess: () => {
+          alert('프로필 사진이 정상적으로 수정되었습니다.');
+          setOpen(false);
+        },
+      });
     }
   };
 
+  // 모달을 닫을 때 고른 파일을 비운다
   useEffect(() => {
-    if (data) {
-      alert('프로필 사진이 정상적으로 수정되었습니다.');
-      setOpen(false);
-    }
     return () => {
       setFiles([]);
     };
-  }, [data]);
+  }, [setFiles]);
 
   return (
     <FlexDiv
@@ -81,6 +84,7 @@ const ModalChangeImg = () => {
             $borderRadius={3}
             width="100%"
             height="40px"
+            disabled={pictureMutation.isPending}
             onClick={() => changeImg()}
           >
             <P color="wh" fontWeight={400}>

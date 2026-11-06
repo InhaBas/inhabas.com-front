@@ -8,14 +8,14 @@ import ContestDetail from '../pages/activity/ContestDetail';
 import BoardCreate from '../pages/board/BoardCreate';
 import BoardDetail from '../pages/board/BoardDetail';
 import BoardList from '../pages/board/BoardList';
-import { userRole } from '../recoil/backState';
+import { useMyRole } from '../queries/myInfo';
 import { failRefreshing } from '../recoil/frontState';
 
 const BoardRoute = () => {
   const navigate = useNavigate();
   const { isAuthorizedOverBasic, isAuthorizedOverSecretary, isAuthorizedOverDeactivate } =
     GetRoleAuthorization();
-  const role = useRecoilValue(userRole);
+  const role = useMyRole();
   const isNotLogin = useRecoilValue(failRefreshing);
 
   useEffect(() => {

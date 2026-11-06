@@ -3,7 +3,6 @@ import { atom } from 'recoil';
 import { getAccessToken, setAccessToken, subscribeAccessToken } from '../api/token';
 import {
   answersInterface,
-  majorInterface,
   questionnariesInterface,
   signUpInterface,
 } from '../types/ibas/TypeMember';
@@ -12,7 +11,6 @@ import {
   applicationInterface,
   changeNameUserInterface,
   newUserInterface,
-  profileInterface,
   scheduleInterface,
   userInterface,
 } from '../types/ibas/TypeMyinfo';
@@ -25,7 +23,7 @@ import {
   policyInterface,
 } from '../types/TypeCommon';
 
-//headerTitle
+// headerTitle: 페이지가 직접 정한 제목만 담는다(staff 경로). 비어 있으면 HeaderTitle이 메뉴 제목을 쓴다
 export const headerTitleInfo = atom<menuInterface>({
   key: 'headerTitleInfo',
   default: {
@@ -79,12 +77,6 @@ export const loggedOut = atom<boolean>({
   default: false,
 });
 
-// 숫자로 role 설정하려 했으나, 직관적인 코드를 위해 string 값으로 지정
-export const userRole = atom({
-  key: 'userRole',
-  default: '',
-});
-
 // dropdown
 export const fileIdList = atom<string[] | []>({
   key: 'fileIdList',
@@ -103,11 +95,6 @@ export const totalPolicyInfo = atom<policyInterface[] | null>({
 });
 
 // myInfo
-export const profileInfo = atom<profileInterface | null>({
-  key: 'profileInfo',
-  default: null,
-});
-
 export const newUserInfo = atom<newUserInterface[]>({
   key: 'newUserInfo',
   default: [],
@@ -164,11 +151,6 @@ export const scheduleInfo = atom<scheduleInterface | null>({
 });
 
 // IBAS
-export const majorInfo = atom<majorInterface[]>({
-  key: 'majorInfo',
-  default: [],
-});
-
 export const signupInfo = atom<signUpInterface | null>({
   key: 'signupInfo',
   default: null,
@@ -181,11 +163,6 @@ export const signupQuestion = atom<questionnariesInterface[] | null>({
 
 export const signupAnswer = atom<answersInterface[] | null>({
   key: 'signupAnswer',
-  default: null,
-});
-
-export const signupCheck = atom<boolean | null>({
-  key: 'signupCheck',
   default: null,
 });
 

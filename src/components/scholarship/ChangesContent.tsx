@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { GetRoleAuthorization } from '../../functions/authFunctions';
+import { useMyRole } from '../../queries/myInfo';
 import { scholarshipMutations } from '../../queries/scholarship';
-import { userRole } from '../../recoil/backState';
 import { modalInfo, modalOpen } from '../../recoil/frontState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
@@ -62,7 +62,7 @@ const HistoryActions = styled(FlexDiv)`
 
 const ChangesContent = ({ changesContent }: { changesContent: scholarshipHistoryInterface[] }) => {
   const { isAuthorizedOverVice } = GetRoleAuthorization();
-  const role = useRecoilValue(userRole);
+  const role = useMyRole();
 
   const deleteMutation = useMutation(scholarshipMutations.deleteHistory());
 

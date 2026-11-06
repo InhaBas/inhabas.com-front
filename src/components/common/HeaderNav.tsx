@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useId, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
@@ -5,14 +6,9 @@ import { styled } from 'styled-components';
 
 import { NAV_MENU_GROUPS } from '../../constants/navMenu';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
-import useFetch from '../../hooks/useFetch';
-import {
-  headerTitleInfo,
-  profileInfo,
-  signupCheck,
-  tokenAccess,
-  userRole,
-} from '../../recoil/backState';
+import { clearMyInfoOnLogout, myInfoQueries } from '../../queries/myInfo';
+import { signUpQueries } from '../../queries/signUp';
+import { loggedOut, tokenAccess } from '../../recoil/backState';
 import { failRefreshing, menuId } from '../../recoil/frontState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
@@ -252,15 +248,23 @@ const HeaderNav = () => {
   const navigate = useNavigate();
   const { isAuthorizedOverBasic, isAuthorizedOverDeactivate } = GetRoleAuthorization();
   const location = useLocation();
-  const [infoData, fetchInfoData] = useFetch();
-  const [signingUserData, fetchSigningUserData] = useFetch();
-  const [check, setCheck] = useRecoilState(signupCheck);
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
-  const [title, setTitle] = useRecoilState(headerTitleInfo);
-  const [info, setInfo] = useRecoilState(profileInfo);
-  const setRole = useSetRecoilState(userRole);
+  const setLoggedOut = useSetRecoilState(loggedOut);
   const [access, setAccess] = useRecoilState(tokenAccess);
+
+  /*
+    로그인 상태와 내 정보 조회의 주인이다. 다른 화면은 useMyInfo()·useMyRole()로 이 결과를 구독만 한다.
+    - 가입 중('signing')이 아니면 /signUp/check를 요청한다. 비로그인도 'default' 토큰을 실어 A005를 받고,
+      refresh가 성공하면 실패한 이 쿼리만 다시 요청되어 로그인이 복원된다
+    - 가입을 마쳤으면(check === true) /myInfo를 요청한다
+  */
+  const { data: signUpCheckData } = useQuery({
+    ...signUpQueries.check(),
+    enabled: access !== 'signing',
+  });
+  const isSignedUp = signUpCheckData?.check;
+  const { data: info } = useQuery({ ...myInfoQueries.detail(), enabled: isSignedUp === true });
   const [scrollPosition, setScrollPosition] = useState(0);
   const setCurrentMenuId = useSetRecoilState(menuId);
   const pathNameInfo = location.pathname.substring(1).split('/');
@@ -354,7 +358,7 @@ const HeaderNav = () => {
     setIsMobileMenuOpen(false);
   };
 
-  const menuClickEvent = (url: string, givenName: string, givenDescription: string) => {
+  const menuClickEvent = (url: string) => {
     if (['lecture'].includes(url)) {
       alert('사용할 수 없는 기능입니다.');
       return;
@@ -376,15 +380,15 @@ const HeaderNav = () => {
       return;
     } else {
       navigate(`/${url}`);
-      setTitle({ ...title, name: givenName, description: givenDescription });
       setIsMobileMenuOpen(false);
     }
   };
 
   const logoutClickEvent = () => {
     if (window.confirm('정말 로그아웃 하시겠습니까?')) {
-      setAccess('default');
-      setRole('logout');
+      setLoggedOut(true);
+      // 토큰을 'default'로 되돌리고 내 정보 캐시를 지운다. 이어서 /signUp/check를 다시 요청한다
+      clearMyInfoOnLogout();
       document.cookie = 'ibas_refresh' + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;';
       navigate('/');
       setIsMobileMenuOpen(false);
@@ -401,38 +405,12 @@ const HeaderNav = () => {
     setCurrentMenuId(id);
   }, []);
 
-  // signup이 안된 경우 profile은 null 로, accessToken은 default로 초기화해주어야 함.
-  // 의존성을 access로 하면 check가 false일 때 실행되는 코드 때문에 무한호출 됨.
-  // access가 signing이 아니면서 access가 바뀔 때는 항상 실행해야함
   useEffect(() => {
-    if (access !== 'signing') {
-      fetchSigningUserData('/signUp/check', 'GET', 'token');
-    }
-  }, [access]);
-
-  useEffect(() => {
-    if (signingUserData) {
-      setCheck(signingUserData.check);
-    }
-  }, [signingUserData]);
-
-  useEffect(() => {
-    if (check === true) {
-      fetchInfoData('/myInfo', 'GET', 'token');
-    } else if (check === false) {
-      setInfo(null);
-      // check 가 false라면 회원가입 진행중인 사람이라는 의미
+    // check 가 false라면 회원가입 진행중인 사람이라는 의미. 'signing'이 되면 /signUp/check를 더 요청하지 않는다
+    if (isSignedUp === false) {
       setAccess('signing');
     }
-  }, [check]);
-
-  useEffect(() => {
-    if (infoData) {
-      setInfo(infoData);
-      // 로그인 한 사람의 role을 저장시켜주기 위함
-      setRole(infoData.role);
-    }
-  }, [infoData]);
+  }, [isSignedUp, setAccess]);
 
   useEffect(() => {
     window.addEventListener('scroll', updateScroll);
@@ -544,9 +522,7 @@ const HeaderNav = () => {
                             $pointer
                             onMouseEnter={() => setActiveMenu(element.name)}
                             $backgroundColor={activeMenu === element.name ? 'bgColor' : 'wh'}
-                            onClick={() =>
-                              menuClickEvent(element.url, element.name, element.description)
-                            }
+                            onClick={() => menuClickEvent(element.url)}
                           >
                             <Div>
                               <P
@@ -681,7 +657,7 @@ const HeaderNav = () => {
                   <MobileMenuItem
                     type="button"
                     key={`mobileMenu${element.menuId}`}
-                    onClick={() => menuClickEvent(element.url, element.name, element.description)}
+                    onClick={() => menuClickEvent(element.url)}
                   >
                     {element.name}
                   </MobileMenuItem>

@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import useFetch from '../../hooks/useFetch';
-import { profileInfo } from '../../recoil/backState';
-import { modalInfo, modalOpen, refetch } from '../../recoil/frontState';
+import { useMyInfo } from '../../queries/myInfo';
+import { modalInfo, modalOpen } from '../../recoil/frontState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
@@ -112,12 +111,11 @@ const MyInfoContainer = () => {
   const widthList = [150, 500, 150];
   const navigate = useNavigate();
 
-  const [info, setInfo] = useRecoilState(profileInfo);
+  // 모달에서 정보를 수정하면 뮤테이션이 /myInfo를 무효화하고, HeaderNav의 쿼리가 다시 가져온다
+  const info = useMyInfo();
   const [auth, setAuth] = useState('');
   const setOpen = useSetRecoilState(modalOpen);
   const setMoalInfo = useSetRecoilState(modalInfo);
-  const [reload, setReload] = useRecoilState(refetch);
-  const [infoData, fetchInfoData] = useFetch();
 
   /*
     선택한 영역의 수정 모달을 열기 위함. 
@@ -153,30 +151,6 @@ const MyInfoContainer = () => {
       setAuth('미승인 회원');
     }
   }, [info]);
-
-  /* 
-    myInfo GET api
-    사용자가 모달을 통해 정보를 수정할 때마다 fetch를 다시 해주어야 하므로 
-    조건은 reload === true 임 
-    setReload(true)는 각 모달에서 이루어짐
-    */
-
-  useEffect(() => {
-    if (reload) {
-      fetchInfoData('/myInfo', 'GET', 'token');
-    }
-  }, [reload]);
-
-  /* 
-    myInfo GET fetch를 성공했다면 info에 저장
-    이 때 reload는 다시 false로 만들어 주어야 함
-    */
-  useEffect(() => {
-    if (infoData) {
-      setInfo(infoData);
-      setReload(false);
-    }
-  }, [infoData]);
 
   return (
     <>

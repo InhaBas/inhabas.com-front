@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import ChangesContent from '../../components/scholarship/ChangesContent';
 import ScholarshipDetailList from '../../components/scholarship/ScholarshipDetailList';
 import SeeMoreButton from '../../components/scholarship/SeeMoreButton';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
+import { useMyRole } from '../../queries/myInfo';
 import { scholarshipQueries } from '../../queries/scholarship';
-import { userRole } from '../../recoil/backState';
 import { modalInfo, modalOpen } from '../../recoil/frontState';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
@@ -258,7 +258,7 @@ const toUsageList = ({ data }: pagedResponseInterface<scholarshipBoardInterface>
 
 const Scholarship = () => {
   const { isAuthorizedOverSecretary } = GetRoleAuthorization();
-  const role = useRecoilValue(userRole);
+  const role = useMyRole();
 
   const { data: changesContent } = useQuery(scholarshipQueries.historyList());
   const { data: scholarshipSponsor } = useQuery({

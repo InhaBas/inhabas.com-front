@@ -5,8 +5,9 @@ import styled from 'styled-components';
 
 import { GetRoleAuthorization } from '../../functions/authFunctions';
 import useFetch from '../../hooks/useFetch';
+import { useMyRole } from '../../queries/myInfo';
 import { bankBalanceInfo, bankHistoryInfo } from '../../recoil/backState';
-import { tokenAccess, userRole } from '../../recoil/backState';
+import { tokenAccess } from '../../recoil/backState';
 import { modalInfo, modalOpen, refetch } from '../../recoil/frontState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
@@ -61,7 +62,7 @@ const TableActions = styled(FlexDiv)`
 
 const BankTable = () => {
   const { isSecretary } = GetRoleAuthorization();
-  const role = useRecoilValue(userRole);
+  const role = useMyRole();
   const access = useRecoilValue(tokenAccess);
 
   let decoded: tokenInterface | undefined;

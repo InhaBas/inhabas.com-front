@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { useRef } from 'react';
 import { useSetRecoilState } from 'recoil';
 
-import useFetch from '../../../hooks/useFetch';
-import { modalOpen, refetch } from '../../../recoil/frontState';
+import { myInfoMutations } from '../../../queries/myInfo';
+import { modalOpen } from '../../../recoil/frontState';
 import Button from '../../../styles/assets/Button';
 import { Div, FlexDiv } from '../../../styles/assets/Div';
 import { H2 } from '../../../styles/assets/H';
@@ -34,8 +35,7 @@ const ModalChangeNumber = () => {
     setOpen(false);
   };
 
-  const [data, fetchData] = useFetch();
-  const setReload = useSetRecoilState(refetch);
+  const updateMutation = useMutation(myInfoMutations.updateDetail());
   const inputRef = useRef<HTMLInputElement>(null);
 
   /* 번호 수정 fetch */
@@ -45,7 +45,6 @@ const ModalChangeNumber = () => {
     };
 
     if (!inputRef.current) {
-      setReload(false);
       setOpen(false);
       return;
     }
@@ -57,18 +56,14 @@ const ModalChangeNumber = () => {
       inputRef.current?.value.length >= 13 ||
       inputRef.current?.value.slice(0, 3) === '010'
     ) {
-      fetchData('/myInfo/detail', 'PUT', 'token', inputData);
+      updateMutation.mutate(inputData, {
+        onSuccess: () => {
+          alert('전화번호가 정상적으로 수정되었습니다.');
+          setOpen(false);
+        },
+      });
     }
   };
-
-  useEffect(() => {
-    if (data) {
-      alert('전화번호가 정상적으로 수정되었습니다.');
-      setReload(true);
-
-      setOpen(false);
-    }
-  }, [data]);
 
   return (
     <FlexDiv
@@ -115,6 +110,7 @@ const ModalChangeNumber = () => {
             $borderRadius={3}
             width="100%"
             height="40px"
+            disabled={updateMutation.isPending}
             onClick={() => changeNumber()}
           >
             <P color="wh" fontWeight={400}>

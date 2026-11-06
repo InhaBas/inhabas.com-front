@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 
-import useFetch from '../../../hooks/useFetch';
-import { modalOpen, refetch } from '../../../recoil/frontState';
+import { myInfoMutations } from '../../../queries/myInfo';
+import { modalOpen } from '../../../recoil/frontState';
 import Button from '../../../styles/assets/Button';
 import { Div, FlexDiv } from '../../../styles/assets/Div';
 import { H2 } from '../../../styles/assets/H';
@@ -17,8 +18,7 @@ const ModalChangeType = () => {
     setOpen(false);
   };
 
-  const [data, fetchData] = useFetch();
-  const setReload = useSetRecoilState(refetch);
+  const updateMutation = useMutation(myInfoMutations.updateDetail());
   const [typeValue, setTypeValue] = useState('');
 
   // select 값 선택에 따른 state 변경 이벤트
@@ -34,18 +34,14 @@ const ModalChangeType = () => {
     };
 
     if (inputData.type !== '') {
-      fetchData('/myInfo/detail', 'PUT', 'token', inputData);
+      updateMutation.mutate(inputData, {
+        onSuccess: () => {
+          alert('소속이 정상적으로 수정되었습니다.');
+          setOpen(false);
+        },
+      });
     }
   };
-
-  useEffect(() => {
-    if (data) {
-      alert('소속이 정상적으로 수정되었습니다.');
-      setReload(true);
-
-      setOpen(false);
-    }
-  }, [data]);
 
   return (
     <FlexDiv
@@ -92,6 +88,7 @@ const ModalChangeType = () => {
             $borderRadius={3}
             width="100%"
             height="40px"
+            disabled={updateMutation.isPending}
             onClick={() => changeType()}
           >
             <P color="wh" fontWeight={400}>

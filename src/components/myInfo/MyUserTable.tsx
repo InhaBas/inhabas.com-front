@@ -6,13 +6,8 @@ import styled from 'styled-components';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
 import { ConvertLabel } from '../../functions/convertLabelFunctions';
 import useFetch from '../../hooks/useFetch';
-import {
-  _totalPageInfo,
-  tokenAccess,
-  totalUserInfo,
-  userInfo,
-  userRole,
-} from '../../recoil/backState';
+import { useMyRole } from '../../queries/myInfo';
+import { _totalPageInfo, tokenAccess, totalUserInfo, userInfo } from '../../recoil/backState';
 import {
   _checkedList,
   myAcceptUserState,
@@ -87,7 +82,7 @@ const MyUserTable = () => {
   // totalPageInfo를 같은 페이지 내에서 MyNewUserTable 이라는 컴포넌트가 쓰고 있기 때문에, _totalPageInfo을 사용함
   const [totalPage, setTotalPage] = useRecoilState(_totalPageInfo);
   const setTotalUser = useSetRecoilState(totalUserInfo);
-  const role = useRecoilValue(userRole);
+  const role = useMyRole();
   // checkedList를 같은 페이지 내에서 MyNewUserTable 이라는 컴포넌트가 쓰고 있기 때문에, _checkedList를 사용함
   const [check, setCheck] = useRecoilState(_checkedList);
   const [roleValue, setRoleValue] = useState('');

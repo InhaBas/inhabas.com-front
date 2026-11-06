@@ -1,9 +1,10 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
-import useFetch from '../../hooks/useFetch';
-import { signupCheck, tokenAccess, userEmail, userImage } from '../../recoil/backState';
+import { signUpQueries } from '../../queries/signUp';
+import { tokenAccess, userEmail, userImage } from '../../recoil/backState';
 import { FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 
@@ -81,31 +82,20 @@ const LoginProcess = () => {
     } else navigate('/login');
   }, [access]);
 
-  const [getData, getFetchData] = useFetch();
-  const [check, setCheck] = useRecoilState(signupCheck);
+  // URL의 토큰을 받은 뒤에 가입 여부를 확인한다
+  const { data: signUpCheckData } = useQuery({
+    ...signUpQueries.check(),
+    enabled: access !== 'default',
+  });
+  const isSignedUp = signUpCheckData?.check;
 
   useEffect(() => {
-    if (access !== 'default') {
-      getFetchData('/signUp/check', 'GET', 'token');
-    }
-    return () => {
-      setCheck(null);
-    };
-  }, [access]);
-
-  useEffect(() => {
-    if (getData) {
-      setCheck(getData.check);
-    }
-  }, [getData, setCheck]);
-
-  useEffect(() => {
-    if (check) {
+    if (isSignedUp) {
       navigate('/');
-    } else if (check === false) {
+    } else if (isSignedUp === false) {
       navigate('/signUp');
     }
-  }, [check]);
+  }, [isSignedUp]);
 
   return (
     <FlexDiv width="100%" height="100vh">
