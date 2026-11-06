@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
-import { useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useRef } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import useFetch from '../../../hooks/useFetch';
-import { modalInfo, modalOpen, refetch } from '../../../recoil/frontState';
+import { scholarshipMutations, scholarshipQueries } from '../../../queries/scholarship';
+import { modalInfo, modalOpen } from '../../../recoil/frontState';
 import Button from '../../../styles/assets/Button';
 import { Div, FlexDiv } from '../../../styles/assets/Div';
 import { H2 } from '../../../styles/assets/H';
@@ -20,13 +20,27 @@ const ModalScholarshipHistory = () => {
 
   const inputRef = useRef<any[]>([]);
 
-  const [data, fetchData] = useFetch();
-  const [historyInfoData, fetchHistoryInfoData] = useFetch();
-
-  const [history, setHistory] = useState({ id: '', dateHistory: '', title: '' });
-
-  const setReload = useSetRecoilState(refetch);
   const modalData = useRecoilValue(modalInfo);
+  const isUpdate = modalData.type === 'scholarshipUpdate';
+  const historyId = Number(modalData.content);
+  // 장학회 페이지가 조회한 연혁 목록을 구독만 한다. 모달은 그 페이지에서만 열린다
+  const { data: histories } = useQuery({
+    ...scholarshipQueries.historyList(),
+    refetchOnMount: false,
+  });
+  // 원래 로딩 표시가 없어 찾기 전에는 빈 입력칸을 보여 준다
+  const found = isUpdate
+    ? histories?.flatMap(({ data }) => data).find(({ id }) => id === historyId)
+    : undefined;
+  const history = found && { ...found, dateHistory: found.dateHistory.split('T')[0] };
+  const createMutation = useMutation(scholarshipMutations.createHistory());
+  const updateMutation = useMutation(scholarshipMutations.updateHistory());
+  const isPending = createMutation.isPending || updateMutation.isPending;
+
+  const onSaved = () => {
+    alert('연혁이 정상적으로 등록되었습니다.');
+    setOpen(false);
+  };
 
   // 연혁 등록 fetch
   const addHistory = () => {
@@ -48,46 +62,12 @@ const ModalScholarshipHistory = () => {
         dateHistory: inputRef.current[0].value + 'T00:00:00',
       };
       if (modalData.type === 'scholarshipPost') {
-        fetchData('/scholarship/history', 'POST', 'token', inputData);
-      } else if (modalData.type === 'scholarshipUpdate') {
-        fetchData(`/scholarship/history/${history?.id}`, 'PUT', 'token', inputData);
+        createMutation.mutate(inputData, { onSuccess: onSaved });
+      } else if (isUpdate) {
+        updateMutation.mutate({ id: historyId, body: inputData }, { onSuccess: onSaved });
       }
     }
   };
-
-  // 연혁 등록 data가 있다면
-  useEffect(() => {
-    if (data) {
-      alert('연혁이 정상적으로 등록되었습니다.');
-      setOpen(false);
-      setReload(true);
-    }
-  }, [data]);
-
-  // 단일 연혁 가져오기
-  useEffect(() => {
-    fetchHistoryInfoData(`/scholarship/histories`, 'GET', 'token');
-  }, []);
-
-  // 단일 연혁 data가 있다면
-  useEffect(() => {
-    if (historyInfoData) {
-      for (const data of Object.values(historyInfoData as Record<string, any>)) {
-        for (const infos of data.data) {
-          // infos.id는 number, modalData?.content는 ChangesContent.tsx에서 문자열로 저장한
-          // id라 타입이 다르다. == 강제 변환에 의존하지 않도록 명시적으로 비교한다.
-          if (String(infos.id) === modalData?.content) {
-            setHistory({
-              id: infos.id,
-              title: infos.title,
-              dateHistory: infos.dateHistory.split('T')[0],
-            });
-            break;
-          }
-        }
-      }
-    }
-  }, [historyInfoData]);
 
   return (
     <FlexDiv
@@ -147,6 +127,7 @@ const ModalScholarshipHistory = () => {
             $borderRadius={3}
             width="100%"
             height="40px"
+            disabled={isPending}
             onClick={() => addHistory()}
           >
             {modalData.type === 'scholarshipPost' ? (
