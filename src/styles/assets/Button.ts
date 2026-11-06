@@ -27,6 +27,17 @@ let Button = styled.button<ButtonStyle>`
   &:hover {
     background-color: ${(props) => props.theme.color[props.$HBackgroundColor || 'transparent']};
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* hover 배경을 없앤다. &:hover:not(:disabled)로 쓰면 특이도가 올라가
+     styled(Button)으로 확장한 쪽의 &:hover 재정의가 먹지 않는다 */
+  &:disabled:hover {
+    background-color: ${(props) => props.theme.color[props.$backgroundColor || 'transparent']};
+  }
 `;
 
 export default Button;
