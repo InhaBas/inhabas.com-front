@@ -132,18 +132,12 @@ module.exports = [
   {
     // 전환 전 파일. 전환 PR은 자기 파일을 이 목록에서 뺀다. 목록 길이가 진행률이다
     files: [
-      'src/components/budget/BankTable.tsx',
-      'src/components/budget/StudentSearchTable.tsx',
-      'src/components/common/modal/ModalBankHistoryDetail.tsx',
-      'src/components/common/modal/ModalPostBankHistory.tsx',
-      'src/components/common/modal/ModalUpdateBankHistory.tsx',
       'src/components/myInfo/MyChangeNameUserTable.tsx',
       'src/components/myInfo/MyGraduateUserTable.tsx',
       'src/components/myInfo/MyNewUserTable.tsx',
       'src/components/myInfo/MyUserTable.tsx',
       'src/containers/myInfo/MyStaffRuleContainter.tsx',
       'src/containers/myInfo/MyStaffScheduleInfo.tsx',
-      'src/pages/budget/Bank.tsx',
       'src/pages/myInfo/MyApplication.tsx',
     ],
     rules: { 'no-restricted-imports': 'off' },

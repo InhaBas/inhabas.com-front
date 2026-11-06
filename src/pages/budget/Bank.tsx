@@ -1,20 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 import BankTable from '../../components/budget/BankTable';
 import Dropdown from '../../components/common/Dropdown';
 import Loading from '../../components/common/Loading';
 import Pagination from '../../components/common/Pagination';
-import useFetch from '../../hooks/useFetch';
-import {
-  bankBalanceInfo,
-  bankHistoryInfo,
-  bankYearsInfo,
-  tokenAccess,
-  totalPageInfo,
-} from '../../recoil/backState';
-import { refetch } from '../../recoil/frontState';
+import { bankHistoryQueries, useOnBankHistoryChanged } from '../../queries/bankHistory';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import { H2 } from '../../styles/assets/H';
 import { media } from '../../styles/theme';
@@ -68,77 +60,31 @@ const BankHeader = styled(FlexDiv)`
 `;
 
 const Bank = () => {
-  const [bankHistoryData, fetchBankHistoryData] = useFetch();
-  const [bankHistory, setBankHistory] = useRecoilState(bankHistoryInfo);
-  const setBankBalance = useSetRecoilState(bankBalanceInfo);
-  const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
-  const accessToken = useRecoilValue(tokenAccess);
-  const [reload, setReload] = useRecoilState(refetch);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const [bankYearsData, fetchBankYearsData] = useFetch();
-  const [bankYears, setBankYears] = useRecoilState(bankYearsInfo);
-
   const [selectedYear, setSelectedYear] = useState('');
+  const [page, setPage] = useState(1);
+
+  const { data: bankYears } = useQuery(bankHistoryQueries.years());
+  // 옛 화면처럼 연도 목록에 연도가 하나라도 있을 때만 내역을 조회한다
+  const hasYears = Boolean(bankYears?.[0]);
+  const { data: bankHistoryData } = useQuery({
+    ...bankHistoryQueries.list({ year: selectedYear, page, size: 15 }),
+    enabled: hasYears,
+  });
+
+  // 내역을 추가·수정·삭제하면 1페이지로 돌아간다
+  useOnBankHistoryChanged(() => setPage(1));
 
   const handleSelectedYear = (value: string) => {
+    if (value === selectedYear) return;
     setSelectedYear(value);
+    setPage(1);
   };
 
-  // 연도 데이터 패치
-  useEffect(() => {
-    setIsLoading(true);
-    fetchBankYearsData('/budget/histories/years', 'GET');
-  }, [accessToken]);
-
-  // 연도 데이터 패치 후 bankYears에 매핑
-  useEffect(() => {
-    if (bankYearsData) {
-      setBankYears(bankYearsData);
-    }
-  }, [bankYearsData]);
-
-  // bankYears에 연도 데이터 매핑 후, 전체 히스토리 패치
-  useEffect(() => {
-    if (bankYears && bankYears[0]) {
-      fetchBankHistoryData(
-        `/budget/histories?year=${selectedYear}&page=${'0'}&size=${'15'}`,
-        'GET',
-        'token',
-      );
-    }
-    setReload(false);
-  }, [bankYears, selectedYear, accessToken, reload]);
-
-  useEffect(() => {
-    if (bankHistoryData) {
-      const contents = bankHistoryData?.page?.data?.map((data: any) => ({
-        id: data?.id,
-        사용일: data?.dateUsed?.split('T')[0],
-        게시일: data?.dateCreated?.split('T')[0],
-        수정일: data?.dateUpdated?.split('T')[0],
-        내용: data?.title,
-        수입액: String(data?.income)?.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-        지출액: String(data?.outcome)?.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-        writerId: data?.memberIdInCharge,
-      }));
-      setBankHistory(contents);
-      setIsLoading(false);
-    }
-
-    setTotalPage(bankHistoryData?.page?.pageInfo?.totalPages);
-    setBankBalance(bankHistoryData?.balance);
-
-    return () => {
-      setBankHistory([]);
-      setTotalPage(0);
-      setBankBalance(0);
-    };
-  }, [bankHistoryData]);
+  const sortedYears = [...(bankYears ?? [])].sort((a, b) => b - a).map((year) => String(year));
 
   return (
     <BankPage width="100%">
-      {isLoading ? (
+      {!bankHistoryData ? (
         <FlexDiv width="100%" height="100vh">
           <Loading />
         </FlexDiv>
@@ -161,34 +107,20 @@ const Bank = () => {
               <Div>
                 <Dropdown
                   label="전체보기"
-                  options={[
-                    '전체보기',
-                    ...Object.values(bankYears)
-                      .sort((a, b) => b - a)
-                      .map((bankYear) => String(bankYear)),
-                  ]}
-                  value={[
-                    '',
-                    ...Object.values(bankYears)
-                      .sort((a, b) => b - a)
-                      .map((bankYear) => String(bankYear)),
-                  ]}
+                  options={['전체보기', ...sortedYears]}
+                  value={['', ...sortedYears]}
                   onChange={handleSelectedYear}
                   purple
                 />
               </Div>
             </BankHeader>
-            <BankTable />
+            <BankTable histories={bankHistoryData.page.data} balance={bankHistoryData.balance} />
 
-            {/* <Pagination /> */}
-            {bankHistory && bankHistory.length !== 0 && (
+            {bankHistoryData.page.data.length !== 0 && (
               <Pagination
-                totalPage={totalPage}
-                fetchUrl={`/budget/histories`}
-                token
-                paginationFetch={fetchBankHistoryData}
-                size={15}
-                search={`&year=${selectedYear}`}
+                currentPage={page}
+                totalPage={bankHistoryData.page.pageInfo.totalPages}
+                onPageChange={setPage}
               />
             )}
           </BankInner>

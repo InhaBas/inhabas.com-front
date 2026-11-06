@@ -1,18 +1,19 @@
+import { useMutation } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
-import { MouseEvent, useEffect } from 'react';
+import { MouseEvent } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { GetRoleAuthorization } from '../../functions/authFunctions';
-import useFetch from '../../hooks/useFetch';
+import { bankHistoryMutations } from '../../queries/bankHistory';
 import { useMyRole } from '../../queries/myInfo';
-import { bankBalanceInfo, bankHistoryInfo } from '../../recoil/backState';
 import { tokenAccess } from '../../recoil/backState';
-import { modalInfo, modalOpen, refetch } from '../../recoil/frontState';
+import { modalInfo, modalOpen } from '../../recoil/frontState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
+import { bankHistoryInterface } from '../../types/TypeBankHistory';
 import { tokenInterface } from '../../types/TypeCommon';
 
 const TableScrollArea = styled.div`
@@ -60,7 +61,26 @@ const TableActions = styled(FlexDiv)`
   }
 `;
 
-const BankTable = () => {
+const formatAmount = (amount: number) => String(amount).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+// 표의 열 순서대로 값을 담는다. 아래에서 Object.values(...).slice(1, 7)로 사용일~지출액을 그린다
+const toTableRow = (data: bankHistoryInterface) => ({
+  id: data.id,
+  사용일: data.dateUsed.split('T')[0],
+  게시일: data.dateCreated.split('T')[0],
+  수정일: data.dateUpdated.split('T')[0],
+  내용: data.title,
+  수입액: formatAmount(data.income),
+  지출액: formatAmount(data.outcome),
+  writerId: data.memberIdInCharge,
+});
+
+interface BankTableProps {
+  histories: bankHistoryInterface[];
+  balance: number;
+}
+
+const BankTable = ({ histories, balance }: BankTableProps) => {
   const { isSecretary } = GetRoleAuthorization();
   const role = useMyRole();
   const access = useRecoilValue(tokenAccess);
@@ -73,9 +93,8 @@ const BankTable = () => {
 
   const setOpen = useSetRecoilState(modalOpen);
   const setModalInfo = useSetRecoilState(modalInfo);
-  const setReload = useSetRecoilState(refetch);
 
-  const [deleteHistory, fetchDeleteHistory] = useFetch();
+  const deleteMutation = useMutation(bankHistoryMutations.delete());
 
   const clickDetailEvent = (ev: MouseEvent, name: string, selectedId: number) => {
     setOpen(true);
@@ -88,17 +107,16 @@ const BankTable = () => {
   };
 
   const clickDeleteEvent = (ev: MouseEvent, name: string, selectedId: number) => {
+    if (deleteMutation.isPending) return;
     if (window.confirm('정말로 삭제하시겠습니까?')) {
-      fetchDeleteHistory(`/budget/history/${selectedId}`, 'DELETE', 'token');
+      // 목록 갱신과 1페이지 복귀는 팩토리의 무효화와 Bank의 useOnBankHistoryChanged가 맡는다
+      deleteMutation.mutate(selectedId, {
+        onSuccess: () => {
+          alert('내역이 정상적으로 삭제되었습니다.');
+        },
+      });
     }
   };
-
-  useEffect(() => {
-    if (deleteHistory) {
-      alert('내역이 정상적으로 삭제되었습니다.');
-      setReload(true);
-    }
-  }, [deleteHistory]);
 
   const clickPostEvent = () => {
     setOpen(true);
@@ -108,8 +126,7 @@ const BankTable = () => {
   const headerInfo = ['사용일', '게시일', '수정일', '내용', '수입액', '지출액', '증빙'];
   const widthList = [120, 120, 120, 350, 100, 100, 40];
 
-  const contents = useRecoilValue(bankHistoryInfo);
-  const bankBalance = useRecoilValue(bankBalanceInfo);
+  const contents = histories.map(toTableRow);
 
   return (
     <>
@@ -183,7 +200,7 @@ const BankTable = () => {
                       <FlexDiv
                         width="15px"
                         onClick={(e: MouseEvent) => clickDeleteEvent(e, 'ss', element?.id)}
-                        $pointer
+                        $pointer={!deleteMutation.isPending}
                       >
                         <Img src="/images/trash_grey.svg" />
                       </FlexDiv>
@@ -211,7 +228,7 @@ const BankTable = () => {
 
       <FlexDiv width="100%">
         <Div $padding="10px 20px" $backgroundColor="bgColor" radius={50}>
-          <P color="wh">잔액 : ₩ {String(bankBalance)?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</P>
+          <P color="wh">잔액 : ₩ {formatAmount(balance)}</P>
         </Div>
       </FlexDiv>
     </>
