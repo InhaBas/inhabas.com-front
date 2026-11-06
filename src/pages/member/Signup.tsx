@@ -1,11 +1,12 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import Dropdown from '../../components/common/Dropdown';
-import useFetch from '../../hooks/useFetch';
-import { signupInfo, tokenAccess, userEmail } from '../../recoil/backState';
+import { signUpMutations, signUpQueries } from '../../queries/signUp';
+import { tokenAccess, userEmail } from '../../recoil/backState';
 import { majorSelected, modalInfo, modalOpen, relogin } from '../../recoil/frontState';
 import A from '../../styles/assets/A';
 import Button from '../../styles/assets/Button';
@@ -217,11 +218,14 @@ const Signup = () => {
 
   const [status, setStatus] = useState('student');
   const [gradeValue, setGradeValue] = useState('');
-  const [postData, postFetchData] = useFetch();
-  const [proPostData, proPostFetchData] = useFetch();
-  const [getData, getFetchData] = useFetch();
+  const createMutation = useMutation(signUpMutations.createProfile());
   const [email, setEmail] = useRecoilState(userEmail);
-  const [info, setInfo] = useRecoilState(signupInfo);
+  /*
+        회원가입 한 이력이 있어 저장된 개인 정보를 호출하는 api
+        정보를 input value에 저장시켜둠.
+        새로고침으로 토큰이 재발급되면 공통 refresh 흐름이 이 조회를 다시 가져온다
+    */
+  const { data: info } = useQuery(signUpQueries.profile());
   const setReload = useSetRecoilState(relogin);
   const access = useRecoilValue(tokenAccess);
 
@@ -282,26 +286,26 @@ const Signup = () => {
         grade: status === 'student' ? parseInt(gradeValue) : null,
       };
 
+      /* 학생용 signUp api 가 잘 POST 된 경우 질문 화면으로 이동 */
       if (status === 'student') {
-        postFetchData('/signUp', 'POST', 'token', inputData);
+        createMutation.mutate(inputData, {
+          onSuccess: () => {
+            navigate('/signup/question');
+          },
+        });
       }
 
+      /* 교수용 signUp api 가 잘 POST 된 경우 가입 완료. 홈에서 reload 한다 */
       if (status === 'professor') {
-        proPostFetchData('/signUp', 'POST', 'token', inputData);
+        createMutation.mutate(inputData, {
+          onSuccess: () => {
+            setReload(true);
+            navigate('/');
+          },
+        });
       }
     }
   };
-
-  /*
-        회원가입 한 이력이 있어 저장된 개인 정보를 호출하는 api
-        새로고침 시 access 토큰이 재발급되므로, 토큰이 변화할 때마다 불러와야 함
-    */
-  useEffect(() => {
-    getFetchData('/signUp', 'GET', 'token');
-    return () => {
-      setInfo(null);
-    };
-  }, [access]);
 
   /*
         토큰에 있는 정보 중 email을 recoil에 저장
@@ -315,16 +319,6 @@ const Signup = () => {
   }, [access]);
 
   /*
-        회원가입 한 이력이 있는 경우 api 호출에 대한 response data 저장
-        정보를 input value에 저장시켜둠
-    */
-  useEffect(() => {
-    if (getData) {
-      setInfo(getData);
-    }
-  }, [getData]);
-
-  /*
         회원가입 한 이력이 있는 경우 중 major도 저장되었을 때 
         major를 selectedMajor에 저장시킴
         이 때 college와 major 형태를 유지시킬 것
@@ -335,23 +329,6 @@ const Signup = () => {
       setSelecteMajor({ college: 'default', major: info.major });
     }
   }, [info]);
-
-  /* 학생용 signUp api 가 잘 POST 된 경우 */
-  useEffect(() => {
-    // if (postData === "noContents") {
-    if (postData) {
-      navigate('/signup/question');
-    }
-  }, [postData]);
-
-  /* 교수용 signUp api 가 잘 POST 된 경우 */
-  useEffect(() => {
-    // if (proPostData === "noContents") {
-    if (proPostData) {
-      setReload(true);
-      navigate('/');
-    }
-  }, [proPostData]);
 
   return (
     <>
@@ -538,6 +515,7 @@ const Signup = () => {
                   $borderRadius={2}
                   $HBackgroundColor="bgColorHo"
                   width="100%"
+                  disabled={createMutation.isPending}
                   onClick={() => sendInput()}
                 >
                   <P color="wh">다음</P>

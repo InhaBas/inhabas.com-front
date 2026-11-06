@@ -1,10 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import useFetch from '../../hooks/useFetch';
-import { signupAnswer, signupQuestion, tokenAccess } from '../../recoil/backState';
+import { signUpMutations, signUpQueries } from '../../queries/signUp';
 import { relogin } from '../../recoil/frontState';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
@@ -109,59 +109,27 @@ const SignupQuestion = () => {
   const navigate = useNavigate();
 
   const ref = useRef<any[]>([]);
-  const [putData, putFetchData] = useFetch();
-  const [postData, postFetchData] = useFetch();
-  const [getData, getFetchData] = useFetch();
-  const [data, fetchData] = useFetch();
-  const [question, setQuestion] = useRecoilState(signupQuestion);
-  const [answer, setAnswer] = useRecoilState(signupAnswer);
-  const access = useRecoilValue(tokenAccess);
+  const completeMutation = useMutation(signUpMutations.complete());
+  const saveMutation = useMutation(signUpMutations.saveAnswers());
   const setReload = useSetRecoilState(relogin);
 
   /*
         회원가입 질문 리스트 호출
     */
-  useEffect(() => {
-    fetchData('/signUp/questionnaires', 'GET');
-    return () => {
-      setQuestion([]);
-    };
-  }, []);
+  const { data: question } = useQuery(signUpQueries.questionnaires());
 
   /*
-        회원가입 질문을 recoil에 저장
+        회원가입 답변 저장을 한 이력이 있는 경우 저장된 답변 내용 호출.
+        새로고침으로 토큰이 재발급되면 공통 refresh 흐름이 이 조회를 다시 가져온다
     */
-  useEffect(() => {
-    if (data) {
-      setQuestion(data);
-    }
-  }, [data]);
-
-  /*
-        회원가입 답변 저장을 한 이력이 있는 경우 api 호출에 대한 response data 저장
-    */
-  useEffect(() => {
-    getFetchData('/signUp/answers', 'GET', 'token');
-    return () => {
-      setAnswer(null);
-    };
-  }, [access]);
-
-  /*
-        저장된 회원가입 답변 내용 호출
-    */
-  useEffect(() => {
-    if (getData) {
-      setAnswer(getData);
-    }
-  }, [getData]);
+  const { data: answer } = useQuery(signUpQueries.answers());
 
   /*
         회원가입 답변 유효성 검사 후 PUT fetch
     */
   const sendInput = () => {
     let check = true;
-    if (question !== null) {
+    if (question) {
       Object.values(question).forEach((item: any, idx: number) => {
         if (check && ref.current[idx].value === '') {
           alert(`'${item.question}' 항목을 입력해 주세요`);
@@ -175,7 +143,17 @@ const SignupQuestion = () => {
           content: ref.current[idx]?.value,
         }));
 
-        putFetchData('/signUp', 'PUT', 'token', inputData);
+        /*
+          회원가입 완료가 된 경우
+          토큰에 저장되어 있는 정보가 달라지므로, 회원 가입 후에는 항상 reload 해주어야 함
+        */
+        completeMutation.mutate(inputData, {
+          onSuccess: () => {
+            alert('회원가입을 축하합니다!');
+            setReload(true);
+            navigate('/');
+          },
+        });
       }
     }
   };
@@ -185,40 +163,21 @@ const SignupQuestion = () => {
     */
   const saveInput = () => {
     let check = true;
-    if (question !== null) {
+    if (question) {
       if (check) {
         let inputData = Object.values(question).map((item: any, idx: number) => ({
           questionId: item.id,
           content: ref.current[idx]?.value,
         }));
 
-        postFetchData('/signUp/answers', 'POST', 'token', inputData);
+        saveMutation.mutate(inputData, {
+          onSuccess: () => {
+            alert('답변이 저장되었습니다.');
+          },
+        });
       }
     }
   };
-
-  /* 
-    회원가입 완료가 된 경우
-    토큰에 저장되어 있는 정보가 달라지므로, 회원 가입 후에는 항상 reload 해주어야 함
-     */
-  useEffect(() => {
-    // if (putData === "noContents") {
-    if (putData) {
-      alert('회원가입을 축하합니다!');
-      setReload(true);
-      navigate('/');
-    }
-  }, [putData]);
-
-  /*
-    답변 저장에 성공한 경우
-    */
-  useEffect(() => {
-    // if (postData === "noContents") {
-    if (postData) {
-      alert('답변이 저장되었습니다.');
-    }
-  }, [postData]);
 
   return (
     <>
@@ -261,6 +220,7 @@ const SignupQuestion = () => {
                   $borderRadius={2}
                   $HBackgroundColor="grey"
                   width="15%"
+                  disabled={saveMutation.isPending}
                   onClick={() => saveInput()}
                 >
                   <P color="wh">임시저장</P>
@@ -273,6 +233,7 @@ const SignupQuestion = () => {
                   $borderRadius={2}
                   $HBackgroundColor="bgColorHo"
                   width="15%"
+                  disabled={completeMutation.isPending}
                   onClick={() => sendInput()}
                 >
                   <P color="wh">제출</P>
