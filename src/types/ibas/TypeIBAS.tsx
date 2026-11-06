@@ -18,6 +18,13 @@ export interface historyInterface {
   year?: string;
 }
 
+// POST /club/history, PUT /club/history/{id} 본문. dateHistory는 yyyy-MM-ddTHH:mm:ss
+export interface saveHistoryInterface {
+  title: string;
+  content: string;
+  dateHistory: string;
+}
+
 // scholarship
 export interface scholarshipHistoryInterface {
   year: number | null;
