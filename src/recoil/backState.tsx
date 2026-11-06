@@ -1,5 +1,6 @@
 import { atom } from 'recoil';
 
+import { getAccessToken, setAccessToken, subscribeAccessToken } from '../api/token';
 import { historyInterface, honorDataInterface, staffInterface } from '../types/ibas/TypeIBAS';
 import {
   answersInterface,
@@ -57,9 +58,17 @@ export const __totalPageInfo = atom({
   default: 0,
 });
 
-export const tokenAccess = atom({
+// src/api/token.ts 저장소와 양방향 동기화한다. fetch 래퍼와 refresh 흐름은 React 밖에서 저장소만 읽고 쓴다
+export const tokenAccess = atom<string>({
   key: 'tokenAccess',
   default: 'default',
+  effects: [
+    ({ setSelf, onSet }) => {
+      setSelf(getAccessToken());
+      onSet((newValue) => setAccessToken(newValue));
+      return subscribeAccessToken(setSelf);
+    },
+  ],
 });
 
 export const userEmail = atom({

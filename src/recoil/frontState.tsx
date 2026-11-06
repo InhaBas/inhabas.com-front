@@ -1,5 +1,6 @@
 import { atom } from 'recoil';
 
+import { getFailRefreshing, setFailRefreshing, subscribeFailRefreshing } from '../api/token';
 import { modalInterface } from '../types/TypeCommon';
 
 // common
@@ -77,9 +78,17 @@ export const bankSupportRejectReasonInfo = atom({
 });
 
 // useFetch
-export const failRefreshing = atom({
+// src/api/token.ts 저장소와 양방향 동기화한다. refresh 흐름은 React 밖에서 저장소만 쓴다
+export const failRefreshing = atom<boolean>({
   key: 'failRefreshing',
   default: false,
+  effects: [
+    ({ setSelf, onSet }) => {
+      setSelf(getFailRefreshing());
+      onSet((newValue) => setFailRefreshing(newValue));
+      return subscribeFailRefreshing(setSelf);
+    },
+  ],
 });
 
 // carousel
