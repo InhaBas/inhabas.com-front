@@ -18,7 +18,7 @@ const TableScrollArea = styled.div`
 
 const Table = styled.div`
   width: max-content;
-  min-width: 905px;
+  min-width: max(905px, 100%);
 `;
 
 const TableRow = styled(FlexDiv)`
