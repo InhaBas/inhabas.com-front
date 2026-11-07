@@ -9,7 +9,6 @@ import {
   scheduleInterface,
   userInterface,
 } from '../types/ibas/TypeMyinfo';
-import { supportDetailInterface } from '../types/TypeBank';
 import { menuInterface, policyInterface } from '../types/TypeCommon';
 
 // headerTitle: 페이지가 직접 정한 제목만 담는다(staff 경로). 비어 있으면 HeaderTitle이 메뉴 제목을 쓴다
@@ -159,14 +158,4 @@ export const bankBalanceInfo = atom({
 export const bankYearsInfo = atom({
   key: 'bankYearsInfo',
   default: [],
-});
-
-export const bankListDataInfo = atom({
-  key: 'bankListDataInfo',
-  default: [],
-});
-
-export const bankDetailDataInfo = atom<supportDetailInterface | null>({
-  key: 'bankDetailDataInfo',
-  default: null,
 });

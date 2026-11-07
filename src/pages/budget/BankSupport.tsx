@@ -1,21 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-import BankSupportTable from '../../components/budget/BankSupportTable';
+import { SupportStatusFilter } from '../../api/bankSupport';
+import BankSupportTable, { BankSupportRow } from '../../components/budget/BankSupportTable';
 import Dropdown from '../../components/common/Dropdown';
 import Loading from '../../components/common/Loading';
 import Pagination from '../../components/common/Pagination';
 import { DateFunction } from '../../functions/dateFunction';
-import useFetch from '../../hooks/useFetch';
-import { bankListDataInfo, tokenAccess, totalPageInfo } from '../../recoil/backState';
+import { bankSupportQueries } from '../../queries/bankSupport';
 import A from '../../styles/assets/A';
 import Button from '../../styles/assets/Button';
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { media } from '../../styles/theme';
-import { supportListInterface } from '../../types/TypeBank';
 
 const SupportPage = styled.div`
   display: flex;
@@ -52,12 +51,11 @@ const BankSupport = () => {
   const { formatDateDay } = DateFunction();
   const navigate = useNavigate();
 
-  const access = useRecoilValue(tokenAccess);
-  const [bankList, setBankList] = useRecoilState(bankListDataInfo);
-  const [bankListData, fetchBankListData] = useFetch();
-  const [statusValue, setStatusValue] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-  const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
+  const [statusValue, setStatusValue] = useState<SupportStatusFilter>('');
+  const [page, setPage] = useState(1);
+  const { data: bankListData } = useQuery(
+    bankSupportQueries.list({ status: statusValue, page, size: 10 }),
+  );
 
   const moveCreate = () => {
     navigate('/bank/support/create');
@@ -65,18 +63,13 @@ const BankSupport = () => {
 
   // select 값 선택에 따른 state 변경 이벤트
   const handleStatusChange = (value: string) => {
-    // 선택된 값을 업데이트
-    setStatusValue(value);
+    // 선택된 값을 업데이트하고 1페이지로 돌아간다
+    setStatusValue(value as SupportStatusFilter);
+    setPage(1);
   };
 
-  useEffect(() => {
-    fetchBankListData(`/budget/applications?status=${statusValue}&page=0&size=10`, 'GET', 'token');
-    setIsLoading(true);
-  }, [access, statusValue]);
-
-  useEffect(() => {
-    if (bankListData) {
-      const contents = bankListData.data.map((item: supportListInterface, idx: number) => ({
+  const bankList: BankSupportRow[] = bankListData
+    ? bankListData.data.map((item, idx) => ({
         number: bankListData.pageInfo.pageNumber * bankListData.pageInfo.pageSize + idx + 1,
         title: item.title,
         applicantName: item.applicantName,
@@ -92,21 +85,12 @@ const BankSupport = () => {
                   ? '처리 완료'
                   : 'error',
         id: item.id,
-      }));
-
-      setBankList(contents);
-      setTotalPage(bankListData.pageInfo.totalPages);
-      setIsLoading(false);
-    }
-    return () => {
-      setBankList([]);
-      setTotalPage(0);
-    };
-  }, [bankListData]);
+      }))
+    : [];
 
   return (
     <>
-      {isLoading ? (
+      {!bankListData ? (
         <FlexDiv width="100%" height="100vh">
           <Loading />
         </FlexDiv>
@@ -123,7 +107,7 @@ const BankSupport = () => {
                   purple
                 />
               </Div>
-              <BankSupportTable />
+              <BankSupportTable bankList={bankList} />
               <SupportActions width="100%" $justifycontent="end" $margin="20px 0 0 0">
                 <Button
                   $backgroundColor="bgColor"
@@ -145,13 +129,11 @@ const BankSupport = () => {
                   </FlexDiv>
                 </Button>
               </SupportActions>
-              {bankList && bankList.length !== 0 && (
+              {bankList.length !== 0 && (
                 <Pagination
-                  totalPage={totalPage}
-                  fetchUrl={`/budget/applications`}
-                  token
-                  paginationFetch={fetchBankListData}
-                  search={statusValue === '' ? '' : `&status=${statusValue}`}
+                  currentPage={page}
+                  totalPage={bankListData.pageInfo.totalPages}
+                  onPageChange={setPage}
                 />
               )}
             </SupportContent>

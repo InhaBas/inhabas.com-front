@@ -8,6 +8,7 @@ import {
   getMyBoardList,
   getMyCommentList,
   getMyInfo,
+  getMySupportList,
   MyInfoListParams,
   requestMyInfoNameChange,
   updateMyInfoDetail,
@@ -20,6 +21,7 @@ import { updateMyInfoDetailInterface, updateMyInfoIntroInterface } from '../type
 
 export const myInfoQueries = {
   all: () => ['myInfo'] as const,
+  supportLists: () => [...myInfoQueries.all(), 'supports'] as const,
 
   // 조회의 주인은 HeaderNav다. /signUp/check 결과가 true일 때만 켠다(enabled)
   detail: () =>
@@ -38,6 +40,13 @@ export const myInfoQueries = {
     queryOptions({
       queryKey: [...myInfoQueries.all(), 'comments', params],
       queryFn: () => getMyCommentList(params),
+      placeholderData: keepPreviousPage(params),
+    }),
+  // 내 정보 화면의 내 예산 신청 목록. 페이지를 넘기는 동안 이전 목록을 보여 주던 옛 화면 동작을 보존한다
+  supportList: (params: MyInfoListParams) =>
+    queryOptions({
+      queryKey: [...myInfoQueries.supportLists(), params],
+      queryFn: () => getMySupportList(params),
       placeholderData: keepPreviousPage(params),
     }),
 };

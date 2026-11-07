@@ -1,18 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
 import Loading from '../../components/common/Loading';
 import Pagination from '../../components/common/Pagination';
 import { DateFunction } from '../../functions/dateFunction';
-import useFetch from '../../hooks/useFetch';
-import { bankListDataInfo, tokenAccess, totalPageInfo } from '../../recoil/backState';
+import { myInfoQueries } from '../../queries/myInfo';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-import { MySupportInterface } from '../../types/ibas/TypeMyinfo';
 
 const SupportContent = styled(Div)`
   box-sizing: border-box;
@@ -63,25 +61,15 @@ const MyBankSupportContainer = () => {
   const widthList = [100, 400, 100, 150, 150, 150];
   const headerInfo = ['진행상황', '신청명', '    ', '작성일', '검토일', '입금일'];
 
-  const access = useRecoilValue(tokenAccess);
-  const [bankList, setBankList] = useRecoilState(bankListDataInfo);
-  const [bankListData, fetchBankListData] = useFetch();
-  const [statusValue] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-  const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
+  const [page, setPage] = useState(1);
+  const { data: bankListData } = useQuery(myInfoQueries.supportList({ page, size: 15 }));
 
   const movePage = (idx: number) => {
     navigate(`/bank/support/detail/${idx}`);
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    fetchBankListData(`/myInfo/supports?status=${statusValue}&page=0&size=15`, 'GET', 'token');
-  }, [access, statusValue]);
-
-  useEffect(() => {
-    if (bankListData) {
-      const contents = bankListData.data.map((item: MySupportInterface) => ({
+  const bankList = bankListData
+    ? bankListData.data.map((item) => ({
         status:
           item.status === 'PENDING'
             ? '승인 대기'
@@ -99,17 +87,12 @@ const MyBankSupportContainer = () => {
           item.dateChecked === null ? '-' : formatDateDay({ date: item.dateChecked || '' }),
         dateDeposited:
           item.dateDeposited === null ? '-' : formatDateDay({ date: item.dateDeposited || '' }),
-      }));
-
-      setBankList(contents);
-      setTotalPage(bankListData.pageInfo.totalPages);
-      setIsLoading(false);
-    }
-  }, [bankListData]);
+      }))
+    : [];
 
   return (
     <>
-      {isLoading ? (
+      {!bankListData ? (
         <FlexDiv width="100%" height="30vh">
           <Loading />
         </FlexDiv>
@@ -160,7 +143,7 @@ const MyBankSupportContainer = () => {
                   ))}
                 </FlexDiv>
                 {bankList.length !== 0 ? (
-                  bankList.map((element: object, idx: number) => (
+                  bankList.map((element, idx: number) => (
                     <FlexDiv
                       key={`contentItem${idx}`}
                       width="100%"
@@ -177,9 +160,7 @@ const MyBankSupportContainer = () => {
                           $pointer={idx === 2 ? true : false}
                           $justifycontent={idx === 1 ? 'start' : 'center'}
                         >
-                          <Div
-                            onClick={() => idx === 2 && movePage((element as { id: number }).id)}
-                          >
+                          <Div onClick={() => idx === 2 && movePage(element.id)}>
                             {idx === 2 ? (
                               <P color="bgColor">원문보기 ▶</P>
                             ) : (
@@ -222,13 +203,11 @@ const MyBankSupportContainer = () => {
                 )}
               </Div>
             </TableScroll>
-            {bankList && bankList.length !== 0 && (
+            {bankList.length !== 0 && (
               <Pagination
-                totalPage={totalPage}
-                fetchUrl={`/budget/applications?status=${statusValue}`}
-                size={7}
-                token
-                paginationFetch={fetchBankListData}
+                currentPage={page}
+                totalPage={bankListData.pageInfo.totalPages}
+                onPageChange={setPage}
               />
             )}
           </SupportContent>

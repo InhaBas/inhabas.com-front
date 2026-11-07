@@ -1,6 +1,7 @@
 import { request } from './client';
 import {
   MyBoardInterface,
+  MySupportInterface,
   profileInterface,
   updateMyInfoDetailInterface,
   updateMyInfoIntroInterface,
@@ -39,5 +40,11 @@ export const getMyBoardList = ({ page, size }: MyInfoListParams) =>
 export const getMyCommentList = ({ page, size }: MyInfoListParams) =>
   request<pagedResponseInterface<myCommentInterface>>(
     `/myInfo/comments?page=${page - 1}&size=${size}`,
+    { auth: true },
+  );
+
+export const getMySupportList = ({ page, size }: MyInfoListParams) =>
+  request<pagedResponseInterface<MySupportInterface>>(
+    `/myInfo/supports?page=${page - 1}&size=${size}`,
     { auth: true },
   );
