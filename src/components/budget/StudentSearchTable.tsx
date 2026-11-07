@@ -1,24 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import styled from 'styled-components';
 
-import useFetch from '../../hooks/useFetch';
+import { memberQueries } from '../../queries/member';
 import A from '../../styles/assets/A';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { TextInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-
-interface searchedMemberInterface {
-  name: string;
-  memberId: number;
-  studentId: string;
-  phoneNumber: string;
-  memberType: string;
-  generation: number;
-  major: string;
-  role: string;
-}
+import { notGraduatedMemberInterface } from '../../types/ibas/TypeMember';
 
 const SearchContainer = styled(FlexDiv)`
   min-width: 0;
@@ -53,7 +44,7 @@ const TableHover = styled(SearchRow)`
 interface StudentSearchTableProps {
   // 선택된 부원의 학번 (해당 행을 강조 표시)
   selectedStudentId?: string | number | null;
-  onSelect: (student: searchedMemberInterface) => void;
+  onSelect: (student: notGraduatedMemberInterface) => void;
 }
 
 // 컴포넌트 재사용 시 placeholder 변수로 받아서 사용
@@ -61,18 +52,13 @@ const StudentSearchTable = ({ selectedStudentId, onSelect }: StudentSearchTableP
   // 상태 변수 선언 및 초기화
   const [searchTerm, setSearchTerm] = useState(''); // 검색어를 관리하는 상태 변수
 
-  const [studentInfoList, fetchStudentInfoList] = useFetch();
-  const [studentInfos, setNotGraduatedStudents] = useState([]);
+  // 옛 화면처럼 응답 전에는 헤더만 있는 빈 표를 그리고, 받은 목록이 비어 있으면 스피너를 그린다
+  const { data: studentInfoList } = useQuery(
+    memberQueries.notGraduatedList({ page: 1, size: 9999 }),
+  );
+  const studentInfos = studentInfoList?.data;
 
-  useEffect(() => {
-    fetchStudentInfoList(`/members/notGraduated?page=${0}&size=${9999}`, 'GET', 'token');
-  }, []);
-
-  useEffect(() => {
-    setNotGraduatedStudents(studentInfoList?.data);
-  }, [studentInfoList]);
-
-  const filteredResults = studentInfos?.filter((item: any) =>
+  const filteredResults = studentInfos?.filter((item) =>
     item?.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
@@ -120,7 +106,7 @@ const StudentSearchTable = ({ selectedStudentId, onSelect }: StudentSearchTableP
                 </SearchRow>
                 <Div width="100%">
                   {/* 검색 결과 테이블 내용 */}
-                  {filteredResults?.map((element: searchedMemberInterface, idx: number) => (
+                  {filteredResults?.map((element, idx) => (
                     <TableHover
                       key={`contentItem${idx}`}
                       width="100%"

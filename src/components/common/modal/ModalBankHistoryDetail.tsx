@@ -1,8 +1,8 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
-import useFetch from '../../../hooks/useFetch';
-import { tokenAccess } from '../../../recoil/backState';
+import { bankHistoryQueries } from '../../../queries/bankHistory';
 import {
   carouselInitialState,
   carouselOpen,
@@ -19,11 +19,14 @@ import Carousel from '../Carousel';
 const ModalBankHistoryDetail = () => {
   const setOpen = useSetRecoilState(modalOpen);
   const modalInfos = useRecoilValue(modalInfo);
-  const accessToken = useRecoilValue(tokenAccess);
   const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
   const setCarouselInitial = useSetRecoilState(carouselInitialState);
 
-  const [data, fetchData] = useFetch();
+  const historyId = modalInfos.content ?? '';
+  const { data } = useQuery({
+    ...bankHistoryQueries.detail({ id: historyId }),
+    enabled: historyId !== '',
+  });
 
   const closeModal = () => {
     setOpen(false);
@@ -35,13 +38,10 @@ const ModalBankHistoryDetail = () => {
   };
 
   useEffect(() => {
-    if (modalInfos?.content) {
-      fetchData(`/budget/history/${modalInfos.content}`, 'GET', 'token');
-    }
     return () => {
       setIsCarouselOpen(false);
     };
-  }, [accessToken, modalInfos]);
+  }, [modalInfos]);
 
   return !data ? (
     <FlexDiv width="600px" height="100%">

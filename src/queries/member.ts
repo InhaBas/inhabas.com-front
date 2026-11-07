@@ -1,6 +1,12 @@
 import { queryOptions } from '@tanstack/react-query';
 
-import { getChiefContact, getExecutiveList, getHallOfFameList } from '../api/member';
+import {
+  getChiefContact,
+  getExecutiveList,
+  getHallOfFameList,
+  getNotGraduatedMemberList,
+  NotGraduatedMemberListParams,
+} from '../api/member';
 
 export const memberQueries = {
   all: () => ['members'] as const,
@@ -19,5 +25,10 @@ export const memberQueries = {
     queryOptions({
       queryKey: [...memberQueries.all(), 'chief'],
       queryFn: getChiefContact,
+    }),
+  notGraduatedList: (params: NotGraduatedMemberListParams) =>
+    queryOptions({
+      queryKey: [...memberQueries.all(), 'notGraduated', params],
+      queryFn: () => getNotGraduatedMemberList(params),
     }),
 };

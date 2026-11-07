@@ -28,3 +28,15 @@ export interface majorInterface {
 export interface signUpCheckInterface {
   check: boolean;
 }
+
+// 백엔드 ApprovedMemberManagementDto (GET /members/notGraduated의 한 줄)
+export interface notGraduatedMemberInterface {
+  name: string;
+  memberId: number;
+  studentId: string;
+  phoneNumber: string;
+  memberType: string;
+  generation: number;
+  major: string;
+  role: string;
+}
