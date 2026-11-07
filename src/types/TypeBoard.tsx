@@ -54,3 +54,34 @@ export interface boardDetailInterface {
   isPinned?: boolean;
   dateHistory?: string;
 }
+
+// 백엔드 ContestBoardDetailDto
+export interface contestDetailInterface {
+  id: number;
+  contestFieldId: number;
+  title: string;
+  content: string;
+  writerId: number;
+  writerName: string;
+  association: string;
+  topic: string;
+  thumbnail: fileDownloadInterface;
+  images: fileDownloadInterface[];
+  otherFiles: fileDownloadInterface[];
+  dateContestStart: string;
+  dateContestEnd: string;
+  dateCreated: string;
+  dateUpdated: string;
+}
+
+// 백엔드 SaveContestBoardDto
+export interface saveContestInterface {
+  contestFieldId: string | null; // 옛 화면 그대로 '1'(빅데이터)·'2'(IT)를 문자열로 보낸다
+  title: string;
+  topic: string;
+  association: string;
+  dateContestStart: string; // yyyy-MM-ddT00:00:00
+  dateContestEnd: string; // yyyy-MM-ddT23:59:59
+  content: string;
+  files: string[]; // 업로드한 파일 id. 1개 이상
+}

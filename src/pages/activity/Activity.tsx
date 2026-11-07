@@ -1,20 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import ActivityCard from '../../components/activity/ActivityCard';
 import Loading from '../../components/common/Loading';
 import Pagination from '../../components/common/Pagination';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
-import useFetch from '../../hooks/useFetch';
-import { totalPageInfo } from '../../recoil/backState';
+import { clubQueries } from '../../queries/club';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
 import { media } from '../../styles/theme';
-import { ActivityInterface } from '../../types/ibas/TypeIBAS';
 
 const ActivityGrid = styled.div`
   width: 70%;
@@ -66,34 +64,16 @@ const ActivityFooter = styled(FlexDiv)`
 
 const Activity = () => {
   const navigate = useNavigate();
-  const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
-  const [activityListData, fetchActivityListData] = useFetch();
-  const [detail, setDetail] = useState<ActivityInterface[] | null>(null);
+  const [page, setPage] = useState(1);
+  const { data } = useQuery(clubQueries.activityList({ page, size: 6 }));
+  const detail = data?.data;
   const { isAuthorizedOverSecretary } = GetRoleAuthorization();
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setIsLoading(true);
-    fetchActivityListData('/club/activities?page=0&size=6', 'GET', 'token');
-  }, []);
-
-  useEffect(() => {
-    if (activityListData) {
-      setDetail(activityListData.data);
-      setTotalPage(activityListData.pageInfo.totalPages);
-      setIsLoading(false);
-    }
-    return () => {
-      setDetail(null);
-      setTotalPage(0);
-    };
-  }, [activityListData]);
 
   const moveCreate = () => navigate('/activity/create');
 
   return (
     <>
-      {isLoading ? (
+      {!data ? (
         <FlexDiv width="100%" height="100vh">
           <Loading />
         </FlexDiv>
@@ -164,10 +144,9 @@ const Activity = () => {
           </ActivityGrid>
           <ActivityFooter $margin="0 0 50px 0">
             <Pagination
-              totalPage={totalPage}
-              fetchUrl="/club/activities"
-              paginationFetch={fetchActivityListData}
-              size={6}
+              currentPage={page}
+              totalPage={data.pageInfo.totalPages}
+              onPageChange={setPage}
             />
           </ActivityFooter>
           {isAuthorizedOverSecretary && (

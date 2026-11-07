@@ -1,5 +1,6 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
@@ -10,7 +11,7 @@ import CommentList from '../../components/common/CommentList';
 import Loading from '../../components/common/Loading';
 import TextViewer from '../../components/common/TextViewer';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
-import useFetch from '../../hooks/useFetch';
+import { clubActivityMutations, clubQueries } from '../../queries/club';
 import { tokenAccess } from '../../recoil/backState';
 import { carouselInitialState, carouselOpen } from '../../recoil/frontState';
 import A from '../../styles/assets/A';
@@ -20,7 +21,6 @@ import { H2 } from '../../styles/assets/H';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-import { ActivityDetailInterface } from '../../types/ibas/TypeIBAS';
 import { tokenInterface } from '../../types/TypeCommon';
 
 const DetailMeta = styled(FlexDiv)`
@@ -106,15 +106,14 @@ const ActivityDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const boardId = location.pathname.split('/')[3];
-  const [detail, setDetail] = useState<ActivityDetailInterface | null>(null);
-  const [detailData, detailDataFetch] = useFetch();
+  // 옛 화면 그대로 토큰 없이 조회한다
+  const { data: detail } = useQuery(clubQueries.activityDetail({ id: boardId, auth: false }));
+  const deleteMutation = useMutation(clubActivityMutations.delete());
   const menuId = 2;
   const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
   const setCarouselInitial = useSetRecoilState(carouselInitialState);
-  const [deleteData, deleteDataFetch] = useFetch();
   const access = useRecoilValue(tokenAccess);
   const { isAuthorizedOverVice, isAuthorizedOverDeactivate } = GetRoleAuthorization();
-  const [isLoading, setIsLoading] = useState(true);
 
   const onClickFileLink = useCallback((srcUrl: string, name: string) => {
     fetch(srcUrl, { method: 'GET' })
@@ -148,39 +147,29 @@ const ActivityDetail = () => {
     setIsCarouselOpen(true);
   };
 
+  // 상세 화면을 떠나면 이미지 크게 보기를 닫는다
   useEffect(() => {
-    detailDataFetch(`/club/activity/${boardId}`, 'GET');
-    setIsLoading(true);
+    return () => setIsCarouselOpen(false);
   }, []);
 
-  useEffect(() => {
-    if (detailData) {
-      setDetail(detailData);
-      setIsLoading(false);
-    }
-    return () => {
-      setDetail(null);
-      setIsCarouselOpen(false);
-    };
-  }, [detailData]);
-
   const deleteDetail = () => {
+    if (deleteMutation.isPending) return;
     if (window.confirm('정말 삭제 하시겠습니까?')) {
-      deleteDataFetch(`/club/activity/${boardId}`, 'DELETE', 'token');
+      deleteMutation.mutate(
+        { id: boardId },
+        {
+          onSuccess: () => {
+            alert('게시글이 삭제 되었습니다');
+            navigate(`/activity`);
+          },
+        },
+      );
     }
   };
 
-  useEffect(() => {
-    if (deleteData) {
-      alert('게시글이 삭제 되었습니다');
-      navigate(`/activity`);
-    }
-    return () => setDetail(null);
-  }, [deleteData]);
-
   return (
     <>
-      {isLoading ? (
+      {!detail ? (
         <FlexDiv width="100%" height="100vh">
           <Loading />
         </FlexDiv>
@@ -313,6 +302,7 @@ const ActivityDetail = () => {
                     $HBackgroundColor="red"
                     $padding="12px 15px"
                     $borderRadius={30}
+                    disabled={deleteMutation.isPending}
                     onClick={deleteDetail}
                   >
                     <Div width="12px" $margin="0 10px 0 0">

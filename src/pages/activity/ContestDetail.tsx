@@ -1,16 +1,18 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import { ContestType } from '../../api/contest';
 import Carousel from '../../components/common/Carousel';
 import CommentInput from '../../components/common/CommentInput';
 import CommentList from '../../components/common/CommentList';
 import Loading from '../../components/common/Loading';
 import TextViewer from '../../components/common/TextViewer';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
-import useFetch from '../../hooks/useFetch';
+import { contestMutations, contestQueries } from '../../queries/contest';
 import { tokenAccess } from '../../recoil/backState';
 import { carouselInitialState, carouselOpen } from '../../recoil/frontState';
 import A from '../../styles/assets/A';
@@ -145,51 +147,22 @@ const DetailActions = styled(FlexDiv)`
   }
 `;
 
-interface ContestDetailType {
-  id: number;
-  contestFieldId: number;
-  title: string;
-  content: string;
-  writerName: string;
-  writerId: number;
-  association: string;
-  topic: string;
-  thumbnail: {
-    id: string;
-    name: string;
-    url: string;
-    size: number;
-    type: string;
-  };
-  images: {
-    id: string;
-    name: string;
-    url: string;
-    size: number;
-    type: string;
-  }[];
-  otherFiles: any[]; // 이 부분은 다른 파일의 구조를 알 수 없으므로 any로 지정했습니다.
-  dateContestStart: string;
-  dateContestEnd: string;
-  dateCreated: string;
-  dateUpdated: string;
-}
-
 const ContestDetail = () => {
   const location = useLocation();
-  const url = location.pathname.split('/')[2];
+  // 라우트가 /board/contest/... 와 /board/activity/... 둘뿐이다
+  const url = location.pathname.split('/')[2] as ContestType;
   const boardId = location.pathname.split('/')[4];
-  const [detailData, detailDataFetch] = useFetch();
-  const [detail, setDetail] = useState<ContestDetailType | null>(null);
+  // 옛 화면 그대로 토큰 없이 조회한다
+  const { data: detail } = useQuery(
+    contestQueries.detail({ contestType: url, id: boardId, auth: false }),
+  );
+  const deleteMutation = useMutation(contestMutations.delete());
   const menuId = url === 'contest' ? 18 : 19;
   const access = useRecoilValue(tokenAccess);
-  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   const [isCarouselOpen, setIsCarouselOpen] = useRecoilState(carouselOpen);
   const setCarouselInitial = useSetRecoilState(carouselInitialState);
-
-  const [deleteData, deleteDataFetch] = useFetch();
 
   const { isAuthorizedOverVice, isAuthorizedOverDeactivate } = GetRoleAuthorization();
 
@@ -201,9 +174,17 @@ const ContestDetail = () => {
   const userId = decoded?.memberId;
 
   const deleteDetail = () => {
+    if (deleteMutation.isPending) return;
     if (window.confirm('정말 삭제 하시겠습니까?')) {
-      deleteDataFetch(`/contest/${url}/${boardId}`, 'DELETE', 'token');
-      setIsLoading(true);
+      deleteMutation.mutate(
+        { contestType: url, id: boardId },
+        {
+          onSuccess: () => {
+            alert('게시글이 삭제 되었습니다');
+            navigate(`/board/${url}`);
+          },
+        },
+      );
     }
   };
 
@@ -232,34 +213,14 @@ const ContestDetail = () => {
       });
   }, []);
 
+  // 상세 화면을 떠나면 이미지 크게 보기를 닫는다
   useEffect(() => {
-    setIsLoading(true);
-    detailDataFetch(`/contest/${url}/${boardId}`, 'GET');
-  }, [url]);
-
-  useEffect(() => {
-    if (detailData) {
-      setDetail(detailData);
-      setIsLoading(false);
-    }
-    return () => {
-      setDetail(null);
-      setIsCarouselOpen(false);
-    };
-  }, [detailData]);
-
-  useEffect(() => {
-    if (deleteData) {
-      alert('게시글이 삭제 되었습니다');
-      setIsLoading(false);
-      navigate(`/board/${url}`);
-    }
-    return () => setDetail(null);
-  }, [deleteData]);
+    return () => setIsCarouselOpen(false);
+  }, []);
 
   return (
     <>
-      {isLoading ? (
+      {!detail ? (
         <FlexDiv width="100%" height="100vh">
           <Loading />
         </FlexDiv>
@@ -437,6 +398,7 @@ const ContestDetail = () => {
                 $padding="12px 15px"
                 $borderRadius={30}
                 $HBackgroundColor="red"
+                disabled={deleteMutation.isPending}
                 onClick={() => deleteDetail()}
               >
                 <Div width="12px" $margin="0 10px 0 0">
