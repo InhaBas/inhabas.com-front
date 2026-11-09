@@ -95,6 +95,19 @@ const InfoRow = styled(FlexDiv)`
   }
 `;
 
+const InfoNotice = styled(FlexDiv)`
+  min-width: 0;
+
+  p {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  ${media.mobile} {
+    align-items: flex-start;
+  }
+`;
+
 const MyInfoContainer = () => {
   const widthList = [150, 500, 150];
   const navigate = useNavigate();
@@ -344,21 +357,38 @@ const MyInfoContainer = () => {
             </InfoRow>
           </InfoTable>
 
-          <Button
-            type="button"
-            $backgroundColor="grey3"
-            $HBackgroundColor="grey2"
-            width="110px"
-            height="35px"
-            $margin="16px 0 0 auto"
-            $padding="10px"
-            $borderRadius={5}
-            onClick={openWithdrawModal}
-          >
-            <P color="wh" fontSize="sm" fontWeight={300} $center>
-              회원 탈퇴
-            </P>
-          </Button>
+          {info?.role === 'CHIEF' ||
+          info?.role === 'VICE_CHIEF' ||
+          info?.role === 'EXECUTIVES' ||
+          info?.role === 'SECRETARY' ? (
+            <InfoNotice width="100%" $margin="30px 0 0 0">
+              <FlexDiv width="20px" height="20px" $margin="0 10px 0 0">
+                <Img src="/images/check_grey.svg" />
+              </FlexDiv>
+              <FlexDiv>
+                <P color="grey3" fontSize="sm">
+                  회장단의 경우 권한이 이양되기 전까지 회원탈퇴를 할 수 없습니다. 회장에게 권한
+                  이양을 요청하세요
+                </P>
+              </FlexDiv>
+            </InfoNotice>
+          ) : (
+            <Button
+              type="button"
+              $backgroundColor="grey3"
+              $HBackgroundColor="grey2"
+              width="110px"
+              height="35px"
+              $margin="16px 0 0 auto"
+              $padding="10px"
+              $borderRadius={5}
+              onClick={openWithdrawModal}
+            >
+              <P color="wh" fontSize="sm" fontWeight={300} $center>
+                회원 탈퇴
+              </P>
+            </Button>
+          )}
         </InfoContent>
       </Div>
     </>
