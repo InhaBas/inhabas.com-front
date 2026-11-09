@@ -49,30 +49,12 @@ export interface pagedResponseInterface<T> {
   data: T[];
 }
 
-// 옛 방식: Pagination이 페이지를 들고 있다가 paginationFetch로 직접 요청한다.
-// 회원 관리 표 PR에서 이 경로를 지운다
-export interface legacyPaginationPropsInterface {
-  totalPage: number;
-  fetchUrl: string;
-  search?: string;
-  size?: number;
-  token?: boolean;
-  paginationFetch: any;
-  currentPage?: never;
-  onPageChange?: never;
-}
-
-// 새 방식: 조회를 모르는 순수 UI. page의 주인은 부모다
-export interface controlledPaginationPropsInterface {
+// 조회를 모르는 순수 UI. page의 주인은 부모다
+export interface paginationPropsInterface {
   currentPage: number;
   totalPage: number;
   onPageChange: (page: number) => void;
-  fetchUrl?: never;
-  paginationFetch?: never;
 }
-
-export type paginationPropsInterface =
-  legacyPaginationPropsInterface | controlledPaginationPropsInterface;
 
 // file
 // 백엔드 FileDownloadDto (파일 업로드 응답, 게시글 상세의 images·otherFiles)
