@@ -1,18 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 import Loading from '../../components/common/Loading';
 import TextEditor from '../../components/common/TextEditor';
-import useFetch from '../../hooks/useFetch';
-import { totalPolicyInfo } from '../../recoil/backState';
+import { policyMutations, policyQueries } from '../../queries/policy';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { TextInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-import { policyInterface } from '../../types/TypeCommon';
 
 const RuleContent = styled(Div)`
   box-sizing: border-box;
@@ -30,14 +28,16 @@ const RuleContent = styled(Div)`
 const MyStaffRuleContainer = () => {
   const editorRef = useRef<any[]>([]);
   const editorTitleRef = useRef<any[]>([]);
+  const appliedPolicies = useRef<unknown[]>([]);
 
-  const [policyData1, policyFetchData1] = useFetch();
-  const [policyData2, policyFetchData2] = useFetch();
-  const [policyData3, policyFetchData3] = useFetch();
-  const [policy, setPolicy] = useRecoilState(totalPolicyInfo);
-  const [putPolicyData, fetchPutPolicyData] = useFetch();
-  const [alertMessage, setAlertMessage] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: policy1 } = useQuery(policyQueries.detail({ id: '1' }));
+  const { data: policy2 } = useQuery(policyQueries.detail({ id: '2' }));
+  const { data: policy3 } = useQuery(policyQueries.detail({ id: '3' }));
+  const policies = useMemo(
+    () => (policy1 && policy2 && policy3 ? [policy1, policy2, policy3] : null),
+    [policy1, policy2, policy3],
+  );
+  const updateMutation = useMutation(policyMutations.update());
 
   const changeRule = (idx: number) => {
     let inputData = {
@@ -45,58 +45,36 @@ const MyStaffRuleContainer = () => {
       content: editorRef.current[idx - 1].getInstance().getMarkdown(),
     };
 
-    fetchPutPolicyData(`/policy/${idx}`, 'PUT', 'token', inputData);
-    setAlertMessage(true);
+    updateMutation.mutate(
+      { id: String(idx), body: inputData },
+      {
+        onSuccess: () => {
+          alert('정상적으로 적용되었습니다.');
+        },
+      },
+    );
   };
 
-  // 정책 api 불러오기
-  // api 바뀌면 다시 조정
+  /*
+    조회 결과를 에디터 초기값으로 넣는다. 수정 뒤 재조회가 끝나면 옛 화면처럼 3개 모두 새 값으로 덮어쓴다.
+    재조회는 회칙마다 따로 끝난다. 새로 받은 회칙만 넣어야 방금 저장한 에디터가 아직 옛 값인 캐시로 돌아가지 않는다
+  */
   useEffect(() => {
-    setIsLoading(true);
-    policyFetchData1('/policy/1', 'GET');
-    setAlertMessage(false);
-  }, [putPolicyData]);
-  useEffect(() => {
-    setIsLoading(true);
-    policyFetchData2('/policy/2', 'GET');
-    setAlertMessage(false);
-  }, [putPolicyData]);
-  useEffect(() => {
-    setIsLoading(true);
-    policyFetchData3('/policy/3', 'GET');
-    setAlertMessage(false);
-  }, [putPolicyData]);
-
-  useEffect(() => {
-    setPolicy([policyData1, policyData2, policyData3]);
-  }, [policyData1, policyData2, policyData3]);
-
-  useEffect(() => {
-    if (policy && policy.length > 0) {
-      policy.forEach((item: policyInterface, idx: number) => {
-        if (editorRef.current[idx]) {
-          editorRef.current[idx].getInstance().setMarkdown(item?.content);
-        }
-      });
-      setIsLoading(false);
-    }
-  }, [policy]);
-
-  useEffect(() => {
-    if (alertMessage) {
-      alert('정상적으로 적용되었습니다.');
-    }
-  }, [alertMessage]);
+    policies?.forEach((item, idx) => {
+      if (appliedPolicies.current[idx] === item) return;
+      appliedPolicies.current[idx] = item;
+      editorRef.current[idx]?.getInstance().setMarkdown(item.content);
+    });
+  }, [policies]);
 
   return (
     <>
-      {isLoading ? (
+      {!policies ? (
         <FlexDiv width="100%" height="30vh">
           <Loading />
         </FlexDiv>
       ) : (
-        policy &&
-        policy.map((item: policyInterface, idx: number) => (
+        policies.map((item, idx) => (
           <Div
             width="100%"
             $border="1px solid"
@@ -116,13 +94,13 @@ const MyStaffRuleContainer = () => {
                   <Img src="/images/user_purple.svg" />
                 </FlexDiv>
                 <Div>
-                  <P fontWeight={600}>{item?.title} 설정</P>
+                  <P fontWeight={600}>{item.title} 설정</P>
                 </Div>
               </FlexDiv>
             </FlexDiv>
             <RuleContent width="100%" $padding="50px">
               <TextInput
-                defaultValue={item?.title}
+                defaultValue={item.title}
                 placeholder="정책 제목을 입력해주세요"
                 width="100%"
                 height="55px"
@@ -142,6 +120,7 @@ const MyStaffRuleContainer = () => {
                   $padding="10px 15px"
                   $borderRadius={3}
                   $margin="30px 0 0 0"
+                  disabled={updateMutation.isPending}
                   onClick={() => changeRule(idx + 1)}
                 >
                   <FlexDiv>

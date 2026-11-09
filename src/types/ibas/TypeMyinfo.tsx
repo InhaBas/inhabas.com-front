@@ -36,20 +36,21 @@ export interface changeNameUserInterface {
 }
 
 // new user application
-export interface applicationInterface {
-  name: string;
-  grade: number;
-  major: string;
-  studentId?: string;
-  email: string;
-  phoneNumber: string;
-  dateJoined: string;
-}
-
 export interface applicationAnswersInterface {
   questionId: number;
   question: string;
   answer: string;
+}
+
+export interface applicationInterface {
+  name: string;
+  grade: number;
+  major: string;
+  studentId: string;
+  email: string;
+  phoneNumber: string;
+  dateJoined: string;
+  answers: applicationAnswersInterface[];
 }
 
 // staff/manage
@@ -57,8 +58,8 @@ export interface scheduleInterface {
   generation: number;
   signupStartDate: string;
   signupEndDate: string;
-  interviewStartDate: string;
-  interviewEndDate: string;
+  interviewStartDate: string | null;
+  interviewEndDate: string | null;
   resultAnnounceDate: string;
 }
 

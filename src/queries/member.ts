@@ -8,6 +8,7 @@ import {
   getExecutiveList,
   getGraduatedMemberList,
   getHallOfFameList,
+  getMemberApplication,
   getNotGraduatedMemberList,
   getUnapprovedMemberList,
   MemberListParams,
@@ -60,6 +61,11 @@ export const memberQueries = {
       queryKey: [...memberQueries.lists('unapproved'), params],
       queryFn: () => getUnapprovedMemberList(params),
       placeholderData: keepPreviousPage(params),
+    }),
+  application: (params: { id: string }) =>
+    queryOptions({
+      queryKey: [...memberQueries.all(), 'application', params],
+      queryFn: () => getMemberApplication(params.id),
     }),
 };
 

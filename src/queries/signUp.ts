@@ -9,8 +9,11 @@ import {
   getSignUpCheck,
   getSignUpProfile,
   getSignUpQuestionnaires,
+  getSignUpSchedule,
+  updateSignUpSchedule,
 } from '../api/signUp';
 import { answersInterface, signUpInterface } from '../types/ibas/TypeMember';
+import { scheduleInterface } from '../types/ibas/TypeMyinfo';
 
 export const signUpQueries = {
   all: () => ['signUp'] as const,
@@ -41,6 +44,17 @@ export const signUpQueries = {
       queryKey: [...signUpQueries.all(), 'answers'],
       queryFn: getSignUpAnswers,
     }),
+  schedule: () =>
+    queryOptions({
+      queryKey: [...signUpQueries.all(), 'schedule'],
+      queryFn: getSignUpSchedule,
+    }),
+  // 메인의 모집 일정 공지. 조회에 실패하면 alert 없이 공지만 띄우지 않던 동작을 보존한다
+  scheduleNotice: () =>
+    queryOptions({
+      queryKey: [...signUpQueries.all(), 'schedule', 'notice'],
+      queryFn: () => getSignUpSchedule().catch(() => null),
+    }),
 };
 
 /*
@@ -48,6 +62,7 @@ export const signUpQueries = {
   - 개인정보 저장: 학생은 질문 화면으로 이동하고, 교수는 가입이 끝나 홈에서 reload(relogin)한다
   - 답변 임시저장: 입력칸에 이미 사용자가 쓴 값이 있다
   - 가입 완료: 홈에서 reload(relogin)하므로 캐시가 모두 사라진다
+  - 일정 저장: 입력칸에 이미 사용자가 쓴 값이 있고, 옛 화면은 다시 들어와야 새 기수를 보여 줬다
 */
 export const signUpMutations = {
   createProfile: () =>
@@ -61,5 +76,9 @@ export const signUpMutations = {
   complete: () =>
     mutationOptions({
       mutationFn: (body: answersInterface[]) => completeSignUp(body),
+    }),
+  updateSchedule: () =>
+    mutationOptions({
+      mutationFn: (body: scheduleInterface) => updateSignUpSchedule(body),
     }),
 };

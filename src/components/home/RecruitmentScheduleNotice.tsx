@@ -1,6 +1,8 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import { signUpQueries } from '../../queries/signUp';
 import { media, theme } from '../../styles/theme';
 import { scheduleInterface } from '../../types/ibas/TypeMyinfo';
 
@@ -107,7 +109,7 @@ const isRecruitmentSchedule = (data: unknown): data is RecruitmentSchedule => {
   return typeof schedule.signupStartDate === 'string' && typeof schedule.signupEndDate === 'string';
 };
 
-const isRecruitmentPeriod = (schedule: RecruitmentSchedule, now = new Date()) => {
+const isRecruitmentPeriod = (schedule: RecruitmentSchedule, now: Date) => {
   const signupStartDate = new Date(schedule.signupStartDate);
   const signupEndDate = new Date(schedule.signupEndDate);
 
@@ -155,40 +157,16 @@ const dismissUntilTomorrow = (now: Date) => {
 };
 
 const RecruitmentScheduleNotice = () => {
-  const [schedule, setSchedule] = useState<RecruitmentSchedule | null>(null);
   const [isClosed, setIsClosed] = useState(false);
   const [currentTime, setCurrentTime] = useState(() => new Date());
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchSchedule = async () => {
-      if (isDismissedForToday(currentTime)) {
-        return;
-      }
-
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/signUp/schedule`);
-
-        if (!response.ok) {
-          return;
-        }
-
-        const data: unknown = await response.json();
-        if (isMounted && isRecruitmentSchedule(data) && isRecruitmentPeriod(data)) {
-          setSchedule(data);
-        }
-      } catch {
-        // 일정 조회에 실패하면 메인 화면에는 별도 안내를 표시하지 않는다.
-      }
-    };
-
-    fetchSchedule();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [currentTime]);
+  const { data } = useQuery({
+    ...signUpQueries.scheduleNotice(),
+    // '오늘 하루 다시 보지 않기'를 고른 날에는 일정을 요청하지 않던 동작을 보존한다
+    enabled: !isDismissedForToday(currentTime),
+  });
+  const schedule =
+    isRecruitmentSchedule(data) && isRecruitmentPeriod(data, currentTime) ? data : null;
 
   useEffect(() => {
     if (!schedule) {
@@ -205,7 +183,7 @@ const RecruitmentScheduleNotice = () => {
     return () => window.clearTimeout(timeout);
   }, [schedule, currentTime]);
 
-  if (!schedule || isClosed || !isRecruitmentPeriod(schedule, currentTime)) {
+  if (!schedule || isClosed) {
     return null;
   }
 

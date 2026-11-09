@@ -1,22 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import Loading from '../../components/common/Loading';
 import { DateFunction } from '../../functions/dateFunction';
-import useFetch from '../../hooks/useFetch';
-import {
-  applicationAnswerInfo,
-  applicationInfo,
-  headerTitleInfo,
-  tokenAccess,
-} from '../../recoil/backState';
+import { memberMutations, memberQueries } from '../../queries/member';
+import { headerTitleInfo } from '../../recoil/backState';
 import Button from '../../styles/assets/Button';
 import { Container, Div, FlexDiv } from '../../styles/assets/Div';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-import { applicationAnswersInterface } from '../../types/ibas/TypeMyinfo';
 
 const PassBtn = styled(Button)`
   color: ${theme.color.blue};
@@ -70,66 +65,45 @@ const ApplicationActions = styled(FlexDiv)`
 
 const MyApplication = () => {
   const navigate = useNavigate();
-  const memberId = useParams().id;
+  const memberId = useParams().id as string;
 
   const { formatDateMinute } = DateFunction();
 
-  const access = useRecoilValue(tokenAccess);
-  const [applicationData, fetchApplicationData] = useFetch();
-  const [application, setApplication] = useRecoilState(applicationInfo);
-  const [answer, setAnswer] = useRecoilState(applicationAnswerInfo);
+  const { data: application } = useQuery(memberQueries.application({ id: memberId }));
   const setTitle = useSetRecoilState(headerTitleInfo);
-  const [, fetchPassFailData] = useFetch();
-  const [isLoading, setIsLoading] = useState(true);
+  const passFailMutation = useMutation(memberMutations.updateUnapproved());
 
   // pass/fail Fetch
   const passFail = (passFailValue: string) => {
     let passFailSend = {
-      memberIdList: [memberId],
+      memberIdList: [Number(memberId)],
       state: passFailValue,
     };
 
-    fetchPassFailData('/members/unapproved', 'PUT', 'token', passFailSend);
-    navigate('/staff/member');
+    passFailMutation.mutate(passFailSend, {
+      onSuccess: () => {
+        navigate('/staff/member');
+      },
+    });
   };
 
   useEffect(() => {
-    setIsLoading(true);
-    fetchApplicationData(`/members/${memberId}/application`, 'GET', 'token');
-  }, [access]);
-
-  useEffect(() => {
-    if (applicationData) {
-      const contents = {
-        name: applicationData.name,
-        grade: applicationData.grade,
-        studentId: applicationData.studentId,
-        major: applicationData.major,
-        email: applicationData.email,
-        phoneNumber: applicationData.phoneNumber,
-        dateJoined: formatDateMinute({ date: applicationData.dateJoined }),
-      };
-
-      setApplication(contents);
-
-      setAnswer(applicationData.answers);
-
+    if (application) {
       setTitle({
-        name: `${applicationData.name}님의 지원서`,
+        name: `${application.name}님의 지원서`,
         description: '',
       });
-      setIsLoading(false);
     }
     return () =>
       setTitle({
         name: '',
         description: '',
       });
-  }, [access, applicationData]);
+  }, [application]);
 
   return (
     <>
-      {isLoading ? (
+      {!application ? (
         <FlexDiv width="100%" height="100vh">
           <Loading />
         </FlexDiv>
@@ -154,7 +128,7 @@ const MyApplication = () => {
                 </Div>
               </FlexDiv>
               <Div $padding="20px">
-                <P $lineHeight={1.5}>{application?.name}</P>
+                <P $lineHeight={1.5}>{application.name}</P>
               </Div>
             </Div>
             <Div
@@ -175,7 +149,7 @@ const MyApplication = () => {
                 </Div>
               </FlexDiv>
               <Div $padding="20px">
-                <P $lineHeight={1.5}>{application?.dateJoined}</P>
+                <P $lineHeight={1.5}>{formatDateMinute({ date: application.dateJoined })}</P>
               </Div>
             </Div>
             <Div
@@ -196,7 +170,7 @@ const MyApplication = () => {
                 </Div>
               </FlexDiv>
               <Div $padding="20px">
-                <P $lineHeight={1.5}>{application?.grade}</P>
+                <P $lineHeight={1.5}>{application.grade}</P>
               </Div>
             </Div>
             <Div
@@ -217,7 +191,7 @@ const MyApplication = () => {
                 </Div>
               </FlexDiv>
               <Div $padding="20px">
-                <P $lineHeight={1.5}>{application?.studentId}</P>
+                <P $lineHeight={1.5}>{application.studentId}</P>
               </Div>
             </Div>
             <Div
@@ -238,7 +212,7 @@ const MyApplication = () => {
                 </Div>
               </FlexDiv>
               <Div $padding="20px">
-                <P $lineHeight={1.5}>{application?.major}</P>
+                <P $lineHeight={1.5}>{application.major}</P>
               </Div>
             </Div>
             <Div
@@ -259,7 +233,7 @@ const MyApplication = () => {
                 </Div>
               </FlexDiv>
               <Div $padding="20px">
-                <P $lineHeight={1.5}>{application?.email}</P>
+                <P $lineHeight={1.5}>{application.email}</P>
               </Div>
             </Div>
             <Div
@@ -280,10 +254,10 @@ const MyApplication = () => {
                 </Div>
               </FlexDiv>
               <Div $padding="20px">
-                <P $lineHeight={1.5}>{application?.phoneNumber}</P>
+                <P $lineHeight={1.5}>{application.phoneNumber}</P>
               </Div>
             </Div>
-            {answer?.map((element: applicationAnswersInterface) => (
+            {application.answers.map((element) => (
               <Div
                 key={element.questionId}
                 width="100%"
@@ -316,6 +290,7 @@ const MyApplication = () => {
               $padding="12px 24px"
               $borderRadius={6}
               border={`1px solid ${theme.color.blue}`}
+              disabled={passFailMutation.isPending}
               onClick={() => passFail('pass')}
             >
               합격
@@ -326,6 +301,7 @@ const MyApplication = () => {
               $padding="12px 24px"
               $borderRadius={6}
               border={`1px solid ${theme.color.red}`}
+              disabled={passFailMutation.isPending}
               onClick={() => passFail('fail')}
             >
               불합격
