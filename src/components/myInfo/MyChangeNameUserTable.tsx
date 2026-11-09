@@ -1,11 +1,11 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { GetRoleAuthorization } from '../../functions/authFunctions';
 import { ConvertLabel } from '../../functions/convertLabelFunctions';
-import useFetch from '../../hooks/useFetch';
-import { changeNameTotalPageInfo, changeNameUserInfo, tokenAccess } from '../../recoil/backState';
+import { myInfoMutations, myInfoQueries } from '../../queries/myInfo';
 import { checkOne } from '../../recoil/frontState';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
@@ -13,7 +13,6 @@ import Img from '../../styles/assets/Img';
 import { Checkbox } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-import { changeNameUserInterface } from '../../types/ibas/TypeMyinfo';
 import Dropdown from '../common/Dropdown';
 import Loading from '../common/Loading';
 import Pagination from '../common/Pagination';
@@ -55,15 +54,30 @@ const MyChangeNameUserTable = () => {
   const widthList = [50, 100, 150, 200, 200, 200, 100];
   const headerInfo = ['', '이름', '학번', '학과', '변경 전 이름', '변경 후 이름', '현황'];
 
-  const [user, fetchUser] = useFetch();
-  const [userList, setUserList] = useRecoilState(changeNameUserInfo);
-  const [totalPage, setTotalPage] = useRecoilState(changeNameTotalPageInfo);
-
   const [check, setCheck] = useRecoilState(checkOne);
   const [value, setValue] = useState('');
-  const [nameChangeData, fetchNameChangeData] = useFetch();
-  const access = useRecoilValue(tokenAccess);
-  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const { data: user, isFetching } = useQuery(myInfoQueries.nameRequestList({ page, size: 10 }));
+  const acceptMutation = useMutation(myInfoMutations.handleNameRequest());
+  // 다시 받는 동안에도 막는다. 옛 화면은 이때 본문을 스피너로 가렸고, 막지 않으면 이전 체크로 한 번 더 보낼 수 있다
+  const isChanging = acceptMutation.isPending || isFetching;
+
+  const userList =
+    user?.data.map((item, idx) => ({
+      id: item.id,
+      idxNum: idx + 1,
+      name: item.beforeName,
+      studentId: item.studentId,
+      major: item.major,
+      beforeName: item.beforeName,
+      afterName: item.afterName,
+      status: convertStatusLabel(item.status),
+    })) ?? [];
+
+  // 옛 화면처럼 새 응답을 받을 때마다 체크를 지운다
+  useEffect(() => {
+    setCheck(0);
+  }, [user, setCheck]);
 
   // 단일 체크박스 클릭시 checkedList update
   const checkClickEvent = (e: React.ChangeEvent<HTMLInputElement>, memberId: number) => {
@@ -79,50 +93,17 @@ const MyChangeNameUserTable = () => {
     setValue(value);
   };
 
-  // change Name fetch
-  const acceptName = async () => {
+  // 이름 변경 승인·거절. 성공하면 옛 화면처럼 1페이지로 돌아간다
+  const acceptName = () => {
+    if (isChanging) return;
     if (value !== '') {
-      setIsLoading(true);
-      const acceptSend = {
-        id: check,
-        status: value,
-      };
-      await fetchNameChangeData('/myInfo/request', 'PUT', 'token', acceptSend);
-
-      await fetchUser('/myInfo/requests', 'GET', 'token');
+      acceptMutation.mutate({ id: check, status: value }, { onSuccess: () => setPage(1) });
     }
   };
 
-  // 이름 변경 요청한 동아리원 현황 조회 fetch,
-  useEffect(() => {
-    setIsLoading(true);
-    fetchUser('/myInfo/requests', 'GET', 'token');
-  }, [access, nameChangeData]);
-
-  // fetch된 data로 동아리원 List 만들 data 가공
-  useEffect(() => {
-    if (user) {
-      const contents = user.data.map((item: changeNameUserInterface, idx: number) => ({
-        id: item.id,
-        idxNum: idx + 1,
-        name: item.beforeName,
-        studentId: item.studentId,
-        major: item.major,
-        beforeName: item.beforeName,
-        afterName: item.afterName,
-        status: convertStatusLabel(item.status),
-      }));
-
-      setTotalPage(user.pageInfo.totalPages);
-      setUserList(contents);
-      setCheck(0);
-      setIsLoading(false);
-    }
-  }, [user, access]);
-
   return (
     <>
-      {isLoading ? (
+      {!user ? (
         <FlexDiv width="100%" height="30vh">
           <Loading />
         </FlexDiv>
@@ -145,6 +126,7 @@ const MyChangeNameUserTable = () => {
                 $borderRadius={3}
                 $padding="6px 12px"
                 height="40px"
+                disabled={isChanging}
                 onClick={() => {
                   acceptName();
                 }}
@@ -185,8 +167,8 @@ const MyChangeNameUserTable = () => {
                   </FlexDiv>
                 ))}
               </FlexDiv>
-              {userList && userList.length !== 0 ? (
-                userList.map((element: changeNameUserInterface, idx: number) => (
+              {userList.length !== 0 ? (
+                userList.map((element, idx: number) => (
                   <FlexDiv
                     key={`contentItem${idx}`}
                     width="100%"
@@ -250,13 +232,11 @@ const MyChangeNameUserTable = () => {
             </Div>
           </TableScroll>
 
-          {userList && userList.length !== 0 && (
+          {userList.length !== 0 && (
             <Pagination
-              totalPage={totalPage}
-              fetchUrl="/myInfo/requests"
-              token
-              paginationFetch={fetchUser}
-              size={10}
+              currentPage={page}
+              totalPage={user.pageInfo.totalPages}
+              onPageChange={setPage}
             />
           )}
         </Div>

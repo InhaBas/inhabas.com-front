@@ -4,10 +4,7 @@ import { getAccessToken, setAccessToken, subscribeAccessToken } from '../api/tok
 import {
   applicationAnswersInterface,
   applicationInterface,
-  changeNameUserInterface,
-  newUserInterface,
   scheduleInterface,
-  userInterface,
 } from '../types/ibas/TypeMyinfo';
 import { menuInterface, policyInterface } from '../types/TypeCommon';
 
@@ -18,22 +15,6 @@ export const headerTitleInfo = atom<menuInterface>({
     name: '',
     description: '',
   },
-});
-
-// common
-export const totalPageInfo = atom({
-  key: 'totalPageInfo',
-  default: 0,
-});
-
-export const _totalPageInfo = atom({
-  key: '_totalPageInfo',
-  default: 0,
-});
-
-export const __totalPageInfo = atom({
-  key: '__totalPageInfo',
-  default: 0,
 });
 
 // src/api/token.ts 저장소와 양방향 동기화한다. fetch 래퍼와 refresh 흐름은 React 밖에서 저장소만 읽고 쓴다
@@ -78,46 +59,6 @@ export const totalPolicyInfo = atom<policyInterface[] | null>({
 });
 
 // myInfo
-export const newUserInfo = atom<newUserInterface[]>({
-  key: 'newUserInfo',
-  default: [],
-});
-
-export const totalNewUserInfo = atom({
-  key: 'totalNewUserInfo',
-  default: 0,
-});
-
-export const userInfo = atom<userInterface[]>({
-  key: 'userInfo',
-  default: [],
-});
-
-export const totalUserInfo = atom({
-  key: 'totalUserInfo',
-  default: 0,
-});
-
-export const graduateUserInfo = atom<userInterface[]>({
-  key: 'graduateUserInfo',
-  default: [],
-});
-
-export const totalGraduateUserInfo = atom({
-  key: 'totalGraduateUserInfo',
-  default: 0,
-});
-
-export const changeNameUserInfo = atom<changeNameUserInterface[]>({
-  key: 'changeNameUserInfo',
-  default: [],
-});
-
-export const changeNameTotalPageInfo = atom({
-  key: 'changeNameTotalPageInfo',
-  default: 0,
-});
-
 export const applicationInfo = atom<applicationInterface | null>({
   key: 'applicationInfo',
   default: null,

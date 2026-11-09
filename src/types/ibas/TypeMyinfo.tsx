@@ -14,32 +14,23 @@ export interface profileInterface {
 }
 
 // manage user
+// 백엔드 NotApprovedMemberManagementDto (GET /members/unapproved의 한 줄)
 export interface newUserInterface {
   name: string;
   memberId: number;
-  studentId: number;
+  studentId: string;
   phoneNumber: string;
   email: string;
   grade: number;
   major: string;
 }
 
-export interface userInterface {
-  name: string;
-  memberId: number;
-  studentId: number;
-  phoneNumber: string;
-  role: string;
-  generation: number;
-  major: string;
-  memberType: string;
-}
-
+// 백엔드 UpdateNameRequestDto (GET /myInfo/requests의 한 줄)
 export interface changeNameUserInterface {
   id: number;
   beforeName: string;
   afterName: string;
-  studentId: number;
+  studentId: string;
   major: string;
   status: string;
 }
@@ -101,4 +92,10 @@ export interface updateMyInfoDetailInterface {
 export interface updateMyInfoIntroInterface {
   introduce?: string;
   isHOF?: boolean;
+}
+
+// 백엔드 HandleNameRequestDto (PUT /myInfo/request). status는 pass 또는 fail
+export interface handleNameChangeRequestInterface {
+  id: number;
+  status: string;
 }

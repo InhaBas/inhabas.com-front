@@ -9,6 +9,8 @@ import {
   getMyCommentList,
   getMyInfo,
   getMySupportList,
+  getNameChangeRequestList,
+  handleNameChangeRequest,
   MyInfoListParams,
   requestMyInfoNameChange,
   updateMyInfoDetail,
@@ -17,11 +19,16 @@ import {
 } from '../api/myInfo';
 import { setAccessToken } from '../api/token';
 import { loggedOut } from '../recoil/backState';
-import { updateMyInfoDetailInterface, updateMyInfoIntroInterface } from '../types/ibas/TypeMyinfo';
+import {
+  handleNameChangeRequestInterface,
+  updateMyInfoDetailInterface,
+  updateMyInfoIntroInterface,
+} from '../types/ibas/TypeMyinfo';
 
 export const myInfoQueries = {
   all: () => ['myInfo'] as const,
   supportLists: () => [...myInfoQueries.all(), 'supports'] as const,
+  nameRequestLists: () => [...myInfoQueries.all(), 'nameRequests'] as const,
 
   // 조회의 주인은 HeaderNav다. /signUp/check 결과가 true일 때만 켠다(enabled)
   detail: () =>
@@ -47,6 +54,13 @@ export const myInfoQueries = {
     queryOptions({
       queryKey: [...myInfoQueries.supportLists(), params],
       queryFn: () => getMySupportList(params),
+      placeholderData: keepPreviousPage(params),
+    }),
+  // 회원 관리의 이름 수정 요청 목록. 페이지를 넘기는 동안 이전 목록을 보여 주던 옛 표 동작을 보존한다
+  nameRequestList: (params: MyInfoListParams) =>
+    queryOptions({
+      queryKey: [...myInfoQueries.nameRequestLists(), params],
+      queryFn: () => getNameChangeRequestList(params),
       placeholderData: keepPreviousPage(params),
     }),
 };
@@ -111,5 +125,16 @@ export const myInfoMutations = {
   requestNameChange: () =>
     mutationOptions({
       mutationFn: (name: string | undefined) => requestMyInfoNameChange(name),
+    }),
+  // 승인·거절. 표가 성공하면 1페이지로 돌아가므로 1페이지 목록만 무효화한다. 내 정보는 옛 화면도 다시 조회하지 않았다
+  handleNameRequest: () =>
+    mutationOptions({
+      mutationFn: (body: handleNameChangeRequestInterface) => handleNameChangeRequest(body),
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: myInfoQueries.nameRequestLists(),
+          predicate: (query) => (query.queryKey.at(-1) as MyInfoListParams).page === 1,
+        });
+      },
     }),
 };

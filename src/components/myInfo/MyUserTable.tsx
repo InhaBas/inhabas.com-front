@@ -1,19 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { ReactNode, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { GetRoleAuthorization } from '../../functions/authFunctions';
 import { ConvertLabel } from '../../functions/convertLabelFunctions';
-import useFetch from '../../hooks/useFetch';
+import { memberMutations, memberQueries, useOnMemberListChanged } from '../../queries/member';
 import { useMyRole } from '../../queries/myInfo';
-import { _totalPageInfo, tokenAccess, totalUserInfo, userInfo } from '../../recoil/backState';
-import {
-  _checkedList,
-  myAcceptUserState,
-  mySetGraduateState,
-  mySetUndergraduateState,
-} from '../../recoil/frontState';
+import { _checkedList } from '../../recoil/frontState';
 import A from '../../styles/assets/A';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
@@ -21,7 +16,6 @@ import Img from '../../styles/assets/Img';
 import { Checkbox, TextInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-import { userInterface } from '../../types/ibas/TypeMyinfo';
 import Dropdown from '../common/Dropdown';
 import Loading from '../common/Loading';
 import Pagination from '../common/Pagination';
@@ -70,35 +64,63 @@ const SearchControls = styled(FlexDiv)`
   }
 `;
 
-const MyUserTable = () => {
+interface MyUserTableProps {
+  // 페이지가 표를 카드로 감싸고 머리글에 인원수를 보여 준다. 인원수는 표가 조회한 결과에서 바로 읽는다
+  children: (table: ReactNode, total: number) => ReactNode;
+}
+
+const MyUserTable = ({ children }: MyUserTableProps) => {
   const { isAuthorizedOverVice, isAuthorizedExceptExecutives } = GetRoleAuthorization();
   const { convertRoleLabel, convertTypeLabel } = ConvertLabel();
 
   const widthList = [50, 100, 150, 200, 200, 130, 130, 50];
   const headerInfo = ['', '이름', '학번', '학과', '전화번호', '역할', '소속', '기수'];
 
-  const [user, fetchUser] = useFetch();
-  const [userList, setUserList] = useRecoilState(userInfo);
-  // totalPageInfo를 같은 페이지 내에서 MyNewUserTable 이라는 컴포넌트가 쓰고 있기 때문에, _totalPageInfo을 사용함
-  const [totalPage, setTotalPage] = useRecoilState(_totalPageInfo);
-  const setTotalUser = useSetRecoilState(totalUserInfo);
   const role = useMyRole();
   // checkedList를 같은 페이지 내에서 MyNewUserTable 이라는 컴포넌트가 쓰고 있기 때문에, _checkedList를 사용함
   const [check, setCheck] = useRecoilState(_checkedList);
   const [roleValue, setRoleValue] = useState('');
   const [typeValue, setTypeValue] = useState('');
   const [CategoryValue, setCategoryValue] = useState('');
-  const [, fetchRoleChangeData] = useFetch();
-  const [, fetchTypeChangeData] = useFetch();
-  const [reload, setReload] = useState(false);
-  const access = useRecoilValue(tokenAccess);
-  const [searchValue, setSearchValue] = useState(''); // 검색어
-  const [isLoading, setIsLoading] = useState(true);
-  const [acceptUser, setAcceptUser] = useRecoilState(myAcceptUserState);
-  const setGraduate = useSetRecoilState(mySetGraduateState);
-  const [undergraduate, setUndergraduate] = useRecoilState(mySetUndergraduateState);
+  const [searchValue, setSearchValue] = useState(''); // 입력 중인 검색어
+  const [search, setSearch] = useState(''); // 제출한 검색어
+  const [page, setPage] = useState(1);
 
   const path = useLocation().pathname;
+  // 검색 요청은 옛 화면처럼 백엔드 기본값과 같은 10개씩 받는다
+  const size = search === '' && path === '/staff/member/students' ? 15 : 10;
+
+  const { data: user, isFetching } = useQuery(
+    memberQueries.notGraduatedList({ page, size, search }),
+  );
+  const roleMutation = useMutation(memberMutations.updateRole('notGraduated'));
+  const typeMutation = useMutation(memberMutations.updateType('notGraduated'));
+  // 다시 받는 동안에도 막는다. 옛 화면은 이때 본문을 스피너로 가렸고, 막지 않으면 이전 체크로 한 번 더 보낼 수 있다
+  const isChanging = roleMutation.isPending || typeMutation.isPending || isFetching;
+
+  const userList =
+    user?.data.map((item, idx) => ({
+      id: idx + 1,
+      name: item.name,
+      studentId: item.studentId,
+      major: item.major,
+      phoneNumber: item.phoneNumber,
+      role: convertRoleLabel(item.role),
+      type: convertTypeLabel(item.memberType),
+      generation: item.generation,
+      memberId: item.memberId,
+    })) ?? [];
+
+  // 옛 화면처럼 새 응답을 받을 때마다 체크를 지운다
+  useEffect(() => {
+    setCheck([]);
+  }, [user, setCheck]);
+
+  // 이 표나 다른 표의 변경이 성공하면 옛 화면처럼 검색 없는 1페이지로 돌아간다
+  useOnMemberListChanged('notGraduated', () => {
+    setPage(1);
+    setSearch('');
+  });
 
   // 단일 체크박스 클릭시 checkedList update
   const checkClickEvent = (e: React.ChangeEvent<HTMLInputElement>, memberId: number) => {
@@ -114,7 +136,7 @@ const MyUserTable = () => {
   const checkAllClickEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
     const tmpList: number[] = [];
     if (e.target.checked) {
-      userList && tmpList.push(...userList.map((item: userInterface) => item.memberId));
+      tmpList.push(...userList.map((item) => item.memberId));
     }
     setCheck(tmpList);
   };
@@ -137,30 +159,19 @@ const MyUserTable = () => {
     setCategoryValue(value);
   };
 
-  // role Fetch
+  // role 변경. 재조회는 성공한 뒤에 뮤테이션 정의가 한다
   const changeRole = () => {
+    if (isChanging) return;
     if (roleValue !== '') {
-      const roleSend = {
-        memberIdList: check,
-        role: roleValue,
-      };
-      fetchRoleChangeData('/members/approved/role', 'PUT', 'token', roleSend);
-      setReload(true);
+      roleMutation.mutate({ memberIdList: check, role: roleValue });
     }
   };
 
-  // type Fetch
+  // type 변경. 재조회는 성공한 뒤에 뮤테이션 정의가 한다
   const changeType = () => {
+    if (isChanging) return;
     if (typeValue !== '') {
-      const typeSend = {
-        memberIdList: check,
-        type: typeValue,
-      };
-      fetchTypeChangeData('/members/approved/type', 'PUT', 'token', typeSend);
-      setReload(true);
-      if (typeValue === 'GRADUATED') {
-        setGraduate(true);
-      }
+      typeMutation.mutate({ memberIdList: check, type: typeValue });
     }
   };
 
@@ -171,11 +182,9 @@ const MyUserTable = () => {
 
   // 검색 버튼 클릭 핸들러
   const searchStudent = () => {
-    // 검색어를 이용하여 API 호출
-
     if (searchValue.trim() !== '') {
-      setIsLoading(true);
-      fetchUser(`/members/notGraduated?search=${searchValue}`, 'GET', 'token');
+      setSearch(searchValue);
+      setPage(1);
     }
   };
 
@@ -186,49 +195,9 @@ const MyUserTable = () => {
     }
   };
 
-  // 동아리원 현황 조회 fetch, 회원관리 / 재학생 자세히 보기 페이지 별로 다른 fetch 처리
-  useEffect(() => {
-    setIsLoading(true);
-    let fetchUrl = '/members/notGraduated?page=0';
-    if (path === '/staff/member/students') {
-      fetchUrl += '&size=15';
-    } else if (path === '/staff/member') {
-      fetchUrl += '&size=10';
-    }
-
-    fetchUser(fetchUrl, 'GET', 'token');
-
-    setReload(false);
-  }, [reload, access, acceptUser, undergraduate]); // role 바뀔 때 마다 reFetch, type 바뀔때도 적용시켜주어야 함
-
-  // fetch된 data로 동아리원 List 만들 data 가공
-  useEffect(() => {
-    if (user) {
-      const contents = user.data.map((item: userInterface, idx: number) => ({
-        id: idx + 1,
-        name: item.name,
-        studentId: item.studentId,
-        major: item.major,
-        phoneNumber: item.phoneNumber,
-        role: convertRoleLabel(item.role),
-        type: convertTypeLabel(item.memberType),
-        generation: item.generation,
-        memberId: item.memberId,
-      }));
-
-      setUserList(contents);
-      setTotalUser(user.pageInfo.totalElements);
-      setTotalPage(user.pageInfo.totalPages);
-      setCheck([] as number[]);
-      setIsLoading(false);
-      setAcceptUser(false); // 위치 다시 확인
-      setUndergraduate(false);
-    }
-  }, [user, access]);
-
-  return (
+  return children(
     <Div width="100%">
-      {isLoading ? (
+      {!user ? (
         <FlexDiv width="100%" height="30vh">
           <Loading />
         </FlexDiv>
@@ -250,6 +219,7 @@ const MyUserTable = () => {
                 $borderRadius={3}
                 $padding="6px 12px"
                 height="40px"
+                disabled={isChanging}
                 onClick={() => changeRole()}
               >
                 <FlexDiv $margin="0 5px 0 0">
@@ -308,6 +278,7 @@ const MyUserTable = () => {
                 $borderRadius={3}
                 $padding="6px 12px"
                 height="40px"
+                disabled={isChanging}
                 onClick={() => {
                   CategoryValue === 'TYPE' ? changeType() : changeRole();
                 }}
@@ -336,9 +307,9 @@ const MyUserTable = () => {
               >
                 {isAuthorizedExceptExecutives && (
                   <FlexDiv $padding="10px">
-                    {userList && userList.length !== 0 && (
+                    {userList.length !== 0 && (
                       <Checkbox
-                        checked={!!user && check.length === userList.length}
+                        checked={check.length === userList.length}
                         onChange={checkAllClickEvent}
                       />
                     )}
@@ -356,8 +327,8 @@ const MyUserTable = () => {
                   </FlexDiv>
                 ))}
               </FlexDiv>
-              {userList && userList.length !== 0 ? (
-                userList.map((element: userInterface, idx: number) => (
+              {userList.length !== 0 ? (
+                userList.map((element, idx: number) => (
                   <FlexDiv
                     key={`contentItem${idx}`}
                     width="100%"
@@ -428,18 +399,17 @@ const MyUserTable = () => {
               </SearchControls>
             </FlexDiv>
           )}
-          {userList && userList.length !== 0 && (
+          {userList.length !== 0 && (
             <Pagination
-              totalPage={totalPage}
-              fetchUrl="/members/notGraduated"
-              token
-              paginationFetch={fetchUser}
-              size={path === '/staff/member/students' ? 15 : 10}
+              currentPage={page}
+              totalPage={user.pageInfo.totalPages}
+              onPageChange={setPage}
             />
           )}
         </>
       )}
-    </Div>
+    </Div>,
+    user?.pageInfo.totalElements ?? 0,
   );
 };
 

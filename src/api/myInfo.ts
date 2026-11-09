@@ -1,5 +1,7 @@
 import { request } from './client';
 import {
+  changeNameUserInterface,
+  handleNameChangeRequestInterface,
   MyBoardInterface,
   MySupportInterface,
   profileInterface,
@@ -48,3 +50,13 @@ export const getMySupportList = ({ page, size }: MyInfoListParams) =>
     `/myInfo/supports?page=${page - 1}&size=${size}`,
     { auth: true },
   );
+
+export const getNameChangeRequestList = ({ page, size }: MyInfoListParams) =>
+  request<pagedResponseInterface<changeNameUserInterface>>(
+    `/myInfo/requests?page=${page - 1}&size=${size}`,
+    { auth: true },
+  );
+
+// 204
+export const handleNameChangeRequest = (body: handleNameChangeRequestInterface) =>
+  request<null>('/myInfo/request', { method: 'PUT', auth: true, body });
