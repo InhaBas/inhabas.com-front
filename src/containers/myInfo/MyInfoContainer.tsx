@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { useMyInfo } from '../../queries/myInfo';
 import { modalInfo, modalOpen } from '../../recoil/frontState';
+import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import P from '../../styles/assets/P';
@@ -125,6 +126,11 @@ const MyInfoContainer = () => {
   const changeInfo = (info: string) => {
     setOpen(true);
     setMoalInfo({ type: `change${info}` });
+  };
+
+  const openWithdrawModal = () => {
+    setOpen(true);
+    setMoalInfo({ type: 'withdraw' });
   };
 
   /* 권한 출력 위한 auth 지정  */
@@ -366,7 +372,23 @@ const MyInfoContainer = () => {
                 </P>
               </FlexDiv>
             </InfoNotice>
-          ) : null}
+          ) : (
+            <Button
+              type="button"
+              $backgroundColor="grey3"
+              $HBackgroundColor="grey2"
+              width="110px"
+              height="35px"
+              $margin="16px 0 0 auto"
+              $padding="10px"
+              $borderRadius={5}
+              onClick={openWithdrawModal}
+            >
+              <P color="wh" fontSize="sm" fontWeight={300} $center>
+                회원 탈퇴
+              </P>
+            </Button>
+          )}
         </InfoContent>
       </Div>
     </>

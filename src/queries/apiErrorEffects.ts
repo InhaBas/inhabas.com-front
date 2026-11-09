@@ -10,8 +10,11 @@ import { setAccessToken, setFailRefreshing } from '../api/token';
 
 const TOKEN_EXPIRED_CODES = ['A005', 'A006', 'A007'];
 
-const isTokenExpiredError = (error: unknown) =>
-  error instanceof ApiError && error.auth && TOKEN_EXPIRED_CODES.includes(error.body?.code ?? '');
+export function isTokenExpiredError(error: unknown) {
+  return (
+    error instanceof ApiError && error.auth && TOKEN_EXPIRED_CODES.includes(error.body?.code ?? '')
+  );
+}
 
 // ---- 라우터 밖에서 navigate ----
 
@@ -27,7 +30,7 @@ export function registerNavigate(fn: NavigateFunction | null) {
 let refreshing: Promise<void> | null = null;
 
 // 동시에 들어온 A005/A006이 진행 중인 refresh 하나를 함께 기다린다(single-flight)
-function refreshAccessTokenOnce(): Promise<void> {
+export function refreshAccessTokenOnce(): Promise<void> {
   if (!refreshing) {
     refreshing = runRefresh().finally(() => {
       refreshing = null;

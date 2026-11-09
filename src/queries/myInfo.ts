@@ -1,6 +1,7 @@
 import { mutationOptions, queryOptions, useQuery } from '@tanstack/react-query';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
+import { isTokenExpiredError, refreshAccessTokenOnce } from './apiErrorEffects';
 import { keepPreviousPage } from './keepPreviousPage';
 import { queryClient } from './queryClient';
 import { signUpQueries } from './signUp';
@@ -16,6 +17,7 @@ import {
   updateMyInfoDetail,
   updateMyInfoIntro,
   updateMyInfoPicture,
+  withdrawMyAccount,
 } from '../api/myInfo';
 import { setAccessToken } from '../api/token';
 import { loggedOut } from '../recoil/backState';
@@ -87,16 +89,33 @@ export const useMyRole = (): string => {
 };
 
 /*
-  로그아웃할 때 부른다
+  로그인 상태를 끝낼 때 부른다. 화면 이동은 부르는 쪽이 맡는다
   - 토큰 저장소를 바로 'default'로 바꾼다. 이어서 HeaderNav가 다시 보내는 /signUp/check가 이 값을 실어야 해서
     atom(onSet은 Recoil 배치가 끝난 뒤에 돈다) 대신 저장소에 쓴다. tokenAccess atom은 저장소 구독으로 따라온다
   - /signUp/check와 /myInfo 캐시를 지운다. HeaderNav가 /signUp/check를 다시 요청하는 것은 옛 화면이 토큰이 바뀔 때마다
     다시 요청하던 동작이고, 그 A005 → refresh 실패가 failRefreshing을 켠다. /signUp/check 결과가 비었으므로 /myInfo는 요청하지 않는다
 */
-export const clearMyInfoOnLogout = () => {
-  setAccessToken('default');
-  queryClient.removeQueries({ queryKey: signUpQueries.check().queryKey });
-  queryClient.removeQueries({ queryKey: myInfoQueries.all() });
+export const useEndSession = () => {
+  const setLoggedOut = useSetRecoilState(loggedOut);
+
+  return () => {
+    setLoggedOut(true);
+    setAccessToken('default');
+    queryClient.removeQueries({ queryKey: signUpQueries.check().queryKey });
+    queryClient.removeQueries({ queryKey: myInfoQueries.all() });
+    document.cookie = 'ibas_refresh' + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;';
+  };
+};
+
+// 공통 흐름은 토큰이 만료된 뮤테이션을 다시 보내지 않아 탈퇴를 눌러도 아무 일이 없는 것처럼 보인다. 토큰을 갱신하고 한 번만 다시 보낸다
+const withdrawRetryingOnExpiredToken = async () => {
+  try {
+    return await withdrawMyAccount();
+  } catch (error) {
+    if (!isTokenExpiredError(error)) throw error;
+    await refreshAccessTokenOnce();
+    return withdrawMyAccount();
+  }
 };
 
 // 화면에 보이는 내 정보가 바뀌는 변경만 무효화한다. Promise는 반환하지 않는다
@@ -125,6 +144,10 @@ export const myInfoMutations = {
   requestNameChange: () =>
     mutationOptions({
       mutationFn: (name: string | undefined) => requestMyInfoNameChange(name),
+    }),
+  withdraw: () =>
+    mutationOptions({
+      mutationFn: withdrawRetryingOnExpiredToken,
     }),
   // 승인·거절. 표가 성공하면 1페이지로 돌아가므로 1페이지 목록만 무효화한다. 내 정보는 옛 화면도 다시 조회하지 않았다
   handleNameRequest: () =>

@@ -78,8 +78,8 @@ export interface commentListInterface {
   writer: {
     id: number;
     name: string;
-    major: string;
-    pictureUrl: string;
+    major: string | null; // 탈퇴한 회원이면 null
+    pictureUrl: string | null; // 탈퇴한 회원이면 null
   };
 }
 
