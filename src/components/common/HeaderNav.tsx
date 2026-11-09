@@ -6,9 +6,9 @@ import { styled } from 'styled-components';
 
 import { NAV_MENU_GROUPS } from '../../constants/navMenu';
 import { GetRoleAuthorization } from '../../functions/authFunctions';
-import { clearMyInfoOnLogout, myInfoQueries } from '../../queries/myInfo';
+import { myInfoQueries, useEndSession } from '../../queries/myInfo';
 import { signUpQueries } from '../../queries/signUp';
-import { loggedOut, tokenAccess } from '../../recoil/backState';
+import { tokenAccess } from '../../recoil/backState';
 import { failRefreshing, menuId } from '../../recoil/frontState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
@@ -250,7 +250,7 @@ const HeaderNav = () => {
   const location = useLocation();
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
-  const setLoggedOut = useSetRecoilState(loggedOut);
+  const endSession = useEndSession();
   const [access, setAccess] = useRecoilState(tokenAccess);
 
   /*
@@ -386,10 +386,7 @@ const HeaderNav = () => {
 
   const logoutClickEvent = () => {
     if (window.confirm('정말 로그아웃 하시겠습니까?')) {
-      setLoggedOut(true);
-      // 토큰을 'default'로 되돌리고 내 정보 캐시를 지운다. 이어서 /signUp/check를 다시 요청한다
-      clearMyInfoOnLogout();
-      document.cookie = 'ibas_refresh' + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;';
+      endSession();
       navigate('/');
       setIsMobileMenuOpen(false);
     }

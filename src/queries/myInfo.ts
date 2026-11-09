@@ -1,5 +1,5 @@
 import { mutationOptions, queryOptions, useQuery } from '@tanstack/react-query';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { keepPreviousPage } from './keepPreviousPage';
 import { queryClient } from './queryClient';
@@ -87,16 +87,22 @@ export const useMyRole = (): string => {
 };
 
 /*
-  로그아웃할 때 부른다
+  로그인 상태를 끝낼 때 부른다. 화면 이동은 부르는 쪽이 맡는다
   - 토큰 저장소를 바로 'default'로 바꾼다. 이어서 HeaderNav가 다시 보내는 /signUp/check가 이 값을 실어야 해서
     atom(onSet은 Recoil 배치가 끝난 뒤에 돈다) 대신 저장소에 쓴다. tokenAccess atom은 저장소 구독으로 따라온다
   - /signUp/check와 /myInfo 캐시를 지운다. HeaderNav가 /signUp/check를 다시 요청하는 것은 옛 화면이 토큰이 바뀔 때마다
     다시 요청하던 동작이고, 그 A005 → refresh 실패가 failRefreshing을 켠다. /signUp/check 결과가 비었으므로 /myInfo는 요청하지 않는다
 */
-export const clearMyInfoOnLogout = () => {
-  setAccessToken('default');
-  queryClient.removeQueries({ queryKey: signUpQueries.check().queryKey });
-  queryClient.removeQueries({ queryKey: myInfoQueries.all() });
+export const useEndSession = () => {
+  const setLoggedOut = useSetRecoilState(loggedOut);
+
+  return () => {
+    setLoggedOut(true);
+    setAccessToken('default');
+    queryClient.removeQueries({ queryKey: signUpQueries.check().queryKey });
+    queryClient.removeQueries({ queryKey: myInfoQueries.all() });
+    document.cookie = 'ibas_refresh' + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;';
+  };
 };
 
 // 화면에 보이는 내 정보가 바뀌는 변경만 무효화한다. Promise는 반환하지 않는다
