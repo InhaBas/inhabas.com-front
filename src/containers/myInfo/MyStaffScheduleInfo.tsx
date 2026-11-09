@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useRef } from 'react';
 import styled from 'styled-components';
 
 import Loading from '../../components/common/Loading';
-import useFetch from '../../hooks/useFetch';
-import { scheduleInfo } from '../../recoil/backState';
+import { signUpMutations, signUpQueries } from '../../queries/signUp';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
@@ -35,11 +34,8 @@ const MyStaffScheduleInfo = () => {
   fontStyle.fontStyle = 'italic';
 
   const ref = useRef<any[]>([]);
-  const [scheduleInfoData, fetchScheduleInfoData] = useFetch();
-  const [putScheduleInfoData, fetchPutScheduleInfoData] = useFetch();
-  const [isLoading, setIsLoading] = useState(true);
-
-  const [schedule, setSchedule] = useRecoilState(scheduleInfo);
+  const { data: schedule } = useQuery(signUpQueries.schedule());
+  const updateMutation = useMutation(signUpMutations.updateSchedule());
 
   const changeSchedule = () => {
     let check = true;
@@ -104,32 +100,17 @@ const MyStaffScheduleInfo = () => {
         resultAnnounceDate: ref.current[5].value + ':00',
       };
 
-      fetchPutScheduleInfoData('/signUp/schedule', 'PUT', 'token', inputData);
+      updateMutation.mutate(inputData, {
+        onSuccess: () => {
+          alert('정상적으로 적용되었습니다.');
+        },
+      });
     }
   };
 
-  // 회원가입 일정
-  useEffect(() => {
-    setIsLoading(true);
-    fetchScheduleInfoData('/signUp/schedule', 'GET');
-  }, []);
-
-  useEffect(() => {
-    if (scheduleInfoData) {
-      setSchedule(scheduleInfoData);
-      setIsLoading(false);
-    }
-  }, [scheduleInfoData]);
-
-  useEffect(() => {
-    if (putScheduleInfoData) {
-      alert('정상적으로 적용되었습니다.');
-    }
-  }, [putScheduleInfoData]);
-
   return (
     <>
-      {isLoading ? (
+      {!schedule ? (
         <FlexDiv width="100%" height="30vh">
           <Loading />
         </FlexDiv>
@@ -164,14 +145,14 @@ const MyStaffScheduleInfo = () => {
                 </Div>
                 <Div>
                   <P style={{ ...fontStyle }} color="grey2">
-                    ( 가장 최근에 입부 마감된 기수: {schedule?.generation}기 )
+                    ( 가장 최근에 입부 마감된 기수: {schedule.generation}기 )
                   </P>
                 </Div>
               </FlexDiv>
               <Div width="100%" $margin="0 0 10px 0">
                 <NumberInput
                   width="100%"
-                  defaultValue={schedule?.generation}
+                  defaultValue={schedule.generation}
                   ref={(el: never) => (ref.current[0] = el)}
                 />
               </Div>
@@ -191,7 +172,7 @@ const MyStaffScheduleInfo = () => {
               <Div width="100%" $margin="0 0 30px 0">
                 <DateTime
                   width="100%"
-                  defaultValue={schedule?.signupStartDate}
+                  defaultValue={schedule.signupStartDate}
                   ref={(el: never) => (ref.current[1] = el)}
                 />
               </Div>
@@ -206,7 +187,7 @@ const MyStaffScheduleInfo = () => {
               <Div width="100%" $margin="0 0 30px 0">
                 <DateTime
                   width="100%"
-                  defaultValue={schedule?.signupEndDate}
+                  defaultValue={schedule.signupEndDate}
                   ref={(el: never) => (ref.current[2] = el)}
                 />
               </Div>
@@ -229,7 +210,7 @@ const MyStaffScheduleInfo = () => {
               <Div width="100%" $margin="0 0 30px 0">
                 <DateTime
                   width="100%"
-                  defaultValue={schedule?.interviewStartDate}
+                  defaultValue={schedule.interviewStartDate ?? undefined}
                   ref={(el: never) => (ref.current[3] = el)}
                 />
               </Div>
@@ -244,7 +225,7 @@ const MyStaffScheduleInfo = () => {
               <Div width="100%" $margin="0 0 30px 0">
                 <DateTime
                   width="100%"
-                  defaultValue={schedule?.interviewEndDate}
+                  defaultValue={schedule.interviewEndDate ?? undefined}
                   ref={(el: never) => (ref.current[4] = el)}
                 />
               </Div>
@@ -259,7 +240,7 @@ const MyStaffScheduleInfo = () => {
               <Div width="100%" $margin="0 0 30px 0">
                 <DateTime
                   width="100%"
-                  defaultValue={schedule?.resultAnnounceDate}
+                  defaultValue={schedule.resultAnnounceDate}
                   ref={(el: never) => (ref.current[5] = el)}
                 />
               </Div>
@@ -271,6 +252,7 @@ const MyStaffScheduleInfo = () => {
                 $HBackgroundColor="bgColorHo"
                 $padding="10px 15px"
                 $borderRadius={3}
+                disabled={updateMutation.isPending}
                 onClick={() => changeSchedule()}
               >
                 <FlexDiv>

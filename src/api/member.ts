@@ -6,7 +6,7 @@ import {
   updateMembersTypeInterface,
   updateUnapprovedMembersInterface,
 } from '../types/ibas/TypeMember';
-import { newUserInterface } from '../types/ibas/TypeMyinfo';
+import { applicationInterface, newUserInterface } from '../types/ibas/TypeMyinfo';
 import { chiefInterface, pagedResponseInterface } from '../types/TypeCommon';
 
 export const getExecutiveList = () => request<staffInterface[]>('/members/executive');
@@ -43,6 +43,9 @@ export const getUnapprovedMemberList = (params: MemberListParams) =>
     `/members/unapproved${memberListQuery(params)}`,
     { auth: true },
   );
+
+export const getMemberApplication = (id: string) =>
+  request<applicationInterface>(`/members/${id}/application`, { auth: true });
 
 // 아래 변경은 모두 204
 export const updateUnapprovedMembers = (body: updateUnapprovedMembersInterface) =>

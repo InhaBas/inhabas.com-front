@@ -27,7 +27,7 @@ export function registerNavigate(fn: NavigateFunction | null) {
 let refreshing: Promise<void> | null = null;
 
 // 동시에 들어온 A005/A006이 진행 중인 refresh 하나를 함께 기다린다(single-flight)
-export function refreshAccessTokenOnce(): Promise<void> {
+function refreshAccessTokenOnce(): Promise<void> {
   if (!refreshing) {
     refreshing = runRefresh().finally(() => {
       refreshing = null;

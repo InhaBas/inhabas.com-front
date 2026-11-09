@@ -6,6 +6,7 @@ import {
   signUpCheckInterface,
   signUpInterface,
 } from '../types/ibas/TypeMember';
+import { scheduleInterface } from '../types/ibas/TypeMyinfo';
 
 // 비로그인 사용자도 'default' 토큰을 싣는다. 새로고침 때 A005를 받아 refresh로 로그인을 복원하는 경로다
 export const getSignUpCheck = () => request<signUpCheckInterface>('/signUp/check', { auth: true });
@@ -32,3 +33,9 @@ export const createSignUpAnswers = (body: answersInterface[]) =>
 // 답변을 보내며 가입을 마친다(204)
 export const completeSignUp = (body: answersInterface[]) =>
   request<null>('/signUp', { method: 'PUT', auth: true, body });
+
+export const getSignUpSchedule = () => request<scheduleInterface>('/signUp/schedule');
+
+// 일정 수정(204)
+export const updateSignUpSchedule = (body: scheduleInterface) =>
+  request<null>('/signUp/schedule', { method: 'PUT', auth: true, body });

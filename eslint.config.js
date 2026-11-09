@@ -112,31 +112,5 @@ module.exports = [
     },
   },
   ...pluginQuery.configs['flat/recommended'],
-  {
-    // useFetch는 동결했다. 새 코드는 TanStack Query를 쓴다
-    files: ['**/*.{ts,tsx}'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: [
-            {
-              group: ['**/hooks/useFetch'],
-              message: 'TanStack Query를 쓴다. src/queries/queryClient.ts 참고',
-            },
-          ],
-        },
-      ],
-    },
-  },
-  {
-    // 전환 전 파일. 전환 PR은 자기 파일을 이 목록에서 뺀다. 목록 길이가 진행률이다
-    files: [
-      'src/containers/myInfo/MyStaffRuleContainter.tsx',
-      'src/containers/myInfo/MyStaffScheduleInfo.tsx',
-      'src/pages/myInfo/MyApplication.tsx',
-    ],
-    rules: { 'no-restricted-imports': 'off' },
-  },
   eslintConfigPrettier,
 ];

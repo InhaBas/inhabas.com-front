@@ -4,11 +4,6 @@ import { getFailRefreshing, setFailRefreshing, subscribeFailRefreshing } from '.
 import { modalInterface } from '../types/TypeCommon';
 
 // common
-export const refetch = atom({
-  key: 'refetch',
-  default: false,
-});
-
 export const checkedList = atom({
   key: 'checkedList',
   default: [] as number[],
@@ -71,7 +66,6 @@ export const bankSupportRejectReasonInfo = atom({
   default: '',
 });
 
-// useFetch
 // src/api/token.ts 저장소와 양방향 동기화한다. refresh 흐름은 React 밖에서 저장소만 쓴다
 export const failRefreshing = atom<boolean>({
   key: 'failRefreshing',

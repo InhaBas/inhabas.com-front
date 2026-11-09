@@ -1,12 +1,7 @@
 import { atom } from 'recoil';
 
 import { getAccessToken, setAccessToken, subscribeAccessToken } from '../api/token';
-import {
-  applicationAnswersInterface,
-  applicationInterface,
-  scheduleInterface,
-} from '../types/ibas/TypeMyinfo';
-import { menuInterface, policyInterface } from '../types/TypeCommon';
+import { menuInterface } from '../types/TypeCommon';
 
 // headerTitle: 페이지가 직접 정한 제목만 담는다(staff 경로). 비어 있으면 HeaderTitle이 메뉴 제목을 쓴다
 export const headerTitleInfo = atom<menuInterface>({
@@ -50,28 +45,6 @@ export const loggedOut = atom<boolean>({
 export const fileIdList = atom<string[] | []>({
   key: 'fileIdList',
   default: [],
-});
-
-// policy
-export const totalPolicyInfo = atom<policyInterface[] | null>({
-  key: 'totalPolicyInfo',
-  default: [],
-});
-
-// myInfo
-export const applicationInfo = atom<applicationInterface | null>({
-  key: 'applicationInfo',
-  default: null,
-});
-
-export const applicationAnswerInfo = atom<applicationAnswersInterface[] | null>({
-  key: 'applicationAnswerInfo',
-  default: null,
-});
-
-export const scheduleInfo = atom<scheduleInterface | null>({
-  key: 'scheduleInfo',
-  default: null,
 });
 
 //lectureRoom
