@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { ReactNode, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { GetRoleAuthorization } from '../../functions/authFunctions';
-import useFetch from '../../hooks/useFetch';
-import { newUserInfo, tokenAccess, totalNewUserInfo, totalPageInfo } from '../../recoil/backState';
-import { checkedList, myAcceptUserState } from '../../recoil/frontState';
+import { memberMutations, memberQueries, useOnMemberListChanged } from '../../queries/member';
+import { checkedList } from '../../recoil/frontState';
 import A from '../../styles/assets/A';
 import Button from '../../styles/assets/Button';
 import { Div, FlexDiv } from '../../styles/assets/Div';
@@ -14,7 +14,6 @@ import Img from '../../styles/assets/Img';
 import { Checkbox, TextInput } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media, theme } from '../../styles/theme';
-import { newUserInterface } from '../../types/ibas/TypeMyinfo';
 import Dropdown from '../common/Dropdown';
 import Loading from '../common/Loading';
 import Pagination from '../common/Pagination';
@@ -63,26 +62,56 @@ const SearchControls = styled(FlexDiv)`
   }
 `;
 
-const MyNewUserTable = () => {
+interface MyNewUserTableProps {
+  // 페이지가 표를 카드로 감싸고 머리글에 인원수를 보여 준다. 인원수는 표가 조회한 결과에서 바로 읽는다
+  children: (table: ReactNode, total: number) => ReactNode;
+}
+
+const MyNewUserTable = ({ children }: MyNewUserTableProps) => {
   const { isAuthorizedOverExecutives } = GetRoleAuthorization();
 
   const widthList = [50, 100, 70, 150, 170, 310, 160];
   const headerInfo = ['', '이름', '학년', '학번', '전화번호', '학과', '지원서보기'];
 
   const [check, setCheck] = useRecoilState(checkedList);
-  const [newUserData, fetchNewUserData] = useFetch();
-  const [newUser, setNewUser] = useRecoilState(newUserInfo);
-  const setTotalNewUser = useSetRecoilState(totalNewUserInfo);
-  const [totalPage, setTotalPage] = useRecoilState(totalPageInfo);
   const [passFailValue, setPassFailValue] = useState('');
-  const [passFailData, fetchPassFailData] = useFetch();
-  const access = useRecoilValue(tokenAccess);
-  const [searchValue, setSearchValue] = useState(''); // 검색어
-  const [isLoading, setIsLoading] = useState(true);
-  const setAcceptUser = useSetRecoilState(myAcceptUserState);
+  const [searchValue, setSearchValue] = useState(''); // 입력 중인 검색어
+  const [search, setSearch] = useState(''); // 제출한 검색어
+  const [page, setPage] = useState(1);
 
   const navigate = useNavigate();
   const path = useLocation().pathname;
+  // 검색 요청은 옛 화면처럼 백엔드 기본값과 같은 10개씩 받는다
+  const size = search === '' && path === '/staff/member/newStudents' ? 15 : 10;
+
+  const { data: newUserData, isFetching } = useQuery(
+    memberQueries.unapprovedList({ page, size, search }),
+  );
+  const passFailMutation = useMutation(memberMutations.updateUnapproved());
+  // 다시 받는 동안에도 막는다. 옛 화면은 이때 본문을 스피너로 가렸고, 막지 않으면 이전 체크로 한 번 더 보낼 수 있다
+  const isChanging = passFailMutation.isPending || isFetching;
+
+  const newUser =
+    newUserData?.data.map((item, idx) => ({
+      id: idx + 1,
+      name: item.name,
+      grade: item.grade,
+      studentId: item.studentId,
+      phoneNumber: item.phoneNumber,
+      major: item.major,
+      memberId: item.memberId,
+    })) ?? [];
+
+  // 옛 화면처럼 새 응답을 받을 때마다 체크를 지운다
+  useEffect(() => {
+    setCheck([]);
+  }, [newUserData, setCheck]);
+
+  // 합격·불합격이 성공하면 옛 화면처럼 검색 없는 1페이지로 돌아간다
+  useOnMemberListChanged('unapproved', () => {
+    setPage(1);
+    setSearch('');
+  });
 
   // 지원서 이동 함수
   const moveApplication = (application: number) => {
@@ -103,8 +132,7 @@ const MyNewUserTable = () => {
   const checkAllClickEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
     const tmpList: number[] = [];
     if (e.target.checked) {
-      newUser &&
-        tmpList.push(...Object.values(newUser).map((item: newUserInterface) => item.memberId));
+      tmpList.push(...newUser.map((item) => item.memberId));
     }
     setCheck(tmpList);
   };
@@ -115,31 +143,11 @@ const MyNewUserTable = () => {
     setPassFailValue(value);
   };
 
-  // pass/fail Fetch
-  const passFail = async () => {
+  // 합격·불합격. 재조회는 성공한 뒤에 뮤테이션 정의가 한다
+  const passFail = () => {
+    if (isChanging) return;
     if (passFailValue !== '') {
-      setIsLoading(true);
-      try {
-        let passFailSend = {
-          memberIdList: check,
-          state: passFailValue,
-        };
-        await fetchPassFailData('/members/unapproved', 'PUT', 'token', passFailSend);
-
-        let fetchUrl = '/members/unapproved?page=0';
-        if (path === '/staff/member/newStudents') {
-          fetchUrl += '&size=15';
-        } else if (path === '/staff/member') {
-          fetchUrl += '&size=10';
-        }
-
-        await fetchNewUserData(fetchUrl, 'GET', 'token');
-        setAcceptUser(true);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setIsLoading(false); // 요청이 끝난 후 loading을 false로 설정
-      }
+      passFailMutation.mutate({ memberIdList: check, state: passFailValue });
     }
   };
 
@@ -150,10 +158,9 @@ const MyNewUserTable = () => {
 
   // 검색 버튼 클릭 핸들러
   const searchStudent = () => {
-    // 검색어를 이용하여 API 호출
     if (searchValue.trim() !== '') {
-      setIsLoading(true);
-      fetchNewUserData(`/members/unapproved?search=${searchValue}`, 'GET', 'token');
+      setSearch(searchValue);
+      setPage(1);
     }
   };
 
@@ -164,48 +171,9 @@ const MyNewUserTable = () => {
     }
   };
 
-  // 회원관리 / 신입생 자세히 보기 페이지 별로 다른 fetch 처리
-  useEffect(() => {
-    setIsLoading(true);
-    let fetchUrl = '/members/unapproved?page=0';
-    if (path === '/staff/member/newStudents') {
-      fetchUrl += '&size=15';
-    } else if (path === '/staff/member') {
-      fetchUrl += '&size=10';
-    }
-    fetchNewUserData(fetchUrl, 'GET', 'token');
-  }, [passFailData, access]);
-
-  // 받아온 데이터 가공
-  useEffect(() => {
-    if (newUserData) {
-      const processedData = newUserData.data.map((item: newUserInterface, idx: number) => ({
-        id: idx + 1,
-        name: item.name,
-        grade: item.grade,
-        studentId: item.studentId,
-        phoneNumber: item.phoneNumber,
-        major: item.major,
-        memberId: item.memberId,
-      }));
-
-      // totalUser, totalPage set
-      setTotalNewUser(newUserData.pageInfo.totalElements);
-      setTotalPage(newUserData.pageInfo.totalPages);
-
-      // 신입생 정보 set
-      setNewUser(processedData);
-
-      setCheck([] as number[]);
-      setIsLoading(false);
-    }
-  }, [newUserData, access]);
-
-  // 페이지네이션에서 data get 하면 table에서 다시 데이터 필터링 해주어야 함.
-
-  return (
+  return children(
     <>
-      {isLoading ? (
+      {!newUserData ? (
         <FlexDiv width="100%" height="30vh">
           <Loading />
         </FlexDiv>
@@ -229,6 +197,7 @@ const MyNewUserTable = () => {
                 $borderRadius={3}
                 $padding="6px 12px"
                 height="40px"
+                disabled={isChanging}
                 onClick={() => passFail()}
               >
                 <FlexDiv $margin="0 5px 0 0">
@@ -256,9 +225,9 @@ const MyNewUserTable = () => {
               >
                 {isAuthorizedOverExecutives && (
                   <FlexDiv $padding="10px">
-                    {newUser && newUser.length !== 0 && (
+                    {newUser.length !== 0 && (
                       <Checkbox
-                        checked={!!newUser && check.length === Object.values(newUser).length}
+                        checked={check.length === newUser.length}
                         onChange={checkAllClickEvent}
                       />
                     )}
@@ -276,8 +245,8 @@ const MyNewUserTable = () => {
                   </FlexDiv>
                 ))}
               </FlexDiv>
-              {newUser && newUser.length !== 0 ? (
-                Object.values(newUser).map((element: newUserInterface, idx: number) => (
+              {newUser.length !== 0 ? (
+                newUser.map((element, idx: number) => (
                   <FlexDiv
                     key={`contentItem${idx}`}
                     width="100%"
@@ -360,18 +329,17 @@ const MyNewUserTable = () => {
               </SearchControls>
             </FlexDiv>
           )}
-          {newUser && newUser.length !== 0 && (
+          {newUser.length !== 0 && (
             <Pagination
-              totalPage={totalPage}
-              fetchUrl="/members/unapproved"
-              token
-              paginationFetch={fetchNewUserData}
-              size={path === '/staff/member/newStudents' ? 15 : 10}
+              currentPage={page}
+              totalPage={newUserData.pageInfo.totalPages}
+              onPageChange={setPage}
             />
           )}
         </Div>
       )}
-    </>
+    </>,
+    newUserData?.pageInfo.totalElements ?? 0,
   );
 };
 

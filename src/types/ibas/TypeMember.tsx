@@ -40,3 +40,21 @@ export interface notGraduatedMemberInterface {
   major: string;
   role: string;
 }
+
+// 백엔드 UpdateRequestDto (PUT /members/unapproved). state는 pass 또는 fail
+export interface updateUnapprovedMembersInterface {
+  memberIdList: number[];
+  state: string;
+}
+
+// 백엔드 UpdateRoleRequestDto (PUT /members/approved/role)
+export interface updateMembersRoleInterface {
+  memberIdList: number[];
+  role: string;
+}
+
+// 백엔드 UpdateTypeRequestDto (PUT /members/approved/type)
+export interface updateMembersTypeInterface {
+  memberIdList: number[];
+  type: string;
+}
