@@ -1,6 +1,7 @@
 import { mutationOptions, queryOptions, useQuery } from '@tanstack/react-query';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
+import { isTokenExpiredError, refreshAccessTokenOnce } from './apiErrorEffects';
 import { keepPreviousPage } from './keepPreviousPage';
 import { queryClient } from './queryClient';
 import { signUpQueries } from './signUp';
@@ -16,6 +17,7 @@ import {
   updateMyInfoDetail,
   updateMyInfoIntro,
   updateMyInfoPicture,
+  withdrawMyAccount,
 } from '../api/myInfo';
 import { setAccessToken } from '../api/token';
 import { loggedOut } from '../recoil/backState';
@@ -105,6 +107,17 @@ export const useEndSession = () => {
   };
 };
 
+// 공통 흐름은 토큰이 만료된 뮤테이션을 다시 보내지 않아 탈퇴를 눌러도 아무 일이 없는 것처럼 보인다. 토큰을 갱신하고 한 번만 다시 보낸다
+const withdrawRetryingOnExpiredToken = async () => {
+  try {
+    return await withdrawMyAccount();
+  } catch (error) {
+    if (!isTokenExpiredError(error)) throw error;
+    await refreshAccessTokenOnce();
+    return withdrawMyAccount();
+  }
+};
+
 // 화면에 보이는 내 정보가 바뀌는 변경만 무효화한다. Promise는 반환하지 않는다
 const invalidateMyInfo = () => {
   queryClient.invalidateQueries({ queryKey: myInfoQueries.detail().queryKey });
@@ -131,6 +144,10 @@ export const myInfoMutations = {
   requestNameChange: () =>
     mutationOptions({
       mutationFn: (name: string | undefined) => requestMyInfoNameChange(name),
+    }),
+  withdraw: () =>
+    mutationOptions({
+      mutationFn: withdrawRetryingOnExpiredToken,
     }),
   // 승인·거절. 표가 성공하면 1페이지로 돌아가므로 1페이지 목록만 무효화한다. 내 정보는 옛 화면도 다시 조회하지 않았다
   handleNameRequest: () =>

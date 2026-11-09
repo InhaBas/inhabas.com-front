@@ -310,7 +310,10 @@ const CommentList = (props: commentPropsInterface) => {
                     overflow="hidden"
                     $margin="0 5px 0 0"
                   >
-                    <Img src={comment?.writer.pictureUrl} $objectFit="cover" />
+                    <Img
+                      src={comment?.writer.pictureUrl || '/images/default_profile.png'}
+                      $objectFit="cover"
+                    />
                   </FlexDiv>
                   <AuthorMeta height="30px">
                     <AuthorInfo>
@@ -321,11 +324,13 @@ const CommentList = (props: commentPropsInterface) => {
                       </Div>
                       <Div>
                         <WriterDetails>
-                          <Div>
-                            <WrapText fontSize="xs" color="grey4">
-                              ({comment?.writer.major}) |
-                            </WrapText>
-                          </Div>
+                          {comment?.writer.major && (
+                            <Div>
+                              <WrapText fontSize="xs" color="grey4">
+                                ({comment.writer.major}) |
+                              </WrapText>
+                            </Div>
+                          )}
                           <FlexDiv width="13px" height="13px" $margin="0 5px">
                             <Img src="/images/clock_grey.svg"></Img>
                           </FlexDiv>

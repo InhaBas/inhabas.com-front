@@ -28,6 +28,9 @@ export const updateMyInfoPicture = (body: FormData) =>
 export const requestMyInfoNameChange = (name: string | undefined) =>
   request<null>('/myInfo/name', { method: 'PUT', auth: true, body: name });
 
+// 회원 탈퇴. 성공하면 기존 access·refresh 토큰이 모두 무효가 된다
+export const withdrawMyAccount = () => request<null>('/myInfo', { method: 'DELETE', auth: true });
+
 export interface MyInfoListParams {
   page: number; // 1부터 센다
   size: number;

@@ -14,6 +14,7 @@ import ModalMajor from './ModalMajor';
 import ModalPostBankHistory from './ModalPostBankHistory';
 import ModalScholarshipHistory from './ModalScholarshipHistory';
 import ModalUpdateBankHistory from './ModalUpdateBankHistory';
+import ModalWithdraw from './ModalWithdraw';
 import { modalInfo, modalOpen } from '../../../recoil/frontState';
 import { FlexDiv } from '../../../styles/assets/Div';
 import { media } from '../../../styles/theme';
@@ -102,7 +103,8 @@ export const Modal = () => {
             (modalType.type === 'bankHistoryUpdate' && <ModalUpdateBankHistory />) ||
             (modalType.type === 'scholarshipPost' && <ModalScholarshipHistory />) ||
             (modalType.type === 'scholarshipUpdate' && <ModalScholarshipHistory />) ||
-            (modalType.type === 'bankSupportStatus' && <ModalBankSupportReject />)}
+            (modalType.type === 'bankSupportStatus' && <ModalBankSupportReject />) ||
+            (modalType.type === 'withdraw' && <ModalWithdraw />)}
         </ModalBackground>
       )}
     </>
