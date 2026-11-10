@@ -18,9 +18,6 @@ export const queryClient = new QueryClient({
       refetchOnReconnect: false,
       // 해제 조건: 오프라인 UX(요청 보류·표시)를 정할 때
       networkMode: 'always',
-      // 해제 조건: 재진입 시 캐시된 이전 데이터를 먼저 보여 주는 것을 UX로 받아들일 때.
-      // setQueryData·낙관적 업데이트도 이때 검토한다
-      gcTime: 0,
     },
     mutations: {
       // 해제 조건: 오프라인 UX(요청 보류·표시)를 정할 때

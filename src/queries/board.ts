@@ -59,9 +59,18 @@ export const boardMutations = {
     mutationOptions({
       mutationFn: ({ board, id, body }: { board: string; id: string; body: saveBoardInterface }) =>
         updateBoard(board, id, body),
-      // 상세는 무효화하지 않는다. 수정 화면이 구독 중인 상세를 다시 요청하게 되고(옛 화면에 없던 요청),
-      // 성공하면 목록으로 이동하므로 상세는 다음에 열 때 새로 조회한다
-      onSuccess: (_data, { board }) => invalidateBoardLists(board),
+      // 토큰 유무로 나뉜 그 글의 상세 캐시를 모두 다시 받는다. 다음에 상세를 열 때 고치기 전 내용이 잠깐 보이지 않게 한다
+      onSuccess: (_data, { board, id }) => {
+        invalidateBoardLists(board);
+        queryClient.invalidateQueries({
+          queryKey: boardQueries.details(),
+          predicate: (query) => {
+            const params = query.queryKey.at(-1) as BoardDetailParams;
+            return params.board === board && params.id === id;
+          },
+          refetchType: 'all',
+        });
+      },
     }),
   delete: () =>
     mutationOptions({

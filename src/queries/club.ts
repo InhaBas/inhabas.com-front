@@ -65,7 +65,14 @@ export const clubMutations = {
     mutationOptions({
       mutationFn: ({ id, body }: { id: number; body: saveHistoryInterface }) =>
         updateClubHistory(id, body),
-      onSuccess: invalidateHistoryList,
+      // 그 연혁의 상세 캐시도 다시 받는다. 다음에 수정 모달을 열 때 고치기 전 내용이 잠깐 보이지 않게 한다
+      onSuccess: (_data, { id }) => {
+        invalidateHistoryList();
+        queryClient.invalidateQueries({
+          queryKey: clubQueries.historyDetail({ id }).queryKey,
+          refetchType: 'all',
+        });
+      },
     }),
   deleteHistory: () =>
     mutationOptions({
@@ -93,7 +100,15 @@ export const clubActivityMutations = {
     mutationOptions({
       mutationFn: ({ id, body }: { id: string; body: saveActivityInterface }) =>
         updateClubActivity(id, body),
-      onSuccess: invalidateActivityLists,
+      // 토큰 유무로 나뉜 그 활동의 상세 캐시를 모두 다시 받는다. 다음에 상세를 열 때 고치기 전 내용이 잠깐 보이지 않게 한다
+      onSuccess: (_data, { id }) => {
+        invalidateActivityLists();
+        queryClient.invalidateQueries({
+          queryKey: [...clubQueries.activities(), 'detail'],
+          predicate: (query) => (query.queryKey.at(-1) as ClubActivityDetailParams).id === id,
+          refetchType: 'all',
+        });
+      },
     }),
   delete: () =>
     mutationOptions({
