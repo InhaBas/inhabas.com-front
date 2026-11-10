@@ -74,7 +74,7 @@ const MyChangeNameUserTable = () => {
       status: convertStatusLabel(item.status),
     })) ?? [];
 
-  // 옛 화면처럼 새 응답을 받을 때마다 체크를 지운다
+  // 옛 화면처럼 새 응답을 받을 때마다 체크를 지운다. 같은 내용이 다시 오면 data 참조가 그대로라 지우지 않는다
   useEffect(() => {
     setCheck(0);
   }, [user, setCheck]);
@@ -93,11 +93,19 @@ const MyChangeNameUserTable = () => {
     setValue(value);
   };
 
-  // 이름 변경 승인·거절. 성공하면 옛 화면처럼 1페이지로 돌아간다
+  // 이름 변경 승인·거절. 성공하면 옛 화면처럼 1페이지로 돌아가고, 응답 내용과 관계없이 체크를 지운다
   const acceptName = () => {
     if (isChanging) return;
     if (value !== '') {
-      acceptMutation.mutate({ id: check, status: value }, { onSuccess: () => setPage(1) });
+      acceptMutation.mutate(
+        { id: check, status: value },
+        {
+          onSuccess: () => {
+            setCheck(0);
+            setPage(1);
+          },
+        },
+      );
     }
   };
 
