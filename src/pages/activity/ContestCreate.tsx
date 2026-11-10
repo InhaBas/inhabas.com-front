@@ -9,6 +9,7 @@ import DragNDrop from '../../components/common/DragNDrop';
 import Loading from '../../components/common/Loading';
 import TextEditor from '../../components/common/TextEditor';
 import { DateFunction } from '../../functions/dateFunction';
+import { useFormSnapshot } from '../../hooks/useFormSnapshot';
 import { contestMutations, contestQueries } from '../../queries/contest';
 import { fileIdList } from '../../recoil/backState';
 import { menuId, selectedFile } from '../../recoil/frontState';
@@ -114,8 +115,9 @@ const ContestCreate = () => {
     ...contestQueries.detail({ contestType: url, id: paramID ?? '', auth: true }),
     enabled: update === 'update',
   });
-  // 옛 화면처럼 이 화면에서 새로 받은 응답이 올 때까지 스피너를 보이고, 그 응답으로 폼을 채운다
-  const detail = isFetchedAfterMount ? detailData : undefined;
+  // 옛 화면처럼 이 화면에서 새로 받은 응답이 올 때까지 스피너를 보이고, 그 응답으로 폼을 채운다.
+  // 그 뒤에 다시 받은 응답으로는 편집 중인 폼을 덮어쓰지 않는다
+  const detail = useFormSnapshot(isFetchedAfterMount ? detailData : undefined);
   const contestType = pickedContestType ?? detail?.contestFieldId ?? null;
   const createMutation = useMutation(contestMutations.create());
   const updateMutation = useMutation(contestMutations.update());
