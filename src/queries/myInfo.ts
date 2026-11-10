@@ -4,7 +4,6 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { isTokenExpiredError, refreshAccessTokenOnce } from './apiErrorEffects';
 import { keepPreviousPage } from './keepPreviousPage';
 import { queryClient } from './queryClient';
-import { signUpQueries } from './signUp';
 import {
   getMyBoardList,
   getMyCommentList,
@@ -92,8 +91,10 @@ export const useMyRole = (): string => {
   로그인 상태를 끝낼 때 부른다. 화면 이동은 부르는 쪽이 맡는다
   - 토큰 저장소를 바로 'default'로 바꾼다. 이어서 HeaderNav가 다시 보내는 /signUp/check가 이 값을 실어야 해서
     atom(onSet은 Recoil 배치가 끝난 뒤에 돈다) 대신 저장소에 쓴다. tokenAccess atom은 저장소 구독으로 따라온다
-  - /signUp/check와 /myInfo 캐시를 지운다. HeaderNav가 /signUp/check를 다시 요청하는 것은 옛 화면이 토큰이 바뀔 때마다
-    다시 요청하던 동작이고, 그 A005 → refresh 실패가 failRefreshing을 켠다. /signUp/check 결과가 비었으므로 /myInfo는 요청하지 않는다
+  - 쿼리 캐시를 모두 지운다. gcTime 동안 남은 로그인 사용자의 응답(회원 목록·회계·권한이 필요한 글)이 로그아웃 뒤 화면에 먼저 보이지 않게 한다.
+    지운 쿼리는 관찰 중인 컴포넌트가 다음에 렌더될 때 새로 만들어져 요청된다. 지금 화면은 부르는 쪽의 이동으로 같은 렌더에서 언마운트된다
+  - HeaderNav가 /signUp/check를 다시 요청하는 것은 옛 화면이 토큰이 바뀔 때마다 다시 요청하던 동작이고,
+    그 A005 → refresh 실패가 failRefreshing을 켠다. /signUp/check 결과가 비었으므로 /myInfo는 요청하지 않는다
 */
 export const useEndSession = () => {
   const setLoggedOut = useSetRecoilState(loggedOut);
@@ -101,8 +102,7 @@ export const useEndSession = () => {
   return () => {
     setLoggedOut(true);
     setAccessToken('default');
-    queryClient.removeQueries({ queryKey: signUpQueries.check().queryKey });
-    queryClient.removeQueries({ queryKey: myInfoQueries.all() });
+    queryClient.clear();
     document.cookie = 'ibas_refresh' + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;';
   };
 };

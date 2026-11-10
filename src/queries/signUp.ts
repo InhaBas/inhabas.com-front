@@ -1,5 +1,6 @@
 import { mutationOptions, queryOptions } from '@tanstack/react-query';
 
+import { queryClient } from './queryClient';
 import {
   completeSignUp,
   createSignUpAnswers,
@@ -62,7 +63,8 @@ export const signUpQueries = {
   - 개인정보 저장: 학생은 질문 화면으로 이동하고, 교수는 가입이 끝나 홈에서 reload(relogin)한다
   - 답변 임시저장: 입력칸에 이미 사용자가 쓴 값이 있다
   - 가입 완료: 홈에서 reload(relogin)하므로 캐시가 모두 사라진다
-  - 일정 저장: 입력칸에 이미 사용자가 쓴 값이 있고, 옛 화면은 다시 들어와야 새 기수를 보여 줬다
+  - 일정 저장: 입력칸에 이미 사용자가 쓴 값이 있다. 다만 일정과 메인 모집 공지 캐시는 다시 받는다.
+    gcTime 동안 캐시가 남아 다시 들어오거나 메인으로 갈 때 저장 전 일정이 잠깐 보이지 않게 한다
 */
 export const signUpMutations = {
   createProfile: () =>
@@ -80,5 +82,11 @@ export const signUpMutations = {
   updateSchedule: () =>
     mutationOptions({
       mutationFn: (body: scheduleInterface) => updateSignUpSchedule(body),
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: [...signUpQueries.all(), 'schedule'],
+          refetchType: 'all',
+        });
+      },
     }),
 };

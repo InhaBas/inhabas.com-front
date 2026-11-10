@@ -54,9 +54,14 @@ export const bankSupportMutations = {
     mutationOptions({
       mutationFn: ({ id, body }: { id: string; body: saveSupportInterface }) =>
         updateBankSupport(id, body),
-      // 상세는 무효화하지 않는다. 수정 화면이 구독 중인 상세를 다시 요청하게 되고(옛 화면에 없던 요청),
-      // 성공하면 목록으로 이동하므로 상세는 다음에 열 때 새로 조회한다
-      onSuccess: invalidateBankSupportLists,
+      // 상세 캐시도 다시 받는다. 다음에 상세를 열 때 고치기 전 내용이 잠깐 보이지 않게 한다(수정 화면과 같은 키다)
+      onSuccess: (_data, { id }) => {
+        invalidateBankSupportLists();
+        queryClient.invalidateQueries({
+          queryKey: bankSupportQueries.detail({ id }).queryKey,
+          refetchType: 'all',
+        });
+      },
     }),
   delete: () =>
     mutationOptions({

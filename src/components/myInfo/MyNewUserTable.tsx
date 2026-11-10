@@ -102,13 +102,15 @@ const MyNewUserTable = ({ children }: MyNewUserTableProps) => {
       memberId: item.memberId,
     })) ?? [];
 
-  // 옛 화면처럼 새 응답을 받을 때마다 체크를 지운다
+  // 옛 화면처럼 새 응답을 받을 때마다 체크를 지운다. 같은 내용이 다시 오면 data 참조가 그대로라 지우지 않는다
   useEffect(() => {
     setCheck([]);
   }, [newUserData, setCheck]);
 
   // 합격·불합격이 성공하면 옛 화면처럼 검색 없는 1페이지로 돌아간다
+  // 체크도 지운다. 새 응답이 같은 내용이면 위 effect가 돌지 않으므로 성공 시점에 지운다
   useOnMemberListChanged('unapproved', () => {
+    setCheck([]);
     setPage(1);
     setSearch('');
   });

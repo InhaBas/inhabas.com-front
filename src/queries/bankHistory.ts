@@ -47,7 +47,7 @@ export const bankHistoryQueries = {
 /*
   추가·수정·삭제에 성공하면 Bank가 1페이지로 돌아간다(useOnBankHistoryChanged). 옛 화면도 성공하면 page=0으로 다시 조회했다.
   그래서 1페이지 목록만 무효화한다. 보고 있던 N페이지까지 무효화하면 N페이지를 다시 받은 뒤 1페이지를 또 받아 요청이 는다.
-  N페이지 목록은 Bank가 1페이지로 옮기면 관찰자가 없어져 gcTime 0으로 캐시에서 사라진다. Promise는 반환하지 않는다
+  N페이지 목록은 캐시에 남지만 staleTime 0이라 다시 그 페이지로 가면 새로 조회한다. Promise는 반환하지 않는다
 */
 const invalidateFirstPageLists = () => {
   queryClient.invalidateQueries({
@@ -56,7 +56,7 @@ const invalidateFirstPageLists = () => {
   });
 };
 
-// 상세는 무효화하지 않는다. 수정 모달은 성공하면 닫히고, 상세는 다음에 열 때 새로 조회한다
+// 수정은 상세 캐시도 다시 받는다. 다음에 상세 모달을 열 때 고치기 전 내용이 잠깐 보이지 않게 한다
 export const bankHistoryMutations = {
   create: () =>
     mutationOptions({
@@ -69,7 +69,13 @@ export const bankHistoryMutations = {
       mutationKey: [...bankHistoryQueries.all(), 'update'],
       mutationFn: ({ id, body }: { id: string; body: BankHistoryPayload }) =>
         updateBankHistory(id, body),
-      onSuccess: invalidateFirstPageLists,
+      onSuccess: (_data, { id }) => {
+        invalidateFirstPageLists();
+        queryClient.invalidateQueries({
+          queryKey: bankHistoryQueries.detail({ id }).queryKey,
+          refetchType: 'all',
+        });
+      },
     }),
   delete: () =>
     mutationOptions({

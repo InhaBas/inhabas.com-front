@@ -9,6 +9,7 @@ import styled from 'styled-components';
 
 import DragNDrop from '../../components/common/DragNDrop';
 import { getTodayKST, toDateOnly } from '../../functions/bankHistoryFunctions';
+import { useFormSnapshot } from '../../hooks/useFormSnapshot';
 import { bankSupportMutations, bankSupportQueries } from '../../queries/bankSupport';
 import { fileIdList } from '../../recoil/backState';
 import { menuId, selectedFile } from '../../recoil/frontState';
@@ -64,9 +65,10 @@ const BankSupportCreate = () => {
   });
   /*
     상세 화면에서 넘어오면 같은 키의 캐시가 남아 있어 마운트하자마자 데이터가 보인다.
-    옛 화면처럼 이 화면에서 새로 받은 응답으로 폼을 채운다. 이 화면의 조회가 실패하면 남은 캐시로 채우지 않는다
+    옛 화면처럼 이 화면에서 새로 받은 응답으로 폼을 채운다. 이 화면의 조회가 실패하면 남은 캐시로 채우지 않는다.
+    그 뒤에 다시 받은 응답(또는 재요청 실패)으로는 편집 중인 폼을 덮어쓰거나 스피너로 되돌리지 않는다
   */
-  const detail = isFetchedAfterMount && isSuccess ? detailData : undefined;
+  const detail = useFormSnapshot(isFetchedAfterMount && isSuccess ? detailData : undefined);
   const createMutation = useMutation(bankSupportMutations.create());
   const updateMutation = useMutation(bankSupportMutations.update());
   const isSubmitting = createMutation.isPending || updateMutation.isPending;

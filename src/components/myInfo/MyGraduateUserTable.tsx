@@ -108,13 +108,15 @@ const MyGraduateUserTable = ({ children }: MyGraduateUserTableProps) => {
       memberId: item.memberId,
     })) ?? [];
 
-  // 옛 화면처럼 새 응답을 받을 때마다 체크를 지운다
+  // 옛 화면처럼 새 응답을 받을 때마다 체크를 지운다. 같은 내용이 다시 오면 data 참조가 그대로라 지우지 않는다
   useEffect(() => {
     setCheck([]);
   }, [user, setCheck]);
 
   // 이 표나 동아리원 표의 변경이 성공하면 옛 화면처럼 검색 없는 1페이지로 돌아간다
+  // 체크도 지운다. 새 응답이 같은 내용이면 위 effect가 돌지 않으므로 성공 시점에 지운다
   useOnMemberListChanged('graduated', () => {
+    setCheck([]);
     setPage(1);
     setSearch('');
   });

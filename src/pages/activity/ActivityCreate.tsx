@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import DragNDrop from '../../components/common/DragNDrop';
 import Loading from '../../components/common/Loading';
 import TextEditor from '../../components/common/TextEditor';
+import { useFormSnapshot } from '../../hooks/useFormSnapshot';
 import { clubActivityMutations, clubQueries } from '../../queries/club';
 import { fileIdList } from '../../recoil/backState';
 import { menuId, selectedFile } from '../../recoil/frontState';
@@ -62,8 +63,9 @@ const ActivityCreate = () => {
     ...clubQueries.activityDetail({ id: paramID ?? '', auth: true }),
     enabled: update === 'update',
   });
-  // 옛 화면처럼 이 화면에서 새로 받은 응답이 올 때까지 스피너를 보이고, 그 응답으로 폼을 채운다
-  const detail = isFetchedAfterMount ? detailData : undefined;
+  // 옛 화면처럼 이 화면에서 새로 받은 응답이 올 때까지 스피너를 보이고, 그 응답으로 폼을 채운다.
+  // 그 뒤에 다시 받은 응답으로는 편집 중인 폼을 덮어쓰지 않는다
+  const detail = useFormSnapshot(isFetchedAfterMount ? detailData : undefined);
   const createMutation = useMutation(clubActivityMutations.create());
   const updateMutation = useMutation(clubActivityMutations.update());
   const isSubmitting = createMutation.isPending || updateMutation.isPending;
