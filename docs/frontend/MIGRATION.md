@@ -4,18 +4,20 @@
 
 > ⚠️ **주의**: 마이그레이션은 기능 개발과 병행하여 **점진적으로** 진행합니다. 급하게 전환할 필요는 없으며, 팀 일정과 리스크를 고려하여 결정합니다.
 
-> 📚 **관련 문서**: [리팩토링 체크리스트](./CHECKLIST.md) | [테스트 전략](./TESTING.md)
+> 📚 **관련 문서**: [리팩토링 체크리스트](./CHECKLIST.md) | [테스트 전략](./TESTING.md) | [TanStack Query 컨벤션](./TANSTACK-QUERY.md)
 
 ---
 
 ## ✅ 완료된 마이그레이션
 
-| 항목                      | 완료 시점 | 비고                                                       |
-| ------------------------- | --------- | ---------------------------------------------------------- |
-| **CRA → Vite**            | 완료      | `vite.config.ts`, `@vitejs/plugin-react` 적용              |
-| **폴더 구조 재설계**      | 완료      | feature 기반 구조 (`components/`, `pages/`, `containers/`) |
-| **폴더명 소문자 통일**    | 완료      | 전체 폴더명 소문자 변경                                    |
-| **환경변수 마이그레이션** | 완료      | `process.env.REACT_APP_*` → `import.meta.env.VITE_*`       |
+| 항목                             | 완료 시점              | 비고                                                                                  |
+| -------------------------------- | ---------------------- | ------------------------------------------------------------------------------------- |
+| **CRA → Vite**                   | 완료                   | `vite.config.ts`, `@vitejs/plugin-react` 적용                                         |
+| **폴더 구조 재설계**             | 완료                   | feature 기반 구조 (`components/`, `pages/`, `containers/`)                            |
+| **폴더명 소문자 통일**           | 완료                   | 전체 폴더명 소문자 변경                                                               |
+| **환경변수 마이그레이션**        | 완료                   | `process.env.REACT_APP_*` → `import.meta.env.VITE_*`                                  |
+| **TypeScript 4.9 → 5.9.3**       | 2026-09-28 (#652)      | `moduleResolution` 정합성 복구, `npm run typecheck` 추가                              |
+| **useFetch → TanStack Query v5** | 2026-11-09 (#661–#674) | PR 12개, `useFetch`·서버 상태 atom·`axios` 제거. 규칙은 [컨벤션](./TANSTACK-QUERY.md) |
 
 ---
 
@@ -50,48 +52,17 @@ npm uninstall @types/react-router-dom
 
 ---
 
-### 2. TypeScript 4.9 → 5.x 업그레이드
+### 2. TypeScript 4.9 → 5.9.3 업그레이드 — ✅ 완료
 
-**현재 상황:**
+2026-09-28 #652로 main에 병합했다(이슈 #627).
 
-```json
-"typescript": "^4.9.5"  // 현재
-```
+- TS 4.9.5가 `moduleResolution: "bundler"`를 인식하지 못해 `tsc --noEmit`이 설정 단계에서 실패하던 문제를 해결했다.
+- 타입 검사용 `npm run typecheck` 스크립트를 추가했다.
+- 타입 에러는 `ActivityDetail`의 효과 없는 styled prop 1곳만 고쳤다. 런타임 동작은 같다.
 
-TypeScript 5.x는 2023년 3월 출시, 현재 5.8까지 릴리즈됨. 프로젝트에 사용 중인 ESLint 패키지도 이미 `@typescript-eslint/eslint-plugin: ^8.x`로 최신 버전이라 TypeScript 자체만 구버전.
+**남은 항목:**
 
-> ESLint 본체는 `9.x` 최신판에 고정돼 있다 (`10.x`는 `eslint-plugin-react`가
-> 아직 지원하지 않아 즉시 크래시함 — [ESLint + Prettier 문서](./PRETTIER.md) 참고).
-> TS 5.x로 올릴 때 이 제약과는 무관하다.
-
-**TypeScript 5.x 주요 개선:**
-
-- `const` 타입 파라미터
-- `using` 키워드 (명시적 리소스 관리)
-- `verbatimModuleSyntax` 옵션
-- 데코레이터 표준화
-- 속도 및 메모리 성능 개선
-- 더 나은 타입 추론
-
-**마이그레이션 방법:**
-
-```bash
-npm install -D typescript@latest
-```
-
-**주의사항:**
-
-- `strict` 모드가 이미 활성화되어 있어 5.x 업그레이드 후 일부 타입 에러 추가 발생 가능
-- `tsconfig.json`의 `target: "ES2015"` → `"ES2020"` 이상으로 올리는 것도 함께 고려
-
-**마이그레이션 난이도:** 낮음  
-**예상 소요 시간:** 반나절 ~ 1일 (타입 에러 수정 포함)
-
-**체크리스트:**
-
-- [ ] `typescript` 최신 버전 설치
-- [ ] 타입 에러 확인 및 수정
-- [ ] `tsconfig.json`의 `target` 버전 상향 검토
+- [ ] `tsconfig.json`의 `target: "ES2015"` → `"ES2020"` 이상 상향 검토
 
 ---
 
@@ -159,71 +130,33 @@ codemod 도구 또는 VSCode 전역 검색/교체로 점진적 변환.
 
 ---
 
-### 4. `useFetch` + Recoil 서버 상태 → TanStack Query 마이그레이션
+### 4. TanStack Query 전환 후속 작업
 
-**현재 상황:**
+전환 자체는 끝났다(위 "✅ 완료" 표). 규칙은 [TanStack Query 컨벤션](./TANSTACK-QUERY.md)에 있다. 아래는 전환 범위에서 일부러 뺀 일과 아직 확인하지 못한 QA다.
 
-서버 데이터를 직접 구현한 `useFetch` 훅으로 가져와 Recoil atom에 저장. 로딩·에러 상태, 캐싱, 재요청 모두 수동 구현.
+**후속 작업** (각각 별도 PR)
 
-```typescript
-// 현재 패턴 (약 40개 이상 컴포넌트에서 반복)
-const [boardData, fetchBoardData] = useFetch();
-const [board, setBoard] = useRecoilState(boardInfo);
+- [ ] 과도기 QueryClient 기본값 해제 (해제 조건은 컨벤션 문서 8절), `setQueryData`·낙관적 업데이트 검토
+- [ ] 에러·인증 UX 개선: alert → 토스트, refresh 뒤 원 요청 재시도, 죽은 A007·401 분기 정리
+- [ ] Suspense·ErrorBoundary와 에러 화면
+- [ ] 자동 테스트 (Vitest, MSW, CI)
 
-useEffect(() => {
-  fetchBoardData('/board/free', 'GET', token);
-}, []);
+파일·이미지 blob 다운로드 4곳(Carousel, BoardDetail, ActivityDetail, ContestDetail의 직접 `fetch`)은 서버 상태가 아니라 전환 대상이 아니다.
 
-useEffect(() => {
-  if (boardData) setBoard(boardData);
-}, [boardData]);
-```
+**미확인 QA** (모두 상용 배포 후 읽기 확인까지만 했다)
 
-**문제점:**
-
-- 캐시 무효화 없음 → `refetch` atom으로 수동 갱신
-- 동일 API 여러 컴포넌트에서 중복 호출 가능
-- 로딩/에러 상태 관리 코드 중복
-- Recoil에 서버 상태 + UI 상태 혼재
-
-**목표:**
-
-```typescript
-// TanStack Query 적용 후
-const {
-  data: board,
-  isLoading,
-  error,
-} = useQuery({
-  queryKey: ['board', 'free'],
-  queryFn: () => fetchBoard('/board/free'),
-});
-```
-
-**마이그레이션 전략:**
-
-새 페이지/기능부터 TanStack Query 사용 → 기존 코드 점진적 전환.
-
-```
-1단계: TanStack Query 설치 및 QueryClient 설정
-2단계: 새 기능은 TanStack Query로 작성
-3단계: 기존 useFetch 코드를 feature별로 전환
-4단계: 서버 상태 Recoil atom 제거
-5단계: useFetch 완전 제거 또는 내부 유틸로 축소
-```
-
-**마이그레이션 난이도:** 중간  
-**예상 소요 시간:** 4~6주 (전체 마이그레이션)
-
-**체크리스트:**
-
-- [ ] `@tanstack/react-query` 설치
-- [ ] `QueryClientProvider` 설정 (`App.tsx` 또는 `index.tsx`)
-- [ ] API 레이어 분리 (`src/api/board.ts` 등)
-- [ ] 신규 기능부터 TanStack Query 사용
-- [ ] feature별 기존 useFetch → useQuery/useMutation 전환
-- [ ] 서버 상태 Recoil atom 순차 제거
-- [ ] React Query Devtools 개발 환경에 추가
+| PR                       | 미확인                                                                  |
+| ------------------------ | ----------------------------------------------------------------------- |
+| 2 홈·소개 (#663)         | 에러 경로 5번(`code` 없는 500), 연혁 추가·수정·삭제, `Button :disabled` |
+| 3 장학 (#664)            | 변경, 404/403                                                           |
+| 4 인증·내정보 (#665)     | 모달 저장, signing                                                      |
+| 5 가입·회칙 (#667)       | 가입 흐름 전체                                                          |
+| 6 게시판 (#668)          | 글·댓글 변경                                                            |
+| 7 활동·공모전 (#669)     | 작성·저장·삭제                                                          |
+| 8 회계 내역 (#670)       | 총무 화면, 변경                                                         |
+| 9 예산 신청 (#671)       | 상태 변경, 작성                                                         |
+| 10 회원 관리 표 (#672)   | 뮤테이션, 체크박스, 이름 수정 요청 목록, 403                            |
+| 11 회원 관리 기타 (#674) | `/staff/manage`, 지원서 내용, 일정 저장, 회칙 수정, 합격·불합격         |
 
 ---
 
@@ -256,7 +189,7 @@ TanStack Query 도입 후 서버 상태 atom이 제거되면 Recoil 의존도가
 
 **체크리스트:**
 
-- [ ] TanStack Query 마이그레이션 완료 후 진행
+- [x] TanStack Query 마이그레이션 완료 후 진행
 - [ ] atom 목록 정리 (UI 상태만 남긴 것 확인)
 - [ ] Jotai로 점진적 전환
 - [ ] Recoil 완전 제거
@@ -378,17 +311,17 @@ styled-components v6 사용 중: 44개 파일. 당장 큰 문제는 없으나 �
 
 ## 마이그레이션 우선순위 요약
 
-| 우선순위 | 항목                                   | 난이도    | 예상 기간  |
-| -------- | -------------------------------------- | --------- | ---------- |
-| ✅ 완료  | CRA → Vite                             | -         | -          |
-| ✅ 완료  | 환경변수 `REACT_APP_` → `VITE_`        | -         | -          |
-| 🔴 즉시  | `@types/react-router-dom` v5 타입 제거 | 매우 낮음 | 10분       |
-| 🔴 즉시  | TypeScript 5.x 업그레이드              | 낮음      | 반나절~1일 |
-| 🟡 중간  | 절대 경로 alias (`@/`) 설정            | 낮음      | 1~2일      |
-| 🟡 중간  | useFetch → TanStack Query              | 중간      | 4~6주      |
-| 🟢 장기  | Recoil → Jotai                         | 중간      | 2~4주      |
-| 🟢 장기  | styled-components → 제로 런타임 검토   | 중간~높음 | 3~8주      |
-| 🟢 장기  | TypeScript strict 강화                 | 중간      | 4~6주      |
+| 우선순위 | 항목                                   | 난이도    | 예상 기간 |
+| -------- | -------------------------------------- | --------- | --------- |
+| ✅ 완료  | CRA → Vite                             | -         | -         |
+| ✅ 완료  | 환경변수 `REACT_APP_` → `VITE_`        | -         | -         |
+| ✅ 완료  | TypeScript 5.9.3 업그레이드 (#652)     | -         | -         |
+| 🔴 즉시  | `@types/react-router-dom` v5 타입 제거 | 매우 낮음 | 10분      |
+| 🟡 중간  | 절대 경로 alias (`@/`) 설정            | 낮음      | 1~2일     |
+| ✅ 완료  | useFetch → TanStack Query (#661–#674)  | -         | -         |
+| 🟢 장기  | Recoil → Jotai                         | 중간      | 2~4주     |
+| 🟢 장기  | styled-components → 제로 런타임 검토   | 중간~높음 | 3~8주     |
+| 🟢 장기  | TypeScript strict 강화                 | 중간      | 4~6주     |
 
 ---
 
