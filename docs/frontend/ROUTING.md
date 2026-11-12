@@ -111,6 +111,7 @@ src/
 /                         # 메인 페이지
 /introduce                # 동아리 소개
 /honor                    # 명예의 전당
+/calendar                 # 행사 캘린더 (비로그인 공개, 내비 메뉴는 출시 전까지 숨김)
 /myInfo                   # 내 정보
 /scholarship              # 장학금
 /*                        # HeaderTitleLayout 하위로 위임
@@ -231,6 +232,7 @@ src/
 /signup
 /signup/question
 /introduce
+/calendar
 /activity
 /activity/detail
 /board/opensource

@@ -41,6 +41,16 @@ export const NAV_MENU_GROUPS: menuGroupInterface[] = [
         url: 'honor',
         visible: true,
       },
+      {
+        // 백엔드 /menu 테이블과 연결되지 않는 번호. 출시할 때 visible만 true로 바꾼다
+        menuId: 23,
+        priority: 4,
+        name: '행사 캘린더',
+        type: 'CALENDAR',
+        description: 'IBAS 행사 일정을 확인하는 캘린더입니다.',
+        url: 'calendar',
+        visible: false,
+      },
     ],
   },
   {
