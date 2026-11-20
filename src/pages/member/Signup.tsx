@@ -468,7 +468,9 @@ const Signup = () => {
                   <Div>
                     <A
                       fontWeight={700}
-                      href="/rule"
+                      href="/rule/1"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       fontSize="xs"
                       color="textColor"
                       $hoverColor="bgColorHo"
@@ -482,7 +484,9 @@ const Signup = () => {
                   <Div>
                     <A
                       fontWeight={700}
-                      href="/rule"
+                      href="/rule/3"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       fontSize="xs"
                       color="textColor"
                       $hoverColor="bgColorHo"
@@ -496,7 +500,9 @@ const Signup = () => {
                   <Div>
                     <A
                       fontWeight={700}
-                      href="/rule"
+                      href="/rule/2"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       fontSize="xs"
                       color="textColor"
                       $hoverColor="bgColorHo"
