@@ -30,6 +30,7 @@ import { tokenInterface } from '../../types/TypeCommon';
   - 직접 접근: 가입 중·승인 대기 토큰도, 표시도 없으면(비로그인이거나 다른 회원) 세션을 건드리지 않고 홈으로 보낸다.
 */
 
+// 1단계에서 고른 신분. 1단계 폼 값과 완료 화면의 단계 목록이 함께 쓴다
 export type SignupIdentity = 'student' | 'professor';
 
 export interface SignupCompleteState {

@@ -136,7 +136,7 @@ export const signUpRules = {
 /*
   전화번호 입력을 010-0000-0000 형식으로 다듬는다.
   숫자만 남기고 11자리에서 자른 뒤 3-4-4로 하이픈을 붙인다. 입력 중이면 끝의 하이픈은 뗀다.
-  1단계 화면(Signup.tsx)의 autoHyphen과 같은 변환이다. 화면 연결은 1단계 화면 티켓에서 한다.
+  1단계 화면(Signup.tsx)의 전화번호 칸이 입력할 때마다 이 함수로 값을 바꾼다.
 */
 export const formatPhoneNumber = (value: string): string =>
   value

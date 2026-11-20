@@ -35,12 +35,10 @@ import { majorSelected, modalInfo, modalOpen } from '../../recoil/frontState';
 import { media } from '../../styles/theme';
 import { signUpInterface } from '../../types/ibas/TypeMember';
 
-import type { SignupCompleteState } from './SignupComplete';
-
-type SignupStatus = 'student' | 'professor';
+import type { SignupCompleteState, SignupIdentity } from './SignupComplete';
 
 interface SignupValues {
-  status: SignupStatus;
+  status: SignupIdentity;
   name: string;
   phoneNumber: string;
   grade: number | null;
