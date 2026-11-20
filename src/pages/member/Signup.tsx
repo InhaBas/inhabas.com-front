@@ -1,153 +1,39 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
-import { Controller, FieldErrors, useForm, useWatch } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  Control,
+  Controller,
+  FieldErrors,
+  useController,
+  useForm,
+  useWatch,
+} from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import styled from 'styled-components';
+import { keyframes, styled } from 'styled-components';
 
-import Dropdown from '../../components/common/Dropdown';
+import FormBanner from '../../components/common/form/FormBanner';
+import { FieldFrame, FieldMessage, FormField } from '../../components/common/form/FormField';
+import {
+  CheckIcon,
+  controlStyles,
+  focusRing,
+  InfoIcon,
+  VisuallyHidden,
+} from '../../components/common/form/formStyles';
+import RecruitClosedNotice from '../../components/common/form/RecruitClosedNotice';
+import { GradeSegment, SegmentedRadio } from '../../components/common/form/SegmentedRadio';
+import StepIndicator, {
+  PROFESSOR_SIGNUP_STEPS,
+  STUDENT_SIGNUP_STEPS,
+} from '../../components/common/form/StepIndicator';
+import { classifySignUpError } from '../../functions/signUpErrors';
 import { formatPhoneNumber, signUpRules } from '../../functions/signUpRules';
+import { isTokenExpiredError } from '../../queries/apiErrorEffects';
 import { signUpMutations, signUpQueries } from '../../queries/signUp';
-import { tokenAccess, userEmail } from '../../recoil/backState';
-import { majorSelected, modalInfo, modalOpen, relogin } from '../../recoil/frontState';
-import A from '../../styles/assets/A';
-import Button from '../../styles/assets/Button';
-import { Div, FlexDiv } from '../../styles/assets/Div';
-import Img from '../../styles/assets/Img';
-import { Checkbox, Label, Radio, TextInput } from '../../styles/assets/Input';
-import P from '../../styles/assets/P';
+import { majorSelected, modalInfo, modalOpen } from '../../recoil/frontState';
 import { media } from '../../styles/theme';
-
-const HrSect = styled.div`
-  display: flex;
-  flex-basis: 100%;
-  align-items: center;
-  color: rgba(0, 0, 0, 0.35);
-  font-size: 12px;
-
-  &::before,
-  &::after {
-    content: '';
-    flex-grow: 1;
-    background: rgba(0, 0, 0, 0.35);
-    height: 1px;
-    font-size: 0px;
-    line-height: 0px;
-    margin: 0px 16px;
-  }
-`;
-
-const SignupPage = styled(FlexDiv)`
-  height: auto;
-  min-height: 100vh;
-
-  ${media.mobile} {
-    align-items: flex-start;
-  }
-`;
-
-const SignupPanel = styled(FlexDiv)`
-  height: auto;
-  min-height: 80vh;
-
-  ${media.desktop} {
-    width: max(33%, 420px);
-  }
-
-  ${media.tabletOnly} {
-    width: 52%;
-    padding: 0 24px;
-  }
-
-  ${media.mobile} {
-    width: 100%;
-    min-height: 100vh;
-    margin: 0;
-    padding: 32px 20px;
-  }
-`;
-
-const SignupContent = styled(FlexDiv)`
-  ${media.mobile} {
-    width: 100%;
-  }
-`;
-
-const SignupLogo = styled(FlexDiv)`
-  ${media.mobile} {
-    width: 110px;
-    margin-bottom: 24px;
-  }
-`;
-
-const SignupFields = styled(FlexDiv)`
-  ${media.mobile} {
-    width: 100%;
-  }
-`;
-
-const StudentFields = styled(FlexDiv)`
-  ${media.mobile} {
-    flex-direction: column;
-
-    > div,
-    > input {
-      width: 100%;
-    }
-  }
-`;
-
-const MajorRow = styled(FlexDiv)`
-  min-width: 0;
-
-  p {
-    white-space: normal;
-  }
-`;
-
-const TermsRow = styled(FlexDiv)`
-  ${media.mobile} {
-    align-items: flex-start;
-  }
-`;
-
-const TermsCopy = styled(FlexDiv)`
-  min-width: 0;
-
-  ${media.mobile} {
-    width: calc(100% - 30px);
-
-    a {
-      white-space: normal;
-      overflow: visible;
-      text-overflow: clip;
-    }
-  }
-`;
-
-const NextButton = styled(Button)`
-  ${media.mobile} {
-    margin: 32px 0 0;
-  }
-`;
-
-const SignupBackground = styled(Div)`
-  align-self: stretch;
-  height: auto;
-  min-height: 100vh;
-
-  ${media.desktop} {
-    width: calc(100% - max(33%, 420px));
-  }
-
-  ${media.tabletOnly} {
-    width: 48%;
-  }
-
-  ${media.mobile} {
-    display: none;
-  }
-`;
+import { signUpInterface } from '../../types/ibas/TypeMember';
 
 type SignupStatus = 'student' | 'professor';
 
@@ -162,379 +48,674 @@ interface SignupValues {
   terms: boolean;
 }
 
-// 오류를 알릴 칸 순서. 화면 위에서 아래 순서와 같다
+const STATUS_OPTIONS = [
+  { value: 'student', label: '학생' },
+  { value: 'professor', label: '교수' },
+] as const;
+
+// 화면 위에서 아래 순서. 제출에 실패하면 이 순서로 첫 오류 칸에 포커스를 옮긴다
 const FIELD_ORDER: (keyof SignupValues)[] = [
   'name',
   'phoneNumber',
-  'professorId',
   'grade',
   'studentId',
+  'professorId',
   'major',
   'terms',
 ];
 
-const Signup = () => {
-  const navigate = useNavigate();
+// 저장된 프로필로 입력칸을 채운다. 서버는 학번과 교수번호를 같은 studentId 필드로 준다
+const toDefaultValues = (profile: signUpInterface | undefined): SignupValues => {
+  const professor = profile?.memberType === 'PROFESSOR';
+  const grade = Number(profile?.grade);
+  return {
+    status: professor ? 'professor' : 'student',
+    name: profile?.name ?? '',
+    phoneNumber: profile?.phoneNumber ?? '',
+    grade: !professor && grade > 0 ? grade : null,
+    studentId: professor ? '' : (profile?.studentId ?? ''),
+    professorId: professor ? (profile?.studentId ?? '') : '',
+    major: profile?.major ?? '',
+    terms: false,
+  };
+};
+
+const toProfileBody = (values: SignupValues): signUpInterface => {
+  const student = values.status === 'student';
+  return {
+    name: values.name,
+    major: values.major,
+    phoneNumber: values.phoneNumber,
+    studentId: student ? values.studentId : values.professorId,
+    memberType: student ? 'UNDERGRADUATE' : 'PROFESSOR',
+    grade: student ? values.grade : null,
+  };
+};
+
+// 한글 IME 조합 중 Enter는 조합을 끝내는 키다. 폼 제출로 이어지지 않게 막는다
+const preventComposingEnter = (event: KeyboardEvent<HTMLFormElement>) => {
+  const composing = event.nativeEvent.isComposing || event.keyCode === 229;
+  if (event.key === 'Enter' && composing) event.preventDefault();
+};
+
+/*
+  전공 칸. 직접 입력하지 않고 버튼으로 전공 검색 모달(ModalMajor)을 연다.
+  - 모달은 고른 값을 majorSelected(recoil)에 쓴다. 열 때 지금 값을 넘기고, 닫힐 때 폼 값으로 가져온다
+  - 모달이 닫히면 이 칸을 벗어난 것으로 보고 검사한다. 버튼의 blur는 모달이 열릴 때도 나므로 쓰지 않는다
+  - 닫히면 모달이 연 요소(이 버튼)로 포커스를 돌려준다
+*/
+const MajorField = ({ control }: { control: Control<SignupValues> }) => {
+  const { field, fieldState } = useController({
+    name: 'major',
+    control,
+    rules: signUpRules.major,
+  });
   const setOpen = useSetRecoilState(modalOpen);
   const setModalInfo = useSetRecoilState(modalInfo);
-  const selectedMajor = useRecoilValue(majorSelected);
-  const setSelecteMajor = useSetRecoilState(majorSelected);
+  const [selected, setSelected] = useRecoilState(majorSelected);
+  const open = useRecoilValue(modalOpen);
+  const openedHere = useRef(false);
+  const { onChange, onBlur } = field;
 
-  const searchMajor = () => {
-    setOpen(true);
+  useEffect(() => {
+    if (open || !openedHere.current) return;
+    openedHere.current = false;
+    if (selected.major !== '') onChange(selected.major);
+    onBlur();
+  }, [open, selected.major, onChange, onBlur]);
 
+  const openModal = () => {
+    setSelected({ college: '', major: field.value });
+    openedHere.current = true;
     setModalInfo({ type: 'major' });
+    setOpen(true);
   };
 
-  const movePage = () => {
-    navigate('/');
-  };
+  return (
+    <FieldFrame
+      id="major"
+      label="전공"
+      hint="버튼을 눌러 학과 이름으로 검색해 주세요"
+      error={fieldState.error?.message}
+    >
+      {({ id, ...control }) => (
+        <MajorButton
+          ref={field.ref}
+          id={id}
+          type="button"
+          aria-haspopup="dialog"
+          aria-labelledby={`${id}-label ${id}-value`}
+          {...control}
+          $invalid={Boolean(fieldState.error)}
+          onClick={openModal}
+        >
+          <MajorValue id={`${id}-value`} $empty={field.value === ''}>
+            {field.value === '' ? '눌러서 전공 검색' : field.value}
+          </MajorValue>
+          <SearchIcon />
+        </MajorButton>
+      )}
+    </FieldFrame>
+  );
+};
 
-  /*
-    JWT 분석 함수. 
-    토큰을 통해 로그인 한 이메일 가져오기 위해 만듦
-    */
-  const parseJwt = (token: string | undefined) => {
-    // 여기서 token이 undefined가 아닌지 확인
-    if (!token) {
-      return null;
-    }
+interface SignupFormProps {
+  profile: signUpInterface | undefined;
+  onClosed: () => void;
+}
 
-    try {
-      const base64Url = token.split('.')[1];
-      if (!base64Url) {
-        return null;
-      }
-
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split('')
-          .map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-          })
-          .join(''),
-      );
-
-      return JSON.parse(jsonPayload);
-    } catch (error) {
-      // 토큰 파싱 오류 처리
-      console.error('Error parsing JWT:', error);
-      return null;
-    }
-  };
-
+const SignupForm = ({ profile, onClosed }: SignupFormProps) => {
+  const navigate = useNavigate();
   const createMutation = useMutation(signUpMutations.createProfile());
-  const [email, setEmail] = useRecoilState(userEmail);
-  /*
-        회원가입 한 이력이 있어 저장된 개인 정보를 호출하는 api
-        정보를 입력칸에 미리 채운다.
-        새로고침으로 토큰이 재발급되면 공통 refresh 흐름이 이 조회를 다시 가져온다
-    */
-  const { data: info } = useQuery(signUpQueries.profile());
-  const setReload = useSetRecoilState(relogin);
-  const access = useRecoilValue(tokenAccess);
+  const bannerRef = useRef<HTMLDivElement>(null);
 
-  const { control, register, handleSubmit, reset, setValue } = useForm<SignupValues>({
+  const {
+    control,
+    register,
+    handleSubmit,
+    setFocus,
+    formState: { errors },
+  } = useForm<SignupValues>({
     mode: 'onTouched',
+    // RHF는 등록 순서로 포커스를 옮기므로 화면 순서로 직접 옮긴다
     shouldFocusError: false,
-    defaultValues: {
-      status: 'student',
-      name: '',
-      phoneNumber: '',
-      grade: null,
-      studentId: '',
-      professorId: '',
-      major: '',
-      terms: false,
-    },
+    defaultValues: toDefaultValues(profile),
   });
-  // 신분에 따라 보이는 칸만 렌더링해서 등록한다. 숨겨진 칸은 등록이 풀려 검사하지 않는다
+  // 신분에 따라 보이는 칸만 렌더링한다. 숨겨진 칸은 마운트가 풀려 검사하지 않는다(값은 남는다)
   const status = useWatch({ control, name: 'status' });
-  const major = useWatch({ control, name: 'major' });
+  const student = status === 'student';
 
-  // 전공은 직접 입력하는 칸이 없어 모달이 고른 값을 setValue로 넣는다
+  const errorKind = createMutation.isError ? classifySignUpError(createMutation.error) : null;
+
   useEffect(() => {
-    register('major', signUpRules.major);
-  }, [register]);
+    if (errorKind === 'closed') onClosed();
+    else if (errorKind) bannerRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }, [errorKind, onClosed]);
 
-  // 학년·전공처럼 칸 하나에 묶이지 않는 값도 화면 순서대로 첫 오류 하나만 알린다
-  const alertFirstError = (errors: FieldErrors<SignupValues>) => {
-    const first = FIELD_ORDER.find((name) => errors[name]);
-    if (first) alert(errors[first]?.message);
+  const focusFirstError = (fieldErrors: FieldErrors<SignupValues>) => {
+    const first = FIELD_ORDER.find((name) => fieldErrors[name]);
+    if (first) setFocus(first);
   };
 
-  /*
-    검증은 signUpRules로 RHF가 한다. 통과한 값만 보낸다
-    학생일 경우, 교수일 경우 성공 뒤 이동이 다르니 유의할 것
-    */
-  const sendInput = (values: SignupValues) => {
-    const inputData = {
-      name: values.name,
-      major: values.major,
-      phoneNumber: values.phoneNumber,
-      studentId: values.status === 'student' ? values.studentId : values.professorId,
-      memberType: values.status === 'student' ? 'UNDERGRADUATE' : 'PROFESSOR',
-      grade: values.status === 'student' ? values.grade : null,
-    };
-
-    /* 학생용 signUp api 가 잘 POST 된 경우 질문 화면으로 이동 */
-    if (values.status === 'student') {
-      createMutation.mutate(inputData, {
-        onSuccess: () => {
-          navigate('/signup/question');
-        },
-      });
-    }
-
-    /* 교수용 signUp api 가 잘 POST 된 경우 가입 완료. 홈에서 reload 한다 */
-    if (values.status === 'professor') {
-      createMutation.mutate(inputData, {
-        onSuccess: () => {
-          setReload(true);
-          navigate('/');
-        },
-      });
-    }
+  const submit = (values: SignupValues) => {
+    createMutation.mutate(toProfileBody(values), {
+      onSuccess: () => {
+        // 학생은 지원 질문으로, 교수는 이 저장으로 가입이 끝난다
+        if (values.status === 'student') navigate('/signup/question');
+        else navigate('/signup/complete', { replace: true });
+      },
+    });
   };
+  const onSubmit = handleSubmit(submit, focusFirstError);
 
-  /*
-        토큰에 있는 정보 중 email을 recoil에 저장
-        새로고침 시 access 토큰이 재발급되므로, 토큰이 변화할 때마다 불러와야 함
-    */
-  useEffect(() => {
-    const tokenData = parseJwt(access);
-    if (tokenData && tokenData.email) {
-      setEmail(tokenData.email);
-    }
-  }, [access, setEmail]);
-
-  /*
-        회원가입 한 이력이 있으면 저장된 값으로 입력칸을 채운다.
-        major는 모달이 고른 값(selectedMajor)과 맞춰 둔다.
-        이 때 college와 major 형태를 유지시킬 것
-        signUp api를 보낼 때 major의 값만 보내면 되므로, colleage의 값은 신경쓰지 않아도 됨
-    */
-  useEffect(() => {
-    if (!info) return;
-    const professor = info.memberType === 'PROFESSOR';
-    reset((prev) => ({
-      ...prev,
-      status: professor ? 'professor' : 'student',
-      name: info.name ?? '',
-      phoneNumber: info.phoneNumber ?? '',
-      studentId: professor ? '' : (info.studentId ?? ''),
-      professorId: professor ? (info.studentId ?? '') : '',
-      grade: professor ? null : Number(info.grade) || null,
-      major: info.major ?? '',
-    }));
-    if (info.major) {
-      setSelecteMajor({ college: 'default', major: info.major });
-    }
-  }, [info, reset, setSelecteMajor]);
-
-  // 전공 모달이 고른 값을 폼 값으로 옮긴다
-  useEffect(() => {
-    setValue('major', selectedMajor.major, { shouldDirty: true });
-  }, [selectedMajor.major, setValue]);
+  // 입력하는 대로 010-0000-0000 형식으로 하이픈을 붙인다. RHF가 값을 읽기 전에 바꾼다
+  const phoneField = register('phoneNumber', signUpRules.phoneNumber);
 
   return (
     <>
-      <SignupPage width="100%" height="100vh">
-        <SignupPanel
-          width="33%"
-          height="80%"
-          direction="column"
-          $padding="0 45px"
-          $margin="0 auto"
-          $justifycontent="space-evenly"
+      <Steps>
+        <StepIndicator
+          steps={student ? STUDENT_SIGNUP_STEPS : PROFESSOR_SIGNUP_STEPS}
+          current={1}
+        />
+      </Steps>
+      <Note>
+        <InfoIcon size={18} />
+        <span>이미 다른 소셜 계정으로 가입 신청했다면 그 계정으로 다시 로그인해 주세요.</span>
+      </Note>
+
+      {errorKind && errorKind !== 'closed' && (
+        <div ref={bannerRef}>
+          {errorKind === 'invalid' ? (
+            <FormBanner>입력값을 확인해 주세요. 계속 안 되면 웹 팀에 문의해 주세요</FormBanner>
+          ) : (
+            <FormBanner action={{ label: '다시 시도', onClick: () => onSubmit() }}>
+              기본 정보를 저장하지 못했어요. 잠시 뒤 다시 시도해 주세요
+            </FormBanner>
+          )}
+        </div>
+      )}
+
+      <Form noValidate onSubmit={onSubmit} onKeyDown={preventComposingEnter}>
+        <Section>
+          <SectionTitle>신분</SectionTitle>
+          <Controller
+            name="status"
+            control={control}
+            render={({ field }) => (
+              <SegmentedRadio
+                id="status"
+                name={field.name}
+                label="신분"
+                hideLabel
+                options={STATUS_OPTIONS}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+              />
+            )}
+          />
+        </Section>
+
+        <Section>
+          <SectionTitle>기본 정보</SectionTitle>
+          <FormField
+            id="name"
+            label="이름"
+            placeholder="홍길동"
+            autoComplete="name"
+            error={errors.name?.message}
+            {...register('name', signUpRules.name)}
+          />
+          <FormField
+            id="phoneNumber"
+            label="전화번호"
+            type="tel"
+            inputMode="numeric"
+            autoComplete="tel"
+            placeholder="010-1234-5678"
+            error={errors.phoneNumber?.message}
+            {...phoneField}
+            onChange={(event) => {
+              event.target.value = formatPhoneNumber(event.target.value);
+              return phoneField.onChange(event);
+            }}
+          />
+        </Section>
+
+        <Section>
+          <SectionTitle>학적 정보</SectionTitle>
+          {student ? (
+            <>
+              <Controller
+                name="grade"
+                control={control}
+                rules={signUpRules.grade}
+                render={({ field, fieldState }) => (
+                  <GradeSegment
+                    ref={field.ref}
+                    id="grade"
+                    name={field.name}
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    error={fieldState.error?.message}
+                  />
+                )}
+              />
+              <FormField
+                id="studentId"
+                label="학번"
+                inputMode="numeric"
+                placeholder="12112233"
+                error={errors.studentId?.message}
+                {...register('studentId', signUpRules.studentId)}
+              />
+            </>
+          ) : (
+            <FormField
+              id="professorId"
+              label="교수번호"
+              inputMode="numeric"
+              placeholder="20231234"
+              hint="숫자만 입력해 주세요"
+              error={errors.professorId?.message}
+              {...register('professorId', signUpRules.professorId)}
+            />
+          )}
+          <MajorField control={control} />
+        </Section>
+
+        <Section>
+          <SectionTitle>약관 동의</SectionTitle>
+          <div>
+            <Terms $invalid={Boolean(errors.terms)}>
+              <input
+                type="checkbox"
+                aria-invalid={errors.terms ? true : undefined}
+                aria-describedby={errors.terms ? 'terms-error' : undefined}
+                {...register('terms', signUpRules.terms)}
+              />
+              <Box aria-hidden="true">
+                <CheckIcon size={14} />
+              </Box>
+              <span>
+                본인은{' '}
+                <TermsLink to="/rule/1" target="_blank" rel="noopener noreferrer">
+                  제 3자 개인정보 동의 약관
+                </TermsLink>
+                ,{' '}
+                <TermsLink to="/rule/3" target="_blank" rel="noopener noreferrer">
+                  웹사이트 이용 약관
+                </TermsLink>
+                ,{' '}
+                <TermsLink to="/rule/2" target="_blank" rel="noopener noreferrer">
+                  동아리 회칙
+                </TermsLink>
+                에 동의합니다.
+                <VisuallyHidden> (링크는 새 탭에서 열려요)</VisuallyHidden>
+              </span>
+            </Terms>
+            <FieldMessage id="terms-error" error={errors.terms?.message} />
+          </div>
+        </Section>
+
+        <SubmitButton
+          type="submit"
+          disabled={createMutation.isPending}
+          aria-busy={createMutation.isPending || undefined}
         >
-          <SignupContent width="90%">
-            <SignupLogo width="150px" $margin="0 0 30px 0" $pointer onClick={() => movePage()}>
-              <Img src="/images/ibas-main-logo_purple.png" />
-            </SignupLogo>
-
-            <FlexDiv width="100%">
-              <HrSect>기본 정보</HrSect>
-            </FlexDiv>
-            <FlexDiv width="90%" $margin="10px 0 " $justifycontent="start">
-              <FlexDiv>
-                <Radio value="student" {...register('status')} />
-                <Label $margin="0 0 0 5px">학생</Label>
-              </FlexDiv>
-              <FlexDiv $margin="0 0 0 10px">
-                <Radio value="professor" {...register('status')} />
-                <Label $margin="0 0 0 5px">교수님</Label>
-              </FlexDiv>
-            </FlexDiv>
-            <SignupFields width="100%">
-              <TextInput
-                placeholder="이름"
-                width="90%"
-                $borderRadius={100}
-                $margin="10px 0 0 0"
-                {...register('name', signUpRules.name)}
-              />
-              <Div
-                $backgroundColor="grey1"
-                width="90%"
-                radius={100}
-                $margin="10px 0 0 0"
-                $padding="10px"
-              >
-                <P>{email}</P>
-              </Div>
-              <TextInput
-                placeholder="핸드폰번호"
-                width="90%"
-                $borderRadius={100}
-                $margin="10px 0 0 0"
-                {...register('phoneNumber', {
-                  ...signUpRules.phoneNumber,
-                  // 입력하는 대로 010-0000-0000 형식으로 하이픈을 붙인다
-                  onChange: (e) => setValue('phoneNumber', formatPhoneNumber(e.target.value)),
-                })}
-              />
-              {status === 'professor' ? (
-                <StudentFields $justifycontent="space-between" width="90%">
-                  <TextInput
-                    placeholder="교수번호"
-                    width="100%"
-                    $borderRadius={100}
-                    $margin="10px 0 0 0"
-                    {...register('professorId', signUpRules.professorId)}
-                  />
-                </StudentFields>
-              ) : (
-                <StudentFields $justifycontent="space-between" width="90%">
-                  <Div width="30%" $margin="10px 0 0 0">
-                    <Controller
-                      name="grade"
-                      control={control}
-                      rules={signUpRules.grade}
-                      render={({ field }) => (
-                        <Dropdown
-                          label="학년"
-                          options={['1학년', '2학년', '3학년', '4학년']}
-                          value={['1', '2', '3', '4']}
-                          onChange={(value) => field.onChange(Number(value))}
-                          borderRadius={100}
-                        />
-                      )}
-                    />
-                  </Div>
-                  <TextInput
-                    placeholder="학번(12112233)"
-                    width="68%"
-                    $borderRadius={100}
-                    $margin="10px 0 0 0"
-                    {...register('studentId', signUpRules.studentId)}
-                  />
-                </StudentFields>
-              )}
-
-              <MajorRow
-                width="90%"
-                $margin="10px 0 0 0"
-                $justifycontent="space-between"
-                $pointer
-                onClick={() => searchMajor()}
-              >
-                <Div
-                  width="90%"
-                  radius={100}
-                  $border="1px solid"
-                  $borderColor="grey1"
-                  $padding="10px"
-                >
-                  {major === '' ? <P>전공을 검색하려면 클릭하세요</P> : <P>{major}</P>}
-                </Div>
-                <FlexDiv width="20px" $justifycontent="end">
-                  <Img src="/images/search.svg" />
-                </FlexDiv>
-              </MajorRow>
-
-              <TermsRow $justifycontent="start" width="90%" $margin="10px 0 0 0">
-                <Div $margin="0 10px 0 0">
-                  <Checkbox {...register('terms', signUpRules.terms)} />
-                </Div>
-                <TermsCopy width="80%" $justifycontent="start">
-                  <Div>
-                    <A fontSize="xs">본인은</A>
-                  </Div>
-                  <Div>
-                    <A
-                      fontWeight={700}
-                      href="/rule/1"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      fontSize="xs"
-                      color="textColor"
-                      $hoverColor="bgColorHo"
-                    >
-                      제 3자 개인정보 동의 약관
-                    </A>
-                  </Div>
-                  <Div>
-                    <A fontSize="xs">과</A>
-                  </Div>
-                  <Div>
-                    <A
-                      fontWeight={700}
-                      href="/rule/3"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      fontSize="xs"
-                      color="textColor"
-                      $hoverColor="bgColorHo"
-                    >
-                      웹사이트 이용 약관
-                    </A>
-                  </Div>
-                  <Div>
-                    <A fontSize="xs">,</A>
-                  </Div>
-                  <Div>
-                    <A
-                      fontWeight={700}
-                      href="/rule/2"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      fontSize="xs"
-                      color="textColor"
-                      $hoverColor="bgColorHo"
-                    >
-                      동아리 회칙
-                    </A>
-                  </Div>
-                  <Div>
-                    <A fontSize="xs">에 동의합니다. </A>
-                  </Div>
-                </TermsCopy>
-
-                <NextButton
-                  display="flex"
-                  $backgroundColor="bgColor"
-                  $margin="50px 0"
-                  $padding="12px 15px"
-                  $borderRadius={2}
-                  $HBackgroundColor="bgColorHo"
-                  width="100%"
-                  disabled={createMutation.isPending}
-                  onClick={handleSubmit(sendInput, alertFirstError)}
-                >
-                  <P color="wh">다음</P>
-                </NextButton>
-              </TermsRow>
-            </SignupFields>
-          </SignupContent>
-        </SignupPanel>
-        <SignupBackground width="67%" height="100vh" overflow="hidden">
-          <Img src="/images/member-background.jpg" />
-        </SignupBackground>
-      </SignupPage>
+          {createMutation.isPending ? (
+            <>
+              <Spinner aria-hidden="true" />
+              저장 중…
+            </>
+          ) : student ? (
+            '다음: 지원 질문'
+          ) : (
+            '가입 완료'
+          )}
+        </SubmitButton>
+      </Form>
     </>
   );
 };
 
+const Signup = () => {
+  /*
+    회원가입 한 이력이 있으면 저장된 기본 정보를 미리 채운다.
+    저장 이력이 없으면 모든 값이 null로 온다. 토큰 만료로 실패하면 공통 refresh 흐름이 다시 가져온다
+  */
+  const profileQuery = useQuery(signUpQueries.profile());
+  const [closed, setClosed] = useState(false);
+  const markClosed = useCallback(() => setClosed(true), []);
+
+  const loadError = profileQuery.error;
+  const loadErrorKind =
+    loadError && !isTokenExpiredError(loadError) ? classifySignUpError(loadError) : null;
+
+  let content;
+  if (closed || loadErrorKind === 'closed') {
+    content = <RecruitClosedNotice />;
+  } else if (profileQuery.data || loadErrorKind) {
+    // 미리 채우기에 실패해도(모집 기간 아님 제외) 빈 폼으로 가입할 수 있게 한다
+    content = <SignupForm profile={profileQuery.data} onClosed={markClosed} />;
+  } else {
+    content = <Loading role="status">가입 정보를 불러오는 중이에요</Loading>;
+  }
+
+  return (
+    <Page>
+      <Panel>
+        <Column>
+          <LogoLink to="/" aria-label="IBAS 홈으로">
+            <img src="/images/ibas-main-logo_purple.png" alt="" />
+          </LogoLink>
+          {content}
+        </Column>
+      </Panel>
+      <Background aria-hidden="true" />
+    </Page>
+  );
+};
+
 export default Signup;
+
+const SearchIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <circle cx="11" cy="11" r="7" />
+    <path d="m20 20-3.5-3.5" />
+  </svg>
+);
+
+const spin = keyframes`
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+const Page = styled.div`
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background-color: ${({ theme }) => theme.color.wh};
+  /* 앱 바깥 Div가 white-space: nowrap이라 문구가 넘치지 않게 되돌린다 */
+  white-space: normal;
+  word-break: keep-all;
+`;
+
+const Panel = styled.main`
+  flex: none;
+  width: 480px;
+  padding: 48px 40px 64px;
+  background-color: ${({ theme }) => theme.color.wh};
+
+  ${media.tabletOnly} {
+    width: 52%;
+    padding: 40px 32px 56px;
+  }
+
+  ${media.mobile} {
+    width: 100%;
+    padding: 32px 20px 40px;
+  }
+`;
+
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 400px;
+  margin: 0 auto;
+`;
+
+const Background = styled.div`
+  position: sticky;
+  top: 0;
+  flex: 1;
+  height: 100vh;
+  background: url('/images/member-background.jpg') center / cover no-repeat;
+
+  ${media.mobile} {
+    display: none;
+  }
+`;
+
+const LogoLink = styled(Link)`
+  align-self: center;
+  border-radius: 8px;
+
+  img {
+    display: block;
+    width: 88px;
+    height: 88px;
+
+    ${media.mobile} {
+      width: 72px;
+      height: 72px;
+    }
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    ${focusRing}
+  }
+`;
+
+const Steps = styled.div`
+  width: 100%;
+`;
+
+const Note = styled.p`
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background-color: ${({ theme }) => theme.color.border};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  line-height: 1.5;
+  color: ${({ theme }) => theme.color.bk};
+
+  svg {
+    flex: none;
+    margin-top: 1px;
+    color: ${({ theme }) => theme.color.bgColor};
+  }
+`;
+
+const Loading = styled.p`
+  margin: 0;
+  font-size: ${({ theme }) => theme.fontSize.md};
+  color: ${({ theme }) => theme.color.grey};
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+`;
+
+// 같은 구획 안 칸 사이 8px(메시지 영역 포함)
+const Section = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+// 가운데 글자 + 양옆 가는 선(기존 HrSect 모양)
+const SectionTitle = styled.h2`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0 0 8px;
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  font-weight: 700;
+  color: ${({ theme }) => theme.color.grey};
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.2);
+  }
+`;
+
+const MajorButton = styled.button<{ $invalid?: boolean }>`
+  ${controlStyles}
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 48px;
+  padding: 0 14px;
+  text-align: left;
+  cursor: pointer;
+
+  svg {
+    flex: none;
+    color: ${({ theme }) => theme.color.grey};
+  }
+
+  &:hover {
+    border-color: ${({ theme, $invalid }) => ($invalid ? theme.color.error : theme.color.bgColor)};
+  }
+`;
+
+const MajorValue = styled.span<{ $empty: boolean }>`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: ${({ theme, $empty }) => ($empty ? theme.color.grey3 : theme.color.bk)};
+`;
+
+const Terms = styled.label<{ $invalid: boolean }>`
+  position: relative;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  line-height: 24px;
+  color: ${({ theme }) => theme.color.bk};
+  cursor: pointer;
+
+  input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    opacity: 0;
+  }
+
+  span[aria-hidden] {
+    border: 2px solid ${({ theme, $invalid }) => ($invalid ? theme.color.error : theme.color.grey3)};
+  }
+
+  input:checked + span[aria-hidden] {
+    border-color: ${({ theme }) => theme.color.bgColor};
+    background-color: ${({ theme }) => theme.color.bgColor};
+    color: ${({ theme }) => theme.color.wh};
+  }
+
+  input:focus-visible + span[aria-hidden] {
+    ${focusRing}
+  }
+`;
+
+const Box = styled.span`
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background-color: ${({ theme }) => theme.color.wh};
+  /* 체크 표시는 선택됐을 때만 보인다 */
+  color: transparent;
+`;
+
+const TermsLink = styled(Link)`
+  font-weight: 700;
+  color: ${({ theme }) => theme.color.bgColor};
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  border-radius: 2px;
+
+  &:hover {
+    color: ${({ theme }) => theme.color.bgColorHo};
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    ${focusRing}
+  }
+`;
+
+const SubmitButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 48px;
+  border: 0;
+  border-radius: 8px;
+  background-color: ${({ theme }) => theme.color.bgColor};
+  font-family: inherit;
+  font-size: ${({ theme }) => theme.fontSize.md};
+  font-weight: 700;
+  color: ${({ theme }) => theme.color.wh};
+  cursor: pointer;
+
+  &:hover:enabled {
+    background-color: ${({ theme }) => theme.color.bgColorHo};
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    ${focusRing}
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+  }
+`;
+
+const Spinner = styled.span`
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: ${spin} 0.8s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation-duration: 2.4s;
+  }
+`;
