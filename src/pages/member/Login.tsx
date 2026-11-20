@@ -7,9 +7,9 @@ import { focusRing } from '../../components/common/form/formStyles';
 import {
   LoginErrorKind,
   LoginProvider,
+  parseLoginErrorKind,
   readRecentLogin,
   saveRecentLogin,
-  toLoginErrorKind,
 } from '../../functions/loginMethods';
 import { media } from '../../styles/theme';
 
@@ -39,7 +39,7 @@ const Login = () => {
 
   // 처음 받은 error 값으로 안내를 정하고, URL에서는 지운다(새로고침해도 다시 뜨지 않게)
   const [errorKind] = useState<LoginErrorKind | null>(() =>
-    errorParam ? toLoginErrorKind(errorParam) : null,
+    errorParam ? parseLoginErrorKind(errorParam) : null,
   );
   const [recentProvider] = useState(readRecentLogin);
 

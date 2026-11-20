@@ -51,11 +51,10 @@ const LoginProcess = () => {
     }
   };
 
-  // OAuth 실패는 토큰 없이 ?error로 온다. 서버 원문 대신 종류만 로그인 화면에 넘긴다
+  // OAuth 실패는 토큰 없이 ?error로 온다. 서버 원문 대신 종류(canceled·failed)만 로그인 화면에 넘긴다
   useEffect(() => {
     if (error) {
-      const kind = toLoginErrorKind(error) === 'canceled' ? 'access_denied' : 'failed';
-      navigate(`/login?error=${kind}`, { replace: true });
+      navigate(`/login?error=${toLoginErrorKind(error)}`, { replace: true });
     }
   }, [error, navigate]);
 

@@ -35,5 +35,10 @@ export function saveRecentLogin(provider: LoginProvider) {
 */
 export type LoginErrorKind = 'canceled' | 'failed';
 
+// 로그인 처리 경로가 서버의 error 값을 종류로 바꾼다
 export const toLoginErrorKind = (error: string): LoginErrorKind =>
   error === 'access_denied' ? 'canceled' : 'failed';
+
+// 로그인 화면이 /login?error=<종류>를 읽는다. 모르는 값은 실패로 본다
+export const parseLoginErrorKind = (value: string): LoginErrorKind =>
+  value === 'canceled' ? 'canceled' : 'failed';
