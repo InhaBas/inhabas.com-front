@@ -1,10 +1,12 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
+import { Controller, FieldErrors, useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import Dropdown from '../../components/common/Dropdown';
+import { formatPhoneNumber, signUpRules } from '../../functions/signUpRules';
 import { signUpMutations, signUpQueries } from '../../queries/signUp';
 import { tokenAccess, userEmail } from '../../recoil/backState';
 import { majorSelected, modalInfo, modalOpen, relogin } from '../../recoil/frontState';
@@ -147,11 +149,36 @@ const SignupBackground = styled(Div)`
   }
 `;
 
+type SignupStatus = 'student' | 'professor';
+
+interface SignupValues {
+  status: SignupStatus;
+  name: string;
+  phoneNumber: string;
+  grade: number | null;
+  studentId: string;
+  professorId: string;
+  major: string;
+  terms: boolean;
+}
+
+// 오류를 알릴 칸 순서. 화면 위에서 아래 순서와 같다
+const FIELD_ORDER: (keyof SignupValues)[] = [
+  'name',
+  'phoneNumber',
+  'professorId',
+  'grade',
+  'studentId',
+  'major',
+  'terms',
+];
+
 const Signup = () => {
   const navigate = useNavigate();
   const setOpen = useSetRecoilState(modalOpen);
   const setModalInfo = useSetRecoilState(modalInfo);
-  const [selectedMajor, setSelecteMajor] = useRecoilState(majorSelected);
+  const selectedMajor = useRecoilValue(majorSelected);
+  const setSelecteMajor = useSetRecoilState(majorSelected);
 
   const searchMajor = () => {
     setOpen(true);
@@ -161,23 +188,6 @@ const Signup = () => {
 
   const movePage = () => {
     navigate('/');
-  };
-
-  /*
-    phone 입력 처리. 
-    11자만 입력 가능하게 처리함. 
-    000-0000-0000 형식. 
-    */
-  const autoHyphen = (target: HTMLInputElement) => {
-    let value = target.value.replace(/[^0-9]/g, '');
-
-    if (value.length > 11) {
-      value = value.slice(0, 11);
-    }
-
-    target.value = value
-      .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/, '$1-$2-$3')
-      .replace(/(-{1,2})$/, '');
   };
 
   /*
@@ -214,98 +224,77 @@ const Signup = () => {
     }
   };
 
-  const ref = useRef<any[]>([]);
-
-  const [status, setStatus] = useState('student');
-  const [gradeValue, setGradeValue] = useState('');
   const createMutation = useMutation(signUpMutations.createProfile());
   const [email, setEmail] = useRecoilState(userEmail);
   /*
         회원가입 한 이력이 있어 저장된 개인 정보를 호출하는 api
-        정보를 input value에 저장시켜둠.
+        정보를 입력칸에 미리 채운다.
         새로고침으로 토큰이 재발급되면 공통 refresh 흐름이 이 조회를 다시 가져온다
     */
   const { data: info } = useQuery(signUpQueries.profile());
   const setReload = useSetRecoilState(relogin);
   const access = useRecoilValue(tokenAccess);
 
-  // select 값 선택에 따른 state 변경 이벤트
-  const handleGradeChange = (value: string) => {
-    // 선택된 값을 업데이트
-    setGradeValue(value);
+  const { control, register, handleSubmit, reset, setValue } = useForm<SignupValues>({
+    mode: 'onTouched',
+    shouldFocusError: false,
+    defaultValues: {
+      status: 'student',
+      name: '',
+      phoneNumber: '',
+      grade: null,
+      studentId: '',
+      professorId: '',
+      major: '',
+      terms: false,
+    },
+  });
+  // 신분에 따라 보이는 칸만 렌더링해서 등록한다. 숨겨진 칸은 등록이 풀려 검사하지 않는다
+  const status = useWatch({ control, name: 'status' });
+  const major = useWatch({ control, name: 'major' });
+
+  // 전공은 직접 입력하는 칸이 없어 모달이 고른 값을 setValue로 넣는다
+  useEffect(() => {
+    register('major', signUpRules.major);
+  }, [register]);
+
+  // 학년·전공처럼 칸 하나에 묶이지 않는 값도 화면 순서대로 첫 오류 하나만 알린다
+  const alertFirstError = (errors: FieldErrors<SignupValues>) => {
+    const first = FIELD_ORDER.find((name) => errors[name]);
+    if (first) alert(errors[first]?.message);
   };
 
   /*
-    보낼 데이터 유효성 검사
-    check가 true일 때만 fetch 한다
-    학생일 경우, 교수일 경우 다른 fetch hook를 사용하니 유의할 것
-
+    검증은 signUpRules로 RHF가 한다. 통과한 값만 보낸다
+    학생일 경우, 교수일 경우 성공 뒤 이동이 다르니 유의할 것
     */
-  const sendInput = () => {
-    let check = true;
+  const sendInput = (values: SignupValues) => {
+    const inputData = {
+      name: values.name,
+      major: values.major,
+      phoneNumber: values.phoneNumber,
+      studentId: values.status === 'student' ? values.studentId : values.professorId,
+      memberType: values.status === 'student' ? 'UNDERGRADUATE' : 'PROFESSOR',
+      grade: values.status === 'student' ? values.grade : null,
+    };
 
-    if (check && ref.current[2].value === '') {
-      alert('이름을 입력해주세요');
-      check = false;
+    /* 학생용 signUp api 가 잘 POST 된 경우 질문 화면으로 이동 */
+    if (values.status === 'student') {
+      createMutation.mutate(inputData, {
+        onSuccess: () => {
+          navigate('/signup/question');
+        },
+      });
     }
 
-    if (check && ref.current[3].value === '') {
-      alert('핸드폰번호를 입력해주세요');
-      check = false;
-    }
-
-    if (check && (ref.current[3].value.length < 13 || ref.current[3].value.slice(0, 3) !== '010')) {
-      alert('핸드폰번호를 정확하게 입력해주세요');
-      check = false;
-    }
-    if (check) {
-      if (status === 'professor' && ref.current[4].value === '') {
-        alert('교수번호를 입력해주세요');
-        check = false;
-      } else if (status === 'student' && ref.current[6].value === '') {
-        alert('학번을 입력해주세요');
-        check = false;
-      } else if (status === 'student' && gradeValue === '') {
-        alert('학년을 선택해주세요');
-        check = false;
-      }
-    }
-    if (check && selectedMajor.major === '') {
-      alert('전공을 선택해주세요');
-      check = false;
-    }
-    if (check && !ref.current[7].checked) {
-      alert('약관의 내용에 동의하셔야 회원가입이 가능합니다');
-      check = false;
-    }
-    if (check) {
-      let inputData = {
-        name: ref.current[2].value,
-        major: selectedMajor.major,
-        phoneNumber: ref.current[3].value,
-        studentId: status === 'student' ? ref.current[6].value : ref.current[4].value,
-        memberType: status === 'student' ? 'UNDERGRADUATE' : 'PROFESSOR',
-        grade: status === 'student' ? parseInt(gradeValue) : null,
-      };
-
-      /* 학생용 signUp api 가 잘 POST 된 경우 질문 화면으로 이동 */
-      if (status === 'student') {
-        createMutation.mutate(inputData, {
-          onSuccess: () => {
-            navigate('/signup/question');
-          },
-        });
-      }
-
-      /* 교수용 signUp api 가 잘 POST 된 경우 가입 완료. 홈에서 reload 한다 */
-      if (status === 'professor') {
-        createMutation.mutate(inputData, {
-          onSuccess: () => {
-            setReload(true);
-            navigate('/');
-          },
-        });
-      }
+    /* 교수용 signUp api 가 잘 POST 된 경우 가입 완료. 홈에서 reload 한다 */
+    if (values.status === 'professor') {
+      createMutation.mutate(inputData, {
+        onSuccess: () => {
+          setReload(true);
+          navigate('/');
+        },
+      });
     }
   };
 
@@ -318,19 +307,36 @@ const Signup = () => {
     if (tokenData && tokenData.email) {
       setEmail(tokenData.email);
     }
-  }, [access]);
+  }, [access, setEmail]);
 
   /*
-        회원가입 한 이력이 있는 경우 중 major도 저장되었을 때 
-        major를 selectedMajor에 저장시킴
+        회원가입 한 이력이 있으면 저장된 값으로 입력칸을 채운다.
+        major는 모달이 고른 값(selectedMajor)과 맞춰 둔다.
         이 때 college와 major 형태를 유지시킬 것
         signUp api를 보낼 때 major의 값만 보내면 되므로, colleage의 값은 신경쓰지 않아도 됨
     */
   useEffect(() => {
-    if (info?.major) {
+    if (!info) return;
+    const professor = info.memberType === 'PROFESSOR';
+    reset((prev) => ({
+      ...prev,
+      status: professor ? 'professor' : 'student',
+      name: info.name ?? '',
+      phoneNumber: info.phoneNumber ?? '',
+      studentId: professor ? '' : (info.studentId ?? ''),
+      professorId: professor ? (info.studentId ?? '') : '',
+      grade: professor ? null : Number(info.grade) || null,
+      major: info.major ?? '',
+    }));
+    if (info.major) {
       setSelecteMajor({ college: 'default', major: info.major });
     }
-  }, [info]);
+  }, [info, reset, setSelecteMajor]);
+
+  // 전공 모달이 고른 값을 폼 값으로 옮긴다
+  useEffect(() => {
+    setValue('major', selectedMajor.major, { shouldDirty: true });
+  }, [selectedMajor.major, setValue]);
 
   return (
     <>
@@ -353,33 +359,21 @@ const Signup = () => {
             </FlexDiv>
             <FlexDiv width="90%" $margin="10px 0 " $justifycontent="start">
               <FlexDiv>
-                <Radio
-                  name="setStatus"
-                  value="학생"
-                  ref={(el: never) => (ref.current[0] = el)}
-                  onClick={() => setStatus('student')}
-                  defaultChecked
-                />
+                <Radio value="student" {...register('status')} />
                 <Label $margin="0 0 0 5px">학생</Label>
               </FlexDiv>
               <FlexDiv $margin="0 0 0 10px">
-                <Radio
-                  name="setStatus"
-                  value="교수님"
-                  ref={(el: never) => (ref.current[1] = el)}
-                  onClick={() => setStatus('professor')}
-                />
+                <Radio value="professor" {...register('status')} />
                 <Label $margin="0 0 0 5px">교수님</Label>
               </FlexDiv>
             </FlexDiv>
             <SignupFields width="100%">
               <TextInput
-                defaultValue={info?.name || ''}
                 placeholder="이름"
                 width="90%"
                 $borderRadius={100}
                 $margin="10px 0 0 0"
-                ref={(el: never) => (ref.current[2] = el)}
+                {...register('name', signUpRules.name)}
               />
               <Div
                 $backgroundColor="grey1"
@@ -395,39 +389,46 @@ const Signup = () => {
                 width="90%"
                 $borderRadius={100}
                 $margin="10px 0 0 0"
-                defaultValue={info?.phoneNumber || ''}
-                ref={(el: never) => (ref.current[3] = el)}
-                onChange={() => autoHyphen(ref.current[3])}
+                {...register('phoneNumber', {
+                  ...signUpRules.phoneNumber,
+                  // 입력하는 대로 010-0000-0000 형식으로 하이픈을 붙인다
+                  onChange: (e) => setValue('phoneNumber', formatPhoneNumber(e.target.value)),
+                })}
               />
               {status === 'professor' ? (
                 <StudentFields $justifycontent="space-between" width="90%">
                   <TextInput
                     placeholder="교수번호"
-                    defaultValue={info?.studentId || ''}
                     width="100%"
                     $borderRadius={100}
                     $margin="10px 0 0 0"
-                    ref={(el: never) => (ref.current[4] = el)}
+                    {...register('professorId', signUpRules.professorId)}
                   />
                 </StudentFields>
               ) : (
                 <StudentFields $justifycontent="space-between" width="90%">
                   <Div width="30%" $margin="10px 0 0 0">
-                    <Dropdown
-                      label="학년"
-                      options={['1학년', '2학년', '3학년', '4학년']}
-                      value={['1', '2', '3', '4']}
-                      onChange={handleGradeChange}
-                      borderRadius={100}
+                    <Controller
+                      name="grade"
+                      control={control}
+                      rules={signUpRules.grade}
+                      render={({ field }) => (
+                        <Dropdown
+                          label="학년"
+                          options={['1학년', '2학년', '3학년', '4학년']}
+                          value={['1', '2', '3', '4']}
+                          onChange={(value) => field.onChange(Number(value))}
+                          borderRadius={100}
+                        />
+                      )}
                     />
                   </Div>
                   <TextInput
-                    defaultValue={info?.studentId || ''}
                     placeholder="학번(12112233)"
                     width="68%"
                     $borderRadius={100}
                     $margin="10px 0 0 0"
-                    ref={(el: never) => (ref.current[6] = el)}
+                    {...register('studentId', signUpRules.studentId)}
                   />
                 </StudentFields>
               )}
@@ -446,11 +447,7 @@ const Signup = () => {
                   $borderColor="grey1"
                   $padding="10px"
                 >
-                  {selectedMajor.major === '' ? (
-                    <P>전공을 검색하려면 클릭하세요</P>
-                  ) : (
-                    <P>{selectedMajor.major}</P>
-                  )}
+                  {major === '' ? <P>전공을 검색하려면 클릭하세요</P> : <P>{major}</P>}
                 </Div>
                 <FlexDiv width="20px" $justifycontent="end">
                   <Img src="/images/search.svg" />
@@ -459,7 +456,7 @@ const Signup = () => {
 
               <TermsRow $justifycontent="start" width="90%" $margin="10px 0 0 0">
                 <Div $margin="0 10px 0 0">
-                  <Checkbox ref={(el: never) => (ref.current[7] = el)} />
+                  <Checkbox {...register('terms', signUpRules.terms)} />
                 </Div>
                 <TermsCopy width="80%" $justifycontent="start">
                   <Div>
@@ -524,7 +521,7 @@ const Signup = () => {
                   $HBackgroundColor="bgColorHo"
                   width="100%"
                   disabled={createMutation.isPending}
-                  onClick={() => sendInput()}
+                  onClick={handleSubmit(sendInput, alertFirstError)}
                 >
                   <P color="wh">다음</P>
                 </NextButton>
