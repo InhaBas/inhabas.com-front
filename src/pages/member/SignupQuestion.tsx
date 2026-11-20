@@ -9,7 +9,7 @@ import {
   useState,
 } from 'react';
 import { Control, FieldErrors, useForm, useWatch } from 'react-hook-form';
-import { Link, UNSAFE_NavigationContext, useNavigate } from 'react-router-dom';
+import { UNSAFE_NavigationContext, useNavigate } from 'react-router-dom';
 import { keyframes, styled } from 'styled-components';
 
 import FormBanner from '../../components/common/form/FormBanner';
@@ -18,6 +18,7 @@ import { focusRing, VisuallyHidden } from '../../components/common/form/formStyl
 import { AlertIcon, CheckIcon } from '../../components/common/form/icons';
 import RecruitClosedNotice from '../../components/common/form/RecruitClosedNotice';
 import StepIndicator, { STUDENT_SIGNUP_STEPS } from '../../components/common/form/StepIndicator';
+import { SignupLayout, SignupSteps } from '../../components/member/MemberLayout';
 import { isImeComposing } from '../../functions/ime';
 import { classifySignUpError } from '../../functions/signUpErrors';
 import { ANSWER_MAX_LENGTH, signUpRules } from '../../functions/signUpRules';
@@ -387,28 +388,20 @@ const SignupQuestion = () => {
   const showForm = !closed && loadErrorKind !== 'closed';
 
   return (
-    <Page>
-      <Panel>
-        <Column>
-          <LogoLink to="/" aria-label="IBAS 홈으로">
-            <img src="/images/ibas-main-logo_purple.png" alt="" />
-          </LogoLink>
-          {showForm && (
-            <>
-              <Steps>
-                <StepIndicator steps={STUDENT_SIGNUP_STEPS} current={2} />
-              </Steps>
-              <Lead>
-                모든 질문에 답한 뒤 가입 신청을 완료해 주세요. 쓰는 중에는 임시저장으로 저장해 둘 수
-                있어요.
-              </Lead>
-            </>
-          )}
-          {content}
-        </Column>
-      </Panel>
-      <Background aria-hidden="true" />
-    </Page>
+    <SignupLayout panel="questions">
+      {showForm && (
+        <>
+          <SignupSteps>
+            <StepIndicator steps={STUDENT_SIGNUP_STEPS} current={2} />
+          </SignupSteps>
+          <Lead>
+            모든 질문에 답한 뒤 가입 신청을 완료해 주세요. 쓰는 중에는 임시저장으로 저장해 둘 수
+            있어요.
+          </Lead>
+        </>
+      )}
+      {content}
+    </SignupLayout>
   );
 };
 
@@ -418,83 +411,6 @@ const spin = keyframes`
   to {
     transform: rotate(360deg);
   }
-`;
-
-const Page = styled.div`
-  display: flex;
-  width: 100%;
-  min-height: 100vh;
-  background-color: ${({ theme }) => theme.color.wh};
-  /* 앱 바깥 Div가 white-space: nowrap이라 문구가 넘치지 않게 되돌린다 */
-  white-space: normal;
-  word-break: keep-all;
-`;
-
-const Panel = styled.main`
-  flex: none;
-  width: 680px;
-  padding: 48px 40px 64px;
-  background-color: ${({ theme }) => theme.color.wh};
-
-  ${media.tabletOnly} {
-    width: 64%;
-    padding: 40px 32px 56px;
-  }
-
-  ${media.mobile} {
-    width: 100%;
-    padding: 32px 20px 40px;
-  }
-`;
-
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  max-width: 600px;
-  margin: 0 auto;
-`;
-
-const Background = styled.div`
-  position: sticky;
-  top: 0;
-  flex: 1;
-  height: 100vh;
-  background: url('/images/member-background.jpg') center / cover no-repeat;
-
-  ${media.mobile} {
-    display: none;
-  }
-`;
-
-const LogoLink = styled(Link)`
-  align-self: center;
-  border-radius: 8px;
-
-  img {
-    display: block;
-    width: 88px;
-    height: 88px;
-
-    ${media.mobile} {
-      width: 72px;
-      height: 72px;
-    }
-  }
-
-  &:focus {
-    outline: none;
-  }
-
-  &:focus-visible {
-    ${focusRing}
-  }
-`;
-
-const Steps = styled.div`
-  align-self: center;
-  width: 400px;
-  max-width: 100%;
 `;
 
 const Lead = styled.p`

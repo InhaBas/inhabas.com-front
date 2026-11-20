@@ -1,9 +1,10 @@
 import { ReactNode, useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import FormBanner from '../../components/common/form/FormBanner';
 import { focusRing } from '../../components/common/form/formStyles';
+import { HomeLogoLink, MemberPage } from '../../components/member/MemberLayout';
 import {
   LoginErrorKind,
   LoginProvider,
@@ -63,12 +64,10 @@ const Login = () => {
   };
 
   return (
-    <Page>
+    <MemberPage>
       <Panel>
         <Content>
-          <LogoLink to="/" aria-label="IBAS 홈으로">
-            <img src="/images/ibas-main-logo_purple.png" alt="" />
-          </LogoLink>
+          <HomeLogoLink size="large" />
 
           <Options>
             {errorKind && (
@@ -108,20 +107,11 @@ const Login = () => {
         </Copyright>
       </Panel>
       <Background aria-hidden="true" />
-    </Page>
+    </MemberPage>
   );
 };
 
 export default Login;
-
-const Page = styled.div`
-  display: flex;
-  width: 100%;
-  min-height: 100vh;
-  background-color: ${({ theme }) => theme.color.wh};
-  white-space: normal;
-  word-break: keep-all;
-`;
 
 const Panel = styled.main`
   flex: none;
@@ -151,33 +141,6 @@ const Content = styled.div`
 
   ${media.mobile} {
     margin-top: 0;
-  }
-`;
-
-const LogoLink = styled(Link)`
-  display: block;
-  align-self: center;
-  width: 150px;
-  height: 150px;
-  border-radius: 8px;
-
-  img {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-
-  &:focus {
-    outline: none;
-  }
-
-  &:focus-visible {
-    ${focusRing}
-  }
-
-  ${media.mobile} {
-    width: 120px;
-    height: 120px;
   }
 `;
 
@@ -293,6 +256,7 @@ const Copyright = styled.div`
   }
 `;
 
+// 회원가입 화면과 달리 패널 높이만큼 늘어나고, 이미지가 뜨기 전에는 어두운 보라 면을 보인다
 const Background = styled.div`
   flex: 1;
   background: #1b0b3a url('/images/member-background.jpg') center / cover no-repeat;

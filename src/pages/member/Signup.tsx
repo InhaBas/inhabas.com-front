@@ -22,13 +22,13 @@ import StepIndicator, {
   PROFESSOR_SIGNUP_STEPS,
   STUDENT_SIGNUP_STEPS,
 } from '../../components/common/form/StepIndicator';
+import { SignupLayout, SignupSteps } from '../../components/member/MemberLayout';
 import { isImeComposing } from '../../functions/ime';
 import { classifySignUpError } from '../../functions/signUpErrors';
 import { formatPhoneNumber, signUpRules } from '../../functions/signUpRules';
 import { isTokenExpiredError } from '../../queries/apiErrorEffects';
 import { signUpMutations, signUpQueries } from '../../queries/signUp';
 import { majorSelected, modalInfo, modalOpen } from '../../recoil/frontState';
-import { media } from '../../styles/theme';
 import { signUpInterface } from '../../types/ibas/TypeMember';
 
 import type { SignupCompleteState, SignupIdentity } from './SignupComplete';
@@ -211,12 +211,12 @@ const SignupForm = ({ profile, onClosed }: SignupFormProps) => {
 
   return (
     <>
-      <Steps>
+      <SignupSteps>
         <StepIndicator
           steps={student ? STUDENT_SIGNUP_STEPS : PROFESSOR_SIGNUP_STEPS}
           current={1}
         />
-      </Steps>
+      </SignupSteps>
       <Note>
         <InfoIcon size={18} />
         <span>이미 다른 소셜 계정으로 가입 신청했다면 그 계정으로 다시 로그인해 주세요.</span>
@@ -402,19 +402,7 @@ const Signup = () => {
     content = <Loading role="status">가입 정보를 불러오는 중이에요</Loading>;
   }
 
-  return (
-    <Page>
-      <Panel>
-        <Column>
-          <LogoLink to="/" aria-label="IBAS 홈으로">
-            <img src="/images/ibas-main-logo_purple.png" alt="" />
-          </LogoLink>
-          {content}
-        </Column>
-      </Panel>
-      <Background aria-hidden="true" />
-    </Page>
-  );
+  return <SignupLayout panel="form">{content}</SignupLayout>;
 };
 
 export default Signup;
@@ -440,81 +428,6 @@ const spin = keyframes`
   to {
     transform: rotate(360deg);
   }
-`;
-
-const Page = styled.div`
-  display: flex;
-  width: 100%;
-  min-height: 100vh;
-  background-color: ${({ theme }) => theme.color.wh};
-  /* 앱 바깥 Div가 white-space: nowrap이라 문구가 넘치지 않게 되돌린다 */
-  white-space: normal;
-  word-break: keep-all;
-`;
-
-const Panel = styled.main`
-  flex: none;
-  width: 480px;
-  padding: 48px 40px 64px;
-  background-color: ${({ theme }) => theme.color.wh};
-
-  ${media.tabletOnly} {
-    width: 52%;
-    padding: 40px 32px 56px;
-  }
-
-  ${media.mobile} {
-    width: 100%;
-    padding: 32px 20px 40px;
-  }
-`;
-
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  max-width: 400px;
-  margin: 0 auto;
-`;
-
-const Background = styled.div`
-  position: sticky;
-  top: 0;
-  flex: 1;
-  height: 100vh;
-  background: url('/images/member-background.jpg') center / cover no-repeat;
-
-  ${media.mobile} {
-    display: none;
-  }
-`;
-
-const LogoLink = styled(Link)`
-  align-self: center;
-  border-radius: 8px;
-
-  img {
-    display: block;
-    width: 88px;
-    height: 88px;
-
-    ${media.mobile} {
-      width: 72px;
-      height: 72px;
-    }
-  }
-
-  &:focus {
-    outline: none;
-  }
-
-  &:focus-visible {
-    ${focusRing}
-  }
-`;
-
-const Steps = styled.div`
-  width: 100%;
 `;
 
 const Note = styled.p`

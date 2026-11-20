@@ -1,21 +1,20 @@
 import { jwtDecode } from 'jwt-decode';
 import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useResetRecoilState } from 'recoil';
 import { styled } from 'styled-components';
 
 import { getAccessToken } from '../../api/token';
-import { focusRing } from '../../components/common/form/formStyles';
 import { CheckIcon } from '../../components/common/form/icons';
 import ResultNotice from '../../components/common/form/ResultNotice';
 import StepIndicator, {
   PROFESSOR_SIGNUP_STEPS,
   STUDENT_SIGNUP_STEPS,
 } from '../../components/common/form/StepIndicator';
+import { SignupLayout } from '../../components/member/MemberLayout';
 import { useEndSession } from '../../queries/myInfo';
 import { userEmail, userImage } from '../../recoil/backState';
 import { majorSelected } from '../../recoil/frontState';
-import { media } from '../../styles/theme';
 import { tokenInterface } from '../../types/TypeCommon';
 
 /*
@@ -112,97 +111,22 @@ const SignupComplete = () => {
   if (entry === 'none') return null;
 
   return (
-    <Page>
-      <Panel>
-        <Column>
-          <LogoLink to="/" aria-label="IBAS 홈으로">
-            <img src="/images/ibas-main-logo_purple.png" alt="" />
-          </LogoLink>
-          <StepIndicator steps={steps} current={steps.length} />
-          <Notice>
-            <ResultNotice
-              icon={<CheckIcon size={32} />}
-              title="가입 신청이 접수됐어요"
-              note="승인 전에는 동아리 소개·앨범 같은 공개 메뉴만 볼 수 있어요. 승인 메일을 받은 뒤 다시 로그인하면 모든 메뉴를 쓸 수 있어요."
-            >
-              운영진이 확인한 뒤 가입한 소셜 계정(Google·네이버·카카오)의 이메일로 결과를 보내
-              드려요.
-            </ResultNotice>
-          </Notice>
-        </Column>
-      </Panel>
-      <Background aria-hidden="true" />
-    </Page>
+    <SignupLayout panel="result">
+      <StepIndicator steps={steps} current={steps.length} />
+      <Notice>
+        <ResultNotice
+          icon={<CheckIcon size={32} />}
+          title="가입 신청이 접수됐어요"
+          note="승인 전에는 동아리 소개·앨범 같은 공개 메뉴만 볼 수 있어요. 승인 메일을 받은 뒤 다시 로그인하면 모든 메뉴를 쓸 수 있어요."
+        >
+          운영진이 확인한 뒤 가입한 소셜 계정(Google·네이버·카카오)의 이메일로 결과를 보내 드려요.
+        </ResultNotice>
+      </Notice>
+    </SignupLayout>
   );
 };
 
 export default SignupComplete;
-
-const Page = styled.div`
-  display: flex;
-  width: 100%;
-  min-height: 100vh;
-  background-color: ${({ theme }) => theme.color.wh};
-  /* 앱 바깥 Div가 white-space: nowrap이라 문구가 넘치지 않게 되돌린다 */
-  white-space: normal;
-  word-break: keep-all;
-`;
-
-const Panel = styled.main`
-  flex: none;
-  width: 480px;
-  padding: 48px 40px 64px;
-  background-color: ${({ theme }) => theme.color.wh};
-
-  ${media.mobile} {
-    width: 100%;
-    padding: 32px 20px 40px;
-  }
-`;
-
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  max-width: 400px;
-  margin: 0 auto;
-`;
-
-const Background = styled.div`
-  position: sticky;
-  top: 0;
-  flex: 1;
-  height: 100vh;
-  background: url('/images/member-background.jpg') center / cover no-repeat;
-
-  ${media.mobile} {
-    display: none;
-  }
-`;
-
-const LogoLink = styled(Link)`
-  align-self: center;
-  border-radius: 8px;
-
-  img {
-    display: block;
-    width: 88px;
-    height: 88px;
-
-    ${media.mobile} {
-      width: 72px;
-      height: 72px;
-    }
-  }
-
-  &:focus {
-    outline: none;
-  }
-
-  &:focus-visible {
-    ${focusRing}
-  }
-`;
 
 const Notice = styled.div`
   margin-top: 8px;
