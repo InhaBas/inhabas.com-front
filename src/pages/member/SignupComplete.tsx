@@ -6,7 +6,7 @@ import { useResetRecoilState, useSetRecoilState } from 'recoil';
 import { styled } from 'styled-components';
 
 import { getAccessToken, setAccessToken } from '../../api/token';
-import { CheckIcon, focusRing, InfoIcon } from '../../components/common/form/formStyles';
+import { CheckIcon, focusRing } from '../../components/common/form/formStyles';
 import { ResultNotice } from '../../components/common/form/RecruitClosedNotice';
 import StepIndicator, {
   PROFESSOR_SIGNUP_STEPS,
@@ -122,16 +122,13 @@ const SignupComplete = () => {
           </LogoLink>
           <StepIndicator steps={steps} current={steps.length} />
           <Notice>
-            <ResultNotice icon={<CheckIcon size={32} />} title="가입 신청이 접수됐어요">
+            <ResultNotice
+              icon={<CheckIcon size={32} />}
+              title="가입 신청이 접수됐어요"
+              note="승인 전에는 동아리 소개·앨범 같은 공개 메뉴만 볼 수 있어요. 승인 메일을 받은 뒤 다시 로그인하면 모든 메뉴를 쓸 수 있어요."
+            >
               운영진이 확인한 뒤 가입한 소셜 계정(Google·네이버·카카오)의 이메일로 결과를 보내
               드려요.
-              <Note>
-                <InfoIcon />
-                <span>
-                  승인 전에는 동아리 소개·앨범 같은 공개 메뉴만 볼 수 있어요. 승인 메일을 받은 뒤
-                  다시 로그인하면 모든 메뉴를 쓸 수 있어요.
-                </span>
-              </Note>
             </ResultNotice>
           </Notice>
         </Column>
@@ -211,25 +208,4 @@ const LogoLink = styled(Link)`
 
 const Notice = styled.div`
   margin-top: 8px;
-`;
-
-// ResultNotice 본문(p) 안에 들어가므로 span이다. 안내 한 줄 모양(연보라 면 + 브랜드 아이콘)
-const Note = styled.span`
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-top: 16px;
-  padding: 12px 14px;
-  border-radius: 8px;
-  background-color: ${({ theme }) => theme.color.border};
-  font-size: ${({ theme }) => theme.fontSize.sm};
-  line-height: 1.6;
-  color: ${({ theme }) => theme.color.bk};
-  text-align: left;
-
-  svg {
-    flex: none;
-    margin-top: 2px;
-    color: ${({ theme }) => theme.color.bgColor};
-  }
 `;

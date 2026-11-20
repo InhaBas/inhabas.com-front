@@ -19,7 +19,7 @@ export interface FieldControlProps {
 }
 
 interface FieldBaseProps {
-  /** 입력 요소의 id. 라벨은 `${id}-label`, 메시지는 `${id}-hint`·`${id}-error` id를 쓴다 */
+  /** 입력 요소의 id. 라벨은 `${id}-label`, 메시지는 `${id}-hint`·`${id}-error`, aside는 `${id}-aside` id를 쓴다 */
   id: string;
   label: ReactNode;
   /** 오류가 없을 때 메시지 영역에 보이는 도움말 */
@@ -29,7 +29,7 @@ interface FieldBaseProps {
 }
 
 interface FieldFrameProps extends FieldBaseProps {
-  /** 메시지 영역 오른쪽에 붙는 내용(글자 수 등) */
+  /** 메시지 영역 오른쪽에 붙는 내용(글자 수 등). 메시지 다음 순서로 입력의 설명에 연결된다 */
   aside?: ReactNode;
   children: (control: FieldControlProps) => ReactNode;
 }
@@ -37,7 +37,9 @@ interface FieldFrameProps extends FieldBaseProps {
 export const FieldFrame = ({ id, label, hint, error, aside, children }: FieldFrameProps) => {
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
-  const describedBy = error ? errorId : hint ? hintId : undefined;
+  const messageId = error ? errorId : hint ? hintId : undefined;
+  const asideId = aside ? `${id}-aside` : undefined;
+  const describedBy = [messageId, asideId].filter(Boolean).join(' ') || undefined;
 
   return (
     <Field>
@@ -50,8 +52,8 @@ export const FieldFrame = ({ id, label, hint, error, aside, children }: FieldFra
         'aria-invalid': error ? true : undefined,
       })}
       <MessageRow>
-        <FieldMessage id={describedBy} error={error} hint={hint} />
-        {aside}
+        <FieldMessage id={messageId} error={error} hint={hint} />
+        {aside && <Aside id={asideId}>{aside}</Aside>}
       </MessageRow>
     </Field>
   );
@@ -130,6 +132,10 @@ const MessageRow = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 12px;
+`;
+
+const Aside = styled.div`
+  flex: none;
 `;
 
 const Message = styled.div<{ $error?: boolean }>`

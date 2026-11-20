@@ -150,14 +150,14 @@ const preventComposingEnter = (event: KeyboardEvent<HTMLFormElement>) => {
   }
 };
 
-// 질문 하나의 글자 수. 그 칸만 다시 그린다
+// 질문 하나의 글자 수. 그 칸만 다시 그린다.
+// FormTextarea가 aside를 입력 설명에 연결하므로 "n / 1000자"로 읽힌다. 초과는 칸을 벗어날 때 오류 문구로 읽힌다
 const AnswerCount = ({ control, name }: { control: Control<AnswerValues>; name: string }) => {
   const length = (useWatch({ control, name }) ?? '').length;
-  const over = length > ANSWER_MAX_LENGTH;
   return (
-    <Count $over={over}>
+    <Count $over={length > ANSWER_MAX_LENGTH}>
       {length} / {ANSWER_MAX_LENGTH}
-      <VisuallyHidden>자{over ? ', 글자 수 초과' : ''}</VisuallyHidden>
+      <VisuallyHidden>자</VisuallyHidden>
     </Count>
   );
 };

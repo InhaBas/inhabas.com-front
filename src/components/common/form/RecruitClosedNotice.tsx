@@ -2,10 +2,10 @@ import { ReactNode, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { styled } from 'styled-components';
 
-import { CalendarIcon, focusRing } from './formStyles';
+import { CalendarIcon, focusRing, InfoIcon } from './formStyles';
 
 /*
-  결과 안내 블록: 64px 원 아이콘 + 제목 + 본문 + [홈으로].
+  결과 안내 블록: 64px 원 아이콘 + 제목 + 본문 + 보조 안내(note) + [홈으로].
   화면이 폼에서 이 안내로 바뀌면 포커스를 잃지 않도록 제목으로 옮긴다.
   배치(패널, 로고)는 쓰는 화면이 정한다. 완료 화면도 이 블록을 쓸 수 있다.
 */
@@ -14,11 +14,13 @@ interface ResultNoticeProps {
   icon: ReactNode;
   title: ReactNode;
   children?: ReactNode;
+  /** 본문과 버튼 사이의 보조 안내 한 덩어리(연보라 면 + 안내 아이콘) */
+  note?: ReactNode;
   /** 기본값 "/" */
   homeTo?: string;
 }
 
-export const ResultNotice = ({ icon, title, children, homeTo = '/' }: ResultNoticeProps) => {
+export const ResultNotice = ({ icon, title, children, note, homeTo = '/' }: ResultNoticeProps) => {
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
@@ -32,6 +34,12 @@ export const ResultNotice = ({ icon, title, children, homeTo = '/' }: ResultNoti
         {title}
       </Title>
       {children && <Lead>{children}</Lead>}
+      {note && (
+        <Note>
+          <InfoIcon />
+          <div>{note}</div>
+        </Note>
+      )}
       <HomeLink to={homeTo}>홈으로</HomeLink>
     </Wrap>
   );
@@ -91,6 +99,25 @@ const Lead = styled.p`
   strong {
     color: ${({ theme }) => theme.color.bk};
     font-weight: 700;
+  }
+`;
+
+const Note = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background-color: ${({ theme }) => theme.color.border};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  line-height: 1.6;
+  color: ${({ theme }) => theme.color.bk};
+  text-align: left;
+
+  svg {
+    flex: none;
+    margin-top: 2px;
+    color: ${({ theme }) => theme.color.bgColor};
   }
 `;
 
