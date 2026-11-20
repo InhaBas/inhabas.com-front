@@ -6,6 +6,8 @@ const color = {
   red: '#f56642',
   danger: '#f8d7da',
   TextDanger: '#721c24',
+  // 폼 칸 오류(글자·아이콘·테두리). 흰 배경 대비 4.8:1
+  error: '#d93025',
   blue: '#007bff',
   primary: '#cce5ff',
   TextPrimary: '#004085',
