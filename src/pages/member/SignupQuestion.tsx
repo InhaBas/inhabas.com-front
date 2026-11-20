@@ -1,9 +1,11 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useRef } from 'react';
+import { useEffect } from 'react';
+import { FieldErrors, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import { signUpRules } from '../../functions/signUpRules';
 import { signUpMutations, signUpQueries } from '../../queries/signUp';
 import { relogin } from '../../recoil/frontState';
 import Button from '../../styles/assets/Button';
@@ -12,6 +14,7 @@ import Img from '../../styles/assets/Img';
 import { TextArea } from '../../styles/assets/Input';
 import P from '../../styles/assets/P';
 import { media } from '../../styles/theme';
+import { answersInterface, questionnariesInterface } from '../../types/ibas/TypeMember';
 
 const QuestionPage = styled(FlexDiv)`
   ${media.mobile} {
@@ -105,13 +108,31 @@ const QuestionBackground = styled(Div)`
   }
 `;
 
+// 질문 id마다 답변 하나. 키는 `q${질문 id}`다
+type AnswerValues = Record<string, string>;
+
+const answerField = (questionId: number) => `q${questionId}`;
+
+// 서버가 내려준 질문 목록을 거르거나 더하지 않고 그대로 답변 목록으로 만든다
+const toAnswerBody = (
+  questions: questionnariesInterface[],
+  values: AnswerValues,
+): answersInterface[] =>
+  questions.map((item) => ({
+    questionId: item.id,
+    content: values[answerField(item.id)] ?? '',
+  }));
+
 const SignupQuestion = () => {
   const navigate = useNavigate();
 
-  const ref = useRef<any[]>([]);
   const completeMutation = useMutation(signUpMutations.complete());
   const saveMutation = useMutation(signUpMutations.saveAnswers());
   const setReload = useSetRecoilState(relogin);
+
+  const { register, handleSubmit, getValues, reset } = useForm<AnswerValues>({
+    mode: 'onTouched',
+  });
 
   /*
         회원가입 질문 리스트 호출
@@ -124,59 +145,55 @@ const SignupQuestion = () => {
     */
   const { data: answer } = useQuery(signUpQueries.answers());
 
+  // 저장된 답변을 질문 id로 맞춰 채운다
+  useEffect(() => {
+    if (!question) return;
+    reset(
+      Object.fromEntries(
+        question.map((item) => [
+          answerField(item.id),
+          answer?.find((saved) => saved.questionId === item.id)?.content ?? '',
+        ]),
+      ),
+    );
+  }, [question, answer, reset]);
+
   /*
         회원가입 답변 유효성 검사 후 PUT fetch
     */
-  const sendInput = () => {
-    let check = true;
-    if (question) {
-      Object.values(question).forEach((item: any, idx: number) => {
-        if (check && ref.current[idx].value === '') {
-          alert(`'${item.question}' 항목을 입력해 주세요`);
-          check = false;
-        }
-      });
+  const sendInput = (values: AnswerValues) => {
+    if (!question) return;
 
-      if (check) {
-        let inputData = Object.values(question).map((item: any, idx: number) => ({
-          questionId: item.id,
-          content: ref.current[idx]?.value,
-        }));
+    /*
+      회원가입 완료가 된 경우
+      토큰에 저장되어 있는 정보가 달라지므로, 회원 가입 후에는 항상 reload 해주어야 함
+    */
+    completeMutation.mutate(toAnswerBody(question, values), {
+      onSuccess: () => {
+        alert('회원가입을 축하합니다!');
+        setReload(true);
+        navigate('/');
+      },
+    });
+  };
 
-        /*
-          회원가입 완료가 된 경우
-          토큰에 저장되어 있는 정보가 달라지므로, 회원 가입 후에는 항상 reload 해주어야 함
-        */
-        completeMutation.mutate(inputData, {
-          onSuccess: () => {
-            alert('회원가입을 축하합니다!');
-            setReload(true);
-            navigate('/');
-          },
-        });
-      }
-    }
+  // 화면 변경 전까지는 첫 오류를 alert로 알린다
+  const alertFirstError = (errors: FieldErrors<AnswerValues>) => {
+    const first = question?.find((item) => errors[answerField(item.id)]);
+    if (first) alert(`'${first.question}' 항목: ${errors[answerField(first.id)]?.message}`);
   };
 
   /*
         회원가입 답변 POST fetch
     */
   const saveInput = () => {
-    let check = true;
-    if (question) {
-      if (check) {
-        let inputData = Object.values(question).map((item: any, idx: number) => ({
-          questionId: item.id,
-          content: ref.current[idx]?.value,
-        }));
+    if (!question) return;
 
-        saveMutation.mutate(inputData, {
-          onSuccess: () => {
-            alert('답변이 저장되었습니다.');
-          },
-        });
-      }
-    }
+    saveMutation.mutate(toAnswerBody(question, getValues()), {
+      onSuccess: () => {
+        alert('답변이 저장되었습니다.');
+      },
+    });
   };
 
   return (
@@ -193,17 +210,16 @@ const SignupQuestion = () => {
           <QuestionScroll width="90%" height="100%" overflow="auto">
             <QuestionList width="100%" height="100%">
               {question &&
-                Object.values(question).map((item: any, idx: number) => {
+                question.map((item, idx) => {
                   return (
                     <Div
                       width="100%"
                       $margin={idx === 0 ? '0' : '30px 0 0 0'}
-                      key={`question${idx}`}
+                      key={item.id}
                     >
                       <QuestionTitle fontWeight={700}>{item.question}</QuestionTitle>
                       <TextArea
-                        defaultValue={(answer && answer[idx]?.content) || ''}
-                        ref={(el: never) => (ref.current[idx] = el)}
+                        {...register(answerField(item.id), signUpRules.answer)}
                         height="150px"
                         width="100%"
                         $margin="10px 0 0 0"
@@ -234,7 +250,7 @@ const SignupQuestion = () => {
                   $HBackgroundColor="bgColorHo"
                   width="15%"
                   disabled={completeMutation.isPending}
-                  onClick={() => sendInput()}
+                  onClick={handleSubmit(sendInput, alertFirstError)}
                 >
                   <P color="wh">제출</P>
                 </QuestionButton>
