@@ -334,6 +334,8 @@ const handleDelete = (id: number) => {
 
 ## 7. 로딩·에러 UI
 
+> 예외: 로그인·회원가입 화면은 이 절 대신 `.claude/rules/forms.md`를 따른다. 화면별 로딩·에러 표시, 제출 버튼의 스피너와 진행 문구, 클릭되는 요소의 `<button>` 마크업이 이 절과 다르다.
+
 - **첫 조회는 `data`가 없으면 `<Loading />`을 그린다.** 판정은 `isPending`이 아니라 `!data`다.
 
   ```tsx
