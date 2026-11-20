@@ -246,7 +246,6 @@ const handleDelete = (id: number) => {
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | 클라이언트 인증 | `tokenAccess`, `failRefreshing`, `userEmail`, `userImage`                                                                              |
 | UI·폼           | `menuId`(경로에서 계산), `contestOrder`(queryKey에 넣는 필터), `selectedFile`, `fileIdList`, 체크박스·모달·캐러셀 atom, `lectureRoom*` |
-| 신호            | `relogin`(가입 완료 뒤 reload)                                                                                                         |
 | 제목 덮어쓰기   | `headerTitleInfo` — 페이지가 직접 정한 제목만 담는다. HeaderTitle은 이 값이 있으면 쓰고, 없으면 메뉴 상세 쿼리 값을 쓴다               |
 
 **role**은 atom이 아니라 `useMyRole()`로 얻는다. `/signUp/check` → `/myInfo` 쿼리 조합(`enabled`)에서 role을 꺼내며, 특수값을 그대로 돌려준다.

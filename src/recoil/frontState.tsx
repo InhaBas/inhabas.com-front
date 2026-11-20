@@ -29,12 +29,6 @@ export const menuId = atom({
   default: 0,
 });
 
-// login
-export const relogin = atom({
-  key: 'relogin',
-  default: false,
-});
-
 export const majorSelected = atom({
   key: 'majorSelected',
   default: { college: '', major: '' },
