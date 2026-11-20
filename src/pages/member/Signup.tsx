@@ -264,8 +264,10 @@ const Signup = () => {
         check = false;
       } else if (status === 'student' && ref.current[6].value === '') {
         alert('학번을 입력해주세요');
+        check = false;
       } else if (status === 'student' && gradeValue === '') {
         alert('학년을 선택해주세요');
+        check = false;
       }
     }
     if (check && selectedMajor.major === '') {
