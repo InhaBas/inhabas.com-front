@@ -265,19 +265,22 @@ const handleDelete = (id: number) => {
 
 ### 5.1 한 곳에서 처리한다
 
-`src/queries/queryClient.ts`에서 `QueryCache`와 `MutationCache`의 `onError`에 공통 `handleApiError(error)`를 연결한다. **호출 지점에서는 에러를 처리하지 않는다.** 쿼리별 `meta`로 에러 동작을 바꾸지도 않는다.
+`src/queries/queryClient.ts`에서 `QueryCache`와 `MutationCache`의 `onError`에 공통 `handleApiError(error)`를 연결한다. **호출 지점에서는 에러를 처리하지 않는다**(회원가입 화면 경로만 예외, 아래 표). 쿼리별 `meta`로 에러 동작을 바꾸지도 않는다.
 
 분기 기준은 본문의 `status`다(백엔드에서 HTTP 상태와 항상 같다).
 
-| 조건                                      | 동작                                                            |
-| ----------------------------------------- | --------------------------------------------------------------- |
-| `ApiError`가 아님(네트워크 오류 등)       | 아무것도 하지 않는다(`console.error`)                           |
-| `body === null`(본문 파싱 실패)           | 아무것도 하지 않는다                                            |
-| `auth` && code ∈ {`A005`, `A006`, `A007`} | 5.2의 refresh 흐름. alert 없음                                  |
-| 그 밖                                     | alert `웹 팀에 문의해주세요. \n${code} : ${message}`            |
-| └ `auth` && status 401                    | `navigate(-1)`                                                  |
-| └ `auth` && status 403                    | `path === '/signUp'`이면 `navigate('/')`, 아니면 `navigate(-1)` |
-| └ status 404 (`auth`와 무관)              | `navigate('/notfound')`                                         |
+| 조건                                      | 동작                                                 |
+| ----------------------------------------- | ---------------------------------------------------- |
+| `ApiError`가 아님(네트워크 오류 등)       | 아무것도 하지 않는다(`console.error`)                |
+| `body === null`(본문 파싱 실패)           | 아무것도 하지 않는다                                 |
+| `auth` && code ∈ {`A005`, `A006`, `A007`} | 5.2의 refresh 흐름. alert 없음                       |
+| 회원가입 화면 경로(아래 참고)             | 아무것도 하지 않는다. 화면이 직접 표시한다           |
+| 그 밖                                     | alert `웹 팀에 문의해주세요. \n${code} : ${message}` |
+| └ `auth` && status 401                    | `navigate(-1)`                                       |
+| └ `auth` && status 403                    | `navigate(-1)`                                       |
+| └ status 404 (`auth`와 무관)              | `navigate('/notfound')`                              |
+
+- 회원가입 화면 경로: `/signUp`(GET·POST·PUT), `/signUp/answers`, `/signUp/questionnaires`. 가입 기간 아님(S001)·입력 오류(G003)를 alert로 띄우면 사이트 버그처럼 보이므로 화면이 안내한다. 예외는 `meta`가 아니라 `handleApiError`의 경로 목록(`SIGN_UP_SCREEN_PATHS`)으로 둔다. 같은 경로를 부르는 곳이 회원가입 화면뿐이라 경로가 곧 화면이다. 화면은 `src/functions/signUpErrors.ts`의 `classifySignUpError(error)`로 `closed`(S001)·`invalid`(G003)·`unknown`을 나눈다. `/signUp/check`·`/signUp/majorInfo`·`/signUp/schedule`은 공통 처리 그대로다.
 
 - 백엔드에서 실제로 오는 토큰 무효 코드는 `A005`·`A006`(401)이고, `A007`과 status 401 분기는 사실상 도달하지 않는다. 옛 `useFetch`와 똑같이 두었으며, 정리는 에러 UX 개선 때 한다.
 - 권한 부족·비로그인은 대부분 403 `M002` 하나로 온다.
