@@ -22,6 +22,7 @@ import StepIndicator, {
   PROFESSOR_SIGNUP_STEPS,
   STUDENT_SIGNUP_STEPS,
 } from '../../components/common/form/StepIndicator';
+import { isImeComposing } from '../../functions/ime';
 import { classifySignUpError } from '../../functions/signUpErrors';
 import { formatPhoneNumber, signUpRules } from '../../functions/signUpRules';
 import { isTokenExpiredError } from '../../queries/apiErrorEffects';
@@ -89,8 +90,7 @@ const toProfileBody = (values: SignupValues): signUpInterface => {
 
 // 한글 IME 조합 중 Enter는 조합을 끝내는 키다. 폼 제출로 이어지지 않게 막는다
 const preventComposingEnter = (event: KeyboardEvent<HTMLFormElement>) => {
-  const composing = event.nativeEvent.isComposing || event.keyCode === 229;
-  if (event.key === 'Enter' && composing) event.preventDefault();
+  if (event.key === 'Enter' && isImeComposing(event)) event.preventDefault();
 };
 
 /*

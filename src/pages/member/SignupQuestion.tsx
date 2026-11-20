@@ -18,6 +18,7 @@ import { focusRing, VisuallyHidden } from '../../components/common/form/formStyl
 import { AlertIcon, CheckIcon } from '../../components/common/form/icons';
 import RecruitClosedNotice from '../../components/common/form/RecruitClosedNotice';
 import StepIndicator, { STUDENT_SIGNUP_STEPS } from '../../components/common/form/StepIndicator';
+import { isImeComposing } from '../../functions/ime';
 import { classifySignUpError } from '../../functions/signUpErrors';
 import { ANSWER_MAX_LENGTH, signUpRules } from '../../functions/signUpRules';
 import { isTokenExpiredError } from '../../queries/apiErrorEffects';
@@ -141,8 +142,11 @@ const useLeaveGuard = (blocking: boolean) => {
 
 // 한글 IME 조합 중 Enter는 조합을 끝내는 키다. textarea 밖에서 제출 등으로 이어지지 않게 막는다
 const preventComposingEnter = (event: KeyboardEvent<HTMLFormElement>) => {
-  const composing = event.nativeEvent.isComposing || event.keyCode === 229;
-  if (event.key === 'Enter' && composing && !(event.target instanceof HTMLTextAreaElement)) {
+  if (
+    event.key === 'Enter' &&
+    isImeComposing(event) &&
+    !(event.target instanceof HTMLTextAreaElement)
+  ) {
     event.preventDefault();
   }
 };

@@ -3,6 +3,7 @@ import { KeyboardEvent, useEffect, useId, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import { isImeComposing } from '../../../functions/ime';
 import { myInfoMutations } from '../../../queries/myInfo';
 import { signUpQueries } from '../../../queries/signUp';
 import { majorSelected, modalInfo, modalOpen } from '../../../recoil/frontState';
@@ -105,9 +106,6 @@ const getTabbables = (root: HTMLElement) =>
     ),
   ).filter((el) => el.tabIndex >= 0 && el.getClientRects().length > 0);
 
-// 한글 IME 조합 중인 키 입력. Safari는 조합을 끝내는 keydown에도 keyCode 229를 보낸다
-const isComposing = (e: KeyboardEvent) => e.nativeEvent.isComposing || e.keyCode === 229;
-
 const ModalMajor = () => {
   const setOpen = useSetRecoilState(modalOpen);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -190,7 +188,7 @@ const ModalMajor = () => {
 
   // Esc로 닫고, Tab 포커스가 모달 밖으로 나가지 않게 처음과 끝을 잇는다
   const handleDialogKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (isComposing(e)) return;
+    if (isImeComposing(e)) return;
 
     if (e.key === 'Escape') {
       e.preventDefault();
@@ -220,7 +218,7 @@ const ModalMajor = () => {
   // 포커스는 검색 입력에 둔 채 방향키로 결과를 가리키고 Enter로 고른다
   const handleSearchKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     // 조합 중 Enter·방향키는 IME가 글자를 확정하는 데 쓴다. 선택으로 처리하지 않는다
-    if (isComposing(e)) return;
+    if (isImeComposing(e)) return;
 
     const lastIndex = filteredResults.length - 1;
     if (e.key === 'ArrowDown') {
