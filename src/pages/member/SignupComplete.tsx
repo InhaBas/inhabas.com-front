@@ -1,11 +1,10 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useResetRecoilState, useSetRecoilState } from 'recoil';
+import { useResetRecoilState } from 'recoil';
 import { styled } from 'styled-components';
 
-import { getAccessToken, setAccessToken } from '../../api/token';
+import { getAccessToken } from '../../api/token';
 import { focusRing } from '../../components/common/form/formStyles';
 import { CheckIcon } from '../../components/common/form/icons';
 import ResultNotice from '../../components/common/form/ResultNotice';
@@ -13,7 +12,8 @@ import StepIndicator, {
   PROFESSOR_SIGNUP_STEPS,
   STUDENT_SIGNUP_STEPS,
 } from '../../components/common/form/StepIndicator';
-import { loggedOut, userEmail, userImage } from '../../recoil/backState';
+import { useEndSession } from '../../queries/myInfo';
+import { userEmail, userImage } from '../../recoil/backState';
 import { majorSelected } from '../../recoil/frontState';
 import { media } from '../../styles/theme';
 import { tokenInterface } from '../../types/TypeCommon';
@@ -83,8 +83,7 @@ const resolveEntry = (): Entry => {
 const SignupComplete = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const queryClient = useQueryClient();
-  const setLoggedOut = useSetRecoilState(loggedOut);
+  const endSession = useEndSession();
   const resetMajor = useResetRecoilState(majorSelected);
   const resetEmail = useResetRecoilState(userEmail);
   const resetImage = useResetRecoilState(userImage);
@@ -103,15 +102,12 @@ const SignupComplete = () => {
     if (entry === 'revisit') return;
 
     writeCompletedMark();
-    // useEndSession과 같은 정리에 회원가입 상태 초기화를 더한다
-    setLoggedOut(true);
-    setAccessToken('default');
-    queryClient.clear();
-    document.cookie = 'ibas_refresh=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    // 로그아웃과 같은 정리에 회원가입 중 쌓인 클라이언트 상태(전공 선택, 이메일, 프로필 사진) 초기화를 더한다
+    endSession();
     resetMajor();
     resetEmail();
     resetImage();
-  }, [entry, navigate, queryClient, setLoggedOut, resetMajor, resetEmail, resetImage]);
+  }, [entry, navigate, endSession, resetMajor, resetEmail, resetImage]);
 
   if (entry === 'none') return null;
 
