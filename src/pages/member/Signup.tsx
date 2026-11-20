@@ -1,28 +1,23 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
-import {
-  Control,
-  Controller,
-  FieldErrors,
-  useController,
-  useForm,
-  useWatch,
-} from 'react-hook-form';
+import { Control, Controller, useController, useForm, useWatch } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { keyframes, styled } from 'styled-components';
+import { styled } from 'styled-components';
 
-import FormBanner from '../../components/common/form/FormBanner';
 import { FieldFrame, FieldMessage, FormField } from '../../components/common/form/FormField';
 import { controlStyles, focusRing, VisuallyHidden } from '../../components/common/form/formStyles';
 import { CheckIcon, InfoIcon } from '../../components/common/form/icons';
 import RecruitClosedNotice from '../../components/common/form/RecruitClosedNotice';
 import { GradeSegment, SegmentedRadio } from '../../components/common/form/SegmentedRadio';
+import Spinner from '../../components/common/form/Spinner';
 import StepIndicator, {
   PROFESSOR_SIGNUP_STEPS,
   STUDENT_SIGNUP_STEPS,
 } from '../../components/common/form/StepIndicator';
 import { SignupLayout, SignupSteps } from '../../components/member/MemberLayout';
+import SignUpSubmitError from '../../components/member/SignUpSubmitError';
+import { focusFirstError } from '../../functions/formFocus';
 import { isImeComposing } from '../../functions/ime';
 import { classifySignUpError } from '../../functions/signUpErrors';
 import { formatPhoneNumber, signUpRules } from '../../functions/signUpRules';
@@ -162,7 +157,6 @@ interface SignupFormProps {
 const SignupForm = ({ profile, onClosed }: SignupFormProps) => {
   const navigate = useNavigate();
   const createMutation = useMutation(signUpMutations.createProfile());
-  const bannerRef = useRef<HTMLDivElement>(null);
 
   const {
     control,
@@ -180,18 +174,6 @@ const SignupForm = ({ profile, onClosed }: SignupFormProps) => {
   const status = useWatch({ control, name: 'status' });
   const student = status === 'student';
 
-  const errorKind = createMutation.isError ? classifySignUpError(createMutation.error) : null;
-
-  useEffect(() => {
-    if (errorKind === 'closed') onClosed();
-    else if (errorKind) bannerRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-  }, [errorKind, onClosed]);
-
-  const focusFirstError = (fieldErrors: FieldErrors<SignupValues>) => {
-    const first = FIELD_ORDER.find((name) => fieldErrors[name]);
-    if (first) setFocus(first);
-  };
-
   const submit = (values: SignupValues) => {
     createMutation.mutate(toProfileBody(values), {
       onSuccess: () => {
@@ -204,7 +186,9 @@ const SignupForm = ({ profile, onClosed }: SignupFormProps) => {
       },
     });
   };
-  const onSubmit = handleSubmit(submit, focusFirstError);
+  const onSubmit = handleSubmit(submit, (fieldErrors) =>
+    focusFirstError(FIELD_ORDER, fieldErrors, setFocus),
+  );
 
   // 입력하는 대로 010-0000-0000 형식으로 하이픈을 붙인다. RHF가 값을 읽기 전에 바꾼다
   const phoneField = register('phoneNumber', signUpRules.phoneNumber);
@@ -222,17 +206,13 @@ const SignupForm = ({ profile, onClosed }: SignupFormProps) => {
         <span>이미 다른 소셜 계정으로 가입 신청했다면 그 계정으로 다시 로그인해 주세요.</span>
       </Note>
 
-      {errorKind && errorKind !== 'closed' && (
-        <div ref={bannerRef}>
-          {errorKind === 'invalid' ? (
-            <FormBanner>입력값을 확인해 주세요. 계속 안 되면 웹 팀에 문의해 주세요</FormBanner>
-          ) : (
-            <FormBanner action={{ label: '다시 시도', onClick: () => onSubmit() }}>
-              기본 정보를 저장하지 못했어요. 잠시 뒤 다시 시도해 주세요
-            </FormBanner>
-          )}
-        </div>
-      )}
+      <SignUpSubmitError
+        error={createMutation.error}
+        onClosed={onClosed}
+        onRetry={() => onSubmit()}
+      >
+        기본 정보를 저장하지 못했어요. 잠시 뒤 다시 시도해 주세요
+      </SignUpSubmitError>
 
       <Form noValidate onSubmit={onSubmit} onKeyDown={preventComposingEnter}>
         <Section>
@@ -365,7 +345,7 @@ const SignupForm = ({ profile, onClosed }: SignupFormProps) => {
         >
           {createMutation.isPending ? (
             <>
-              <Spinner aria-hidden="true" />
+              <Spinner />
               저장 중…
             </>
           ) : student ? (
@@ -423,12 +403,6 @@ const SearchIcon = () => (
     <path d="m20 20-3.5-3.5" />
   </svg>
 );
-
-const spin = keyframes`
-  to {
-    transform: rotate(360deg);
-  }
-`;
 
 const Note = styled.p`
   display: flex;
@@ -614,19 +588,5 @@ const SubmitButton = styled.button`
   &:disabled {
     cursor: not-allowed;
     opacity: 0.75;
-  }
-`;
-
-const Spinner = styled.span`
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid currentColor;
-  border-right-color: transparent;
-  border-radius: 50%;
-  animation: ${spin} 0.8s linear infinite;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation-duration: 2.4s;
   }
 `;

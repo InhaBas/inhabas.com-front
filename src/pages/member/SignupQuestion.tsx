@@ -8,17 +8,20 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Control, FieldErrors, useForm, useWatch } from 'react-hook-form';
+import { Control, useForm, useWatch } from 'react-hook-form';
 import { UNSAFE_NavigationContext, useNavigate } from 'react-router-dom';
-import { keyframes, styled } from 'styled-components';
+import { styled } from 'styled-components';
 
 import FormBanner from '../../components/common/form/FormBanner';
 import { FormTextarea } from '../../components/common/form/FormField';
 import { focusRing, VisuallyHidden } from '../../components/common/form/formStyles';
 import { AlertIcon, CheckIcon } from '../../components/common/form/icons';
 import RecruitClosedNotice from '../../components/common/form/RecruitClosedNotice';
+import Spinner from '../../components/common/form/Spinner';
 import StepIndicator, { STUDENT_SIGNUP_STEPS } from '../../components/common/form/StepIndicator';
 import { SignupLayout, SignupSteps } from '../../components/member/MemberLayout';
+import SignUpSubmitError from '../../components/member/SignUpSubmitError';
+import { focusFirstError } from '../../functions/formFocus';
 import { isImeComposing } from '../../functions/ime';
 import { classifySignUpError } from '../../functions/signUpErrors';
 import { ANSWER_MAX_LENGTH, signUpRules } from '../../functions/signUpRules';
@@ -177,7 +180,6 @@ const QuestionForm = ({ questions, savedAnswers, onClosed }: QuestionFormProps) 
   const completeMutation = useMutation(signUpMutations.complete());
   const saveMutation = useMutation(signUpMutations.saveAnswers());
   const [saveState, setSaveState] = useState<SaveState>({ kind: 'idle' });
-  const bannerRef = useRef<HTMLDivElement>(null);
 
   // 전에 임시저장한 답변을 질문 id로 맞춰 채운다
   const [defaultValues] = useState<AnswerValues>(() =>
@@ -206,20 +208,7 @@ const QuestionForm = ({ questions, savedAnswers, onClosed }: QuestionFormProps) 
     defaultValues,
   });
 
-  const errorKind = completeMutation.isError ? classifySignUpError(completeMutation.error) : null;
-
-  useEffect(() => {
-    if (errorKind === 'closed') onClosed();
-    else if (errorKind) bannerRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-  }, [errorKind, onClosed]);
-
   const allowLeave = useLeaveGuard(isDirty);
-
-  // 등록 순서가 아니라 화면 순서(질문 순서)로 첫 오류 칸에 포커스를 옮긴다
-  const focusFirstError = (fieldErrors: FieldErrors<AnswerValues>) => {
-    const first = questions.find((item) => fieldErrors[answerField(item.id)]);
-    if (first) setFocus(answerField(first.id));
-  };
 
   const submit = (values: AnswerValues) => {
     completeMutation.mutate(toAnswerBody(questions, values), {
@@ -229,7 +218,14 @@ const QuestionForm = ({ questions, savedAnswers, onClosed }: QuestionFormProps) 
       },
     });
   };
-  const onSubmit = handleSubmit(submit, focusFirstError);
+  // 화면 순서(질문 순서)로 첫 오류 칸에 포커스를 옮긴다
+  const onSubmit = handleSubmit(submit, (fieldErrors) =>
+    focusFirstError(
+      questions.map((item) => answerField(item.id)),
+      fieldErrors,
+      setFocus,
+    ),
+  );
 
   const save = async () => {
     // 1000자를 넘는 답변은 서버가 거절하므로 보내지 않고 그 칸에 오류를 보여준다
@@ -266,17 +262,13 @@ const QuestionForm = ({ questions, savedAnswers, onClosed }: QuestionFormProps) 
 
   return (
     <Form noValidate onSubmit={onSubmit} onKeyDown={preventComposingEnter}>
-      {errorKind && errorKind !== 'closed' && (
-        <div ref={bannerRef}>
-          {errorKind === 'invalid' ? (
-            <FormBanner>입력값을 확인해 주세요. 계속 안 되면 웹 팀에 문의해 주세요</FormBanner>
-          ) : (
-            <FormBanner action={{ label: '다시 시도', onClick: () => onSubmit() }}>
-              가입 신청을 보내지 못했어요. 잠시 뒤 다시 시도해 주세요
-            </FormBanner>
-          )}
-        </div>
-      )}
+      <SignUpSubmitError
+        error={completeMutation.error}
+        onClosed={onClosed}
+        onRetry={() => onSubmit()}
+      >
+        가입 신청을 보내지 못했어요. 잠시 뒤 다시 시도해 주세요
+      </SignUpSubmitError>
 
       {questions.map((item) => {
         const name = answerField(item.id);
@@ -297,7 +289,7 @@ const QuestionForm = ({ questions, savedAnswers, onClosed }: QuestionFormProps) 
         <SaveStatus role="status" $failed={saveState.kind === 'failed' && !saveMutation.isPending}>
           {saveMutation.isPending ? (
             <>
-              <Spinner aria-hidden="true" />
+              <Spinner />
               <span>저장 중…</span>
             </>
           ) : saveState.kind === 'failed' ? (
@@ -334,7 +326,7 @@ const QuestionForm = ({ questions, savedAnswers, onClosed }: QuestionFormProps) 
           >
             {completeMutation.isPending ? (
               <>
-                <Spinner aria-hidden="true" />
+                <Spinner />
                 제출 중…
               </>
             ) : (
@@ -406,12 +398,6 @@ const SignupQuestion = () => {
 };
 
 export default SignupQuestion;
-
-const spin = keyframes`
-  to {
-    transform: rotate(360deg);
-  }
-`;
 
 const Lead = styled.p`
   margin: 0;
@@ -538,19 +524,5 @@ const SecondaryButton = styled(BaseButton)`
 
   &:hover:enabled {
     background-color: ${({ theme }) => theme.color.border};
-  }
-`;
-
-const Spinner = styled.span`
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid currentColor;
-  border-right-color: transparent;
-  border-radius: 50%;
-  animation: ${spin} 0.8s linear infinite;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation-duration: 2.4s;
   }
 `;
