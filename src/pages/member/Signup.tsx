@@ -35,6 +35,8 @@ import { majorSelected, modalInfo, modalOpen } from '../../recoil/frontState';
 import { media } from '../../styles/theme';
 import { signUpInterface } from '../../types/ibas/TypeMember';
 
+import type { SignupCompleteState } from './SignupComplete';
+
 type SignupStatus = 'student' | 'professor';
 
 interface SignupValues {
@@ -202,7 +204,10 @@ const SignupForm = ({ profile, onClosed }: SignupFormProps) => {
       onSuccess: () => {
         // 학생은 지원 질문으로, 교수는 이 저장으로 가입이 끝난다
         if (values.status === 'student') navigate('/signup/question');
-        else navigate('/signup/complete', { replace: true });
+        else {
+          const state: SignupCompleteState = { identity: 'professor' };
+          navigate('/signup/complete', { replace: true, state });
+        }
       },
     });
   };
