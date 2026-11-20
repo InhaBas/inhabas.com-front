@@ -11,6 +11,7 @@ import Login from './pages/member/Login';
 import LoginProcess from './pages/member/LoginProcess';
 import Rule from './pages/member/Rule';
 import Signup from './pages/member/Signup';
+import SignupComplete from './pages/member/SignupComplete';
 import SignupQuestion from './pages/member/SignupQuestion';
 import NotFound from './pages/NotFound';
 import { failRefreshing } from './recoil/frontState';
@@ -59,6 +60,7 @@ const App = () => {
           <Route path="login/process" element={<LoginProcess />} />
           <Route path="signup" element={<Signup />} />
           <Route path="signup/question" element={<SignupQuestion />} />
+          <Route path="signup/complete" element={<SignupComplete />} />
           <Route path="rule/:id" element={<Rule />} />
           <Route path="/*" element={<HeaderNavLayout />} />
           <Route path="notfound" element={<NotFound />} />
