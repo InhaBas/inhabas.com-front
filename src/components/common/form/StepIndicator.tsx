@@ -1,6 +1,7 @@
 import { styled } from 'styled-components';
 
-import { CheckIcon, VisuallyHidden } from './formStyles';
+import { VisuallyHidden } from './formStyles';
+import { CheckIcon } from './icons';
 
 /*
   가입 진행 표시. 신분마다 단계 목록이 다르다.

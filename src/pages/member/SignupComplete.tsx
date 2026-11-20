@@ -6,8 +6,9 @@ import { useResetRecoilState, useSetRecoilState } from 'recoil';
 import { styled } from 'styled-components';
 
 import { getAccessToken, setAccessToken } from '../../api/token';
-import { CheckIcon, focusRing } from '../../components/common/form/formStyles';
-import { ResultNotice } from '../../components/common/form/RecruitClosedNotice';
+import { focusRing } from '../../components/common/form/formStyles';
+import { CheckIcon } from '../../components/common/form/icons';
+import ResultNotice from '../../components/common/form/ResultNotice';
 import StepIndicator, {
   PROFESSOR_SIGNUP_STEPS,
   STUDENT_SIGNUP_STEPS,

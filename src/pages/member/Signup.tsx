@@ -14,13 +14,8 @@ import { keyframes, styled } from 'styled-components';
 
 import FormBanner from '../../components/common/form/FormBanner';
 import { FieldFrame, FieldMessage, FormField } from '../../components/common/form/FormField';
-import {
-  CheckIcon,
-  controlStyles,
-  focusRing,
-  InfoIcon,
-  VisuallyHidden,
-} from '../../components/common/form/formStyles';
+import { controlStyles, focusRing, VisuallyHidden } from '../../components/common/form/formStyles';
+import { CheckIcon, InfoIcon } from '../../components/common/form/icons';
 import RecruitClosedNotice from '../../components/common/form/RecruitClosedNotice';
 import { GradeSegment, SegmentedRadio } from '../../components/common/form/SegmentedRadio';
 import StepIndicator, {

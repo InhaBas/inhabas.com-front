@@ -1,7 +1,8 @@
 import { forwardRef, InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from 'react';
 import { styled } from 'styled-components';
 
-import { AlertIcon, controlStyles } from './formStyles';
+import { controlStyles } from './formStyles';
+import { AlertIcon } from './icons';
 
 /*
   폼 칸: 항상 보이는 라벨 + 입력 + 고정 높이 메시지 영역(도움말 또는 오류).

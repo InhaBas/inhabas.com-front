@@ -1,7 +1,8 @@
 import { ReactNode } from 'react';
 import { styled } from 'styled-components';
 
-import { AlertIcon, focusRing, InfoIcon } from './formStyles';
+import { focusRing } from './formStyles';
+import { AlertIcon, InfoIcon } from './icons';
 
 /*
   폼 위 배너. 특정 칸에 묶을 수 없는 결과를 알린다.

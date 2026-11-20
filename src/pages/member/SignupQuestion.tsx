@@ -14,12 +14,8 @@ import { keyframes, styled } from 'styled-components';
 
 import FormBanner from '../../components/common/form/FormBanner';
 import { FormTextarea } from '../../components/common/form/FormField';
-import {
-  AlertIcon,
-  CheckIcon,
-  focusRing,
-  VisuallyHidden,
-} from '../../components/common/form/formStyles';
+import { focusRing, VisuallyHidden } from '../../components/common/form/formStyles';
+import { AlertIcon, CheckIcon } from '../../components/common/form/icons';
 import RecruitClosedNotice from '../../components/common/form/RecruitClosedNotice';
 import StepIndicator, { STUDENT_SIGNUP_STEPS } from '../../components/common/form/StepIndicator';
 import { classifySignUpError } from '../../functions/signUpErrors';
