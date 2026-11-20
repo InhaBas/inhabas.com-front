@@ -24,6 +24,7 @@ import RecruitClosedNotice from '../../components/common/form/RecruitClosedNotic
 import StepIndicator, { STUDENT_SIGNUP_STEPS } from '../../components/common/form/StepIndicator';
 import { classifySignUpError } from '../../functions/signUpErrors';
 import { ANSWER_MAX_LENGTH, signUpRules } from '../../functions/signUpRules';
+import { isTokenExpiredError } from '../../queries/apiErrorEffects';
 import { signUpMutations, signUpQueries } from '../../queries/signUp';
 import { media } from '../../styles/theme';
 import { answersInterface, questionnariesInterface } from '../../types/ibas/TypeMember';
@@ -178,6 +179,17 @@ const QuestionForm = ({ questions, savedAnswers, onClosed }: QuestionFormProps) 
   const bannerRef = useRef<HTMLDivElement>(null);
 
   // 전에 임시저장한 답변을 질문 id로 맞춰 채운다
+  const [defaultValues] = useState<AnswerValues>(() =>
+    Object.fromEntries(
+      questions.map((item) => [
+        answerField(item.id),
+        savedAnswers.find((saved) => saved.questionId === item.id)?.content ?? '',
+      ]),
+    ),
+  );
+  // 진입 직후 저장 상태 문구를 정한다. 불러온 답변이 하나라도 있으면 "불러왔어요"로 알린다
+  const [loadedSaved] = useState(() => Object.values(defaultValues).some((value) => value !== ''));
+
   const {
     control,
     register,
@@ -190,12 +202,7 @@ const QuestionForm = ({ questions, savedAnswers, onClosed }: QuestionFormProps) 
   } = useForm<AnswerValues>({
     mode: 'onTouched',
     shouldFocusError: false,
-    defaultValues: Object.fromEntries(
-      questions.map((item) => [
-        answerField(item.id),
-        savedAnswers.find((saved) => saved.questionId === item.id)?.content ?? '',
-      ]),
-    ),
+    defaultValues,
   });
 
   const errorKind = completeMutation.isError ? classifySignUpError(completeMutation.error) : null;
@@ -246,7 +253,11 @@ const QuestionForm = ({ questions, savedAnswers, onClosed }: QuestionFormProps) 
           keepIsSubmitted: true,
         });
       },
-      onError: () => setSaveState({ kind: 'failed' }),
+      // 가입 기간이 끝났으면 최종 제출과 같이 모집 기간 아님 안내로 바꾼다
+      onError: (error) => {
+        if (classifySignUpError(error) === 'closed') onClosed();
+        else setSaveState({ kind: 'failed' });
+      },
     });
   };
 
@@ -300,7 +311,11 @@ const QuestionForm = ({ questions, savedAnswers, onClosed }: QuestionFormProps) 
               <CheckIcon size={16} />
               <span>임시저장됨 · {formatTime(saveState.at)}</span>
             </>
-          ) : null}
+          ) : loadedSaved ? (
+            <span>임시저장된 답변을 불러왔어요</span>
+          ) : (
+            <span>저장 안 됨</span>
+          )}
         </SaveStatus>
         <Buttons>
           <SecondaryButton
@@ -337,7 +352,10 @@ const SignupQuestion = () => {
   const [closed, setClosed] = useState(false);
   const markClosed = useCallback(() => setClosed(true), []);
 
-  const loadError = questionsQuery.error ?? answersQuery.error;
+  // 토큰 만료는 공통 refresh 흐름이 다시 가져오므로 실패로 보지 않고 로딩을 이어 보여 준다
+  const loadError = [questionsQuery.error, answersQuery.error].find(
+    (error) => error && !isTokenExpiredError(error),
+  );
   const loadErrorKind = loadError ? classifySignUpError(loadError) : null;
 
   const retryLoad = () => {

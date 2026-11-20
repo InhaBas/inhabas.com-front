@@ -96,7 +96,7 @@ const Login = () => {
                 );
               })}
             </ButtonList>
-            {!errorKind && (
+            {!errorKind && !recentProvider && (
               <Guide>처음이라면 쓰고 싶은 계정으로 로그인하면 가입 신청을 시작해요.</Guide>
             )}
           </Options>
