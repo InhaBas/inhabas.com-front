@@ -1,9 +1,6 @@
-import { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import RecruitmentScheduleNotice from '../../components/home/RecruitmentScheduleNotice';
-import { relogin } from '../../recoil/frontState';
 import { Div, FlexDiv } from '../../styles/assets/Div';
 import Img from '../../styles/assets/Img';
 import { media } from '../../styles/theme';
@@ -76,15 +73,6 @@ const LogoImg = styled(Img)`
 `;
 
 const Main = () => {
-  const [reload, setReload] = useRecoilState(relogin);
-
-  useEffect(() => {
-    if (reload) {
-      alert('로그인을 다시 시도해주세요');
-      window.location.reload();
-    }
-    return setReload(false);
-  }, [reload]);
   return (
     <>
       <MainDiv width="100%" height="100vh" direction="column">

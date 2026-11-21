@@ -1,4 +1,5 @@
 import { mutationOptions, queryOptions, useQuery } from '@tanstack/react-query';
+import { useCallback } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { isTokenExpiredError, refreshAccessTokenOnce } from './apiErrorEffects';
@@ -95,16 +96,17 @@ export const useMyRole = (): string => {
     지운 쿼리는 관찰 중인 컴포넌트가 다음에 렌더될 때 새로 만들어져 요청된다. 지금 화면은 부르는 쪽의 이동으로 같은 렌더에서 언마운트된다
   - HeaderNav가 /signUp/check를 다시 요청하는 것은 옛 화면이 토큰이 바뀔 때마다 다시 요청하던 동작이고,
     그 A005 → refresh 실패가 failRefreshing을 켠다. /signUp/check 결과가 비었으므로 /myInfo는 요청하지 않는다
+  - 돌려주는 함수는 렌더가 바뀌어도 같다. effect 의존성에 넣어도 다시 돌지 않는다
 */
 export const useEndSession = () => {
   const setLoggedOut = useSetRecoilState(loggedOut);
 
-  return () => {
+  return useCallback(() => {
     setLoggedOut(true);
     setAccessToken('default');
     queryClient.clear();
     document.cookie = 'ibas_refresh' + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;';
-  };
+  }, [setLoggedOut]);
 };
 
 // 공통 흐름은 토큰이 만료된 뮤테이션을 다시 보내지 않아 탈퇴를 눌러도 아무 일이 없는 것처럼 보인다. 토큰을 갱신하고 한 번만 다시 보낸다

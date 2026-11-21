@@ -10,6 +10,13 @@ import { setAccessToken, setFailRefreshing } from '../api/token';
 
 const TOKEN_EXPIRED_CODES = ['A005', 'A006', 'A007'];
 
+/*
+  회원가입 화면이 오류를 직접 보여주는 요청의 경로(GET·POST·PUT /signUp, /signUp/answers, /signUp/questionnaires).
+  공통 alert·이동을 하지 않고, 화면이 classifySignUpError(src/functions/signUpErrors.ts)로 종류를 나눠 표시한다.
+  토큰 재발급은 그대로 한다. /signUp/check·majorInfo·schedule(대시보드 일정 관리)은 넣지 않는다
+*/
+const SIGN_UP_SCREEN_PATHS = ['/signUp', '/signUp/answers', '/signUp/questionnaires'];
+
 export function isTokenExpiredError(error: unknown) {
   return (
     error instanceof ApiError && error.auth && TOKEN_EXPIRED_CODES.includes(error.body?.code ?? '')
@@ -76,6 +83,8 @@ export function handleApiError(error: unknown) {
     return;
   }
 
+  if (SIGN_UP_SCREEN_PATHS.includes(path)) return;
+
   alert(`웹 팀에 문의해주세요. \n${body.code} : ${body.message}`);
 
   if (auth && body.status === 401) {
@@ -83,11 +92,7 @@ export function handleApiError(error: unknown) {
   }
 
   if (auth && body.status === 403) {
-    if (path === '/signUp') {
-      navigate?.('/');
-    } else {
-      navigate?.(-1);
-    }
+    navigate?.(-1);
   }
 
   if (body.status === 404) {

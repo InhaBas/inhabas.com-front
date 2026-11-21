@@ -1,236 +1,267 @@
-import { useNavigate } from 'react-router-dom';
+import { ReactNode, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { Div, FlexDiv } from '../../styles/assets/Div';
-import Img from '../../styles/assets/Img';
-import P from '../../styles/assets/P';
+import FormBanner from '../../components/common/form/FormBanner';
+import { focusRing } from '../../components/common/form/formStyles';
+import { HomeLogoLink, MemberPage } from '../../components/member/MemberLayout';
+import {
+  LoginErrorKind,
+  LoginProvider,
+  parseLoginErrorKind,
+  readRecentLogin,
+  saveRecentLogin,
+} from '../../functions/loginMethods';
 import { media } from '../../styles/theme';
 
-const HrSect = styled.div`
+const KakaoIcon = () => (
+  <svg viewBox="0 0 36 36" aria-hidden="true" focusable="false">
+    <path
+      fill="#000"
+      d="M18 1.2C8.06 1.2 0 7.43 0 15.1c0 4.78 3.12 8.99 7.86 11.49l-2 7.3c-.17.64.56 1.16 1.13.78l8.75-5.78c.74.07 1.49.11 2.26.11 9.94 0 18-6.22 18-13.9S27.94 1.2 18 1.2z"
+    />
+  </svg>
+);
+
+const SOCIAL_BUTTONS: { provider: LoginProvider; label: string; icon: ReactNode }[] = [
+  { provider: 'google', label: 'Google로 로그인', icon: <img src="/images/google.png" alt="" /> },
+  { provider: 'naver', label: '네이버로 로그인', icon: <img src="/images/naver.png" alt="" /> },
+  { provider: 'kakao', label: '카카오로 로그인', icon: <KakaoIcon /> },
+];
+
+const ERROR_MESSAGES: Record<LoginErrorKind, string> = {
+  canceled: '로그인을 취소했어요.',
+  failed: '로그인에 실패했어요. 다시 시도하거나 다른 소셜 계정을 확인해 주세요.',
+};
+
+const Login = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const errorParam = searchParams.get('error');
+
+  // 처음 받은 error 값으로 안내를 정하고, URL에서는 지운다(새로고침해도 다시 뜨지 않게)
+  const [errorKind] = useState<LoginErrorKind | null>(() =>
+    errorParam ? parseLoginErrorKind(errorParam) : null,
+  );
+  const [recentProvider] = useState(readRecentLogin);
+
+  useEffect(() => {
+    if (errorParam === null) return;
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete('error');
+        return next;
+      },
+      { replace: true },
+    );
+  }, [errorParam, setSearchParams]);
+
+  const moveLogin = (provider: LoginProvider) => {
+    saveRecentLogin(provider);
+    window.location.assign(
+      `${import.meta.env.VITE_API_URL}/login/oauth2/authorization/${provider}`,
+    );
+  };
+
+  return (
+    <MemberPage>
+      <Panel>
+        <Content>
+          <HomeLogoLink size="large" />
+
+          <Options>
+            {errorKind && (
+              <FormBanner tone={errorKind === 'canceled' ? 'info' : 'error'}>
+                {ERROR_MESSAGES[errorKind]}
+              </FormBanner>
+            )}
+            <Heading>소셜 계정으로 로그인</Heading>
+            <ButtonList>
+              {SOCIAL_BUTTONS.map(({ provider, label, icon }) => {
+                const isRecent = provider === recentProvider;
+                return (
+                  <SocialButton
+                    key={provider}
+                    type="button"
+                    $provider={provider}
+                    aria-label={label}
+                    aria-describedby={isRecent ? 'recent-login-badge' : undefined}
+                    onClick={() => moveLogin(provider)}
+                  >
+                    {icon}
+                    {label}
+                    {isRecent && <RecentBadge id="recent-login-badge">최근 사용</RecentBadge>}
+                  </SocialButton>
+                );
+              })}
+            </ButtonList>
+            {!errorKind && !recentProvider && (
+              <Guide>처음이라면 쓰고 싶은 계정으로 로그인하면 가입 신청을 시작해요.</Guide>
+            )}
+          </Options>
+        </Content>
+
+        <Copyright>
+          <p>©INHA BAS All rights reserved.</p>
+          <p>Developed by 양태영, 신승연, 김채림, 윤예진, 유동현</p>
+        </Copyright>
+      </Panel>
+      <Background aria-hidden="true" />
+    </MemberPage>
+  );
+};
+
+export default Login;
+
+const Panel = styled.main`
+  flex: none;
   display: flex;
-  flex-basis: 100%;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  color: rgba(0, 0, 0, 0.35);
-  font-size: 12px;
-  margin: 8px 0px;
+  gap: 32px;
+  width: 480px;
+  min-height: 100vh;
+  padding: 56px 40px 32px;
+  background-color: ${({ theme }) => theme.color.wh};
+
+  ${media.mobile} {
+    width: 100%;
+    padding: 32px 20px 40px;
+  }
+`;
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  max-width: 400px;
+  margin-top: 72px;
+
+  ${media.mobile} {
+    margin-top: 0;
+  }
+`;
+
+const Options = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-self: center;
+  width: 320px;
+
+  ${media.mobile} {
+    width: 100%;
+  }
+`;
+
+const Heading = styled.h1`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0 0 12px;
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  font-weight: 700;
+  color: ${({ theme }) => theme.color.grey};
 
   &::before,
   &::after {
     content: '';
-    flex-grow: 1;
-    background: rgba(0, 0, 0, 0.35);
+    flex: 1;
     height: 1px;
-    font-size: 0px;
-    line-height: 0px;
-    margin: 0px 16px;
+    background: rgba(0, 0, 0, 0.2);
   }
 `;
 
-const OAuthButton = styled(FlexDiv)`
-  ${media.mobile} {
-    width: 100%;
-    max-width: 250px;
+const ButtonList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+const PROVIDER_COLORS: Record<LoginProvider, { bg: string; text: string; border: string }> = {
+  google: { bg: '#ffffff', text: '#242230', border: '#7F8193' },
+  naver: { bg: '#03c75a', text: '#ffffff', border: 'transparent' },
+  kakao: { bg: '#fee500', text: 'rgba(0, 0, 0, 0.85)', border: 'transparent' },
+};
+
+const SocialButton = styled.button<{ $provider: LoginProvider }>`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  border: 1px solid ${({ $provider }) => PROVIDER_COLORS[$provider].border};
+  border-radius: 8px;
+  background-color: ${({ $provider }) => PROVIDER_COLORS[$provider].bg};
+  font-family: inherit;
+  font-size: ${({ theme }) => theme.fontSize.md};
+  font-weight: 700;
+  color: ${({ $provider }) => PROVIDER_COLORS[$provider].text};
+  cursor: pointer;
+
+  img,
+  svg {
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    width: 20px;
+    height: 20px;
+    transform: translateY(-50%);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    ${focusRing}
   }
 `;
 
-const KakaoButton = styled(OAuthButton)`
-  background-color: #fee500;
-  border: 1px solid #fee500;
+const RecentBadge = styled.span`
+  position: absolute;
+  top: -10px;
+  right: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: ${({ theme }) => theme.color.bgColor};
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  font-weight: 700;
+  line-height: 18px;
+  color: ${({ theme }) => theme.color.wh};
 `;
 
-const NaverButton = styled(OAuthButton)`
-  background-color: #03c75a;
-  border: 1px solid #03c75a;
+const Guide = styled.p`
+  margin: 0;
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  line-height: 1.6;
+  text-align: center;
+  color: ${({ theme }) => theme.color.grey};
 `;
 
-const Copyright = styled(P)`
-  color: rgba(0, 0, 0, 0.35);
+const Copyright = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 
-  ${media.mobile} {
-    white-space: normal;
-    overflow: visible;
-    text-align: center;
-    text-overflow: clip;
-  }
-`;
-
-const LoginPage = styled(FlexDiv)`
-  ${media.mobile} {
-    height: auto;
-    min-height: 100vh;
-    align-items: flex-start;
-  }
-`;
-
-const LoginPanel = styled(FlexDiv)`
-  ${media.desktop} {
-    width: max(27%, 380px);
-  }
-
-  ${media.tabletOnly} {
-    width: 44%;
-    padding: 0 32px;
-  }
-
-  ${media.mobile} {
-    width: 100%;
-    height: auto;
-    min-height: 100vh;
+  p {
     margin: 0;
-    padding: 48px 24px 32px;
+    font-size: ${({ theme }) => theme.fontSize.xs};
+    line-height: 1.6;
+    text-align: center;
+    color: ${({ theme }) => theme.color.grey};
   }
 `;
 
-const LoginContent = styled(FlexDiv)`
-  ${media.mobile} {
-    width: 100%;
-  }
-`;
-
-const LoginLogo = styled(FlexDiv)`
-  ${media.mobile} {
-    width: 120px;
-    margin-bottom: 24px;
-  }
-`;
-
-const LoginOptions = styled(FlexDiv)`
-  ${media.mobile} {
-    width: 100%;
-    max-width: 300px;
-  }
-`;
-
-const LoginBackground = styled(Div)`
-  ${media.desktop} {
-    width: calc(100% - max(27%, 380px));
-  }
-
-  ${media.tabletOnly} {
-    width: 56%;
-  }
+// 회원가입 화면과 달리 패널 높이만큼 늘어나고, 이미지가 뜨기 전에는 어두운 보라 면을 보인다
+const Background = styled.div`
+  flex: 1;
+  background: #1b0b3a url('/images/member-background.jpg') center / cover no-repeat;
 
   ${media.mobile} {
     display: none;
   }
 `;
-
-const Login = () => {
-  const navigate = useNavigate();
-
-  const moveMain = () => {
-    navigate('/');
-  };
-
-  const moveLogin = (method: string) => {
-    window.location.href = `${import.meta.env.VITE_API_URL}/login/oauth2/authorization/${method}`;
-  };
-
-  return (
-    <>
-      <LoginPage width="100%" height="100vh">
-        <LoginPanel
-          width="27%"
-          height="80%"
-          direction="column"
-          $padding="0 45px"
-          $margin="0 auto"
-          $justifycontent="space-evenly"
-        >
-          <LoginContent>
-            <LoginLogo width="150px" $margin="0 0 30px 0" $pointer onClick={() => moveMain()}>
-              <Img src="/images/ibas-main-logo_purple.png" />
-            </LoginLogo>
-
-            <LoginOptions width="80%">
-              <HrSect>소셜 로그인</HrSect>
-              <OAuthButton
-                $backgroundColor="wh"
-                width="250px"
-                height="40px"
-                $margin="10px 0"
-                $padding="8px"
-                $pointer
-                radius={4}
-                $border="1px solid"
-                $borderColor="grey1"
-                $justifycontent="start"
-                onClick={() => moveLogin('google')}
-              >
-                <FlexDiv width="18px" $margin="0 22px 0 0 ">
-                  <Img src="/images/google.png" />
-                </FlexDiv>
-                <FlexDiv>
-                  <Div>
-                    <P fontSize="sm">Google 계정으로 로그인</P>
-                  </Div>
-                </FlexDiv>
-              </OAuthButton>
-              <NaverButton
-                $backgroundColor="wh"
-                width="250px"
-                height="40px"
-                $margin="0 0 10px 0"
-                $padding="8px"
-                $pointer
-                radius={4}
-                $justifycontent="start"
-                $borderColor="wh"
-                onClick={() => moveLogin('naver')}
-              >
-                <FlexDiv width="16px" $margin="0 24px 0 0 ">
-                  <Img src="/images/naver.png" />
-                </FlexDiv>
-                <FlexDiv>
-                  <Div>
-                    <P fontSize="sm" color="wh">
-                      네이버 계정으로 로그인
-                    </P>
-                  </Div>
-                </FlexDiv>
-              </NaverButton>
-
-              <KakaoButton
-                $backgroundColor="wh"
-                width="250px"
-                height="40px"
-                $padding="8px"
-                $pointer
-                radius={4}
-                $justifycontent="start"
-                $borderColor="wh"
-                onClick={() => moveLogin('kakao')}
-              >
-                <FlexDiv width="16px" $margin="0 24px 0 0 ">
-                  <Img src="/images/kakao.svg" />
-                </FlexDiv>
-                <FlexDiv>
-                  <Div>
-                    <P fontSize="sm">카카오 계정으로 로그인</P>
-                  </Div>
-                </FlexDiv>
-              </KakaoButton>
-            </LoginOptions>
-          </LoginContent>
-          <FlexDiv>
-            <Div>
-              <Copyright fontSize="xs" fontWeight={300} $lineHeight={1.3}>
-                ©INHA BAS All rights reserved.
-              </Copyright>
-            </Div>
-            <Div>
-              <Copyright fontSize="xs" fontWeight={300} $lineHeight={1.3}>
-                Developed by 양태영, 신승연, 김채림, 윤예진, 유동현
-              </Copyright>
-            </Div>
-          </FlexDiv>
-        </LoginPanel>
-        <LoginBackground width="73%" height="100vh" overflow="hidden">
-          <Img src="/images/member-background.jpg" />
-        </LoginBackground>
-      </LoginPage>
-    </>
-  );
-};
-
-export default Login;

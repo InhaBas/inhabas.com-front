@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
+import { toLoginErrorKind } from '../../functions/loginMethods';
 import { signUpQueries } from '../../queries/signUp';
 import { tokenAccess, userEmail, userImage } from '../../recoil/backState';
 import { FlexDiv } from '../../styles/assets/Div';
@@ -50,19 +51,22 @@ const LoginProcess = () => {
     }
   };
 
+  // OAuth 실패는 토큰 없이 ?error로 온다. 서버 원문 대신 종류(canceled·failed)만 로그인 화면에 넘긴다
   useEffect(() => {
     if (error) {
-      navigate('/login');
+      navigate(`/login?error=${toLoginErrorKind(error)}`, { replace: true });
     }
-  }, [accessToken]);
+  }, [error, navigate]);
 
   useEffect(() => {
+    if (error) return;
     if (accessToken) {
       setAccess(accessToken);
     }
   }, [accessToken]);
 
   useEffect(() => {
+    if (error) return;
     document.cookie = `ibas_refresh=${refreshToken}; path=/; `;
     // document.cookie = `ibas_refresh=${refreshToken}; path=/; httpOnly;`;
   }, [refreshToken]);
@@ -74,6 +78,7 @@ const LoginProcess = () => {
   }, [image]);
 
   useEffect(() => {
+    if (error) return;
     if (accessToken) {
       const tokenData = parseJwt(access);
       if (tokenData && tokenData.email) {
